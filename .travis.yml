@@ -1,0 +1,12 @@
+language: java
+
+addons:
+  postgresql: "9.3"
+
+before_script:
+  - export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth_test";
+  - export AUTH_DB_USER="postgres";
+  - export AUTH_DB_PASSWORD="";
+  - export AUTH_DB_DRIVER="org.postgresql.Driver";
+  - psql -c 'create database auth_test;' -U postgres
+  - mvn migration:up -Dmigration.env=test
