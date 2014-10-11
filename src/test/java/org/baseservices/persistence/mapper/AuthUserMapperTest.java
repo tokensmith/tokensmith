@@ -17,7 +17,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Created by tommackenzie on 9/25/14.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:applicationContext.xml"})
+@ContextConfiguration(value={"classpath:spring-auth-db-mybatis-test.xml"})
 @Transactional
 public class AuthUserMapperTest {
 
