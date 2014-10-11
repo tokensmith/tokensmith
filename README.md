@@ -11,7 +11,6 @@ Dependencies
 
 Environment Variables for configuring db connection
 ---------------------------------------------------
-
 ```
 export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
 export AUTH_DB_USER="postgres";
