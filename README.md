@@ -1,5 +1,6 @@
 The MyBatis implementation for Auth Persistence
-===============================================
+-----------------------------------------------
+[![Build Status](https://travis-ci.org/base-services/auth-db-mybatis.svg?branch=development)](https://travis-ci.org/base-services/auth-db-mybatis)
 
 Dependencies
 ------------
