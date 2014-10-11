@@ -33,7 +33,7 @@
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="org.baseservices.persistence.repository"/>
+        <property name="basePackage" value="org.baseservices.persistence.mapper"/>
     </bean>
 
 </beans>
