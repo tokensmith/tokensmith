@@ -1,6 +1,6 @@
-package org.baseservices.persistence.repository;
+package org.baseservices.persistence.mapper;
 
-import org.baseservices.entity.AuthUser;
+import org.baseservices.persistence.entity.AuthUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:applicationContext.xml"})
 @Transactional
-public class AuthUserRepositoryTest {
+public class AuthUserMapperTest {
 
     @Autowired
-    AuthUserRepository subject;
+    AuthUserMapper subject;
 
     public AuthUser insertAuthUser() {
         UUID uuid = UUID.randomUUID();
@@ -51,6 +51,14 @@ public class AuthUserRepositoryTest {
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
         assertThat(actualUser.getCreatedAt()).isInstanceOf(Date.class);
+    }
+
+    @Test
+    public void getByUUIDAuthUserNotFound() {
+
+        AuthUser actualUser = subject.getByUUID(UUID.randomUUID());
+
+        assertThat(actualUser).isEqualTo(null);
     }
 
     @Test

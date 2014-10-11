@@ -1,21 +1,17 @@
 package org.baseservices.persistence.repository;
 
-
-import org.baseservices.entity.AuthUser;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
+import org.baseservices.persistence.entity.AuthUser;
+import org.baseservices.persistence.exceptions.RecordNotFoundException;
 
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 9/24/14.
+ * Created by tommackenzie on 10/11/14.
  */
-@Repository
 public interface AuthUserRepository {
-
-    public AuthUser getByUUID(@Param("uuid") UUID uuid);
-    public AuthUser getByEmailAndPassword(@Param("email") String email, @Param("password") byte[] password);
-    public void insert(@Param("authUser") AuthUser authUser);
+    public AuthUser getByUUID(UUID uuid) throws RecordNotFoundException;
+    public AuthUser getByEmailAndPassword(String email, byte[] password) throws RecordNotFoundException;
+    public void insert(AuthUser authUser);
     public void update(AuthUser authUser);
 
 }
