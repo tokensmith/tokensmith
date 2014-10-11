@@ -1,5 +1,6 @@
 The MyBatis implementation for Auth Persistence
-===============================================
+-----------------------------------------------
+[![Build Status](https://travis-ci.org/base-services/auth-db-mybatis.svg?branch=development)](https://travis-ci.org/base-services/auth-db-mybatis)
 
 Dependencies
 ------------
@@ -11,7 +12,6 @@ Dependencies
 
 Environment Variables for configuring db connection
 ---------------------------------------------------
-
 ```
 export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
 export AUTH_DB_USER="postgres";
