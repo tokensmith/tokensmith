@@ -12,7 +12,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
-        <version.migrations.maven.plugin>1.1.2</version.migrations.maven.plugin>
         <org.postgres.version>9.3-1102-jdbc4</org.postgres.version>
         <java.version>1.8</java.version>
     </properties>
@@ -38,6 +37,7 @@
         </dependency>
 
 
+        <!-- Database Drivers -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -71,6 +71,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
@@ -80,14 +86,6 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.mybatis.maven</groupId>
-            <artifactId>migrations-maven-plugin</artifactId>
-            <version>${version.migrations.maven.plugin}</version>
-            <type>maven-plugin</type>
         </dependency>
 
         <dependency>
@@ -145,12 +143,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.mybatis.maven</groupId>
-                <artifactId>migrations-maven-plugin</artifactId>
-                <version>${version.migrations.maven.plugin}</version>
-                <configuration>
-                    <repository>src/main/resources/database</repository>
-                </configuration>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>3.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.postgresql</groupId>
@@ -159,6 +154,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

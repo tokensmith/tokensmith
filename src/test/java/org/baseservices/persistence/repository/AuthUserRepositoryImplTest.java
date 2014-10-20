@@ -1,6 +1,5 @@
 package org.baseservices.persistence.repository;
 
-import org.apache.maven.doxia.module.rtf.WMFWriter;
 import org.baseservices.persistence.entity.AuthUser;
 import org.baseservices.persistence.exceptions.RecordNotFoundException;
 import org.baseservices.persistence.mapper.AuthUserMapper;
