@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.baseservices.persistence.mapper.AuthUserMapper">
+<mapper namespace="org.rootservices.persistence.mapper.AuthUserMapper">
 
-    <resultMap id="authUser" type="org.baseservices.persistence.entity.AuthUser">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.baseservices.persistence.mapper.typehandler.UUIDTypeHandler"/>
+    <resultMap id="authUser" type="org.rootservices.persistence.entity.AuthUser">
+        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="is_revoked" property="isRevoked"/>

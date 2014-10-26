@@ -1,4 +1,4 @@
-package org.baseservices.persistence.entity;
+package org.rootservices.persistence.entity;
 
 import java.util.Date;
 import java.util.UUID;
