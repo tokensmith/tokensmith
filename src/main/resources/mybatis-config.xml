@@ -10,7 +10,7 @@
     </settings>
 
     <typeHandlers>
-        <typeHandler handler="org.baseservices.persistence.mapper.typehandler.UUIDTypeHandler"
+        <typeHandler handler="org.rootservices.persistence.mapper.typehandler.UUIDTypeHandler"
                      javaType="java.util.UUID" jdbcType="OTHER" />
     </typeHandlers>
 </configuration>

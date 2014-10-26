@@ -1,4 +1,4 @@
-package org.baseservices.persistence.mapper.typehandler;
+package org.rootservices.persistence.mapper.typehandler;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
