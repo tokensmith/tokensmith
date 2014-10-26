@@ -1,9 +1,9 @@
-package org.baseservices.persistence.repository;
+package org.rootservices.persistence.repository;
 
 
-import org.baseservices.persistence.entity.AuthUser;
-import org.baseservices.persistence.exceptions.RecordNotFoundException;
-import org.baseservices.persistence.mapper.AuthUserMapper;
+import org.rootservices.persistence.entity.AuthUser;
+import org.rootservices.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.persistence.mapper.AuthUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

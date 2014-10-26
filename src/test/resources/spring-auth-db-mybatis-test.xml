@@ -12,7 +12,7 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="org.baseservices"/>
+    <context:component-scan base-package="org.rootservices"/>
 
     <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="#{systemEnvironment['AUTH_DB_DRIVER']}" />
@@ -28,12 +28,12 @@
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="typeAliasesPackage" value="org.baseservices.persistence.entity"/>
+        <property name="typeAliasesPackage" value="org.rootservices.persistence.entity"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="org.baseservices.persistence.mapper"/>
+        <property name="basePackage" value="org.rootservices.persistence.mapper"/>
     </bean>
 
 </beans>

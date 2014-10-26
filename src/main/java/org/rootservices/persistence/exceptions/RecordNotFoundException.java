@@ -1,4 +1,4 @@
-package org.baseservices.persistence.exceptions;
+package org.rootservices.persistence.exceptions;
 
 /**
  * Created by tommackenzie on 10/11/14.

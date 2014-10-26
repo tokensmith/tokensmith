@@ -1,6 +1,6 @@
-The MyBatis implementation for Auth Persistence
+Use cases and persistence for Authorization
 -----------------------------------------------
-[![Build Status](https://travis-ci.org/base-services/auth-db-mybatis.svg?branch=development)](https://travis-ci.org/base-services/auth-db-mybatis)
+[![Build Status](https://travis-ci.org/RootServices/auth.svg?branch=development)](https://travis-ci.org/RootServices/auth)
 
 Dependencies
 ------------
