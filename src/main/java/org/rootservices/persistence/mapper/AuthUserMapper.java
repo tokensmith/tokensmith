@@ -1,7 +1,7 @@
-package org.baseservices.persistence.mapper;
+package org.rootservices.persistence.mapper;
 
 
-import org.baseservices.persistence.entity.AuthUser;
+import org.rootservices.persistence.entity.AuthUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

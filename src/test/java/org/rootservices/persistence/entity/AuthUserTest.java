@@ -1,4 +1,4 @@
-package org.baseservices.persistence.entity;
+package org.rootservices.persistence.entity;
 
 import org.junit.Before;
 import org.junit.Test;
