@@ -22,27 +22,27 @@ import static org.mockito.Mockito.*;
 public class AuthUserRepositoryImplTest {
 
     @Mock
-    AuthUserMapper mockAuthUserMapper;
+    private AuthUserMapper mockMapper;
 
-    AuthUserRepositoryImpl subject;
+    private AuthUserRepositoryImpl subject;
 
     @Before
     public void setUp() {
         subject = new AuthUserRepositoryImpl();
-        ReflectionTestUtils.setField(subject, "authUserMapper", mockAuthUserMapper);
+        ReflectionTestUtils.setField(subject, "authUserMapper", mockMapper);
     }
 
     public AuthUser authUserBuilder() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
-        AuthUser authUser = new AuthUser(uuid, "test@tommygunz.com", password);
+        AuthUser authUser = new AuthUser(uuid, "test@rootservices.org", password);
         return authUser;
     }
 
     @Test(expected= RecordNotFoundException.class)
     public void getByUUIDNoRecordFound() throws RecordNotFoundException{
         UUID uuid = UUID.randomUUID();
-        when(mockAuthUserMapper.getByUUID(uuid)).thenReturn(null);
+        when(mockMapper.getByUUID(uuid)).thenReturn(null);
         subject.getByUUID(uuid);
     }
 
@@ -51,17 +51,17 @@ public class AuthUserRepositoryImplTest {
 
         AuthUser expectedAuthUser = authUserBuilder();
 
-        when(mockAuthUserMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
+        when(mockMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
         AuthUser actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 
     @Test(expected= RecordNotFoundException.class)
     public void getByEmailAndPasswordNoRecordFound() throws RecordNotFoundException{
-        String email = "test@tommygunz.com";
+        String email = "test@rootservices.org";
         byte [] password = "plainTextPassword".getBytes();
 
-        when(mockAuthUserMapper.getByEmailAndPassword(email, password)).thenReturn(null);
+        when(mockMapper.getByEmailAndPassword(email, password)).thenReturn(null);
         subject.getByEmailAndPassword(email, password);
     }
 
@@ -70,7 +70,7 @@ public class AuthUserRepositoryImplTest {
 
         AuthUser expectedAuthUser = authUserBuilder();
 
-        when(mockAuthUserMapper.getByEmailAndPassword(
+        when(mockMapper.getByEmailAndPassword(
                 expectedAuthUser.getEmail(), expectedAuthUser.getPassword())
         ).thenReturn(expectedAuthUser);
 
@@ -82,17 +82,10 @@ public class AuthUserRepositoryImplTest {
     }
 
     @Test
-    public void update() {
-        AuthUser authUser = authUserBuilder();
-        subject.update(authUser);
-        verify(mockAuthUserMapper, times(1)).update(authUser);
-    }
-
-    @Test
     public void insert() {
         AuthUser authUser = authUserBuilder();
         subject.insert(authUser);
-        verify(mockAuthUserMapper, times(1)).insert(authUser);
+        verify(mockMapper, times(1)).insert(authUser);
     }
 
 }
