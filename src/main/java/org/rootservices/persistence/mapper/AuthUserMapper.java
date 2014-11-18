@@ -12,10 +12,7 @@ import java.util.UUID;
  */
 @Repository
 public interface AuthUserMapper {
-
     public AuthUser getByUUID(@Param("uuid") UUID uuid);
     public AuthUser getByEmailAndPassword(@Param("email") String email, @Param("password") byte[] password);
     public void insert(@Param("authUser") AuthUser authUser);
-    public void update(AuthUser authUser);
-
 }

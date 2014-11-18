@@ -11,7 +11,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 public class AuthUserTest {
 
-    AuthUser subject;
+    private AuthUser subject;
 
     @Before
     public void setUp() {

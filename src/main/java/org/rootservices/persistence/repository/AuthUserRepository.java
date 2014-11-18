@@ -12,6 +12,4 @@ public interface AuthUserRepository {
     public AuthUser getByUUID(UUID uuid) throws RecordNotFoundException;
     public AuthUser getByEmailAndPassword(String email, byte[] password) throws RecordNotFoundException;
     public void insert(AuthUser authUser);
-    public void update(AuthUser authUser);
-
 }

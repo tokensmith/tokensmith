@@ -36,10 +36,6 @@ public class AuthUserRepositoryImpl implements AuthUserRepository {
         throw new RecordNotFoundException("AuthUser: " + email);
     }
 
-    public void update(AuthUser authUser) {
-        authUserMapper.update(authUser);
-    }
-
     public void insert(AuthUser authUser) {
         authUserMapper.insert(authUser);
     }
