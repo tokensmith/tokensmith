@@ -22,7 +22,7 @@ export AUTH_DB_DRIVER="org.postgresql.Driver";
 Running migrations (replace values where necessary).
 ----------------------------------------------------
 ```
-mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth" -Dflyway.initOnMigrate=tru
+mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth" -Dflyway.initOnMigrate=true
 ```
 
 Running the tests from the terminal.
