@@ -18,7 +18,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-@Transactional
 public class AuthUserMapperTest {
 
     @Autowired
@@ -34,6 +33,7 @@ public class AuthUserMapperTest {
     }
 
     @Test
+    @Transactional
     public void insert() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
@@ -42,6 +42,7 @@ public class AuthUserMapperTest {
     }
 
     @Test
+    @Transactional
     public void getByUUID() {
         AuthUser expectedUser = insertAuthUser();
         AuthUser actualUser = subject.getByUUID(expectedUser.getUuid());
@@ -54,6 +55,7 @@ public class AuthUserMapperTest {
     }
 
     @Test
+    @Transactional
     public void getByUUIDAuthUserNotFound() {
 
         AuthUser actualUser = subject.getByUUID(UUID.randomUUID());
@@ -62,6 +64,7 @@ public class AuthUserMapperTest {
     }
 
     @Test
+    @Transactional
     public void getByEmailAndPassword() {
 
         AuthUser expectedUser = insertAuthUser();
