@@ -10,6 +10,7 @@ import org.rootservices.authorization.codegrant.exception.client.MissingResponse
 import org.rootservices.authorization.codegrant.exception.client.ResponseTypeIsNotCodeException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.resourceowner.InvalidClientIdException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.MissingClientIdException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
