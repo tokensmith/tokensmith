@@ -1,4 +1,4 @@
-package org.rootservices.authorization.codegrant.params;
+package org.rootservices.authorization.codegrant.params.ValidateParams;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +6,8 @@ import org.rootservices.authorization.codegrant.exception.client.InformClientExc
 import org.rootservices.authorization.codegrant.exception.client.MissingResponseTypeException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.MissingClientIdException;
+import org.rootservices.authorization.codegrant.params.ValidateParams;
+import org.rootservices.authorization.codegrant.params.ValidateParamsImpl;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.util.ArrayList;
@@ -14,25 +16,24 @@ import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class ValidateParamsImplTest {
+public class InformResourceOwnerTests {
 
+    private List<String> responseTypes;
     private ValidateParams subject;
 
     @Before
     public void setUp() {
         subject = new ValidateParamsImpl();
+        ResponseType rt = ResponseType.CODE;
+        responseTypes = new ArrayList<>();
+        responseTypes.add(rt.toString());
     }
 
     @Test
     public void validate() throws InformResourceOwnerException, InformClientException {
         UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
-
         List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-
         clientIds.add(uuid.toString());
-        responseTypes.add(rt.toString());
 
         boolean isValid = subject.run(clientIds, responseTypes);
         assertThat(isValid).isEqualTo(true);
@@ -40,24 +41,14 @@ public class ValidateParamsImplTest {
 
     @Test(expected = MissingClientIdException.class)
     public void clientIdsIsNull() throws InformResourceOwnerException, InformClientException {
-        ResponseType rt = ResponseType.CODE;
-
         List<String> clientIds = null;
-        List<String> responseTypes = new ArrayList<>();
-
-        responseTypes.add(rt.toString());
 
         subject.run(clientIds, responseTypes);
     }
 
     @Test(expected = MissingClientIdException.class)
     public void clientIdsIsEmptyList() throws InformResourceOwnerException, InformClientException {
-        ResponseType rt = ResponseType.CODE;
-
         List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-
-        responseTypes.add(rt.toString());
 
         subject.run(clientIds, responseTypes);
     }
@@ -71,43 +62,6 @@ public class ValidateParamsImplTest {
 
         clientIds.add("");
         responseTypes.add(rt.toString());
-
-        subject.run(clientIds, responseTypes);
-    }
-
-    @Test(expected = MissingResponseTypeException.class)
-    public void responseTypesIsNull() throws InformResourceOwnerException, InformClientException {
-        UUID uuid = UUID.randomUUID();
-
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = null;
-
-        clientIds.add(uuid.toString());
-
-        subject.run(clientIds, responseTypes);
-    }
-
-    @Test(expected = MissingResponseTypeException.class)
-    public void responseTypesIsEmptyList() throws InformResourceOwnerException, InformClientException {
-        UUID uuid = UUID.randomUUID();
-
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-
-        clientIds.add(uuid.toString());
-
-        subject.run(clientIds, responseTypes);
-    }
-
-    @Test(expected = MissingResponseTypeException.class)
-    public void responseTypesHasEmptyValue() throws InformResourceOwnerException, InformClientException {
-        UUID uuid = UUID.randomUUID();
-
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-
-        clientIds.add(uuid.toString());
-        responseTypes.add("");
 
         subject.run(clientIds, responseTypes);
     }
