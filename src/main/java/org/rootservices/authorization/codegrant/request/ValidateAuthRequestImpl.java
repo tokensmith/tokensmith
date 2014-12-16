@@ -1,11 +1,10 @@
 package org.rootservices.authorization.codegrant.request;
 
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.client.MissingResponseTypeException;
 import org.rootservices.authorization.codegrant.exception.client.ResponseTypeIsNotCodeException;
+import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedResponseTypeException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.MissingClientIdException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -28,29 +27,15 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
         this.clientRepository = clientRepository;
     }
 
-    public boolean run(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException {
+    public boolean run(AuthRequest authRequest) throws ResponseTypeIsNotCodeException, ClientNotFoundException, UnAuthorizedResponseTypeException {
 
-        hasRequiredFields(authRequest);
         isResponseTypeCode(authRequest.getResponseType());
         matchesPersistedClient(authRequest);
 
         return true;
     }
 
-    private boolean hasRequiredFields(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException {
-
-        if ( authRequest.getClientId() == null ) {
-            throw new MissingClientIdException("Client Id is missing");
-        }
-
-        if ( authRequest.getResponseType() == null ) {
-            throw new MissingResponseTypeException("Response Type is missing");
-        }
-
-        return true;
-    }
-
-    private boolean isResponseTypeCode(ResponseType responseType) throws InformClientException {
+    private boolean isResponseTypeCode(ResponseType responseType) throws ResponseTypeIsNotCodeException {
 
         if ( responseType != ResponseType.CODE ) {
             throw new ResponseTypeIsNotCodeException("Response Type was not code");
@@ -59,13 +44,20 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
         return true;
     }
 
-    private boolean matchesPersistedClient(AuthRequest authRequest) throws InformResourceOwnerException {
+    private boolean matchesPersistedClient(AuthRequest authRequest) throws ClientNotFoundException, UnAuthorizedResponseTypeException {
 
         Client client;
         try {
             client = clientRepository.getByUUID(authRequest.getClientId());
         } catch (RecordNotFoundException e) {
             throw new ClientNotFoundException("The Client was not found", e);
+        }
+
+        if ( client.getResponseType() != authRequest.getResponseType() ) {
+            throw new UnAuthorizedResponseTypeException(
+                    "Response Type requested doesnt match client's response type",
+                    client.getRedirectURI()
+            );
         }
 
         return true;
