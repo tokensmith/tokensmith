@@ -5,6 +5,7 @@ import org.rootservices.authorization.codegrant.exception.client.ResponseTypeIsN
 import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedResponseTypeException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.resourceowner.RedirectUriMismatchException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -27,7 +28,7 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
         this.clientRepository = clientRepository;
     }
 
-    public boolean run(AuthRequest authRequest) throws ResponseTypeIsNotCodeException, ClientNotFoundException, UnAuthorizedResponseTypeException {
+    public boolean run(AuthRequest authRequest) throws ResponseTypeIsNotCodeException, ClientNotFoundException, UnAuthorizedResponseTypeException, RedirectUriMismatchException{
 
         isResponseTypeCode(authRequest.getResponseType());
         matchesPersistedClient(authRequest);
@@ -44,7 +45,7 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
         return true;
     }
 
-    private boolean matchesPersistedClient(AuthRequest authRequest) throws ClientNotFoundException, UnAuthorizedResponseTypeException {
+    private boolean matchesPersistedClient(AuthRequest authRequest) throws ClientNotFoundException, UnAuthorizedResponseTypeException, RedirectUriMismatchException {
 
         Client client;
         try {
@@ -57,6 +58,12 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
             throw new UnAuthorizedResponseTypeException(
                     "Response Type requested doesnt match client's response type",
                     client.getRedirectURI()
+            );
+        }
+
+        if (authRequest.getRedirectURI() != null && client.getRedirectURI() != authRequest.getRedirectURI() ) {
+            throw new RedirectUriMismatchException(
+                    "Redirect URI requested doesnt match client's redirect uri"
             );
         }
 

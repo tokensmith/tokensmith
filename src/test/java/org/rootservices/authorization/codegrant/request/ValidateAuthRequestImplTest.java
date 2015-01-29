@@ -10,6 +10,8 @@ import org.rootservices.authorization.codegrant.exception.client.ResponseTypeIsN
 import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedResponseTypeException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.resourceowner.RedirectUriMismatchException;
+import org.rootservices.authorization.codegrant.translator.exception.ValidationError;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -54,7 +56,7 @@ public class ValidateAuthRequestImplTest {
         assertThat(true).isEqualTo(isValid);
     }
 
-    @Test
+    @Test(expected=ClientNotFoundException.class)
     public void runClientNotFound() throws InformResourceOwnerException, InformClientException, RecordNotFoundException {
         UUID uuid = UUID.randomUUID();
 
@@ -66,12 +68,7 @@ public class ValidateAuthRequestImplTest {
                 RecordNotFoundException.class
         );
 
-        try {
-            subject.run(authRequest);
-            fail("Expected ClientNotFoundException");
-        } catch(ClientNotFoundException e) {
-            assertThat(true).isEqualTo(e.getThrowable() instanceof RecordNotFoundException);
-        }
+        subject.run(authRequest);
     }
 
     @Test(expected= ResponseTypeIsNotCodeException.class)
@@ -86,7 +83,8 @@ public class ValidateAuthRequestImplTest {
         subject.run(authRequest);
     }
 
-    public void runUnAuthorizedResponseType() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException {
+    @Test(expected=UnAuthorizedResponseTypeException.class)
+    public void runUnAuthorizedResponseType() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
         UUID uuid = UUID.randomUUID();
 
         AuthRequest authRequest = new AuthRequest();
@@ -99,18 +97,29 @@ public class ValidateAuthRequestImplTest {
         client.setResponseType(ResponseType.TOKEN);
         client.setRedirectURI(expectedRedirectURI);
 
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+
+        subject.run(authRequest);
+    }
+
+    @Test(expected=RedirectUriMismatchException.class)
+    public void runRedirectUriMismatch() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
+        UUID uuid = UUID.randomUUID();
+
+        URI expectedRedirectURI = new URI("https://rootservices.org");
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setClientId(uuid);
+        authRequest.setResponseType(ResponseType.CODE);
+        authRequest.setRedirectURI(expectedRedirectURI);
+
+        URI actualRedirectURI = new URI("https://rootservices.org/mismatch");
+        Client client = new Client();
+        client.setUuid(uuid);
+        client.setResponseType(ResponseType.CODE);
+        client.setRedirectURI(actualRedirectURI);
 
         when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
 
-        try {
-            subject.run(authRequest);
-            fail("Expected UnAuthorizedResponseTypeException");
-        } catch (ResponseTypeIsNotCodeException e) {
-            fail("ResponseTypeIsNotCodeException should not have been raised.");
-        } catch(ClientNotFoundException e) {
-            fail("ClientNotFoundException should not have been raised.");
-        } catch(UnAuthorizedResponseTypeException e) {
-            assertThat(e.getRedirectURI()).isEqualTo(expectedRedirectURI);
-        }
+        subject.run(authRequest);
     }
 }

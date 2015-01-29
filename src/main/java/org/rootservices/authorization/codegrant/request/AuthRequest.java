@@ -3,6 +3,7 @@ package org.rootservices.authorization.codegrant.request;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
