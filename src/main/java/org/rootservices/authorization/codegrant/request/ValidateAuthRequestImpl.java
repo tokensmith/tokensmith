@@ -61,7 +61,7 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
             );
         }
 
-        if (authRequest.getRedirectURI() != null && client.getRedirectURI() != authRequest.getRedirectURI() ) {
+        if (authRequest.getRedirectURI() != null && !client.getRedirectURI().equals(authRequest.getRedirectURI()) ) {
             throw new RedirectUriMismatchException(
                     "Redirect URI requested doesnt match client's redirect uri"
             );
