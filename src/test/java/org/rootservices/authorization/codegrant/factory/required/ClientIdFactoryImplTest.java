@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
 import org.rootservices.authorization.codegrant.factory.required.ClientIdFactoryImpl;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
@@ -59,6 +60,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
         }
     }
 
@@ -75,6 +77,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
         }
     }
 
@@ -93,6 +96,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
         }
     }
 
@@ -108,6 +112,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_LIST.getCode());
         }
     }
 
@@ -123,6 +128,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.NULL.getCode());
         }
     }
 }
