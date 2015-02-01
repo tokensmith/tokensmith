@@ -1,6 +1,7 @@
 package org.rootservices.authorization.codegrant.factory.optional;
 
-import org.rootservices.authorization.codegrant.factory.exception.DataTypeException;
+import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
+import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.*;
 import org.rootservices.authorization.persistence.entity.Scope;
@@ -25,8 +26,15 @@ public class ScopesFactoryImpl implements ScopesFactory {
         this.optionalParam = optionalParam;
     }
 
-    public List<Scope> makeScopes(List<String> items) throws EmptyValueError, MoreThanOneItemError, DataTypeException {
-        optionalParam.run(items);
+    public List<Scope> makeScopes(List<String> items) throws ScopesException {
+
+        try {
+            optionalParam.run(items);
+        } catch (EmptyValueError e) {
+            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), e);
+        } catch (MoreThanOneItemError e) {
+            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), e);
+        }
 
         List<Scope> scopes;
         if ( items == null ) {
@@ -37,7 +45,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
         return scopes;
     }
 
-    private List<Scope> StringsToScopes(List<String> items) throws DataTypeException{
+    private List<Scope> StringsToScopes(List<String> items) throws ScopesException {
         List<Scope> scopes = new ArrayList<>();
         for(String item: items.get(0).split(" ")) {
 
@@ -45,7 +53,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
             try {
                 tmpScope = Scope.valueOf(item.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new DataTypeException("parameter is not a scope");
+                throw new ScopesException("Cannot coerce String to Scope", e);
             }
             scopes.add(tmpScope);
         }
