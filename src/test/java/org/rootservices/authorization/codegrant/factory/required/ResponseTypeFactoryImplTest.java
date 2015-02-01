@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.factory.exception.DataTypeException;
+import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
 import org.rootservices.authorization.codegrant.validator.exception.MoreThanOneItemError;
@@ -16,6 +16,7 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +37,7 @@ public class ResponseTypeFactoryImplTest {
     }
 
     @Test
-    public void testMakeResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError, DataTypeException {
+    public void testMakeResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError, ResponseTypeException{
         ResponseType expected = ResponseType.CODE;
 
         List<String> items = new ArrayList<>();
@@ -48,13 +49,75 @@ public class ResponseTypeFactoryImplTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test(expected = DataTypeException.class)
-    public void testMakeResponseTypeIsNotResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError, DataTypeException {
+    @Test
+    public void testMakeResponseTypeUnknownResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
         List<String> items = new ArrayList<>();
         items.add("Unknown Response Type");
 
         when(mockRequiredParam.run(items)).thenReturn(true);
 
-        ResponseType actual = subject.makeResponseType(items);
+        try {
+            subject.makeResponseType(items);
+            fail("ResponseTypeException was expected.");
+        } catch (ResponseTypeException e) {
+            assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
+        }
+    }
+
+    @Test
+    public void testMakeResponseTypeEmptyValueError() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
+        List<String> items = new ArrayList<>();
+        items.add("");
+
+        when(mockRequiredParam.run(items)).thenThrow(EmptyValueError.class);
+        try {
+            subject.makeResponseType(items);
+            fail("ResponseTypeException was expected.");
+        } catch (ResponseTypeException e) {
+            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+        }
+    }
+
+    @Test
+    public void testMakeResponseTypeMoreThanOneItemError() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
+        List<String> items = new ArrayList<>();
+        items.add(ResponseType.CODE.toString());
+        items.add(ResponseType.CODE.toString());
+
+        when(mockRequiredParam.run(items)).thenThrow(MoreThanOneItemError.class);
+
+        try {
+            subject.makeResponseType(items);
+            fail("ResponseTypeException was expected.");
+        } catch (ResponseTypeException e) {
+            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+        }
+    }
+
+    @Test
+    public void testMakeResponseTypeNoItemsError() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
+        List<String> items = new ArrayList<>();
+
+        when(mockRequiredParam.run(items)).thenThrow(NoItemsError.class);
+
+        try {
+            subject.makeResponseType(items);
+            fail("ResponseTypeException was expected.");
+        } catch (ResponseTypeException e) {
+            assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
+        }
+    }
+
+    @Test
+    public void testMakeResponseTypeParamIsNullError() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
+        List<String> items = null;
+
+        when(mockRequiredParam.run(items)).thenThrow(ParamIsNullError.class);
+        try {
+            subject.makeResponseType(items);
+            fail("ResponseTypeException was expected.");
+        } catch (ResponseTypeException e) {
+            assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
+        }
     }
 }

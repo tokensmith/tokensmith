@@ -18,6 +18,7 @@ import org.rootservices.authorization.persistence.repository.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -105,7 +106,7 @@ public class ValidateAuthRequestImplTest {
     public void runRedirectUriMismatch() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
         UUID uuid = UUID.randomUUID();
 
-        URI expectedRedirectURI = new URI("https://rootservices.org");
+        Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);

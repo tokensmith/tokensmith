@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.factory.exception.DataTypeException;
+import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
 import org.rootservices.authorization.codegrant.validator.exception.MoreThanOneItemError;
@@ -14,6 +14,7 @@ import org.rootservices.authorization.persistence.entity.Scope;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +35,7 @@ public class ScopesFactoryImplTest {
     }
 
     @Test
-    public void testMakeScopes() throws MoreThanOneItemError, EmptyValueError, DataTypeException {
+    public void testMakeScopes() throws MoreThanOneItemError, EmptyValueError, ScopesException {
         List<Scope> expected = new ArrayList<>();
         expected.add(Scope.PROFILE);
 
@@ -48,7 +49,7 @@ public class ScopesFactoryImplTest {
     }
 
     @Test
-    public void testMakeScopesWhenScopesAreNull() throws MoreThanOneItemError, EmptyValueError, DataTypeException {
+    public void testMakeScopesWhenScopesAreNull() throws MoreThanOneItemError, EmptyValueError, ScopesException {
         List<Scope> expected = null;
         List<String> items = null;
 
@@ -56,5 +57,40 @@ public class ScopesFactoryImplTest {
 
         List<Scope> actual = subject.makeScopes(items);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testMakeScopesEmptyValueError() throws MoreThanOneItemError, EmptyValueError {
+
+        List<String> items = new ArrayList<>();
+        items.add("");
+
+        when(mockOptionalParam.run(items)).thenThrow(EmptyValueError.class);
+
+        try {
+            subject.makeScopes(items);
+            fail("ScopesException was expected.");
+        } catch (ScopesException e) {
+            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+        }
+
+    }
+
+    @Test
+    public void testMakeScopesMoreThanOneItemError() throws MoreThanOneItemError, EmptyValueError {
+
+        List<String> items = new ArrayList<>();
+        items.add(Scope.PROFILE.toString());
+        items.add(Scope.PROFILE.toString());
+
+        when(mockOptionalParam.run(items)).thenThrow(MoreThanOneItemError.class);
+
+        try {
+            subject.makeScopes(items);
+            fail("ScopesException was expected.");
+        } catch (ScopesException e) {
+            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+        }
+
     }
 }

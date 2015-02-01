@@ -1,8 +1,10 @@
 package org.rootservices.authorization.codegrant.request;
 
 import org.rootservices.authorization.persistence.entity.ResponseType;
+import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,7 +14,8 @@ import java.util.UUID;
 public class AuthRequest {
     private UUID clientId;
     private ResponseType responseType;
-    private URI redirectURI;
+    private Optional<URI> redirectURI;
+    private List<Scope> scopes;
 
     public UUID getClientId() {
         return clientId;
@@ -30,11 +33,19 @@ public class AuthRequest {
         return responseType;
     }
 
-    public URI getRedirectURI() {
+    public Optional<URI> getRedirectURI() {
         return redirectURI;
     }
 
-    public void setRedirectURI(URI redirectURI) {
+    public void setRedirectURI(Optional<URI> redirectURI) {
         this.redirectURI = redirectURI;
+    }
+
+    public List<Scope> getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(List<Scope> scopes) {
+        this.scopes = scopes;
     }
 }

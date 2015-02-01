@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.factory.exception.DataTypeException;
+import org.rootservices.authorization.codegrant.factory.exception.RedirectUriException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
 import org.rootservices.authorization.codegrant.validator.exception.MoreThanOneItemError;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static junit.framework.TestCase.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +41,7 @@ public class RedirectUriFactoryImplTest {
     }
 
     @Test
-    public void testMakeRedirectUri() throws MoreThanOneItemError, EmptyValueError, DataTypeException, URISyntaxException {
+    public void testMakeRedirectUri() throws MoreThanOneItemError, EmptyValueError, RedirectUriException, URISyntaxException {
 
         String expectedUriValue = "https://rootservices.org";
         Optional<URI> expected = Optional.ofNullable(new URI(expectedUriValue));
@@ -56,7 +57,7 @@ public class RedirectUriFactoryImplTest {
     }
 
     @Test
-    public void testMakeRedirectUriWhenItemsAreNull() throws MoreThanOneItemError, EmptyValueError, DataTypeException {
+    public void testMakeRedirectUriWhenItemsAreNull() throws MoreThanOneItemError, EmptyValueError, RedirectUriException {
         Optional<URI> expected = Optional.empty();
         List<String> items = null;
 
@@ -66,8 +67,8 @@ public class RedirectUriFactoryImplTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test(expected=DataTypeException.class)
-    public void testMakeRedirectUriWhenItemIsNotUri() throws MoreThanOneItemError, EmptyValueError, DataTypeException, URISyntaxException {
+
+    public void testMakeRedirectUriWhenItemIsNotUri() throws MoreThanOneItemError, EmptyValueError, RedirectUriException, URISyntaxException {
 
         List<String> items = new ArrayList<>();
         items.add("not-a-uri");
@@ -75,7 +76,45 @@ public class RedirectUriFactoryImplTest {
         when(mockOptionalParam.run(items)).thenReturn(true);
         when(mockUrlValidator.isValid(items.get(0))).thenReturn(false);
 
-        subject.makeRedirectUri(items);
+        try {
+            subject.makeRedirectUri(items);
+            fail("RedirectUriException was expected.");
+        } catch (RedirectUriException e) {
+            assertThat(e.getDomainCause()).isNull();
+        }
+    }
+
+    @Test
+    public void testMakeRedirectUriEmptyValueError() throws MoreThanOneItemError, EmptyValueError, RedirectUriException, URISyntaxException {
+
+        List<String> items = new ArrayList<>();
+        items.add("");
+
+        when(mockOptionalParam.run(items)).thenThrow(EmptyValueError.class);
+
+        try {
+            subject.makeRedirectUri(items);
+            fail("RedirectUriException was expected.");
+        } catch (RedirectUriException e) {
+            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+        }
+    }
+
+    @Test
+    public void testMakeRedirectUriMoreThanOneItemError() throws MoreThanOneItemError, EmptyValueError, RedirectUriException, URISyntaxException {
+
+        List<String> items = new ArrayList<>();
+        items.add("https://rootservices.org");
+        items.add("https://rootservices.org");
+
+        when(mockOptionalParam.run(items)).thenThrow(MoreThanOneItemError.class);
+
+        try {
+            subject.makeRedirectUri(items);
+            fail("RedirectUriException was expected.");
+        } catch (RedirectUriException e) {
+            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+        }
     }
 
 }
