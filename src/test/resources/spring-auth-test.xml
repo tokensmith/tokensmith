@@ -36,4 +36,12 @@
         <property name="basePackage" value="org.rootservices.authorization.persistence.mapper"/>
     </bean>
 
+    <bean id="urlValidator" class="org.apache.commons.validator.routines.UrlValidator">
+        <constructor-arg>
+            <list value-type="java.lang.String">
+                <value>https</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
 </beans>

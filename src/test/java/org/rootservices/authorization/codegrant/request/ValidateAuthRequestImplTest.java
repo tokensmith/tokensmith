@@ -11,7 +11,6 @@ import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedRes
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.RedirectUriMismatchException;
-import org.rootservices.authorization.codegrant.translator.exception.ValidationError;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
