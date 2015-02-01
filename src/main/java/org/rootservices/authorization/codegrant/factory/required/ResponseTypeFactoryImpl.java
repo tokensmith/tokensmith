@@ -1,5 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.required;
 
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
 import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
@@ -33,20 +34,20 @@ public class ResponseTypeFactoryImpl implements ResponseTypeFactory {
         try {
             requiredParam.run(responseTypes);
         } catch (EmptyValueError e) {
-            throw new ResponseTypeException(ValidationMessage.EMPTY_VALUE.toString(), e);
+            throw new ResponseTypeException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
         } catch (MoreThanOneItemError e) {
-            throw new ResponseTypeException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), e);
+            throw new ResponseTypeException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
         } catch (NoItemsError e) {
-            throw new ResponseTypeException(ValidationMessage.EMPTY_LIST.toString(), e);
+            throw new ResponseTypeException(ValidationMessage.EMPTY_LIST.toString(), ErrorCode.EMPTY_LIST.getCode(), e);
         } catch (ParamIsNullError e) {
-            throw new ResponseTypeException(ValidationMessage.NULL.toString(), e);
+            throw new ResponseTypeException(ValidationMessage.NULL.toString(), ErrorCode.NULL.getCode(), e);
         }
 
         ResponseType rt;
         try {
             rt = ResponseType.valueOf(responseTypes.get(0).toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ResponseTypeException("Cannot coerce String to ResponseType", e);
+            throw new ResponseTypeException("Cannot coerce String to ResponseType", ErrorCode.DATA_TYPE.getCode(), e);
         }
 
         return rt;

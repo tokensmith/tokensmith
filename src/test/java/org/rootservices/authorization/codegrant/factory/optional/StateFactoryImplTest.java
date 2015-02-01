@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.StateException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -72,6 +73,7 @@ public class StateFactoryImplTest {
             fail("StateException was expected.");
         } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
         }
     }
 
@@ -89,6 +91,7 @@ public class StateFactoryImplTest {
             fail("StateException was expected.");
         } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
         }
     }
 }

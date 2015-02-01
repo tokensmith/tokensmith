@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.RedirectUriException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -81,6 +82,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause()).isNull();
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
         }
     }
 
@@ -97,6 +99,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
         }
     }
 
@@ -114,6 +117,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
         }
     }
 

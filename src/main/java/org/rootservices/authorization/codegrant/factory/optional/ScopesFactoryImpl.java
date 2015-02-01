@@ -1,5 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.optional;
 
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
 import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
@@ -31,9 +32,9 @@ public class ScopesFactoryImpl implements ScopesFactory {
         try {
             optionalParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), e);
+            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
         } catch (MoreThanOneItemError e) {
-            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), e);
+            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
         }
 
         List<Scope> scopes;
@@ -53,7 +54,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
             try {
                 tmpScope = Scope.valueOf(item.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new ScopesException("Cannot coerce String to Scope", e);
+                throw new ScopesException("Cannot coerce String to Scope", ErrorCode.DATA_TYPE.getCode(), e);
             }
             scopes.add(tmpScope);
         }
