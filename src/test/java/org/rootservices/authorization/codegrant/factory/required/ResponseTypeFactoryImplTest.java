@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -61,6 +62,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
         }
     }
 
@@ -75,6 +77,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
         }
     }
 
@@ -91,6 +94,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
         }
     }
 
@@ -105,6 +109,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_LIST.getCode());
         }
     }
 
@@ -118,6 +123,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.NULL.getCode());
         }
     }
 }

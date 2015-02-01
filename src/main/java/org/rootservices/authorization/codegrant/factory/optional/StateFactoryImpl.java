@@ -1,5 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.optional;
 
+import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
 import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.factory.exception.StateException;
@@ -31,9 +32,9 @@ public class StateFactoryImpl implements StateFactory {
         try {
             optionalParam.run(states);
         } catch (EmptyValueError e) {
-            throw new StateException(ValidationMessage.EMPTY_VALUE.toString(), e);
+            throw new StateException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
         } catch (MoreThanOneItemError e) {
-            throw new StateException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), e);
+            throw new StateException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
         }
 
         String state;
