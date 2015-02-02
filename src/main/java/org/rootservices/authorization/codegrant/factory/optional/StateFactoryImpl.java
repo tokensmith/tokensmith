@@ -37,14 +37,14 @@ public class StateFactoryImpl implements StateFactory {
             throw new StateException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
         }
 
-        String state;
-        if( states == null) {
-            state = null;
-        } else {
-            state = states.get(0);
+        Optional<String> state;
+        if( states == null || states.isEmpty()) {
+            state = Optional.ofNullable(null);
+        }else {
+            state = Optional.ofNullable(states.get(0));
         }
 
-        return Optional.ofNullable(state);
+        return state;
 
     }
 }
