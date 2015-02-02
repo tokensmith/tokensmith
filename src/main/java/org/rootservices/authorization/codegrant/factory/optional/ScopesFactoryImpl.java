@@ -38,7 +38,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
         }
 
         List<Scope> scopes;
-        if ( items == null ) {
+        if ( items == null || items.isEmpty()) {
             scopes = null;
         } else {
             scopes = StringsToScopes(items);

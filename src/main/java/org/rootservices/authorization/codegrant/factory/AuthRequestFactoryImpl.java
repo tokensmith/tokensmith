@@ -51,13 +51,25 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         UUID clientId = clientIdFactory.makeClientId(clientIds);
         authRequest.setClientId(clientId);
 
-        ResponseType responseType = responseTypeFactory.makeResponseType(responseTypes);
+        ResponseType responseType;
+        try {
+            responseType = responseTypeFactory.makeResponseType(responseTypes);
+        } catch (ResponseTypeException e) {
+            e.setClientId(clientId);
+            throw e;
+        }
         authRequest.setResponseType(responseType);
 
         Optional<URI> redirectUri = redirectUriFactory.makeRedirectUri(redirectUris);
         authRequest.setRedirectURI(redirectUri);
 
-        List<Scope> cleanedScopes = scopesFactory.makeScopes(scopes);
+        List<Scope> cleanedScopes;
+        try {
+            cleanedScopes = scopesFactory.makeScopes(scopes);
+        } catch (ScopesException e) {
+            e.setClientId(clientId);
+            throw e;
+        }
         authRequest.setScopes(cleanedScopes);
 
         return authRequest;

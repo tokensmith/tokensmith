@@ -45,6 +45,7 @@ public class ValidateAuthRequestImplTest {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
+        authRequest.setRedirectURI(Optional.ofNullable(null));
 
         Client expectedClient = new Client();
         expectedClient.setUuid(uuid);

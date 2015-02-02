@@ -61,6 +61,17 @@ public class ScopesFactoryImplTest {
     }
 
     @Test
+    public void testMakeScopesWhenScopesAreEmptyList() throws MoreThanOneItemError, EmptyValueError, ScopesException {
+        List<Scope> expected = null;
+        List<String> items = new ArrayList<>();
+
+        when(mockOptionalParam.run(items)).thenReturn(true);
+
+        List<Scope> actual = subject.makeScopes(items);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     public void testMakeScopesEmptyValueError() throws MoreThanOneItemError, EmptyValueError {
 
         List<String> items = new ArrayList<>();

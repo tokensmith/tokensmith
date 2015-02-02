@@ -45,8 +45,8 @@ public class RedirectUriFactoryImpl implements RedirectUriFactory {
         }
 
         String uriCandidate;
-        if (redirectUris == null) {
-            return Optional.empty();
+        if (redirectUris == null || redirectUris.isEmpty()) {
+            return Optional.ofNullable(null);
         } else {
             uriCandidate = redirectUris.get(0);
         }

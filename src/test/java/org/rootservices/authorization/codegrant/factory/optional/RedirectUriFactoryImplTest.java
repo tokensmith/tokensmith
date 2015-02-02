@@ -68,6 +68,17 @@ public class RedirectUriFactoryImplTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    public void testMakeRedirectUriWhenEmptyList() throws MoreThanOneItemError, EmptyValueError, RedirectUriException {
+        Optional<URI> expected = Optional.empty();
+        List<String> items = new ArrayList<>();
+
+        when(mockOptionalParam.run(items)).thenReturn(true);
+
+        Optional<URI> actual = subject.makeRedirectUri(items);
+        assertThat(actual).isEqualTo(expected);
+    }
+
 
     public void testMakeRedirectUriWhenItemIsNotUri() throws MoreThanOneItemError, EmptyValueError, RedirectUriException, URISyntaxException {
 

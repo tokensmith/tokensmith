@@ -61,6 +61,17 @@ public class StateFactoryImplTest {
     }
 
     @Test
+    public void testMakeStateEmptyList() throws MoreThanOneItemError, EmptyValueError, StateException {
+        Optional<String> expected = Optional.empty();
+
+        List<String> items = new ArrayList<>();
+
+        when(mockOptionalParam.run(items)).thenReturn(true);
+        Optional<String> actual = subject.makeState(items);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     public void testMakeScopesEmptyValueError() throws MoreThanOneItemError, EmptyValueError {
 
         List<String> items = new ArrayList<>();
