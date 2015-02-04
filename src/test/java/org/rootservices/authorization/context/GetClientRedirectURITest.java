@@ -27,7 +27,7 @@ public class GetClientRedirectURITest {
 
     @Before
     public void setUp() {
-        subject = new GetClientRedirectURI();
+        subject = new GetClientRedirectURIImpl();
         ReflectionTestUtils.setField(subject, "clientRepository", mockClientRepository);
     }
 

@@ -32,9 +32,9 @@ public class ScopesFactoryImpl implements ScopesFactory {
         try {
             optionalParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
+            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), "invalid_scope", ErrorCode.EMPTY_VALUE.getCode(), e);
         } catch (MoreThanOneItemError e) {
-            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
+            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), "invalid_request", ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
         }
 
         List<Scope> scopes;
@@ -54,7 +54,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
             try {
                 tmpScope = Scope.valueOf(item.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new ScopesException("Cannot coerce String to Scope", ErrorCode.DATA_TYPE.getCode(), e);
+                throw new ScopesException("Cannot coerce String to Scope", "invalid_scope", ErrorCode.DATA_TYPE.getCode(), e);
             }
             scopes.add(tmpScope);
         }
