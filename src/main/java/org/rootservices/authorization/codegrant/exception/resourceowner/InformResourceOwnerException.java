@@ -5,18 +5,18 @@ package org.rootservices.authorization.codegrant.exception.resourceowner;
  */
 public class InformResourceOwnerException extends Exception {
 
-    private Throwable throwable;
+    private Throwable domainCause;
 
     public InformResourceOwnerException(String message) {
         super(message);
     }
 
-    public InformResourceOwnerException(String message, Throwable throwable) {
+    public InformResourceOwnerException(String message, Throwable domainCause) {
         super(message);
-        this.throwable = throwable;
+        this.domainCause = domainCause;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public Throwable getDomainCause() {
+        return domainCause;
     }
 }

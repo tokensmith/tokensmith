@@ -1,5 +1,7 @@
 package org.rootservices.authorization.codegrant.factory;
 
+import org.rootservices.authorization.codegrant.exception.client.InformClientException;
+import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
 import org.rootservices.authorization.codegrant.factory.exception.RedirectUriException;
 import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
@@ -12,5 +14,5 @@ import java.util.List;
  * Created by tommackenzie on 2/1/15.
  */
 public interface AuthRequestFactory {
-    public AuthRequest makeAuthRequest(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes) throws ClientIdException, ResponseTypeException, RedirectUriException, ScopesException;
+    public AuthRequest makeAuthRequest(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes) throws InformResourceOwnerException, InformClientException;
 }

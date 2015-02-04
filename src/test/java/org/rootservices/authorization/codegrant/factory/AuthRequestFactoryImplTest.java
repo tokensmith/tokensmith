@@ -10,6 +10,7 @@ import org.rootservices.authorization.codegrant.factory.optional.ScopesFactory;
 import org.rootservices.authorization.codegrant.factory.required.ClientIdFactory;
 import org.rootservices.authorization.codegrant.factory.required.ResponseTypeFactory;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
+import org.rootservices.authorization.context.GetClientRedirectURI;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 
@@ -38,11 +39,14 @@ public class AuthRequestFactoryImplTest {
     @Mock
     private ScopesFactory mockScopesFactory;
 
+    @Mock
+    private GetClientRedirectURI getClientRedirectURI;
+
     private AuthRequestFactory subject;
 
     @Before
     public void setUp() {
-        subject = new AuthRequestFactoryImpl(mockClientIdFactory, mockResponseTypeFactory, mockRedirectUriFactory,mockScopesFactory);
+        subject = new AuthRequestFactoryImpl(mockClientIdFactory, mockResponseTypeFactory, mockRedirectUriFactory,mockScopesFactory, getClientRedirectURI);
     }
 
     @Test
