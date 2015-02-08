@@ -13,9 +13,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
         <org.postgres.version>9.3-1102-jdbc4</org.postgres.version>
-        <info.cukes.version>1.2.0</info.cukes.version>
-        <junit.threadCount>10</junit.threadCount>
-        <junit.parallel>method</junit.parallel>
         <java.version>1.8</java.version>
     </properties>
 
@@ -140,23 +137,9 @@
         </dependency>
 
         <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>${info.cukes.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <version>${info.cukes.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>${info.cukes.version}</version>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>3.9.5</version>
             <scope>test</scope>
         </dependency>
         <!-- End Test Dependencies -->
@@ -186,12 +169,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.5</version>
-
                 <configuration>
-                    <threadCount>2</threadCount>
-                    <parallel>class</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <parallel>method</parallel>
+                    <perCoreThreadCount>true</perCoreThreadCount>
                     <includes>
-                        <include>**/*BDD.java</include>
+                        <include>**/*Story.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                 </configuration>
             </plugin>
