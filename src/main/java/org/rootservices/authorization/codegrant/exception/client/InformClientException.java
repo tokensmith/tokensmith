@@ -1,13 +1,14 @@
 package org.rootservices.authorization.codegrant.exception.client;
 
+import org.rootservices.authorization.codegrant.exception.BaseInformException;
+
 import java.net.URI;
 
 /**
  * Created by tommackenzie on 11/21/14.
  */
-public class InformClientException extends Exception {
+public class InformClientException extends BaseInformException {
 
-    private Throwable domainCause;
     private URI redirectURI;
     private String error;
 
@@ -16,14 +17,10 @@ public class InformClientException extends Exception {
     }
 
     public InformClientException(String message, String error, URI redirectURI, Throwable domainCause) {
-        super(message);
+        super(message, domainCause);
         this.error = error;
         this.redirectURI = redirectURI;
-        this.domainCause = domainCause;
-    }
 
-    public Throwable getDomainCause() {
-        return domainCause;
     }
 
     public URI getRedirectURI() {
