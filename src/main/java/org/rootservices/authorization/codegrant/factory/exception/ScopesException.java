@@ -1,5 +1,7 @@
 package org.rootservices.authorization.codegrant.factory.exception;
 
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
+
 import java.util.UUID;
 
 /**
@@ -7,11 +9,9 @@ import java.util.UUID;
  */
 public class ScopesException extends BaseException {
     private UUID clientId;
-    private String error;
 
-    public ScopesException(String message, String error, int errorCode, Throwable domainCause) {
-        super(message, errorCode, domainCause);
-        this.error = error;
+    public ScopesException(ErrorCode errorCode, String error, Throwable domainCause) {
+        super(errorCode, error, domainCause);
     }
 
     public void setClientId(UUID clientId) {
@@ -20,9 +20,5 @@ public class ScopesException extends BaseException {
 
     public UUID getClientId() {
         return clientId;
-    }
-
-    public String getError(){
-        return error;
     }
 }

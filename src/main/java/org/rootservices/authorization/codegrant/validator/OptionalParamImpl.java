@@ -16,7 +16,7 @@ public class OptionalParamImpl implements OptionalParam {
     public boolean run(List<String> items) throws EmptyValueError, MoreThanOneItemError {
 
         // optional parameter.
-        if( items.size() == 0 ) {
+        if( items == null || items.size() == 0 ) {
             return true;
         }
 

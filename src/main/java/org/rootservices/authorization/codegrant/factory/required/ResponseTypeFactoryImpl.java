@@ -1,7 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.required;
 
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
-import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -34,20 +33,20 @@ public class ResponseTypeFactoryImpl implements ResponseTypeFactory {
         try {
             requiredParam.run(responseTypes);
         } catch (EmptyValueError e) {
-            throw new ResponseTypeException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
+            throw new ResponseTypeException(ErrorCode.EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new ResponseTypeException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
+            throw new ResponseTypeException(ErrorCode.MORE_THAN_ONE_ITEM, e);
         } catch (NoItemsError e) {
-            throw new ResponseTypeException(ValidationMessage.EMPTY_LIST.toString(), ErrorCode.EMPTY_LIST.getCode(), e);
+            throw new ResponseTypeException(ErrorCode.EMPTY_LIST, e);
         } catch (ParamIsNullError e) {
-            throw new ResponseTypeException(ValidationMessage.NULL.toString(), ErrorCode.NULL.getCode(), e);
+            throw new ResponseTypeException(ErrorCode.NULL, e);
         }
 
         ResponseType rt;
         try {
             rt = ResponseType.valueOf(responseTypes.get(0).toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ResponseTypeException("Cannot coerce String to ResponseType", ErrorCode.DATA_TYPE.getCode(), e);
+            throw new ResponseTypeException(ErrorCode.DATA_TYPE, e);
         }
 
         return rt;

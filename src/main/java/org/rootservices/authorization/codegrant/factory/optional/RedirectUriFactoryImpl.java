@@ -1,8 +1,7 @@
 package org.rootservices.authorization.codegrant.factory.optional;
 
 import org.apache.commons.validator.routines.UrlValidator;
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
-import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.RedirectUriException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -39,9 +38,9 @@ public class RedirectUriFactoryImpl implements RedirectUriFactory {
         try {
             optionalParam.run(redirectUris);
         } catch (EmptyValueError e) {
-            throw new RedirectUriException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
+            throw new RedirectUriException(ErrorCode.EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new RedirectUriException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
+            throw new RedirectUriException(ErrorCode.MORE_THAN_ONE_ITEM, e);
         }
 
         String uriCandidate;
@@ -56,7 +55,7 @@ public class RedirectUriFactoryImpl implements RedirectUriFactory {
         if ( urlValidator.isValid(uriCandidate)) {
             uri = Optional.ofNullable(URI.create(uriCandidate));
         } else {
-            throw new RedirectUriException("Cannot coerce String to URI", ErrorCode.DATA_TYPE.getCode());
+            throw new RedirectUriException(ErrorCode.DATA_TYPE);
         }
 
         return uri;
