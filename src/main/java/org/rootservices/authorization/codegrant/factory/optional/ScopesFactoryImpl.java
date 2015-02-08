@@ -1,7 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.optional;
 
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
-import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.*;
@@ -32,9 +31,9 @@ public class ScopesFactoryImpl implements ScopesFactory {
         try {
             optionalParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ScopesException(ValidationMessage.EMPTY_VALUE.toString(), "invalid_scope", ErrorCode.EMPTY_VALUE.getCode(), e);
+            throw new ScopesException(ErrorCode.EMPTY_VALUE, "invalid_scope", e);
         } catch (MoreThanOneItemError e) {
-            throw new ScopesException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), "invalid_request", ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
+            throw new ScopesException(ErrorCode.MORE_THAN_ONE_ITEM, "invalid_request", e);
         }
 
         List<Scope> scopes;
@@ -54,7 +53,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
             try {
                 tmpScope = Scope.valueOf(item.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new ScopesException("Cannot coerce String to Scope", "invalid_scope", ErrorCode.DATA_TYPE.getCode(), e);
+                throw new ScopesException(ErrorCode.EMPTY_VALUE, "invalid_scope", e);
             }
             scopes.add(tmpScope);
         }

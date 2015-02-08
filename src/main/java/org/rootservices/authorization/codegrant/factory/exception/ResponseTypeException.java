@@ -1,5 +1,7 @@
 package org.rootservices.authorization.codegrant.factory.exception;
 
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
+
 import java.util.UUID;
 
 /**
@@ -8,8 +10,8 @@ import java.util.UUID;
 public class ResponseTypeException extends BaseException {
     private UUID clientId;
 
-    public ResponseTypeException(String message, int errorCode, Throwable domainCause) {
-        super(message, errorCode, domainCause);
+    public ResponseTypeException(ErrorCode errorCode, Throwable domainCause) {
+        super(errorCode, domainCause);
     }
 
     public void setClientId(UUID clientId) {

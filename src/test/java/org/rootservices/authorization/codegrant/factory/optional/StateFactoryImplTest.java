@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.StateException;
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;

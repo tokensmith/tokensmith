@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
 import org.rootservices.authorization.codegrant.factory.required.ClientIdFactoryImpl;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
@@ -59,7 +59,6 @@ public class ClientIdFactoryImplTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
             assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
         }
     }

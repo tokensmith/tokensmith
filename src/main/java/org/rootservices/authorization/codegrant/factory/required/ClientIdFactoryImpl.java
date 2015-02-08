@@ -1,7 +1,6 @@
 package org.rootservices.authorization.codegrant.factory.required;
 
-import org.rootservices.authorization.codegrant.factory.constants.ErrorCode;
-import org.rootservices.authorization.codegrant.factory.constants.ValidationMessage;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
@@ -34,20 +33,20 @@ public class ClientIdFactoryImpl implements ClientIdFactory {
         try {
             requiredParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ClientIdException(ValidationMessage.EMPTY_VALUE.toString(), ErrorCode.EMPTY_VALUE.getCode(), e);
+            throw new ClientIdException(ErrorCode.EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new ClientIdException(ValidationMessage.MORE_THAN_ONE_ITEM.toString(), ErrorCode.MORE_THAN_ONE_ITEM.getCode(), e);
+            throw new ClientIdException(ErrorCode.MORE_THAN_ONE_ITEM, e);
         } catch (NoItemsError e) {
-            throw new ClientIdException(ValidationMessage.EMPTY_LIST.toString(), ErrorCode.EMPTY_LIST.getCode(), e);
+            throw new ClientIdException(ErrorCode.EMPTY_LIST, e);
         } catch (ParamIsNullError e) {
-            throw new ClientIdException(ValidationMessage.NULL.toString(), ErrorCode.NULL.getCode(), e);
+            throw new ClientIdException(ErrorCode.NULL, e);
         }
 
         UUID uuid;
         try {
             uuid = UUID.fromString(items.get(0));
         } catch (IllegalArgumentException e) {
-            throw new ClientIdException("Cannot coerce String to UUID", ErrorCode.DATA_TYPE.getCode(), e);
+            throw new ClientIdException(ErrorCode.DATA_TYPE, e);
         }
 
         return uuid;
