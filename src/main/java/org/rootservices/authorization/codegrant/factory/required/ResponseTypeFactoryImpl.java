@@ -33,20 +33,20 @@ public class ResponseTypeFactoryImpl implements ResponseTypeFactory {
         try {
             requiredParam.run(responseTypes);
         } catch (EmptyValueError e) {
-            throw new ResponseTypeException(ErrorCode.EMPTY_VALUE, e);
+            throw new ResponseTypeException(ErrorCode.EMPTY_VALUE, "invalid_request", e);
         } catch (MoreThanOneItemError e) {
-            throw new ResponseTypeException(ErrorCode.MORE_THAN_ONE_ITEM, e);
+            throw new ResponseTypeException(ErrorCode.MORE_THAN_ONE_ITEM, "invalid_request", e);
         } catch (NoItemsError e) {
-            throw new ResponseTypeException(ErrorCode.EMPTY_LIST, e);
+            throw new ResponseTypeException(ErrorCode.EMPTY_LIST, "invalid_request", e);
         } catch (ParamIsNullError e) {
-            throw new ResponseTypeException(ErrorCode.NULL, e);
+            throw new ResponseTypeException(ErrorCode.NULL, "invalid_request", e);
         }
 
         ResponseType rt;
         try {
             rt = ResponseType.valueOf(responseTypes.get(0).toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ResponseTypeException(ErrorCode.DATA_TYPE, e);
+            throw new ResponseTypeException(ErrorCode.DATA_TYPE, "unsupported_response_type", e);
         }
 
         return rt;

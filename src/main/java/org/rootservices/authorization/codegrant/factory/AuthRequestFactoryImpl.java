@@ -62,7 +62,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
             clientId = clientIdFactory.makeClientId(clientIds);
             redirectUri = redirectUriFactory.makeRedirectUri(redirectUris);
         } catch(ClientIdException|RedirectUriException e) {
-            throw new InformResourceOwnerException("",e);
+            throw new InformResourceOwnerException("", e);
         }
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(redirectUri);
@@ -74,7 +74,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
             cleanedScopes = scopesFactory.makeScopes(scopes);
         } catch (ResponseTypeException e) {
             URI redirectURI = getRedirectUri(clientId, e);
-            throw new InformClientException("", "invalid_request", redirectURI, e);
+            throw new InformClientException("", e.getError(), redirectURI, e);
         } catch (ScopesException e) {
             URI redirectURI = getRedirectUri(clientId, e);
             throw new InformClientException("", e.getError(), redirectURI, e);

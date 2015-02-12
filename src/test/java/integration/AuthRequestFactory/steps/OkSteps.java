@@ -1,4 +1,4 @@
-package integration;
+package integration.AuthRequestFactory.steps;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
@@ -9,7 +9,6 @@ import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,9 +23,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/4/15.
  */
-public class AuthRequestFactorySteps {
+public class OkSteps {
 
-    @Autowired
     private AuthRequestFactory authRequestFactory;
 
     private UUID inputClientClientId;
@@ -39,18 +37,18 @@ public class AuthRequestFactorySteps {
     private List<String> scopes;
     private AuthRequest authRequest;
 
-    public AuthRequestFactorySteps(AuthRequestFactory authRequestFactory) {
+    public OkSteps(AuthRequestFactory authRequestFactory) {
         this.authRequestFactory = authRequestFactory;
     }
 
-    @Given("a randomly generated client_id")
+    @Given("the parameter client ids has one item assigned to a randomly generated UUID")
     public void setRandomClientId() {
         inputClientClientId = UUID.randomUUID();
         clientIds = new ArrayList<>();
         clientIds.add(inputClientClientId.toString());
     }
 
-    @Given("the response type is code$")
+    @Given("the parameter response types has one item assigned to CODE")
     public void setResponseTypeToCode() {
         responseTypes = new ArrayList<>();
         responseTypes.add("code");
