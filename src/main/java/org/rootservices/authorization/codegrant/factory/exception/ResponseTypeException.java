@@ -14,6 +14,10 @@ public class ResponseTypeException extends BaseException {
         super(errorCode, domainCause);
     }
 
+    public ResponseTypeException(ErrorCode errorCode, String error, Throwable domainCause) {
+        super(errorCode, error, domainCause);
+    }
+
     public void setClientId(UUID clientId) {
         this.clientId = clientId;
     }

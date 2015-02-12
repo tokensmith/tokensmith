@@ -11,9 +11,9 @@ public class BaseInformException extends Exception {
         super(message);
     }
 
-
     public BaseInformException(String message, Throwable domainCause) {
-        super(message, domainCause);
+        super(message);
+        this.domainCause = domainCause;
     }
 
     public Throwable getDomainCause() {
