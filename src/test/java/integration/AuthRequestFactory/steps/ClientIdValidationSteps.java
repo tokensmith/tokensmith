@@ -19,14 +19,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/8/15.
  */
-public class ClientIdValidationSteps {
+public class ClientIdValidationSteps extends ExceptionSteps{
 
     private AuthRequestFactory authRequestFactory;
 
     private List<String> clientIds;
     private List<String> responseTypes;
     private AuthRequest authRequest;
-    private InformResourceOwnerException expectedException;
 
     public ClientIdValidationSteps(AuthRequestFactory authRequestFactory) {
         this.authRequestFactory = authRequestFactory;
@@ -74,12 +73,12 @@ public class ClientIdValidationSteps {
         }
     }
 
-    @Then("expect a InformResourceOwnerException to be thrown")
+    @Then("expect a InformResourceOwnerException to be thrown, e")
     public void exceptionInstanceOfInformResourceOwner() {
         assertThat(expectedException instanceof InformResourceOwnerException).isTrue();
     }
 
-    @Then("expect the cause to be a ClientIdException")
+    @Then("expect e's cause to be a ClientIdException")
     public void expectTheCauseToBe() {
         assertThat(expectedException.getDomainCause() instanceof ClientIdException).isTrue();
     }

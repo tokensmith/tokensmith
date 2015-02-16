@@ -7,6 +7,7 @@ import org.jbehave.core.annotations.When;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
+import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -86,5 +87,10 @@ public class InformClientSteps extends CommonSteps {
     @Then("expect e's redirect uri to be equal to c's redirect uri")
     public void expectRedirectUriToBeClients() {
         assertThat(((InformClientException) expectedException).getRedirectURI()).isEqualTo(client.getRedirectURI());
+    }
+
+    @Then("expect e's cause to be a ResponseTypeException")
+    public void expectCauseToBeResponseTypeException() {
+        assertThat(expectedException.getDomainCause() instanceof ResponseTypeException).isTrue();
     }
 }

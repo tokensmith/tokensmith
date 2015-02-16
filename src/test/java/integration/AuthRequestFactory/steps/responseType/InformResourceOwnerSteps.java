@@ -6,7 +6,9 @@ import org.jbehave.core.annotations.When;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
+import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,5 +55,10 @@ public class InformResourceOwnerSteps extends CommonSteps {
     @Then("expect a InformResourceOwnerException to be thrown, e")
     public void expectExceptionInstanceOfInformClientException() {
         assertThat(expectedException instanceof InformResourceOwnerException).isTrue();
+    }
+
+    @Then("expect e's cause to be a RecordNotFoundException")
+    public void expectCauseToBeResponseTypeException() {
+        assertThat(expectedException.getDomainCause() instanceof RecordNotFoundException).isTrue();
     }
 }

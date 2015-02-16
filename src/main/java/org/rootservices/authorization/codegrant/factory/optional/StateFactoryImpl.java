@@ -30,9 +30,9 @@ public class StateFactoryImpl implements StateFactory {
         try {
             optionalParam.run(states);
         } catch (EmptyValueError e) {
-            throw new StateException(ErrorCode.EMPTY_VALUE, e);
+            throw new StateException(ErrorCode.STATE_EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new StateException(ErrorCode.MORE_THAN_ONE_ITEM, e);
+            throw new StateException(ErrorCode.STATE_MORE_THAN_ONE_ITEM, e);
         }
 
         Optional<String> state;

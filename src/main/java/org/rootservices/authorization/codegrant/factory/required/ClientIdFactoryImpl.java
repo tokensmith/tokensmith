@@ -33,20 +33,20 @@ public class ClientIdFactoryImpl implements ClientIdFactory {
         try {
             requiredParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ClientIdException(ErrorCode.EMPTY_VALUE, e);
+            throw new ClientIdException(ErrorCode.CLIENT_ID_EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new ClientIdException(ErrorCode.MORE_THAN_ONE_ITEM, e);
+            throw new ClientIdException(ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM, e);
         } catch (NoItemsError e) {
-            throw new ClientIdException(ErrorCode.EMPTY_LIST, e);
+            throw new ClientIdException(ErrorCode.CLIENT_ID_EMPTY_LIST, e);
         } catch (ParamIsNullError e) {
-            throw new ClientIdException(ErrorCode.NULL, e);
+            throw new ClientIdException(ErrorCode.CLIENT_ID_NULL, e);
         }
 
         UUID uuid;
         try {
             uuid = UUID.fromString(items.get(0));
         } catch (IllegalArgumentException e) {
-            throw new ClientIdException(ErrorCode.DATA_TYPE, e);
+            throw new ClientIdException(ErrorCode.CLIENT_ID_DATA_TYPE, e);
         }
 
         return uuid;

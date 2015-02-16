@@ -4,6 +4,7 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.exception.BaseInformException;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
@@ -26,14 +27,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/13/15.
  */
-public class ScopesValidationSteps {
+public class ScopesValidationSteps extends ExceptionSteps {
 
     private AuthRequestFactory authRequestFactory;
     private ClientRepository clientRepository;
 
     private Client client;
     private AuthRequest authRequest;
-    private BaseInformException expectedException;
 
     private List<String> clientIds;
     private List<String> responseTypes;
@@ -55,6 +55,12 @@ public class ScopesValidationSteps {
     public void theParameterScopesHasOneItemAssignedToUnkownScope() {
         this.scopes = new ArrayList<>();
         this.scopes.add("UnknownScope");
+    }
+
+    @Given("the parameter scopes has one item assigned to a empty string")
+    public void theParameterScopesHasOneItemAssignedToAEmptyString() {
+        this.scopes = new ArrayList<>();
+        this.scopes.add("");
     }
 
     @Given("a client exists in the database, c")

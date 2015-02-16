@@ -10,7 +10,6 @@ import org.rootservices.authorization.codegrant.factory.exception.StateException
 import org.rootservices.authorization.codegrant.validator.OptionalParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
 import org.rootservices.authorization.codegrant.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class StateFactoryImplTest {
             fail("StateException was expected.");
         } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_EMPTY_VALUE.getCode());
         }
     }
 
@@ -102,7 +101,7 @@ public class StateFactoryImplTest {
             fail("StateException was expected.");
         } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode());
         }
     }
 }

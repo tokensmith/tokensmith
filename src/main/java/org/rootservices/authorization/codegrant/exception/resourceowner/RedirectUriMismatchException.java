@@ -5,11 +5,7 @@ package org.rootservices.authorization.codegrant.exception.resourceowner;
  */
 public class RedirectUriMismatchException extends InformResourceOwnerException {
 
-    public RedirectUriMismatchException(String message) {
-        super(message);
-    }
-
-    public RedirectUriMismatchException(String message, Throwable throwable) {
-        super(message, throwable);
+    public RedirectUriMismatchException(String message, int code) {
+        super(message, code);
     }
 }

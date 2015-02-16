@@ -62,7 +62,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode());
             assertThat(e.getError()).isEqualTo("unsupported_response_type");
         }
     }
@@ -78,7 +78,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getCode());
             assertThat(e.getError()).isEqualTo("invalid_request");
         }
     }
@@ -96,7 +96,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode());
             assertThat(e.getError()).isEqualTo("invalid_request");
         }
     }
@@ -112,7 +112,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_LIST.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode());
             assertThat(e.getError()).isEqualTo("invalid_request");
         }
     }
@@ -127,7 +127,7 @@ public class ResponseTypeFactoryImplTest {
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
             assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.NULL.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_NULL.getCode());
             assertThat(e.getError()).isEqualTo("invalid_request");
         }
     }

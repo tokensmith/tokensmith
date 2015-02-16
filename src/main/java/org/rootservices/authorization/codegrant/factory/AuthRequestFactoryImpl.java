@@ -1,5 +1,6 @@
 package org.rootservices.authorization.codegrant.factory;
 
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.exception.*;
@@ -62,7 +63,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
             clientId = clientIdFactory.makeClientId(clientIds);
             redirectUri = redirectUriFactory.makeRedirectUri(redirectUris);
         } catch(ClientIdException|RedirectUriException e) {
-            throw new InformResourceOwnerException("", e);
+            throw new InformResourceOwnerException("", e, e.getCode());
         }
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(redirectUri);
@@ -72,13 +73,11 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         try {
             responseType = responseTypeFactory.makeResponseType(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
-        } catch (ResponseTypeException e) {
-            URI redirectURI = getRedirectUri(clientId, e);
-            throw new InformClientException("", e.getError(), redirectURI, e);
-        } catch (ScopesException e) {
-            URI redirectURI = getRedirectUri(clientId, e);
-            throw new InformClientException("", e.getError(), redirectURI, e);
+        } catch (ResponseTypeException|ScopesException e) {
+            URI clientRedirectURI = getRedirectUri(clientId, e);
+            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
         }
+
         authRequest.setResponseType(responseType);
         authRequest.setScopes(cleanedScopes);
 
@@ -90,12 +89,9 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         try {
             redirectUri = getClientRedirectURI.run(clientId);
         }catch(RecordNotFoundException e) {
-            // Todo: duplicate causes here?
-            throw new InformResourceOwnerException("", rte);
+            e.setDomainCause(e);
+            throw new InformResourceOwnerException("", e, ErrorCode.CLIENT_NOT_FOUND.getCode());
         }
         return redirectUri;
     }
-
-
-
 }
