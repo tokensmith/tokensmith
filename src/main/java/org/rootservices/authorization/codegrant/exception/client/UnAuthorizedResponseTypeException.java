@@ -7,14 +7,8 @@ import java.net.URI;
  */
 public class UnAuthorizedResponseTypeException extends InformClientException {
 
-    private URI redirectURI;
+    public UnAuthorizedResponseTypeException(String message, int code, URI redirectURI) {
+        super(message, code, redirectURI);
 
-    public UnAuthorizedResponseTypeException(String message, URI redirectURI) {
-        super(message);
-        this.redirectURI = redirectURI;
-    }
-
-    public URI getRedirectURI() {
-        return redirectURI;
     }
 }

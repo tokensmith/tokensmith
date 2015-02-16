@@ -1,22 +1,17 @@
 package org.rootservices.authorization.codegrant.exception.resourceowner;
 
+import org.rootservices.authorization.codegrant.exception.BaseInformException;
+
 /**
  * Created by tommackenzie on 11/21/14.
  */
-public class InformResourceOwnerException extends Exception {
+public class InformResourceOwnerException extends BaseInformException {
 
-    private Throwable throwable;
-
-    public InformResourceOwnerException(String message) {
-        super(message);
+    public InformResourceOwnerException(String message, int code) {
+        super(message, code);
     }
 
-    public InformResourceOwnerException(String message, Throwable throwable) {
-        super(message);
-        this.throwable = throwable;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
+    public InformResourceOwnerException(String message, Throwable domainCause, int code) {
+        super(message, domainCause, code);
     }
 }
