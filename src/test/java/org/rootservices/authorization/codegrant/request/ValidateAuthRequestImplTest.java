@@ -11,7 +11,6 @@ import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedRes
 import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.RedirectUriMismatchException;
-import org.rootservices.authorization.codegrant.translator.exception.ValidationError;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -19,6 +18,7 @@ import org.rootservices.authorization.persistence.repository.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -45,6 +45,7 @@ public class ValidateAuthRequestImplTest {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
+        authRequest.setRedirectURI(Optional.ofNullable(null));
 
         Client expectedClient = new Client();
         expectedClient.setUuid(uuid);
@@ -106,7 +107,7 @@ public class ValidateAuthRequestImplTest {
     public void runRedirectUriMismatch() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
         UUID uuid = UUID.randomUUID();
 
-        URI expectedRedirectURI = new URI("https://rootservices.org");
+        Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);

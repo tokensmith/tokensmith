@@ -5,7 +5,7 @@ package org.rootservices.authorization.codegrant.exception.resourceowner;
  */
 public class ClientNotFoundException extends InformResourceOwnerException {
 
-    public ClientNotFoundException(String message, Throwable throwable) {
-        super(message, throwable);
+    public ClientNotFoundException(String message, Throwable throwable, int code) {
+        super(message, throwable, code);
     }
 }
