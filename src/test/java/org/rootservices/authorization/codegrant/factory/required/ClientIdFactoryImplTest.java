@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
-import org.rootservices.authorization.codegrant.factory.required.ClientIdFactoryImpl;
 import org.rootservices.authorization.codegrant.validator.RequiredParam;
 import org.rootservices.authorization.codegrant.validator.exception.EmptyValueError;
 import org.rootservices.authorization.codegrant.validator.exception.MoreThanOneItemError;
@@ -59,7 +58,7 @@ public class ClientIdFactoryImplTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_DATA_TYPE.getCode());
         }
     }
 
@@ -76,7 +75,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_VALUE.getCode());
         }
     }
 
@@ -95,7 +94,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM.getCode());
         }
     }
 
@@ -111,7 +110,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_LIST.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_LIST.getCode());
         }
     }
 
@@ -127,7 +126,7 @@ public class ClientIdFactoryImplTest {
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
             assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.NULL.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_NULL.getCode());
         }
     }
 }

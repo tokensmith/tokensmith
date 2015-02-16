@@ -22,12 +22,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/13/15.
  */
-public class RedirectUriValidationSteps {
+public class RedirectUriValidationSteps extends ExceptionSteps {
 
     private AuthRequestFactory authRequestFactory;
 
     private AuthRequest authRequest;
-    private BaseInformException expectedException;
 
     private List<String> clientIds;
     private List<String> responseTypes;
@@ -46,6 +45,10 @@ public class RedirectUriValidationSteps {
 
     @Given("the parameter redirect uris has one item assigned to $uri")
     public void theParameterRedirectUrisHasOneItemsAssignedTo(@Named("uri") String uri) {
+        if (uri.equals("empty_string")) {
+            uri = "";
+        }
+
         this.redirectUris = new ArrayList<>();
         this.redirectUris.add(uri);
     }

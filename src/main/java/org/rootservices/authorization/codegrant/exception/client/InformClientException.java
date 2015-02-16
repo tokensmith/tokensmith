@@ -12,15 +12,16 @@ public class InformClientException extends BaseInformException {
     private URI redirectURI;
     private String error;
 
-    public InformClientException(String message) {
-        super(message);
-    }
-
-    public InformClientException(String message, String error, URI redirectURI, Throwable domainCause) {
-        super(message, domainCause);
+    public InformClientException(String message, String error, int code, URI redirectURI, Throwable domainCause) {
+        super(message, domainCause, code);
         this.error = error;
         this.redirectURI = redirectURI;
+    }
 
+    public InformClientException(String message, int code, URI redirectURI) {
+        super(message, code);
+        this.error = error;
+        this.redirectURI = redirectURI;
     }
 
     public URI getRedirectURI() {

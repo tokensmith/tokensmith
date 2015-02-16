@@ -93,7 +93,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause()).isNull();
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.DATA_TYPE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_DATA_TYPE.getCode());
         }
     }
 
@@ -110,7 +110,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.EMPTY_VALUE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_EMPTY_VALUE.getCode());
         }
     }
 
@@ -128,7 +128,7 @@ public class RedirectUriFactoryImplTest {
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM.getCode());
         }
     }
 

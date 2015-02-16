@@ -1,5 +1,6 @@
 package integration.AuthRequestFactory.steps.responseType;
 
+import integration.AuthRequestFactory.steps.ExceptionSteps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
@@ -15,10 +16,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/11/15.
  */
-public abstract class CommonSteps {
+public abstract class CommonSteps extends ExceptionSteps {
 
     protected List<String> responseTypes;
-    protected BaseInformException expectedException;
 
     @Given("the parameter response types is assigned null")
     public void setResponseTypesNull() {
@@ -41,10 +41,5 @@ public abstract class CommonSteps {
         this.responseTypes = new ArrayList<>();
         responseTypes.add("CODE");
         responseTypes.add("CODE");
-    }
-
-    @Then("expect e's cause to be a ResponseTypeException")
-    public void expectCauseToBeResponseTypeException() {
-        assertThat(expectedException.getDomainCause() instanceof ResponseTypeException).isTrue();
     }
 }

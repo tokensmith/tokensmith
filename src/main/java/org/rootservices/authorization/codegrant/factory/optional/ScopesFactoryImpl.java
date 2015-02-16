@@ -31,9 +31,9 @@ public class ScopesFactoryImpl implements ScopesFactory {
         try {
             optionalParam.run(items);
         } catch (EmptyValueError e) {
-            throw new ScopesException(ErrorCode.EMPTY_VALUE, "invalid_scope", e);
+            throw new ScopesException(ErrorCode.SCOPES_EMPTY_VALUE, "invalid_scope", e);
         } catch (MoreThanOneItemError e) {
-            throw new ScopesException(ErrorCode.MORE_THAN_ONE_ITEM, "invalid_request", e);
+            throw new ScopesException(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM, "invalid_request", e);
         }
 
         List<Scope> scopes;
@@ -53,7 +53,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
             try {
                 tmpScope = Scope.valueOf(item.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new ScopesException(ErrorCode.EMPTY_VALUE, "invalid_scope", e);
+                throw new ScopesException(ErrorCode.SCOPES_DATA_TYPE, "invalid_scope", e);
             }
             scopes.add(tmpScope);
         }

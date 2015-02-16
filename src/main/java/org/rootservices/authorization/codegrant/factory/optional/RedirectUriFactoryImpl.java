@@ -38,9 +38,9 @@ public class RedirectUriFactoryImpl implements RedirectUriFactory {
         try {
             optionalParam.run(redirectUris);
         } catch (EmptyValueError e) {
-            throw new RedirectUriException(ErrorCode.EMPTY_VALUE, e);
+            throw new RedirectUriException(ErrorCode.REDIRECT_URI_EMPTY_VALUE, e);
         } catch (MoreThanOneItemError e) {
-            throw new RedirectUriException(ErrorCode.MORE_THAN_ONE_ITEM, e);
+            throw new RedirectUriException(ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM, e);
         }
 
         String uriCandidate;
@@ -55,7 +55,7 @@ public class RedirectUriFactoryImpl implements RedirectUriFactory {
         if ( urlValidator.isValid(uriCandidate)) {
             uri = Optional.ofNullable(URI.create(uriCandidate));
         } else {
-            throw new RedirectUriException(ErrorCode.DATA_TYPE);
+            throw new RedirectUriException(ErrorCode.REDIRECT_URI_DATA_TYPE);
         }
 
         return uri;
