@@ -1,12 +1,12 @@
-package integration.AuthRequestFactory.steps.responseType;
+package integration.AuthRequestFactory.steps.ResponseTypeValidation.InformResourceOwner;
 
+import integration.AuthRequestFactory.steps.ResponseTypeValidation.CommonSteps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
-import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
@@ -20,7 +20,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 2/11/15.
  */
-public class InformResourceOwnerSteps extends CommonSteps {
+public class ClientIsNotFoundSteps extends CommonSteps {
 
     private AuthRequestFactory authRequestFactory;
 
@@ -29,7 +29,7 @@ public class InformResourceOwnerSteps extends CommonSteps {
     private List<String> clientIds;
     private AuthRequest authRequest;
 
-    public InformResourceOwnerSteps(AuthRequestFactory authRequestFactory) {
+    public ClientIsNotFoundSteps(AuthRequestFactory authRequestFactory) {
         this.authRequestFactory = authRequestFactory;
     }
 

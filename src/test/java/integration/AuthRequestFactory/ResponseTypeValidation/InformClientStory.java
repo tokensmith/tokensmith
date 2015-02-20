@@ -1,6 +1,6 @@
-package integration.AuthRequestFactory;
+package integration.AuthRequestFactory.ResponseTypeValidation;
 
-import integration.AuthRequestFactory.steps.responseType.InformClientSteps;
+import integration.AuthRequestFactory.steps.ResponseTypeValidation.InformClientSteps;
 import integration.BaseStory;
 import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by tommackenzie on 2/8/15.
  */
-public class ResponseTypeValidationInformClientStory extends BaseStory<InformClientSteps> {
+public class InformClientStory extends BaseStory<InformClientSteps> {
 
     @Autowired
     private AuthRequestFactory authRequestFactory;
