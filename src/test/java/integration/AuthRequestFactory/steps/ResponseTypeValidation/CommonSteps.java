@@ -1,4 +1,4 @@
-package integration.AuthRequestFactory.steps.responseType;
+package integration.AuthRequestFactory.steps.ResponseTypeValidation;
 
 import integration.AuthRequestFactory.steps.ExceptionSteps;
 import org.jbehave.core.annotations.Given;
