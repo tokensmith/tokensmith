@@ -11,6 +11,10 @@ public abstract class BaseException extends Exception {
     private String error;
     private Throwable domainCause;
 
+    public BaseException(String message) {
+        super(message);
+    }
+
     public BaseException(ErrorCode errorCode) {
         super(errorCode.getMessage().toString());
         this.code = errorCode.getCode();

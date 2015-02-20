@@ -1,6 +1,6 @@
 package org.rootservices.authorization.codegrant.factory;
 
-import org.rootservices.authorization.codegrant.constant.ErrorCode;
+import org.rootservices.authorization.codegrant.GetClientRedirect;
 import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.exception.*;
@@ -9,10 +9,8 @@ import org.rootservices.authorization.codegrant.factory.optional.ScopesFactory;
 import org.rootservices.authorization.codegrant.factory.required.ClientIdFactory;
 import org.rootservices.authorization.codegrant.factory.required.ResponseTypeFactory;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
-import org.rootservices.authorization.context.GetClientRedirectURI;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,16 +38,16 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
     private ScopesFactory scopesFactory;
 
     @Autowired
-    private GetClientRedirectURI getClientRedirectURI;
+    private GetClientRedirect getClientRedirect;
 
     public AuthRequestFactoryImpl() {}
 
-    public AuthRequestFactoryImpl(ClientIdFactory clientIdFactory, ResponseTypeFactory responseTypeFactory, RedirectUriFactory redirectUriFactory, ScopesFactory scopesFactory, GetClientRedirectURI getClientRedirectURI) {
+    public AuthRequestFactoryImpl(ClientIdFactory clientIdFactory, ResponseTypeFactory responseTypeFactory, RedirectUriFactory redirectUriFactory, ScopesFactory scopesFactory, GetClientRedirect getClientRedirect) {
         this.clientIdFactory = clientIdFactory;
         this.responseTypeFactory = responseTypeFactory;
         this.redirectUriFactory = redirectUriFactory;
         this.scopesFactory = scopesFactory;
-        this.getClientRedirectURI = getClientRedirectURI;
+        this.getClientRedirect = getClientRedirect;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
             responseType = responseTypeFactory.makeResponseType(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
         } catch (ResponseTypeException|ScopesException e) {
-            URI clientRedirectURI = getRedirectUri(clientId, e);
+            URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
             throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
         }
 
@@ -84,14 +82,5 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         return authRequest;
     }
 
-    private URI getRedirectUri(UUID clientId, BaseException rte) throws InformResourceOwnerException{
-        URI redirectUri = null;
-        try {
-            redirectUri = getClientRedirectURI.run(clientId);
-        }catch(RecordNotFoundException e) {
-            e.setDomainCause(e);
-            throw new InformResourceOwnerException("", e, ErrorCode.CLIENT_NOT_FOUND.getCode());
-        }
-        return redirectUri;
-    }
+
 }
