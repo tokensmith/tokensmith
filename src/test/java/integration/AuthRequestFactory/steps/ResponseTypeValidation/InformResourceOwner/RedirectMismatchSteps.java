@@ -1,5 +1,6 @@
-package integration.AuthRequestFactory.steps.responseType;
+package integration.AuthRequestFactory.steps.ResponseTypeValidation.InformResourceOwner;
 
+import integration.AuthRequestFactory.steps.ResponseTypeValidation.CommonSteps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
@@ -23,30 +24,49 @@ import static junit.framework.TestCase.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
- * Created by tommackenzie on 2/8/15.
+ * Created by tommackenzie on 2/18/15.
  */
-public class InformClientSteps extends CommonSteps {
+public class RedirectMismatchSteps extends CommonSteps {
 
     private AuthRequestFactory authRequestFactory;
     private ClientRepository clientRepository;
 
     private Client client;
-    private List<String> clientIds;
     private AuthRequest authRequest;
 
-    public InformClientSteps(AuthRequestFactory authRequestFactory, ClientRepository clientRepository) {
+    private List<String> clientIds;
+    private List<String> redirectUris;
+
+    public RedirectMismatchSteps(AuthRequestFactory authRequestFactory, ClientRepository clientRepository) {
         this.authRequestFactory = authRequestFactory;
         this.clientRepository = clientRepository;
     }
 
-    @Given("a client exists in the database, c")
-    public void insertClient() throws URISyntaxException {
+    @Given("a client, c")
+    public void aClientC() throws URISyntaxException {
+        // defaults.
         UUID clientId = UUID.randomUUID();
-
         ResponseType rt = ResponseType.CODE;
         URI redirectURI = new URI("https://rootservices.org");
+
         client = new Client(clientId, rt, redirectURI);
+    }
+
+    @Given("c's redirect uri is assigned to $uri")
+    public void redirectUriIsAssignedTo(@Named("uri") String uri)  throws URISyntaxException {
+        URI redirectURI = new URI("https://rootservices.org");
+        client.setRedirectURI(redirectURI);
+    }
+
+    @Given("c is persisted to the database")
+    public void cIsPersistedToTheDatabase() {
         clientRepository.insert(client);
+    }
+
+    @Given("c's redirect uri is $uri")
+    public void cSRedirectUriIs(@Named("uri") String uri) throws URISyntaxException {
+        URI redirectUri = new URI(uri);
+        client.setRedirectURI(redirectUri);
     }
 
     @Given("the parameter client ids has one item assigned to c's UUID")
@@ -55,42 +75,31 @@ public class InformClientSteps extends CommonSteps {
         clientIds.add(client.getUuid().toString());
     }
 
-    @Given("the parameter client ids has one item assigned to a randomly generated UUID")
-    public void setClientIdsTwoUUIDS() {
-        UUID clientId = UUID.randomUUID();
-        clientIds = new ArrayList<>();
-        clientIds.add(clientId.toString());
+    @Given("the parameter redirect uris has one item assigned to $uri")
+    public void theParameterRedirectUrisHasOneItemsAssignedTo(@Named("uri") String uri) {
+        this.redirectUris = new ArrayList<>();
+        this.redirectUris.add(uri);
     }
 
     @When("a AuthRequest is created$")
     public void makeAuthRequest() {
         try {
-            authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, null, null);
-            fail("InformClientException was expected to be thrown.");
+            authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, redirectUris, null);
+            fail("InformResourceOwnerException was expected to be thrown.");
         } catch (InformClientException e) {
-            expectedException = e;
-        } catch (InformResourceOwnerException e) {
             fail(e.getClass().toString() + " was raised and caused by, " + e.getDomainCause());
+        } catch (InformResourceOwnerException e) {
+            expectedException = e;
         }
     }
 
-    @Then("expect a InformClientException to be thrown, e")
-    public void expectExceptionInstanceOfInformClientException() {
-        assertThat(expectedException instanceof InformClientException).isTrue();
-    }
-
-    @Then("expect e's error to be $error")
-    public void expectErrorToBeInvalidRequest(@Named("error") String error) {
-        assertThat(((InformClientException) expectedException).getError()).isEqualTo(error);
-    }
-
-    @Then("expect e's redirect uri to be equal to c's redirect uri")
-    public void expectRedirectUriToBeClients() {
-        assertThat(((InformClientException) expectedException).getRedirectURI()).isEqualTo(client.getRedirectURI());
+    @Then("expect a InformResourceOwnerException to be thrown, e")
+    public void thenExpectAInformResourceOwnerExceptionToBeThrownE() {
+        assertThat(expectedException instanceof InformResourceOwnerException).isTrue();
     }
 
     @Then("expect e's cause to be a ResponseTypeException")
-    public void expectCauseToBeResponseTypeException() {
+    public void thenExpectEsCauseToBeAResponseTypeException() {
         assertThat(expectedException.getDomainCause() instanceof ResponseTypeException).isTrue();
     }
 }

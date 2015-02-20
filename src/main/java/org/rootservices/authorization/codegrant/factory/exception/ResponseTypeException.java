@@ -10,6 +10,10 @@ import java.util.UUID;
 public class ResponseTypeException extends BaseException {
     private UUID clientId;
 
+    public ResponseTypeException(String message) {
+        super(message);
+    }
+
     public ResponseTypeException(ErrorCode errorCode, Throwable domainCause) {
         super(errorCode, domainCause);
     }
