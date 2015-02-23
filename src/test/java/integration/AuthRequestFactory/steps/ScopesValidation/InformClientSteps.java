@@ -1,14 +1,11 @@
 package integration.AuthRequestFactory.steps.ScopesValidation;
 
-import integration.AuthRequestFactory.steps.ExceptionSteps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.rootservices.authorization.codegrant.constant.ErrorCode;
-import org.rootservices.authorization.codegrant.exception.BaseInformException;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.AuthRequestFactory;
 import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
 import org.rootservices.authorization.codegrant.request.AuthRequest;

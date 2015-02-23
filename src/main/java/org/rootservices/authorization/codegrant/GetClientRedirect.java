@@ -1,8 +1,7 @@
 package org.rootservices.authorization.codegrant;
 
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 
 import java.net.URI;
 import java.util.Optional;

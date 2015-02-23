@@ -2,11 +2,6 @@ package integration.AuthRequestFactory.steps.ResponseTypeValidation;
 
 import integration.AuthRequestFactory.steps.ExceptionSteps;
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.Then;
-import org.rootservices.authorization.codegrant.exception.BaseInformException;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
 
 import java.util.ArrayList;
 import java.util.List;
