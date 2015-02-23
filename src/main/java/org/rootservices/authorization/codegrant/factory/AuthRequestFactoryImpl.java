@@ -1,8 +1,8 @@
 package org.rootservices.authorization.codegrant.factory;
 
 import org.rootservices.authorization.codegrant.GetClientRedirect;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.factory.exception.*;
 import org.rootservices.authorization.codegrant.factory.optional.RedirectUriFactory;
 import org.rootservices.authorization.codegrant.factory.optional.ScopesFactory;

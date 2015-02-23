@@ -1,11 +1,7 @@
 package org.rootservices.authorization.codegrant.factory;
 
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
-import org.rootservices.authorization.codegrant.factory.exception.ClientIdException;
-import org.rootservices.authorization.codegrant.factory.exception.RedirectUriException;
-import org.rootservices.authorization.codegrant.factory.exception.ResponseTypeException;
-import org.rootservices.authorization.codegrant.factory.exception.ScopesException;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 import org.rootservices.authorization.codegrant.request.AuthRequest;
 
 import java.util.List;

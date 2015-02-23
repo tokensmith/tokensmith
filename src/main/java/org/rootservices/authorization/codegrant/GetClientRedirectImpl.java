@@ -1,8 +1,8 @@
 package org.rootservices.authorization.codegrant;
 
 import org.rootservices.authorization.codegrant.constant.ErrorCode;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -38,14 +38,22 @@ public class GetClientRedirectImpl implements GetClientRedirect {
             throw new InformResourceOwnerException("", e, ErrorCode.CLIENT_NOT_FOUND.getCode());
         }
 
-        if ( redirectEqualsClientRedirect(redirectURI, client.getRedirectURI())) {
+        if ( redirectMismatch(redirectURI, client.getRedirectURI())) {
             throw new InformResourceOwnerException("", rootCause, ErrorCode.REDIRECT_URI_MISMATCH.getCode());
         }
 
         return client.getRedirectURI();
     }
 
-    private boolean redirectEqualsClientRedirect(Optional<URI> redirectA, URI redirectB) {
-        return (redirectA.isPresent() && !redirectA.get().equals(redirectB));
+    /*
+    returns true if the redirect does not match client's redirect, otherwise
+    returns false
+     */
+    private boolean redirectMismatch(Optional<URI> redirect, URI clientRedirect) {
+        boolean matches = false;
+        if ( redirect.isPresent()) {
+            matches = !clientRedirect.equals(redirect.get());
+        }
+        return matches;
     }
 }

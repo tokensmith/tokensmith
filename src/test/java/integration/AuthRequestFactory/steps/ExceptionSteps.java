@@ -4,7 +4,6 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.rootservices.authorization.codegrant.constant.ErrorCode;
 import org.rootservices.authorization.codegrant.exception.BaseInformException;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
