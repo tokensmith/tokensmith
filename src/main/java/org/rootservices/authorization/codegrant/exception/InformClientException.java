@@ -1,4 +1,4 @@
-package org.rootservices.authorization.codegrant.exception.client;
+package org.rootservices.authorization.codegrant.exception;
 
 import org.rootservices.authorization.codegrant.exception.BaseInformException;
 

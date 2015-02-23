@@ -5,12 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.codegrant.exception.client.InformClientException;
-import org.rootservices.authorization.codegrant.exception.client.ResponseTypeIsNotCodeException;
-import org.rootservices.authorization.codegrant.exception.client.UnAuthorizedResponseTypeException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.ClientNotFoundException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.InformResourceOwnerException;
-import org.rootservices.authorization.codegrant.exception.resourceowner.RedirectUriMismatchException;
+import org.rootservices.authorization.codegrant.constant.ErrorCode;
+import org.rootservices.authorization.codegrant.exception.InformClientException;
+import org.rootservices.authorization.codegrant.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -57,8 +54,8 @@ public class ValidateAuthRequestImplTest {
         assertThat(true).isEqualTo(isValid);
     }
 
-    @Test(expected=ClientNotFoundException.class)
-    public void runClientNotFound() throws InformResourceOwnerException, InformClientException, RecordNotFoundException {
+
+    public void runClientNotFound() throws RecordNotFoundException {
         UUID uuid = UUID.randomUUID();
 
         AuthRequest authRequest = new AuthRequest();
@@ -69,30 +66,26 @@ public class ValidateAuthRequestImplTest {
                 RecordNotFoundException.class
         );
 
-        subject.run(authRequest);
+        try {
+            subject.run(authRequest);
+            fail("Expected InformResourceOwnerException");
+        } catch (InformResourceOwnerException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_NOT_FOUND.getCode());
+        } catch (InformClientException e) {
+            fail("Expected InformResourceOwnerException");
+        }
     }
 
-    @Test(expected= ResponseTypeIsNotCodeException.class)
-    public void runResponseTypeUnsupported() throws InformResourceOwnerException, InformClientException, RecordNotFoundException {
 
+    public void runUnAuthorizedResponseType() throws RecordNotFoundException, URISyntaxException {
         UUID uuid = UUID.randomUUID();
-
-        AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(uuid);
-        authRequest.setResponseType(ResponseType.TOKEN);
-
-        subject.run(authRequest);
-    }
-
-    @Test(expected=UnAuthorizedResponseTypeException.class)
-    public void runUnAuthorizedResponseType() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
-        UUID uuid = UUID.randomUUID();
+        URI expectedRedirectURI = new URI("https://rootservices.org");
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
+        authRequest.setRedirectURI(Optional.ofNullable(expectedRedirectURI));
 
-        URI expectedRedirectURI = new URI("https://rootservices.org");
         Client client = new Client();
         client.setUuid(uuid);
         client.setResponseType(ResponseType.TOKEN);
@@ -100,11 +93,17 @@ public class ValidateAuthRequestImplTest {
 
         when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
 
-        subject.run(authRequest);
+        try {
+            subject.run(authRequest);
+            fail("Expected InformClientException");
+        } catch (InformResourceOwnerException e) {
+            fail("Expected InformClientException");
+        } catch (InformClientException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode());
+        }
     }
 
-    @Test(expected=RedirectUriMismatchException.class)
-    public void runRedirectUriMismatch() throws RecordNotFoundException, UnAuthorizedResponseTypeException, URISyntaxException, ResponseTypeIsNotCodeException, ClientNotFoundException, RedirectUriMismatchException {
+    public void runRedirectUriMismatch() throws RecordNotFoundException, URISyntaxException {
         UUID uuid = UUID.randomUUID();
 
         Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
@@ -121,6 +120,13 @@ public class ValidateAuthRequestImplTest {
 
         when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
 
-        subject.run(authRequest);
+        try {
+            subject.run(authRequest);
+            fail("Expected InformResourceOwnerException");
+        } catch (InformResourceOwnerException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+        } catch (InformClientException e) {
+            fail("Expected InformResourceOwnerException");
+        }
     }
 }
