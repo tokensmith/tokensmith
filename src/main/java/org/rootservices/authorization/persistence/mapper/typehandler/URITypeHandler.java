@@ -27,7 +27,7 @@ public class URITypeHandler implements TypeHandler<URI> {
             try {
                 return new URI(rs.getString(columnName));
             } catch (URISyntaxException e) {
-                throw new SQLException("Retrieving codegrant - URI is malformed");
+                throw new SQLException("Retrieving code - URI is malformed");
             }
         }
         return null;
@@ -38,7 +38,7 @@ public class URITypeHandler implements TypeHandler<URI> {
         try {
             return new URI(rs.getString(columnIndex));
         } catch (URISyntaxException e) {
-            throw new SQLException("Retrieving codegrant - URI is malformed");
+            throw new SQLException("Retrieving code - URI is malformed");
         }
     }
 
@@ -47,7 +47,7 @@ public class URITypeHandler implements TypeHandler<URI> {
         try {
             return new URI(cs.getString(columnIndex));
         } catch (URISyntaxException e) {
-            throw new SQLException("Retrieving codegrant - URI is malformed");
+            throw new SQLException("Retrieving code - URI is malformed");
         }
     }
 }
