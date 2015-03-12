@@ -7,6 +7,8 @@ import org.rootservices.authorization.grant.code.constant.ErrorCode;
  */
 public class StateException extends BaseException {
 
+    public StateException() {}
+
     public StateException(ErrorCode errorCode, Throwable domainCause) {
         super(errorCode, domainCause);
     }

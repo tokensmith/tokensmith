@@ -30,7 +30,7 @@ public abstract class BaseTest {
     @Autowired
     protected ValidateParams subject;
 
-    public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) throws StateException {
+    public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {
 
         try {
             subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
@@ -43,7 +43,7 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformResourceOwnerExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode) throws StateException {
+    public void runExpectInformResourceOwnerExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode) {
 
         try {
             subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
@@ -56,7 +56,7 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, URI expectedRedirect) {
 
         try {
             subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
