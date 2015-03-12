@@ -114,7 +114,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -136,12 +136,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-core</artifactId>
-            <version>3.9.5</version>
-            <scope>test</scope>
-        </dependency>
         <!-- End Test Dependencies -->
 
         <dependency>
@@ -170,11 +164,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
-                    <threadCount>80</threadCount>
+                    <threadCount>1000000</threadCount>
                     <parallel>method</parallel>
                     <perCoreThreadCount>true</perCoreThreadCount>
                     <includes>
-                        <include>**/*Story.java</include>
                         <include>**/*Test.java</include>
                     </includes>
                 </configuration>
