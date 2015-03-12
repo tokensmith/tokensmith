@@ -6,10 +6,12 @@ import org.rootservices.authorization.grant.code.factory.AuthRequestFactory;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.grant.code.factory.optional.StateFactory;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.grant.code.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.request.ValidateAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,16 +29,29 @@ public class ValidateParamsImpl implements ValidateParams {
     private StateFactory stateFactory;
 
     @Autowired
+    private GetClientRedirect getClientRedirect;
+
+    @Autowired
     private ValidateAuthRequest validateAuthRequest;
 
     @Override
-    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException, StateException {
+    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = null;
         authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
 
         Optional<String> cleanedStates;
-        cleanedStates = stateFactory.makeState(states);
+        try {
+            cleanedStates = stateFactory.makeState(states);
+        } catch (StateException e) {
+
+            URI clientRedirectURI = getClientRedirect.run(
+                    authRequest.getClientId(),
+                    authRequest.getRedirectURI(),
+                    e
+            );
+            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
+        }
 
         validateAuthRequest.run(authRequest);
 
