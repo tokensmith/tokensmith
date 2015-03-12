@@ -10,5 +10,5 @@ import java.util.List;
  * Created by tommackenzie on 2/24/15.
  */
 public interface ValidateParams {
-    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException, StateException;
+    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException;
 }
