@@ -36,7 +36,6 @@
             </exclusions>
         </dependency>
 
-
         <!-- Database Drivers -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -44,14 +43,8 @@
             <version>${org.postgres.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.27</version>
-        </dependency>
 
         <!-- MyBatis dependencies -->
-
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -71,27 +64,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-maven-plugin</artifactId>
-            <version>3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0.2</version>
         </dependency>
         <!-- End MyBatis dependencies -->
 
@@ -135,7 +110,6 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
-
         <!-- End Test Dependencies -->
 
         <dependency>
@@ -164,9 +138,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
-                    <threadCount>1000000</threadCount>
                     <parallel>method</parallel>
-                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
