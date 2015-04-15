@@ -20,7 +20,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-
 public class ClientMapperTest {
 
     @Autowired

@@ -31,8 +31,7 @@ public class ClientRepositoryImplTest {
 
     @Before
     public void setUp() {
-        subject = new ClientRepositoryImpl();
-        ReflectionTestUtils.setField(subject, "clientMapper", mockMapper);
+        subject = new ClientRepositoryImpl(mockMapper);
     }
 
     public Client clientBuilder() throws URISyntaxException {

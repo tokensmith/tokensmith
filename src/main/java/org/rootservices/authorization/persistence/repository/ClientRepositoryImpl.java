@@ -18,6 +18,12 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Autowired
     private ClientMapper clientMapper;
 
+    public ClientRepositoryImpl() {}
+
+    public ClientRepositoryImpl(ClientMapper clientMapper) {
+        this.clientMapper = clientMapper;
+    }
+
     @Override
     public Client getByUUID(UUID uuid) throws RecordNotFoundException {
         Client client = clientMapper.getByUUID(uuid);
