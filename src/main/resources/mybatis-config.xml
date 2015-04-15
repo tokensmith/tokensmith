@@ -15,5 +15,7 @@
 
         <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler"
                      javaType="java.net.URI" jdbcType="VARCHAR" />
+
+
     </typeHandlers>
 </configuration>

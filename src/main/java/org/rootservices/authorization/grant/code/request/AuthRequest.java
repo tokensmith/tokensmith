@@ -17,6 +17,15 @@ public class AuthRequest {
     private Optional<URI> redirectURI;
     private List<Scope> scopes;
 
+    public AuthRequest() {}
+
+    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<Scope> scopes) {
+        this.clientId = clientId;
+        this.responseType = responseType;
+        this.redirectURI = redirectURI;
+        this.scopes = scopes;
+    }
+
     public UUID getClientId() {
         return clientId;
     }

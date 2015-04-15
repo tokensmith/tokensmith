@@ -1,14 +1,13 @@
 package org.rootservices.authorization.persistence.repository;
 
-import org.rootservices.authorization.persistence.entity.AuthUser;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.mapper.AuthUserMapper;
+import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.UUID;
 
@@ -19,23 +18,22 @@ import static org.mockito.Mockito.*;
  * Created by tommackenzie on 10/11/14.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AuthUserRepositoryImplTest {
+public class ResourceOwnerRepositoryImplTest {
 
     @Mock
-    private AuthUserMapper mockMapper;
+    private ResourceOwnerMapper mockMapper;
 
-    private AuthUserRepositoryImpl subject;
+    private ResourceOwnerRepositoryImpl subject;
 
     @Before
     public void setUp() {
-        subject = new AuthUserRepositoryImpl();
-        ReflectionTestUtils.setField(subject, "authUserMapper", mockMapper);
+        subject = new ResourceOwnerRepositoryImpl(mockMapper);
     }
 
-    public AuthUser authUserBuilder() {
+    public ResourceOwner authUserBuilder() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
-        AuthUser authUser = new AuthUser(uuid, "test@rootservices.org", password);
+        ResourceOwner authUser = new ResourceOwner(uuid, "test@rootservices.org", password);
         return authUser;
     }
 
@@ -49,10 +47,10 @@ public class AuthUserRepositoryImplTest {
     @Test
     public void getByUUID() throws RecordNotFoundException{
 
-        AuthUser expectedAuthUser = authUserBuilder();
+        ResourceOwner expectedAuthUser = authUserBuilder();
 
         when(mockMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
-        AuthUser actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
+        ResourceOwner actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 
@@ -68,13 +66,13 @@ public class AuthUserRepositoryImplTest {
     @Test
     public void getByEmailAndPassword() throws RecordNotFoundException{
 
-        AuthUser expectedAuthUser = authUserBuilder();
+        ResourceOwner expectedAuthUser = authUserBuilder();
 
         when(mockMapper.getByEmailAndPassword(
                 expectedAuthUser.getEmail(), expectedAuthUser.getPassword())
         ).thenReturn(expectedAuthUser);
 
-        AuthUser actualAuthUser = subject.getByEmailAndPassword(
+        ResourceOwner actualAuthUser = subject.getByEmailAndPassword(
                 expectedAuthUser.getEmail(),
                 expectedAuthUser.getPassword()
         );
@@ -83,7 +81,7 @@ public class AuthUserRepositoryImplTest {
 
     @Test
     public void insert() {
-        AuthUser authUser = authUserBuilder();
+        ResourceOwner authUser = authUserBuilder();
         subject.insert(authUser);
         verify(mockMapper, times(1)).insert(authUser);
     }
