@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -61,9 +62,9 @@ public class AuthCodeMapperTest {
     public void insert() {
         UUID uuid = UUID.randomUUID();
         byte [] code = "authortization_code".getBytes();
-        Calendar expiresAt = Calendar.getInstance();
+        OffsetDateTime expiresAt = OffsetDateTime.now();
 
-        AuthCode authCode = new AuthCode(uuid, code, resourceOwnerUUID, clientUUID, expiresAt.getTime());
+        AuthCode authCode = new AuthCode(uuid, code, resourceOwnerUUID, clientUUID, expiresAt);
         subject.insert(authCode);
     }
 }

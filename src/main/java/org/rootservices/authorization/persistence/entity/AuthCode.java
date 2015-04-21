@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.entity;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,12 +12,12 @@ public class AuthCode {
     private byte[] code;
     private UUID resourceOwnerUUID;
     private UUID clientUUID;
-    private Date expiresAt;
-    private Date createdAt;
+    private OffsetDateTime expiresAt;
+    private OffsetDateTime createdAt;
 
     public AuthCode() {}
 
-    public AuthCode(UUID uuid, byte[] code, UUID resourceOwnerUUID, UUID clientUUID, Date expiresAt) {
+    public AuthCode(UUID uuid, byte[] code, UUID resourceOwnerUUID, UUID clientUUID, OffsetDateTime expiresAt) {
         this.uuid = uuid;
         this.code = code;
         this.resourceOwnerUUID = resourceOwnerUUID;
@@ -47,7 +48,7 @@ public class AuthCode {
         this.resourceOwnerUUID = resourceOwnerUUID;
     }
 
-    public UUID getClientUUDI() {
+    public UUID getClientUUID() {
         return clientUUID;
     }
 
@@ -55,19 +56,19 @@ public class AuthCode {
         this.clientUUID = clientUUID;
     }
 
-    public Date getExpiresAt() {
+    public OffsetDateTime getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(Date expiresAt) {
+    public void setExpiresAt(OffsetDateTime expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
