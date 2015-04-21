@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,9 +70,9 @@ public class AuthRequestMapperTest {
         // create auth code to be used as fk constraint
         authCodeUUID = UUID.randomUUID();
         byte [] code = "authortization_code".getBytes();
-        Calendar expiresAt = Calendar.getInstance();
+        OffsetDateTime expiresAt = OffsetDateTime.now();
 
-        AuthCode authCode = new AuthCode(authCodeUUID, code, resourceOwnerUUID, clientUUID, expiresAt.getTime());
+        AuthCode authCode = new AuthCode(authCodeUUID, code, resourceOwnerUUID, clientUUID, expiresAt);
         authCodeRepository.insert(authCode);
     }
 
