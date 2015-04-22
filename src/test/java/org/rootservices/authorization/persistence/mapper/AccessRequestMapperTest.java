@@ -1,7 +1,6 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,7 +23,7 @@ import java.util.UUID;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-public class AuthRequestMapperTest {
+public class AccessRequestMapperTest {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -35,13 +33,12 @@ public class AuthRequestMapperTest {
     private AuthCodeRepository authCodeRepository;
 
     @Autowired
-    private AuthRequestMapper subject;
+    private AccessRequestMapper subject;
 
     // assigned in setUp()
     private UUID clientUUID;
     private UUID resourceOwnerUUID;
     private UUID authCodeUUID;
-    private ResponseType responseType;
     private URI redirectURI;
 
     /**
@@ -55,7 +52,7 @@ public class AuthRequestMapperTest {
 
         // create client to be used as the fk constraint.
         clientUUID = UUID.randomUUID();
-        responseType = ResponseType.CODE;
+        ResponseType responseType = ResponseType.CODE;
         redirectURI = new URI("https://rootservices.org");
         Client client = new Client(clientUUID, responseType, redirectURI);
         clientRepository.insert(client);
@@ -80,9 +77,9 @@ public class AuthRequestMapperTest {
     @Transactional
     public void insert() throws Exception {
         UUID uuid = UUID.randomUUID();
-        AuthRequest authRequest = new AuthRequest(
-                uuid, responseType, Optional.of(redirectURI), authCodeUUID
+        AccessRequest accessRequest = new AccessRequest(
+                uuid, Optional.of(redirectURI), authCodeUUID
         );
-        subject.insert(authRequest);
+        subject.insert(accessRequest);
     }
 }

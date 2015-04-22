@@ -8,18 +8,16 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 4/14/15.
  */
-public class AuthRequest {
+public class AccessRequest {
     private UUID uuid;
-    private ResponseType responseType;
     private Optional<URI> redirectURI;
     private UUID authCodeUUID;
     private Date createdAt;
 
-    public AuthRequest() {}
+    public AccessRequest() {}
 
-    public AuthRequest(UUID uuid, ResponseType responseType, Optional<URI> redirectURI, UUID authCodeUUID) {
+    public AccessRequest(UUID uuid, Optional<URI> redirectURI, UUID authCodeUUID) {
         this.uuid = uuid;
-        this.responseType = responseType;
         this.redirectURI = redirectURI;
         this.authCodeUUID = authCodeUUID;
     }
@@ -30,14 +28,6 @@ public class AuthRequest {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public ResponseType getResponseType() {
-        return responseType;
-    }
-
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
     }
 
     public Optional<URI> getRedirectURI() {

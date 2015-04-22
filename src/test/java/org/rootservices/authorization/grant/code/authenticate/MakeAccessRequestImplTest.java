@@ -3,6 +3,7 @@ package org.rootservices.authorization.grant.code.authenticate;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 
@@ -17,13 +18,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 4/20/15.
  */
-public class MakeAuthRequestImplTest {
+public class MakeAccessRequestImplTest {
 
-    private MakeAuthRequest subject;
+    private MakeAccessRequest subject;
 
     @Before
     public void setUp() {
-        subject = new MakeAuthRequestImpl();
+        subject = new MakeAccessRequestImpl();
     }
     @Test
     public void testRun() throws Exception {
@@ -41,9 +42,8 @@ public class MakeAuthRequestImplTest {
 
         UUID authCodeUUID = UUID.randomUUID();
 
-        org.rootservices.authorization.persistence.entity.AuthRequest actual = subject.run(authCodeUUID, authRequest);
+        AccessRequest actual = subject.run(authCodeUUID, authRequest);
         assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getResponseType()).isEqualTo(responseType);
         assertThat(actual.getRedirectURI()).isEqualTo(redirectURI);
         assertThat(actual.getAuthCodeUUID()).isEqualTo(authCodeUUID);
 
