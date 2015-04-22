@@ -7,11 +7,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
-import org.rootservices.authorization.persistence.repository.AuthRequestRepository;
+import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.security.RandomString;
 
 import java.net.URI;
@@ -42,9 +43,9 @@ public class RequestAuthCodeImplTest {
     @Mock
     private AuthCodeRepository mockAuthCodeRepository;
     @Mock
-    private MakeAuthRequest mockMakeAuthRequest;
+    private MakeAccessRequest mockMakeAuthRequest;
     @Mock
-    private AuthRequestRepository mockAuthRequestRepository;
+    private AccessRequestRepository mockAuthRequestRepository;
 
     private RequestAuthCode subject;
 
@@ -80,7 +81,7 @@ public class RequestAuthCodeImplTest {
         String randomString = "randomString";
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
-        org.rootservices.authorization.persistence.entity.AuthRequest authRequestEntity = new org.rootservices.authorization.persistence.entity.AuthRequest();
+        AccessRequest authRequestEntity = new AccessRequest();
 
         when(mockLoginResourceOwner.run(userName, plainTextPassword)).thenReturn(resourceOwnerUUID);
         when(mockRandomString.run()).thenReturn(randomString);
@@ -121,7 +122,7 @@ public class RequestAuthCodeImplTest {
             authorizationCode = subject.run(userName, plainTextPassword, authRequest);
         } catch (UnauthorizedException e) {
             verify(mockAuthCodeRepository, never()).insert(any(AuthCode.class));
-            verify(mockAuthRequestRepository, never()).insert(any(org.rootservices.authorization.persistence.entity.AuthRequest.class));
+            verify(mockAuthRequestRepository, never()).insert(any(AccessRequest.class));
             expectedException = e;
         }
 
