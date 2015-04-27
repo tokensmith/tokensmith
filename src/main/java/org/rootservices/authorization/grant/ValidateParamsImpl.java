@@ -7,6 +7,7 @@ import org.rootservices.authorization.grant.code.factory.exception.StateExceptio
 import org.rootservices.authorization.grant.code.factory.optional.StateFactory;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
 import org.rootservices.authorization.grant.code.request.GetClientRedirect;
+import org.rootservices.authorization.grant.code.request.ValidAuthRequest;
 import org.rootservices.authorization.grant.code.request.ValidateAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class ValidateParamsImpl implements ValidateParams {
     private ValidateAuthRequest validateAuthRequest;
 
     @Override
-    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
+    public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = null;
         authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
@@ -43,6 +44,7 @@ public class ValidateParamsImpl implements ValidateParams {
         Optional<String> cleanedStates;
         try {
             cleanedStates = stateFactory.makeState(states);
+            authRequest.setState(cleanedStates);
         } catch (StateException e) {
 
             URI clientRedirectURI = getClientRedirect.run(
@@ -55,6 +57,6 @@ public class ValidateParamsImpl implements ValidateParams {
 
         validateAuthRequest.run(authRequest);
 
-        return true;
+        return authRequest;
     }
 }

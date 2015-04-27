@@ -9,22 +9,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 11/19/14.
+ * Created by tommackenzie on 4/24/15.
+ *
  */
-public class AuthRequest {
+public class ValidAuthRequest {
+
     private UUID clientId;
     private ResponseType responseType;
     private Optional<URI> redirectURI;
     private List<Scope> scopes;
     private Optional<String> state;
 
-    public AuthRequest() {}
+    public ValidAuthRequest() {}
 
-    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<Scope> scopes) {
+    public ValidAuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<Scope> scopes, Optional<String> state) {
         this.clientId = clientId;
         this.responseType = responseType;
         this.redirectURI = redirectURI;
         this.scopes = scopes;
+        this.state = state;
     }
 
     public UUID getClientId() {
@@ -35,12 +38,12 @@ public class AuthRequest {
         this.clientId = clientId;
     }
 
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
-    }
-
     public ResponseType getResponseType() {
         return responseType;
+    }
+
+    public void setResponseType(ResponseType responseType) {
+        this.responseType = responseType;
     }
 
     public Optional<URI> getRedirectURI() {
