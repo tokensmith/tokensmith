@@ -2,26 +2,16 @@ package integration.ValiateParams;
 
 import helper.FixtureFactory;
 import helper.ValidateParamsAttributes;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.rootservices.authorization.grant.ValidateParams;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.grant.code.request.ValidAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -40,9 +30,13 @@ public class OkTest extends BaseTest {
         p.clientIds.add(c.getUuid().toString());
         p.responseTypes.add(c.getResponseType().toString());
 
-        boolean actual;
-        actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
-        assertThat(actual).isEqualTo(true);
+        AuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+
+        assertThat(actual.getClientId()).isEqualTo(c.getUuid());
+        assertThat(actual.getResponseType()).isEqualTo(c.getResponseType());
+        assertThat(actual.getRedirectURI().isPresent()).isFalse();
+        assertThat(actual.getScopes()).isNull();
+        assertThat(actual.getState().isPresent()).isFalse();
     }
 
     @Test
@@ -57,8 +51,16 @@ public class OkTest extends BaseTest {
         p.scopes.add(Scope.PROFILE.toString());
         p.states.add("some-state");
 
-        boolean actual;
-        actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
-        assertThat(actual).isEqualTo(true);
+        AuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+
+        assertThat(actual.getClientId()).isEqualTo(c.getUuid());
+        assertThat(actual.getResponseType()).isEqualTo(c.getResponseType());
+        assertThat(actual.getRedirectURI().isPresent()).isTrue();
+        assertThat(actual.getRedirectURI().get()).isEqualTo(c.getRedirectURI());
+        assertThat(actual.getScopes()).isNotNull();
+        assertThat(actual.getScopes().size()).isEqualTo(1);
+        assertThat(actual.getScopes().get(0)).isEqualTo(Scope.PROFILE);
+        assertThat(actual.getState().isPresent()).isTrue();
+        assertThat(actual.getState().get()).isEqualTo("some-state");
     }
 }

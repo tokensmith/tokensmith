@@ -1,12 +1,18 @@
 package org.rootservices.authorization.grant.code.authenticate;
 
+import helper.ValidateParamsAttributes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.grant.ValidateParams;
 import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.grant.code.authenticate.input.AuthCodeInput;
+import org.rootservices.authorization.grant.code.exception.InformClientException;
+import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.grant.code.request.ValidateAuthRequest;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -23,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -35,40 +42,56 @@ import static org.mockito.Mockito.when;
 public class RequestAuthCodeImplTest {
 
     @Mock
+    private ValidateParams mockValidateParams;
+    @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
-    private RandomString mockRandomString;
-    @Mock
-    private MakeAuthCode mockMakeAuthCode;
-    @Mock
-    private AuthCodeRepository mockAuthCodeRepository;
-    @Mock
-    private MakeAccessRequest mockMakeAuthRequest;
-    @Mock
-    private AccessRequestRepository mockAuthRequestRepository;
+    private GrantAuthCode mockGrantAuthCode;
 
     private RequestAuthCode subject;
 
     @Before
     public void setUp() {
         subject = new RequestAuthCodeImpl(
+                mockValidateParams,
                 mockLoginResourceOwner,
-                mockRandomString,
-                mockMakeAuthCode,
-                mockAuthCodeRepository,
-                mockMakeAuthRequest,
-                mockAuthRequestRepository
+                mockGrantAuthCode
         );
+    }
+
+    public AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, Scope scope) {
+        AuthCodeInput input = new AuthCodeInput();
+        input.setUserName("resourceOwner@rootservices.org");
+        input.setPlainTextPassword("plainTextPassword");
+
+        List<String> clientIds = new ArrayList<>();
+        clientIds.add(clientId.toString());
+        input.setClientIds(clientIds);
+
+        List<String> responseTypes = new ArrayList<>();
+        responseTypes.add(rt.toString());
+        input.setResponseTypes(responseTypes);
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add(scope.toString());
+        input.setScopes(scopes);
+
+        return input;
     }
 
     @Test
     public void testRun() throws Exception {
-        // parameters to method in test
-        String userName = "resourceOwner@rootservices.org";
-        String plainTextPassword = "plainTextPassword";
+        UUID clientId = UUID.randomUUID();
+        ResponseType rt = ResponseType.CODE;
+        Scope scope = Scope.PROFILE;
 
+        // parameters to method in test
+        AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
+
+        // responses from mocks/spy objects.
         List<Scope> scopes = new ArrayList<>();
-        scopes.add(Scope.PROFILE);
+        scopes.add(scope);
+
         AuthRequest authRequest = new AuthRequest(
                 UUID.randomUUID(),
                 ResponseType.CODE,
@@ -76,35 +99,47 @@ public class RequestAuthCodeImplTest {
                 scopes
         );
 
-        // responses from mocks/spy objects.
         UUID resourceOwnerUUID = UUID.randomUUID();
         String randomString = "randomString";
-        AuthCode authCode = new AuthCode();
-        authCode.setUuid(UUID.randomUUID());
-        AccessRequest authRequestEntity = new AccessRequest();
 
-        when(mockLoginResourceOwner.run(userName, plainTextPassword)).thenReturn(resourceOwnerUUID);
-        when(mockRandomString.run()).thenReturn(randomString);
+        // spy
+        when(mockValidateParams.run(
+                input.getClientIds(),
+                input.getResponseTypes(),
+                input.getRedirectUris(),
+                input.getScopes(),
+                input.getStates()
+        )).thenReturn(authRequest);
 
-        when(mockMakeAuthCode.run(
-                resourceOwnerUUID, authRequest.getClientId(), randomString, subject.getSecondsToExpiration()
-        )).thenReturn(authCode);
+        when(mockLoginResourceOwner.run(
+                input.getUserName(),
+                input.getPlainTextPassword())
+        ).thenReturn(resourceOwnerUUID);
 
-        when(mockMakeAuthRequest.run(authCode.getUuid(), authRequest)).thenReturn(authRequestEntity);
+        when(mockGrantAuthCode.run(
+                resourceOwnerUUID,
+                authRequest.getClientId(),
+                authRequest.getRedirectURI())
+        ).thenReturn(randomString);
 
-        subject.run(userName, plainTextPassword, authRequest);
+        String actual = subject.run(input);
 
-        verify(mockAuthCodeRepository).insert(authCode);
-        verify(mockAuthRequestRepository).insert(authRequestEntity);
+        assertThat(actual).isEqualTo(randomString);
     }
 
     @Test
     public void testRunFailsLogin() throws URISyntaxException, UnauthorizedException {
-        String userName = "resourceOwner@rootservices.org";
-        String plainTextPassword = "plainTextPassword";
+        UUID clientId = UUID.randomUUID();
+        ResponseType rt = ResponseType.CODE;
+        Scope scope = Scope.PROFILE;
 
+        // parameters to method in test
+        AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
+
+        // responses from mocks/spy objects.
         List<Scope> scopes = new ArrayList<>();
-        scopes.add(Scope.PROFILE);
+        scopes.add(scope);
+
         AuthRequest authRequest = new AuthRequest(
                 UUID.randomUUID(),
                 ResponseType.CODE,
@@ -112,18 +147,23 @@ public class RequestAuthCodeImplTest {
                 scopes
         );
 
+        // spy
         when(mockLoginResourceOwner.run(
-                userName, plainTextPassword)
-        ).thenThrow(UnauthorizedException.class);
+                input.getUserName(),
+                input.getPlainTextPassword()
+        )).thenThrow(UnauthorizedException.class);
 
         String authorizationCode = null;
         UnauthorizedException expectedException = null;
         try {
-            authorizationCode = subject.run(userName, plainTextPassword, authRequest);
+            authorizationCode = subject.run(input);
         } catch (UnauthorizedException e) {
-            verify(mockAuthCodeRepository, never()).insert(any(AuthCode.class));
-            verify(mockAuthRequestRepository, never()).insert(any(AccessRequest.class));
+            verify(mockGrantAuthCode, never()).run(any(UUID.class), any(UUID.class), any(Optional.class));
             expectedException = e;
+        } catch (InformResourceOwnerException e) {
+            fail("Expected UnauthorizedException");
+        } catch (InformClientException e) {
+            fail("Expected UnauthorizedException");
         }
 
         assertThat(authorizationCode).isNull();
