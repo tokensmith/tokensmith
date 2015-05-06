@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.security.Hash;
+import org.rootservices.authorization.security.TextHasher;
 
 import java.util.UUID;
 
@@ -20,13 +20,13 @@ import static org.mockito.Mockito.when;
 public class MakeAuthCodeImplTest {
 
     @Mock
-    private Hash mockHash;
+    private TextHasher mockTextHasher;
 
     private MakeAuthCode subject;
 
     @Before
     public void setUp() {
-        subject = new MakeAuthCodeImpl(mockHash);
+        subject = new MakeAuthCodeImpl(mockTextHasher);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class MakeAuthCodeImplTest {
         String randomString = "randomString";
 
         String hashedRandomString = "hashedRandomString";
-        when(mockHash.run(randomString)).thenReturn(hashedRandomString);
+        when(mockTextHasher.run(randomString)).thenReturn(hashedRandomString);
 
         AuthCode actual = subject.run(resourceOwnerUUID, clientUUID, randomString, secondsToExpire);
 

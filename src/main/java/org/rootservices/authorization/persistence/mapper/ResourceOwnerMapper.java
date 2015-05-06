@@ -13,6 +13,6 @@ import java.util.UUID;
 @Repository
 public interface ResourceOwnerMapper {
     public ResourceOwner getByUUID(@Param("uuid") UUID uuid);
-    public ResourceOwner getByEmailAndPassword(@Param("email") String email, @Param("password") byte[] password);
+    public ResourceOwner getByEmail(@Param("email") String email);
     public void insert(@Param("authUser") ResourceOwner authUser);
 }

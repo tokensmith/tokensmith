@@ -10,6 +10,6 @@ import java.util.UUID;
  */
 public interface ResourceOwnerRepository {
     public ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException;
-    public ResourceOwner getByEmailAndPassword(String email, byte[] password) throws RecordNotFoundException;
-    public void insert(ResourceOwner authUser);
+    public ResourceOwner getByEmail(String email) throws RecordNotFoundException;
+    public void insert(ResourceOwner resourceOwner);
 }

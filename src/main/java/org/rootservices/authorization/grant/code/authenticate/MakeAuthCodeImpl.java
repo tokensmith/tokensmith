@@ -1,7 +1,7 @@
 package org.rootservices.authorization.grant.code.authenticate;
 
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.security.Hash;
+import org.rootservices.authorization.security.TextHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,19 +15,19 @@ import java.util.UUID;
 public class MakeAuthCodeImpl implements MakeAuthCode {
 
     @Autowired
-    private Hash hash;
+    private TextHasher textHasher;
 
     public MakeAuthCodeImpl() {
     }
 
-    public MakeAuthCodeImpl(Hash hash) {
-        this.hash = hash;
+    public MakeAuthCodeImpl(TextHasher textHasher) {
+        this.textHasher = textHasher;
     }
 
     @Override
     public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, String authorizationCode, int secondsToExpire) {
 
-        String hashedAuthorizationCode = hash.run(authorizationCode);
+        String hashedAuthorizationCode = textHasher.run(authorizationCode);
 
         OffsetDateTime expiresAt = OffsetDateTime.now();
         expiresAt = expiresAt.plusSeconds(secondsToExpire);

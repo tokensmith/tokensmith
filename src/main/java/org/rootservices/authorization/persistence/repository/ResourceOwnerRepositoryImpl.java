@@ -6,7 +6,6 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
@@ -17,16 +16,16 @@ import java.util.UUID;
 public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
 
     @Autowired
-    ResourceOwnerMapper authUserMapper;
+    ResourceOwnerMapper resourceOwnerMapper;
 
     public ResourceOwnerRepositoryImpl() {}
 
     public ResourceOwnerRepositoryImpl(ResourceOwnerMapper authUserMapper){
-        this.authUserMapper = authUserMapper;
+        this.resourceOwnerMapper = authUserMapper;
     }
 
     public ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException {
-        ResourceOwner authUser = authUserMapper.getByUUID(uuid);
+        ResourceOwner authUser = resourceOwnerMapper.getByUUID(uuid);
         if (authUser != null) {
             return authUser;
         }
@@ -34,8 +33,8 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
         throw new RecordNotFoundException("AuthUser: " + uuid.toString());
     }
 
-    public ResourceOwner getByEmailAndPassword(String email, byte[] password) throws RecordNotFoundException {
-        ResourceOwner authUser = authUserMapper.getByEmailAndPassword(email, password);
+    public ResourceOwner getByEmail(String email) throws RecordNotFoundException {
+        ResourceOwner authUser = resourceOwnerMapper.getByEmail(email);
         if (authUser != null) {
             return authUser;
         }
@@ -43,7 +42,7 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
         throw new RecordNotFoundException("AuthUser: " + email);
     }
 
-    public void insert(ResourceOwner authUser) {
-        authUserMapper.insert(authUser);
+    public void insert(ResourceOwner resourceOwner) {
+        resourceOwnerMapper.insert(resourceOwner);
     }
 }

@@ -22,9 +22,9 @@
         where uuid = #{uuid}
     </select>
 
-    <select id="getByEmailAndPassword" resultMap="resourceOwner">
+    <select id="getByEmail" resultMap="resourceOwner">
         select uuid, email, password, created_at
         from resource_owner
-        where email = #{email} and password = #{password}
+        where email = #{email}
     </select>
 </mapper>

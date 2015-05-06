@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.authenticate.input;
+package org.rootservices.authorization.grant.code.authenticate;
 
 import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.exception.InformClientException;

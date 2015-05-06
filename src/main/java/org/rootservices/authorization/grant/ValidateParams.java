@@ -2,9 +2,7 @@ package org.rootservices.authorization.grant;
 
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
-import org.rootservices.authorization.grant.code.request.ValidAuthRequest;
 
 import java.util.List;
 
