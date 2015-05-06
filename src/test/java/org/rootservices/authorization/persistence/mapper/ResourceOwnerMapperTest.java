@@ -23,7 +23,7 @@ public class ResourceOwnerMapperTest {
     @Autowired
     ResourceOwnerMapper subject;
 
-    public ResourceOwner insertAuthUser() {
+    public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
         ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
@@ -44,7 +44,7 @@ public class ResourceOwnerMapperTest {
     @Test
     @Transactional
     public void getByUUID() {
-        ResourceOwner expectedUser = insertAuthUser();
+        ResourceOwner expectedUser = insertResourceOwner();
         ResourceOwner actualUser = subject.getByUUID(expectedUser.getUuid());
 
         assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
@@ -65,17 +65,15 @@ public class ResourceOwnerMapperTest {
 
     @Test
     @Transactional
-    public void getByEmailAndPassword() {
+    public void getByEmail() {
 
-        ResourceOwner expectedUser = insertAuthUser();
-        ResourceOwner actualUser = subject.getByEmailAndPassword(expectedUser.getEmail(), expectedUser.getPassword());
+        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner actualUser = subject.getByEmail(expectedUser.getEmail());
 
         assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
         assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
         assertThat(actualUser.getCreatedAt()).isInstanceOf(Date.class);
-
     }
-
 }

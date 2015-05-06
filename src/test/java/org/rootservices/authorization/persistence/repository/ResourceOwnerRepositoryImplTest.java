@@ -30,7 +30,7 @@ public class ResourceOwnerRepositoryImplTest {
         subject = new ResourceOwnerRepositoryImpl(mockMapper);
     }
 
-    public ResourceOwner authUserBuilder() {
+    public ResourceOwner makeAuthUser() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
         ResourceOwner authUser = new ResourceOwner(uuid, "test@rootservices.org", password);
@@ -47,7 +47,7 @@ public class ResourceOwnerRepositoryImplTest {
     @Test
     public void getByUUID() throws RecordNotFoundException{
 
-        ResourceOwner expectedAuthUser = authUserBuilder();
+        ResourceOwner expectedAuthUser = makeAuthUser();
 
         when(mockMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
         ResourceOwner actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
@@ -55,35 +55,33 @@ public class ResourceOwnerRepositoryImplTest {
     }
 
     @Test(expected= RecordNotFoundException.class)
-    public void getByEmailAndPasswordNoRecordFound() throws RecordNotFoundException{
+    public void getByEmailNoRecordFound() throws RecordNotFoundException{
         String email = "test@rootservices.org";
         byte [] password = "plainTextPassword".getBytes();
 
-        when(mockMapper.getByEmailAndPassword(email, password)).thenReturn(null);
-        subject.getByEmailAndPassword(email, password);
+        when(mockMapper.getByEmail(email)).thenReturn(null);
+        subject.getByEmail(email);
     }
 
     @Test
-    public void getByEmailAndPassword() throws RecordNotFoundException{
+    public void getByEmail() throws RecordNotFoundException{
 
-        ResourceOwner expectedAuthUser = authUserBuilder();
+        ResourceOwner expectedAuthUser = makeAuthUser();
 
-        when(mockMapper.getByEmailAndPassword(
-                expectedAuthUser.getEmail(), expectedAuthUser.getPassword())
+        when(mockMapper.getByEmail(
+                expectedAuthUser.getEmail())
         ).thenReturn(expectedAuthUser);
 
-        ResourceOwner actualAuthUser = subject.getByEmailAndPassword(
-                expectedAuthUser.getEmail(),
-                expectedAuthUser.getPassword()
+        ResourceOwner actualAuthUser = subject.getByEmail(
+                expectedAuthUser.getEmail()
         );
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 
     @Test
     public void insert() {
-        ResourceOwner authUser = authUserBuilder();
+        ResourceOwner authUser = makeAuthUser();
         subject.insert(authUser);
         verify(mockMapper, times(1)).insert(authUser);
     }
-
 }

@@ -7,7 +7,6 @@ import org.rootservices.authorization.grant.code.factory.exception.StateExceptio
 import org.rootservices.authorization.grant.code.factory.optional.StateFactory;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
 import org.rootservices.authorization.grant.code.request.GetClientRedirect;
-import org.rootservices.authorization.grant.code.request.ValidAuthRequest;
 import org.rootservices.authorization.grant.code.request.ValidateAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by tommackenzie on 2/24/15.
