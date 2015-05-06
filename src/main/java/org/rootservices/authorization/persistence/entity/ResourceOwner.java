@@ -6,16 +6,16 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 9/22/14.
  */
-public class AuthUser {
+public class ResourceOwner {
 
     private UUID uuid;
     private String email;
     private byte[] password;
     private Date createdAt;
 
-    public AuthUser() {}
+    public ResourceOwner() {}
 
-    public AuthUser(UUID uuid, String email, byte[] password) {
+    public ResourceOwner(UUID uuid, String email, byte[] password) {
         this.uuid = uuid;
         this.email = email;
         this.password = password;

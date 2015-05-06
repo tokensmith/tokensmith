@@ -9,13 +9,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 /**
  * Created by tommackenzie on 9/22/14.
  */
-public class AuthUserTest {
+public class ResourceOwnerTest {
 
-    private AuthUser subject;
+    private ResourceOwner subject;
 
     @Before
     public void setUp() {
-        subject = new AuthUser();
+        subject = new ResourceOwner();
     }
 
     @Test
@@ -28,7 +28,7 @@ public class AuthUserTest {
 
     @Test
     public void email() {
-        String email = "test@tommygunz.com";
+        String email = "test@rootservices.com";
         subject.setEmail(email);
 
         assertThat(subject.getEmail()).isEqualTo(email);
@@ -45,9 +45,9 @@ public class AuthUserTest {
     @Test
     public void constructWithParams() {
         UUID uuid = UUID.randomUUID();
-        String email = "test@tommygunz.com";
+        String email = "test@rootservices.com";
         String password = "plainTextPassword";
-        subject = new AuthUser(uuid, email, password.getBytes());
+        subject = new ResourceOwner(uuid, email, password.getBytes());
 
         assertThat(subject.getUuid()).isEqualTo(uuid);
         assertThat(subject.getEmail()).isEqualTo(email);

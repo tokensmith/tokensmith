@@ -35,7 +35,11 @@ public enum ErrorCode {
     CLIENT_NOT_FOUND (19, "client was not found"),
     RESPONSE_TYPE_MISMATCH (20, "response type provided does not match client's response type."),
     REDIRECT_URI_MISMATCH (21, "redirect uri provided does not match client's response type."),
-    RESPONSE_TYPE_NOT_CODE (22, "response type provided is not CODE");
+    RESPONSE_TYPE_NOT_CODE (22, "response type provided is not CODE"),
+
+    RESOURCE_OWNER_NOT_FOUND (23, "The resource owner was not found"),
+    PASSWORD_MISMATCH (24, "Password did not match"),
+    UNSUPPORTED_ENCODING (25, "");
 
     private int code;
     private final String message;

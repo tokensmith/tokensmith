@@ -1,6 +1,6 @@
 --// create_database
 -- Migration SQL that makes the change goes here.
-CREATE TABLE auth_user (
+CREATE TABLE resource_owner (
     uuid        UUID PRIMARY KEY,
     email       varchar(245) UNIQUE NOT NULL,
     password    bytea NOT NULL,

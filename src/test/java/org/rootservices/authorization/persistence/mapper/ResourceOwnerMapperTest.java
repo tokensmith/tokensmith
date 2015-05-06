@@ -1,6 +1,6 @@
 package org.rootservices.authorization.persistence.mapper;
 
-import org.rootservices.authorization.persistence.entity.AuthUser;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +18,15 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-public class AuthUserMapperTest {
+public class ResourceOwnerMapperTest {
 
     @Autowired
-    AuthUserMapper subject;
+    ResourceOwnerMapper subject;
 
-    public AuthUser insertAuthUser() {
+    public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
-        AuthUser user = new AuthUser(uuid, "test@tommygunz.com", password);
+        ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
 
         subject.insert(user);
         return user;
@@ -37,15 +37,15 @@ public class AuthUserMapperTest {
     public void insert() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
-        AuthUser user = new AuthUser(uuid, "test@tommygunz.com", password);
+        ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
         subject.insert(user);
     }
 
     @Test
     @Transactional
     public void getByUUID() {
-        AuthUser expectedUser = insertAuthUser();
-        AuthUser actualUser = subject.getByUUID(expectedUser.getUuid());
+        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner actualUser = subject.getByUUID(expectedUser.getUuid());
 
         assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
         assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
@@ -58,24 +58,22 @@ public class AuthUserMapperTest {
     @Transactional
     public void getByUUIDAuthUserNotFound() {
 
-        AuthUser actualUser = subject.getByUUID(UUID.randomUUID());
+        ResourceOwner actualUser = subject.getByUUID(UUID.randomUUID());
 
         assertThat(actualUser).isEqualTo(null);
     }
 
     @Test
     @Transactional
-    public void getByEmailAndPassword() {
+    public void getByEmail() {
 
-        AuthUser expectedUser = insertAuthUser();
-        AuthUser actualUser = subject.getByEmailAndPassword(expectedUser.getEmail(), expectedUser.getPassword());
+        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner actualUser = subject.getByEmail(expectedUser.getEmail());
 
         assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
         assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
         assertThat(actualUser.getCreatedAt()).isInstanceOf(Date.class);
-
     }
-
 }

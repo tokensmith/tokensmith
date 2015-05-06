@@ -16,6 +16,16 @@ public class AuthRequest {
     private ResponseType responseType;
     private Optional<URI> redirectURI;
     private List<Scope> scopes;
+    private Optional<String> state;
+
+    public AuthRequest() {}
+
+    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<Scope> scopes) {
+        this.clientId = clientId;
+        this.responseType = responseType;
+        this.redirectURI = redirectURI;
+        this.scopes = scopes;
+    }
 
     public UUID getClientId() {
         return clientId;
@@ -47,5 +57,13 @@ public class AuthRequest {
 
     public void setScopes(List<Scope> scopes) {
         this.scopes = scopes;
+    }
+
+    public Optional<String> getState() {
+        return state;
+    }
+
+    public void setState(Optional<String> state) {
+        this.state = state;
     }
 }
