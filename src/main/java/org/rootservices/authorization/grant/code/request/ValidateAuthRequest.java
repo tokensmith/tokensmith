@@ -7,5 +7,5 @@ import org.rootservices.authorization.grant.code.exception.InformResourceOwnerEx
  * Created by tommackenzie on 11/19/14.
  */
 public interface ValidateAuthRequest {
-    public boolean run(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException;
+    boolean run(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException;
 }

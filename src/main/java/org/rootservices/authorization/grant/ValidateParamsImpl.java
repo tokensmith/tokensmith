@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by tommackenzie on 2/24/15.
@@ -35,7 +34,7 @@ public class ValidateParamsImpl implements ValidateParams {
     private ValidateAuthRequest validateAuthRequest;
 
     @Override
-    public boolean run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
+    public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = null;
         authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
@@ -43,6 +42,7 @@ public class ValidateParamsImpl implements ValidateParams {
         Optional<String> cleanedStates;
         try {
             cleanedStates = stateFactory.makeState(states);
+            authRequest.setState(cleanedStates);
         } catch (StateException e) {
 
             URI clientRedirectURI = getClientRedirect.run(
@@ -55,6 +55,6 @@ public class ValidateParamsImpl implements ValidateParams {
 
         validateAuthRequest.run(authRequest);
 
-        return true;
+        return authRequest;
     }
 }

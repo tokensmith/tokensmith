@@ -15,6 +15,8 @@ import java.util.UUID;
 
 /**
  * Created by tommackenzie on 2/18/15.
+ *
+ * TODO: rename this class, its doesn not describe what it does.
  */
 @Component
 public class GetClientRedirectImpl implements GetClientRedirect {

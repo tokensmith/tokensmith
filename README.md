@@ -1,5 +1,6 @@
-Use cases and persistence for Authorization
------------------------------------------------
+Java implementation of the use cases for, [The OAuth 2.0 Authorization Framework](http://tools.ietf.org/html/rfc6749)
+---------------------------------------------------------------------------------------------------------------------
+
 [![Build Status](https://travis-ci.org/RootServices/auth.svg?branch=development)](https://travis-ci.org/RootServices/auth)
 
 Dependencies
@@ -22,6 +23,7 @@ export AUTH_DB_DRIVER="org.postgresql.Driver";
 Running migrations (replace values where necessary).
 ----------------------------------------------------
 ```
+mvn clean package -DskipTests
 mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth" -Dflyway.initOnMigrate=true
 ```
 
