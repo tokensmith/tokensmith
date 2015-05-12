@@ -52,8 +52,8 @@ public class ClientNotFoundTest extends BaseTest {
     @Test
     public void duplicate() throws URISyntaxException, StateException {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.scopes.add(Scope.PROFILE.toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
+        p.scopes.add("profile");
 
         Exception expectedDomainCause = new RecordNotFoundException();
         int expectedErrorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();

@@ -61,8 +61,8 @@ public class RedirectMismatchTest extends BaseTest {
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add(ResponseType.CODE.toString());
 
-        p.scopes.add(Scope.PROFILE.toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
+        p.scopes.add("profile");
 
         Exception expectedDomainCause = new ScopesException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();

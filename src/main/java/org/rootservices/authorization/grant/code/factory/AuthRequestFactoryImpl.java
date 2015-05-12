@@ -67,7 +67,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         authRequest.setRedirectURI(redirectUri);
 
         ResponseType responseType;
-        List<Scope> cleanedScopes;
+        List<String> cleanedScopes;
         try {
             responseType = responseTypeFactory.makeResponseType(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
