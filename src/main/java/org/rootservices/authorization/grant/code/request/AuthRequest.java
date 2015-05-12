@@ -15,12 +15,12 @@ public class AuthRequest {
     private UUID clientId;
     private ResponseType responseType;
     private Optional<URI> redirectURI;
-    private List<Scope> scopes;
+    private List<String> scopes;
     private Optional<String> state;
 
     public AuthRequest() {}
 
-    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<Scope> scopes) {
+    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<String> scopes) {
         this.clientId = clientId;
         this.responseType = responseType;
         this.redirectURI = redirectURI;
@@ -51,11 +51,11 @@ public class AuthRequest {
         this.redirectURI = redirectURI;
     }
 
-    public List<Scope> getScopes() {
+    public List<String> getScopes() {
         return scopes;
     }
 
-    public void setScopes(List<Scope> scopes) {
+    public void setScopes(List<String> scopes) {
         this.scopes = scopes;
     }
 

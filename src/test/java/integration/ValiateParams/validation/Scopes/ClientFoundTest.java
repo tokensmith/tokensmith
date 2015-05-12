@@ -55,8 +55,8 @@ public class ClientFoundTest extends BaseTest {
         p.clientIds.add(c.getUuid().toString());
         p.responseTypes.add(c.getResponseType().toString());
 
-        p.scopes.add(Scope.PROFILE.toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
+        p.scopes.add("profile");
 
         Exception expectedDomainCause = new ScopesException();
         int expectedErrorCode = ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode();

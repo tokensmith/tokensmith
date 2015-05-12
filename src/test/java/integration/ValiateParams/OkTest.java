@@ -47,7 +47,7 @@ public class OkTest extends BaseTest {
         p.clientIds.add(c.getUuid().toString());
         p.responseTypes.add(c.getResponseType().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
         p.states.add("some-state");
 
         AuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
@@ -58,7 +58,7 @@ public class OkTest extends BaseTest {
         assertThat(actual.getRedirectURI().get()).isEqualTo(c.getRedirectURI());
         assertThat(actual.getScopes()).isNotNull();
         assertThat(actual.getScopes().size()).isEqualTo(1);
-        assertThat(actual.getScopes().get(0)).isEqualTo(Scope.PROFILE);
+        assertThat(actual.getScopes().get(0)).isEqualTo("profile");
         assertThat(actual.getState().isPresent()).isTrue();
         assertThat(actual.getState().get()).isEqualTo("some-state");
     }
