@@ -7,7 +7,7 @@
     <resultMap id="scope" type="org.rootservices.authorization.persistence.entity.Scope">
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="name" property="name"/>
-        <result column="created_at" property="createdAt"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
     <insert id="insert" >

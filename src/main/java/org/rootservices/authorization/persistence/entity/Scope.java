@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.entity;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 public class Scope {
     private UUID uuid;
     private String name;
-    private Date createdAt;
+    private OffsetDateTime createdAt;
 
     public Scope(UUID uuid, String name) {
         this.uuid = uuid;
@@ -32,11 +33,11 @@ public class Scope {
         this.name = name;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
