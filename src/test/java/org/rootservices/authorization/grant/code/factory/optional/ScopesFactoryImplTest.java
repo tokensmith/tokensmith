@@ -105,25 +105,5 @@ public class ScopesFactoryImplTest {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode());
         }
-
-    }
-
-
-    @Test
-    public void testMakeScopesDataTypeError() throws MoreThanOneItemError, EmptyValueError {
-
-        List<String> items = new ArrayList<>();
-        items.add("invalid");
-
-        when(mockOptionalParam.run(items)).thenReturn(true);
-
-        try {
-            subject.makeScopes(items);
-            fail("ScopesException was expected.");
-        } catch (ScopesException e) {
-            assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_DATA_TYPE.getCode());
-        }
-
     }
 }

@@ -1,19 +1,14 @@
 package integration.security;
 
-import helper.FixtureFactory;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import helper.fixture.FixtureFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.security.IsTextEqualToHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 4/13/15.

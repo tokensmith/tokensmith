@@ -1,6 +1,6 @@
 package integration.ValiateParams;
 
-import helper.FixtureFactory;
+import helper.fixture.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
@@ -8,7 +8,6 @@ import org.rootservices.authorization.grant.code.exception.InformResourceOwnerEx
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.net.URISyntaxException;
 
@@ -22,8 +21,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void requiredParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -40,8 +38,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void optionalParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

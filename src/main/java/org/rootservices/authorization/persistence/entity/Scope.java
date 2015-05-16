@@ -12,6 +12,8 @@ public class Scope {
     private String name;
     private OffsetDateTime createdAt;
 
+    public Scope(){}
+
     public Scope(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
