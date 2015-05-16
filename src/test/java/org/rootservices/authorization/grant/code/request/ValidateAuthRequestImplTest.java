@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.request;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,8 @@ import org.rootservices.authorization.persistence.repository.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,31 +39,33 @@ public class ValidateAuthRequestImplTest {
     }
 
     @Test
-    public void run() throws InformResourceOwnerException, InformClientException, RecordNotFoundException {
-        UUID uuid = UUID.randomUUID();
+    public void run() throws InformResourceOwnerException, InformClientException, RecordNotFoundException, URISyntaxException {
+        Client client = FixtureFactory.makeClientWithScopes();
 
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(uuid);
-        authRequest.setResponseType(ResponseType.CODE);
-        authRequest.setRedirectURI(Optional.ofNullable(null));
+        authRequest.setClientId(client.getUuid());
+        authRequest.setResponseType(client.getResponseType());
+        authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        authRequest.setScopes(scopes);
 
-        Client expectedClient = new Client();
-        expectedClient.setUuid(uuid);
-        expectedClient.setResponseType(ResponseType.CODE);
-
-        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(expectedClient);
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
 
         boolean isValid = subject.run(authRequest);
-        assertThat(true).isEqualTo(isValid);
+        assertThat(isValid).isTrue();
     }
 
-
+    @Test
     public void runClientNotFound() throws RecordNotFoundException {
         UUID uuid = UUID.randomUUID();
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        authRequest.setScopes(scopes);
 
         when(mockClientRepository.getByUUID(authRequest.getClientId())).thenThrow(
                 RecordNotFoundException.class
@@ -76,7 +81,7 @@ public class ValidateAuthRequestImplTest {
         }
     }
 
-
+    @Test
     public void runUnAuthorizedResponseType() throws RecordNotFoundException, URISyntaxException {
         UUID uuid = UUID.randomUUID();
         URI expectedRedirectURI = new URI("https://rootservices.org");
@@ -85,6 +90,9 @@ public class ValidateAuthRequestImplTest {
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
         authRequest.setRedirectURI(Optional.ofNullable(expectedRedirectURI));
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        authRequest.setScopes(scopes);
 
         Client client = new Client();
         client.setUuid(uuid);
@@ -101,9 +109,11 @@ public class ValidateAuthRequestImplTest {
         } catch (InformClientException e) {
             assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode());
             assertThat(e.getError().equals("unauthorized_client"));
+            assertThat(e.getRedirectURI().equals(client.getRedirectURI()));
         }
     }
 
+    @Test
     public void runRedirectUriMismatch() throws RecordNotFoundException, URISyntaxException {
         UUID uuid = UUID.randomUUID();
 
@@ -112,6 +122,9 @@ public class ValidateAuthRequestImplTest {
         authRequest.setClientId(uuid);
         authRequest.setResponseType(ResponseType.CODE);
         authRequest.setRedirectURI(expectedRedirectURI);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        authRequest.setScopes(scopes);
 
         URI actualRedirectURI = new URI("https://rootservices.org/mismatch");
         Client client = new Client();
@@ -128,6 +141,32 @@ public class ValidateAuthRequestImplTest {
             assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
+        }
+    }
+
+    @Test
+    public void runInvalidScope() throws URISyntaxException, RecordNotFoundException {
+        Client client = FixtureFactory.makeClientWithScopes();
+
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setClientId(client.getUuid());
+        authRequest.setResponseType(client.getResponseType());
+        authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
+        List<String> scopes = new ArrayList<>();
+        scopes.add("unsupported-scope");
+        authRequest.setScopes(scopes);
+
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+
+        try {
+            subject.run(authRequest);
+            fail("Expected InformClientException");
+        } catch (InformResourceOwnerException e) {
+            fail("Expected InformClientException");
+        } catch (InformClientException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_NOT_SUPPORTED.getCode());
+            assertThat(e.getError().equals("invalid-scope"));
+            assertThat(e.getRedirectURI().equals(client.getRedirectURI()));
         }
     }
 }

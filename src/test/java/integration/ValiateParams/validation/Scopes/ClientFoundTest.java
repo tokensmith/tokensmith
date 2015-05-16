@@ -36,11 +36,10 @@ public class ClientFoundTest extends BaseTest {
 
         p.scopes.add("invalid-scope");
 
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.SCOPES_DATA_TYPE.getCode();
+        int expectedErrorCode = ErrorCode.SCOPES_NOT_SUPPORTED.getCode();
         String expectedError = "invalid_scope";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, c.getRedirectURI());
+        runExpectInformClientExceptionNoCause(p, expectedErrorCode, expectedError, c.getRedirectURI());
     }
 
     @Test

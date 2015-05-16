@@ -4,12 +4,14 @@ import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,12 +54,30 @@ public class ValidateAuthRequestImpl implements ValidateAuthRequest {
             );
         }
 
+        if (! hasScopes(authRequest.getScopes(), client.getScopes())) {
+            throw new InformClientException(
+                    "Scope is not supported for this client.",
+                    "invalid_scope",
+                    ErrorCode.SCOPES_NOT_SUPPORTED.getCode(),
+                    client.getRedirectURI()
+            );
+        }
         return true;
     }
 
-    /*
-    returns true if the redirect does not match client's redirect, otherwise
-    returns false
+    private boolean hasScopes(List<String> requestedScopes, List<Scope> clientScopes) {
+        boolean hasScopes = true;
+        for(String scope: requestedScopes) {
+            if (! clientScopes.stream().filter(o -> o.getName().equals(scope)).findFirst().isPresent()) {
+                hasScopes = false;
+                break;
+            }
+        }
+        return hasScopes;
+    }
+    /**
+     * returns true if the redirect does not match client's redirect,
+     * otherwise returns false
      */
     private boolean redirectMismatch(Optional<URI> redirect, URI clientRedirect) {
         boolean matches = false;
