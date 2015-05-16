@@ -32,7 +32,7 @@ public class OkTest extends BaseTest {
         assertThat(actual.getClientId()).isEqualTo(c.getUuid());
         assertThat(actual.getResponseType()).isEqualTo(c.getResponseType());
         assertThat(actual.getRedirectURI().isPresent()).isFalse();
-        assertThat(actual.getScopes()).isNull();
+        assertThat(actual.getScopes()).isEmpty();
         assertThat(actual.getState().isPresent()).isFalse();
     }
 

@@ -42,10 +42,9 @@ public class RedirectMismatchTest extends BaseTest {
 
         p.scopes.add("invalid-scope");
 
-        Exception expectedDomainCause = new ScopesException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerExceptionNoCause(p, expectedErrorCode);
     }
 
     @Test
