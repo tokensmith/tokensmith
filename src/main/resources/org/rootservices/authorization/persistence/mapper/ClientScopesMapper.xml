@@ -14,9 +14,9 @@
     <insert id="insert" >
         insert into client_scopes (uuid, client_uuid, scope_uuid)
         values (
-        #{clientScope.uuid},
-        #{clientScope.clientUUID},
-        #{clientScope.scopeUUID}
+            #{clientScope.uuid},
+            #{clientScope.clientUUID},
+            #{clientScope.scopeUUID}
         )
     </insert>
 

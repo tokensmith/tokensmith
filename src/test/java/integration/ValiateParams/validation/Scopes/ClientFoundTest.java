@@ -1,15 +1,13 @@
 package integration.ValiateParams.validation.Scopes;
 
-import helper.FixtureFactory;
+import helper.fixture.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.grant.code.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.net.URISyntaxException;
 
@@ -30,8 +28,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -48,8 +45,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -67,8 +63,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

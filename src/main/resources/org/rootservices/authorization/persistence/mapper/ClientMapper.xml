@@ -5,24 +5,37 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ClientMapper">
 
     <resultMap id="client" type="org.rootservices.authorization.persistence.entity.Client">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="response_type" property="responseType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler"/>
         <result column="created_at" property="createdAt" />
+        <collection property="scopes"
+                    resultMap="org.rootservices.authorization.persistence.mapper.ScopeMapper.scope"
+                    columnPrefix="scope_"
+                    javaType="ArrayList"/>
     </resultMap>
 
     <insert id="insert" >
         insert into client (uuid, response_type, redirect_URI)
         values (
-        #{client.uuid},
-        #{client.responseType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
-        #{client.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler}
+            #{client.uuid},
+            #{client.responseType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            #{client.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler}
         )
     </insert>
 
     <select id="getByUUID" resultMap="client">
-        select uuid, response_type, redirect_URI, created_at
+        select
+            client.uuid,
+            client.response_type,
+            client.redirect_URI,
+            client.created_at,
+            scope.uuid as scope_uuid,
+            scope.name as scope_name,
+            scope.created_at as scope_created_at
         from client
-        where uuid = #{uuid}
+        join client_scopes on client_scopes.client_uuid = client.uuid
+        join scope on scope.uuid = client_scopes.scope_uuid
+        where client.uuid = #{uuid}
     </select>
 </mapper>
