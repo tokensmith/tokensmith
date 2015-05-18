@@ -5,11 +5,9 @@ Java implementation of the use cases for, [The OAuth 2.0 Authorization Framework
 
 Dependencies
 ------------
-<ul>
-    <li>Postgres 9.3</li>
-    <li>Java 1.8</li>
-    <li>Maven 3.2.3</li>
-</ul>
+ - Postgres 9.3
+ - Java 1.8
+ - Maven 3.2.3
 
 Contributing
 ------------
@@ -41,10 +39,9 @@ mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdb
 
 Running the tests from the terminal.
 ------------------------------------
-<ul>
-    <li>Install all dependencies.</li>
-    <li>Set environment variables.</li>
-    <li>Create the db specified in AUTH_DB_URL.</li>
-    <li>Run migrations against the test db (see, Running Migrations)</li>
-    <li>Use maven to run the tests, `mvn test`</li>
-</ul>
+ - Install all dependencies.
+ - Set environment variables.
+ - Create the db specified in AUTH_DB_URL.
+ - Run migrations against the test db (see, Running Migrations)
+ - Use maven to run the tests, `mvn test`
+
