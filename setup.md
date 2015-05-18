@@ -9,6 +9,18 @@ export AUTH_DB_DRIVER="org.postgresql.Driver";
 
 Run the command, `source ~/.profile`
 
+Postgres
+--------
+ - install Postgres
+ - create the database, 'auth'
+
+Run Migrations
+------------------
+```bash
+mvn clean package -DskipTests
+mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth" -Dflyway.initOnMigrate=true
+```
+
 IntelliJ
 --------
 - install maven
