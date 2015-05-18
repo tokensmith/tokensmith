@@ -1,4 +1,5 @@
 Add the following to your ~/.profile
+-------------------------------------
 ```bash
 export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
 export AUTH_DB_USER="postgres";
@@ -6,9 +7,10 @@ export AUTH_DB_PASSWORD="";
 export AUTH_DB_DRIVER="org.postgresql.Driver";
 ```
 
-Tun the command, `source ~/.profile`
+Run the command, `source ~/.profile`
 
 IntelliJ
+--------
 - install maven
 - install Java 8 SDK
 - clone the auth repository
