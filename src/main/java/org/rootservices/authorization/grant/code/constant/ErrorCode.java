@@ -28,18 +28,19 @@ public enum ErrorCode {
     SCOPES_EMPTY_VALUE (14, "scopes first item is a empty value."),
     SCOPES_MORE_THAN_ONE_ITEM (15, "scopes has more than one value."),
     SCOPES_DATA_TYPE (16, "scopes first item is not a supported scope"),
+    SCOPES_NOT_SUPPORTED (17, "scope is not available for this client"),
 
-    STATE_EMPTY_VALUE (17, "states first item is a empty value"),
-    STATE_MORE_THAN_ONE_ITEM (18, "states has more than one value."),
+    STATE_EMPTY_VALUE (18, "states first item is a empty value"),
+    STATE_MORE_THAN_ONE_ITEM (19, "states has more than one value."),
 
-    CLIENT_NOT_FOUND (19, "client was not found"),
-    RESPONSE_TYPE_MISMATCH (20, "response type provided does not match client's response type."),
-    REDIRECT_URI_MISMATCH (21, "redirect uri provided does not match client's response type."),
-    RESPONSE_TYPE_NOT_CODE (22, "response type provided is not CODE"),
+    CLIENT_NOT_FOUND (20, "client was not found"),
+    RESPONSE_TYPE_MISMATCH (21, "response type provided does not match client's response type."),
+    REDIRECT_URI_MISMATCH (22, "redirect uri provided does not match client's response type."),
+    RESPONSE_TYPE_NOT_CODE (23, "response type provided is not CODE"),
 
-    RESOURCE_OWNER_NOT_FOUND (23, "The resource owner was not found"),
-    PASSWORD_MISMATCH (24, "Password did not match"),
-    UNSUPPORTED_ENCODING (25, "");
+    RESOURCE_OWNER_NOT_FOUND (24, "The resource owner was not found"),
+    PASSWORD_MISMATCH (25, "Password did not match"),
+    UNSUPPORTED_ENCODING (26, "");
 
     private int code;
     private final String message;

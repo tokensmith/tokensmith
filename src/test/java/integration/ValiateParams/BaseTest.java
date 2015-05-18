@@ -1,6 +1,8 @@
 package integration.ValiateParams;
 
 import helper.ValidateParamsAttributes;
+import helper.fixture.persistence.LoadClientWithScopes;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.grant.ValidateParams;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
@@ -8,6 +10,8 @@ import org.rootservices.authorization.grant.code.exception.InformResourceOwnerEx
 import org.rootservices.authorization.grant.code.factory.exception.BaseException;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
+import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
+import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,9 +30,19 @@ public abstract class BaseTest {
 
     @Autowired
     protected ClientRepository clientRepository;
+    @Autowired
+    private ScopeRepository scopeRepository;
+    @Autowired
+    private ClientScopesRepository clientScopesRepository;
+    protected LoadClientWithScopes loadClientWithScopes;
 
     @Autowired
     protected ValidateParams subject;
+
+    @Before
+    public void setUp() {
+        loadClientWithScopes = new LoadClientWithScopes(clientRepository, scopeRepository, clientScopesRepository);
+    }
 
     public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {
 

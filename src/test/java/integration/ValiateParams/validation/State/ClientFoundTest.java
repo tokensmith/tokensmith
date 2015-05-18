@@ -1,6 +1,6 @@
 package integration.ValiateParams.validation.State;
 
-import helper.FixtureFactory;
+import helper.fixture.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
@@ -35,8 +35,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -52,8 +51,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
