@@ -28,8 +28,8 @@ IntelliJ
 - clone the auth repository
 - install IntelliJ
 - start IntelliJ
-- select 'create new project'
-- selct 'Java project'
+- select, 'create new project'
+- select, 'Java project'
 - Enter, 'auth-combined' for, Project Name
 - A new project should start
 - The right hand side should have a 'maven' tab, click it.
@@ -37,6 +37,6 @@ IntelliJ
 - In the maven window toolbar, click the plus icon '+'
 - a path window should open
 - find the location of the auth git repo you cloned
-- click on auth/pom.xml
+- click on `auth/pom.xml`
 - in the left hand project window auth should appear.
 - start coding.
