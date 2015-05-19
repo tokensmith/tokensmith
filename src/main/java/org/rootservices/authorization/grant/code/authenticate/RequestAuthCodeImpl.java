@@ -58,7 +58,8 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
         String authorizationCode = grantAuthCode.run(
             resourceOwnerUUID,
             authRequest.getClientId(),
-            authRequest.getRedirectURI()
+            authRequest.getRedirectURI(),
+            authRequest.getScopes()
         );
 
         AuthResponse authResponse = makeAuthResponse.run(

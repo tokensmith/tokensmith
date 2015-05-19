@@ -8,7 +8,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * Created by tommackenzie on 5/12/15.
@@ -25,5 +29,22 @@ public class ScopeMapperTest {
     public void insert() {
         Scope scope = new Scope(UUID.randomUUID(), "some-scope");
         subject.insert(scope);
+    }
+
+    @Test
+    @Transactional
+    public void findByName() {
+        String scopeName = "some-scope";
+        Scope scope = new Scope(UUID.randomUUID(), scopeName);
+        subject.insert(scope);
+
+        List<String> names = new ArrayList<>();
+        names.add(scopeName);
+        List<Scope> scopes = subject.findByName(names);
+
+        assertThat(scopes.size()).isEqualTo(1);
+        assertThat(scopes.get(0).getUuid()).isNotNull();
+        assertThat(scopes.get(0).getName()).isEqualTo(scopeName);
+        assertThat(scopes.get(0).getCreatedAt()).isNotNull();
     }
 }

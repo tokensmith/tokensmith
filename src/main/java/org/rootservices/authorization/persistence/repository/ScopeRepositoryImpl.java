@@ -5,6 +5,8 @@ import org.rootservices.authorization.persistence.mapper.ScopeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by tommackenzie on 5/12/15.
  */
@@ -23,5 +25,10 @@ public class ScopeRepositoryImpl implements ScopeRepository {
     @Override
     public void insert(Scope scope) {
         scopeMapper.insert(scope);
+    }
+
+    @Override
+    public List<Scope> findByName(List<String> names) {
+        return scopeMapper.findByName(names);
     }
 }
