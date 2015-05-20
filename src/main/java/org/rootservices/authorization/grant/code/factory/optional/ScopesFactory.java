@@ -9,5 +9,5 @@ import java.util.List;
  * Created by tommackenzie on 1/31/15.
  */
 public interface ScopesFactory {
-    public List<Scope> makeScopes(List<String> items) throws ScopesException;
+    public List<String> makeScopes(List<String> items) throws ScopesException;
 }

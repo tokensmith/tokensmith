@@ -1,6 +1,6 @@
 package integration.ValiateParams.validation;
 
-import helper.FixtureFactory;
+import helper.fixture.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
@@ -38,8 +38,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void emptyList() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -60,8 +59,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -83,8 +81,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -104,8 +101,7 @@ public class RedirectUriTest extends BaseTest {
      * @throws StateException
      */
     public void notHttps() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -126,8 +122,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void mismatches() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

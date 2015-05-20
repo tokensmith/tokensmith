@@ -25,7 +25,8 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
     @Override
     public OffsetDateTime getResult(ResultSet rs, String columnName) throws SQLException {
         if (rs.getString(columnName) != null) {
-            return OffsetDateTime.parse(rs.getString(columnName));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
+            return OffsetDateTime.parse(rs.getString(columnName), formatter);
         }
         return null;
     }

@@ -39,8 +39,8 @@ public class AuthRequestTest {
 
     @Test
     public void scopes() throws Exception {
-        List<Scope> scopes = new ArrayList<>();
-        scopes.add(Scope.PROFILE);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
 
         subject.setScopes(scopes);
 

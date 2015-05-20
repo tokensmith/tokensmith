@@ -1,8 +1,10 @@
 package org.rootservices.authorization.persistence.repository;
 
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ClientMapper;
+import org.rootservices.authorization.persistence.mapper.ScopeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;

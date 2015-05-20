@@ -26,7 +26,7 @@ public class ScopesFactoryImpl implements ScopesFactory {
         this.optionalParam = optionalParam;
     }
 
-    public List<Scope> makeScopes(List<String> items) throws ScopesException {
+    public List<String> makeScopes(List<String> items) throws ScopesException {
 
         try {
             optionalParam.run(items);
@@ -36,26 +36,19 @@ public class ScopesFactoryImpl implements ScopesFactory {
             throw new ScopesException(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM, "invalid_request", e);
         }
 
-        List<Scope> scopes;
+        List<String> scopes;
         if ( items == null || items.isEmpty()) {
-            scopes = null;
+            scopes = new ArrayList<>();
         } else {
-            scopes = StringsToScopes(items);
+            scopes = StringToList(items);
         }
         return scopes;
     }
 
-    private List<Scope> StringsToScopes(List<String> items) throws ScopesException {
-        List<Scope> scopes = new ArrayList<>();
+    private List<String> StringToList(List<String> items) throws ScopesException {
+        List<String> scopes = new ArrayList<>();
         for(String item: items.get(0).split(" ")) {
-
-            Scope tmpScope;
-            try {
-                tmpScope = Scope.valueOf(item.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new ScopesException(ErrorCode.SCOPES_DATA_TYPE, "invalid_scope", e);
-            }
-            scopes.add(tmpScope);
+            scopes.add(item);
         }
         return scopes;
     }
