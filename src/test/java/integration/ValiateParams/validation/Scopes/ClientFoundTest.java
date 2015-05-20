@@ -1,15 +1,13 @@
 package integration.ValiateParams.validation.Scopes;
 
-import helper.FixtureFactory;
+import helper.fixture.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.grant.code.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.net.URISyntaxException;
 
@@ -30,8 +28,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -39,24 +36,22 @@ public class ClientFoundTest extends BaseTest {
 
         p.scopes.add("invalid-scope");
 
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.SCOPES_DATA_TYPE.getCode();
+        int expectedErrorCode = ErrorCode.SCOPES_NOT_SUPPORTED.getCode();
         String expectedError = "invalid_scope";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, c.getRedirectURI());
+        runExpectInformClientExceptionNoCause(p, expectedErrorCode, expectedError, c.getRedirectURI());
     }
 
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
         p.responseTypes.add(c.getResponseType().toString());
 
-        p.scopes.add(Scope.PROFILE.toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
+        p.scopes.add("profile");
 
         Exception expectedDomainCause = new ScopesException();
         int expectedErrorCode = ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode();
@@ -67,8 +62,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException, StateException {
-        Client c = FixtureFactory.makeClient();
-        clientRepository.insert(c);
+        Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

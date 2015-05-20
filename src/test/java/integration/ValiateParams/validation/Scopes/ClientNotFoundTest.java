@@ -1,15 +1,11 @@
 package integration.ValiateParams.validation.Scopes;
 
-import helper.FixtureFactory;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.factory.exception.StateException;
-import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.net.URISyntaxException;
@@ -52,8 +48,8 @@ public class ClientNotFoundTest extends BaseTest {
     @Test
     public void duplicate() throws URISyntaxException, StateException {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.scopes.add(Scope.PROFILE.toString());
-        p.scopes.add(Scope.PROFILE.toString());
+        p.scopes.add("profile");
+        p.scopes.add("profile");
 
         Exception expectedDomainCause = new RecordNotFoundException();
         int expectedErrorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();

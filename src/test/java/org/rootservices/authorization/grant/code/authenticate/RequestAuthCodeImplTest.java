@@ -25,6 +25,7 @@ import java.util.UUID;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,7 +57,7 @@ public class RequestAuthCodeImplTest {
         );
     }
 
-    public AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, Scope scope) {
+    public AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {
         AuthCodeInput input = new AuthCodeInput();
         input.setUserName("resourceOwner@rootservices.org");
         input.setPlainTextPassword("plainTextPassword");
@@ -76,8 +77,8 @@ public class RequestAuthCodeImplTest {
         return input;
     }
 
-    public AuthRequest makeAuthRequest(Scope scope) throws URISyntaxException {
-        List<Scope> scopes = new ArrayList<>();
+    public AuthRequest makeAuthRequest(String scope) throws URISyntaxException {
+        List<String> scopes = new ArrayList<>();
         scopes.add(scope);
 
         AuthRequest authRequest = new AuthRequest(
@@ -94,7 +95,7 @@ public class RequestAuthCodeImplTest {
     public void testRun() throws Exception {
         UUID clientId = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
-        Scope scope = Scope.PROFILE;
+        String scope = "profile";
 
         // parameter to pass into method in test
         AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
@@ -127,7 +128,8 @@ public class RequestAuthCodeImplTest {
         when(mockGrantAuthCode.run(
                         resourceOwnerUUID,
                         authRequest.getClientId(),
-                        authRequest.getRedirectURI())
+                        authRequest.getRedirectURI(),
+                        authRequest.getScopes())
         ).thenReturn(randomString);
 
         when(mockMakeAuthResponse.run(
@@ -148,7 +150,7 @@ public class RequestAuthCodeImplTest {
     public void testRunFailsLogin() throws URISyntaxException, UnauthorizedException {
         UUID clientId = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
-        Scope scope = Scope.PROFILE;
+        String scope = "profile";
 
         // parameters to method in test
         AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
@@ -164,7 +166,9 @@ public class RequestAuthCodeImplTest {
         try {
             authResponse = subject.run(input);
         } catch (UnauthorizedException e) {
-            verify(mockGrantAuthCode, never()).run(any(UUID.class), any(UUID.class), any(Optional.class));
+            verify(mockGrantAuthCode, never()).run(
+                any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
+            );
             expectedException = e;
         } catch (InformResourceOwnerException e) {
             fail("Expected UnauthorizedException");

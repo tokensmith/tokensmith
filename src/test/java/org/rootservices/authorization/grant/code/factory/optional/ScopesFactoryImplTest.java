@@ -37,37 +37,37 @@ public class ScopesFactoryImplTest {
 
     @Test
     public void testMakeScopes() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<Scope> expected = new ArrayList<>();
-        expected.add(Scope.PROFILE);
+        List<String> expected = new ArrayList<>();
+        expected.add("profile");
 
         List<String> items = new ArrayList<>();
         items.add(expected.get(0).toString());
 
         when(mockOptionalParam.run(items)).thenReturn(true);
 
-        List<Scope> actual = subject.makeScopes(items);
+        List<String> actual = subject.makeScopes(items);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void testMakeScopesWhenScopesAreNull() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<Scope> expected = null;
+        List<String> expected = new ArrayList<>();
         List<String> items = null;
 
         when(mockOptionalParam.run(items)).thenReturn(true);
 
-        List<Scope> actual = subject.makeScopes(items);
+        List<String> actual = subject.makeScopes(items);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     public void testMakeScopesWhenScopesAreEmptyList() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<Scope> expected = null;
+        List<String> expected = new ArrayList<>();
         List<String> items = new ArrayList<>();
 
         when(mockOptionalParam.run(items)).thenReturn(true);
 
-        List<Scope> actual = subject.makeScopes(items);
+        List<String> actual = subject.makeScopes(items);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -93,8 +93,8 @@ public class ScopesFactoryImplTest {
     public void testMakeScopesMoreThanOneItemError() throws MoreThanOneItemError, EmptyValueError {
 
         List<String> items = new ArrayList<>();
-        items.add(Scope.PROFILE.toString());
-        items.add(Scope.PROFILE.toString());
+        items.add("profile");
+        items.add("profile");
 
         when(mockOptionalParam.run(items)).thenThrow(MoreThanOneItemError.class);
 
@@ -105,25 +105,5 @@ public class ScopesFactoryImplTest {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode());
         }
-
-    }
-
-
-    @Test
-    public void testMakeScopesDataTypeError() throws MoreThanOneItemError, EmptyValueError {
-
-        List<String> items = new ArrayList<>();
-        items.add("invalid");
-
-        when(mockOptionalParam.run(items)).thenReturn(true);
-
-        try {
-            subject.makeScopes(items);
-            fail("ScopesException was expected.");
-        } catch (ScopesException e) {
-            assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_DATA_TYPE.getCode());
-        }
-
     }
 }

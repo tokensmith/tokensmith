@@ -2,6 +2,7 @@ package org.rootservices.authorization.persistence.entity;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -11,6 +12,7 @@ public class Client {
     private UUID uuid;
     private ResponseType responseType;
     private URI redirectURI;
+    private List<Scope> scopes;
     private Date createdAt;
 
     public Client() {};
@@ -45,6 +47,14 @@ public class Client {
         this.redirectURI = redirectURI;
     }
 
+    public List<Scope> getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(List<Scope> scopes) {
+        this.scopes = scopes;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -52,4 +62,6 @@ public class Client {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+
 }

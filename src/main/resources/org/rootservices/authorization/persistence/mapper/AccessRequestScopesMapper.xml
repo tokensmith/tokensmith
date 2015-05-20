@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.AccessRequestScopesMapper">
+
+    <insert id="insert">
+        insert into access_request_scopes (uuid, access_request_uuid, scope_uuid)
+        values (
+            #{accessRequestScope.uuid},
+            #{accessRequestScope.accessRequestUUID},
+            #{accessRequestScope.scopeUUID}
+        )
+    </insert>
+
+</mapper>
