@@ -1,4 +1,4 @@
-Java implementation of the use cases for, [The OAuth 2.0 Authorization Framework](http://tools.ietf.org/html/rfc6749)
+Wse cases for, [OAuth 2.0](http://tools.ietf.org/html/rfc6749)
 ---------------------------------------------------------------------------------------------------------------------
 
 [![Build Status](https://travis-ci.org/RootServices/auth.svg?branch=development)](https://travis-ci.org/RootServices/auth)
