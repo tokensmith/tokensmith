@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.TokenMapper">
+
+    <insert id="insert" >
+        insert into token (uuid, auth_code_uuid, expires_at)
+        values (
+            #{token.uuid},
+            #{token.authCodeUUID},
+            #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
+        )
+    </insert>
+</mapper>
