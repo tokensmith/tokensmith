@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.mapper;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,35 +37,17 @@ public class AuthCodeMapperTest {
     @Autowired
     private AuthCodeMapper subject;
 
-    private UUID clientUUID;
-    private UUID resourceOwnerUUID;
-
-    @Before
-    public void setUp() throws URISyntaxException {
-
-        // create client to be used as the fk constraint.
-        clientUUID = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
-        URI redirectURI = new URI("https://rootservices.org");
-        Client client = new Client(clientUUID, rt, redirectURI);
-        clientRepository.insert(client);
-
-        // create auth user to be used as fk constraint
-        resourceOwnerUUID = UUID.randomUUID();
-        String email = "test@rootservices.com";
-        byte[] password = "plainTextPassword".getBytes();
-        ResourceOwner authUser =  new ResourceOwner(resourceOwnerUUID, email, password);
-        resourceOwnerRepository.insert(authUser);
-    }
-
     @Test
     @Transactional
-    public void insert() {
-        UUID uuid = UUID.randomUUID();
-        byte [] code = "authortization_code".getBytes();
-        OffsetDateTime expiresAt = OffsetDateTime.now();
+    public void insert() throws URISyntaxException {
 
-        AuthCode authCode = new AuthCode(uuid, code, resourceOwnerUUID, clientUUID, expiresAt);
+        Client client = FixtureFactory.makeClientWithScopes();
+        clientRepository.insert(client);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        resourceOwnerRepository.insert(resourceOwner);
+
+        AuthCode authCode = FixtureFactory.makeAuthCode(resourceOwner.getUuid(), client.getUuid());
         subject.insert(authCode);
     }
 }

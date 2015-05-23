@@ -24,10 +24,19 @@ public class OffsetDateTimeTypeHandlerTest {
     }
 
     @Test
-    public void testGetResult() throws Exception {
+    public void testGetResultsSixDigitsFractionSeconds() throws Exception {
         String columnName = "SCOPE_created_at";
         ResultSet resultSet = mock(ResultSet.class);
         when(resultSet.getString(columnName)).thenReturn("2015-05-14 07:53:52.782889-05");
+        OffsetDateTime actual = subject.getResult(resultSet, columnName);
+        assertThat(actual.getYear()).isEqualTo(2015);
+    }
+
+    @Test
+    public void testGetResultsFourDigitsFractionSeconds() throws Exception {
+        String columnName = "SCOPE_created_at";
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.getString(columnName)).thenReturn("2015-05-23 11:58:22.6899-05");
         OffsetDateTime actual = subject.getResult(resultSet, columnName);
         assertThat(actual.getYear()).isEqualTo(2015);
     }

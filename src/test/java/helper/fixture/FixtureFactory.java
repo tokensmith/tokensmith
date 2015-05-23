@@ -1,16 +1,15 @@
 package helper.fixture;
 
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.TextHasher;
 import org.rootservices.authorization.security.TextHasherImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -47,5 +46,31 @@ public class FixtureFactory {
         ro.setPassword(hashedPassword.getBytes());
 
         return ro;
+    }
+
+    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID) {
+        AuthCode authCode = new AuthCode();
+        authCode.setUuid(UUID.randomUUID());
+        authCode.setCode("authortization_code".getBytes());
+        authCode.setExpiresAt(OffsetDateTime.now());
+
+        return authCode;
+    }
+
+    public static AccessRequest makeAccessRequest(UUID authCodeUUID) throws URISyntaxException {
+        AccessRequest accessRequest = new AccessRequest();
+        accessRequest.setUuid(UUID.randomUUID());
+        accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
+
+        return accessRequest;
+    }
+
+    public static Token makeToken(UUID authCodeUUID) {
+        Token token = new Token();
+        token.setUuid(UUID.randomUUID());
+        token.setAuthCodeUUID(authCodeUUID);
+        token.setExpiresAt(OffsetDateTime.now());
+
+        return token;
     }
 }
