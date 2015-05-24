@@ -69,6 +69,7 @@ public class FixtureFactory {
         Token token = new Token();
         token.setUuid(UUID.randomUUID());
         token.setAuthCodeUUID(authCodeUUID);
+        token.setToken("token".getBytes());
         token.setExpiresAt(OffsetDateTime.now());
 
         return token;
