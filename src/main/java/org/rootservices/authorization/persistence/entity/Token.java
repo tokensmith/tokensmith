@@ -9,14 +9,16 @@ import java.util.UUID;
 public class Token {
     private UUID uuid;
     private UUID authCodeUUID;
+    private byte[] token;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
     public Token() {}
 
-    public Token(UUID uuid, UUID authCodeUUID, OffsetDateTime expiresAt) {
+    public Token(UUID uuid, UUID authCodeUUID, byte[] token, OffsetDateTime expiresAt) {
         this.uuid = uuid;
         this.authCodeUUID = authCodeUUID;
+        this.token = token;
         this.expiresAt = expiresAt;
     }
 
@@ -34,6 +36,14 @@ public class Token {
 
     public void setAuthCodeUUID(UUID authCodeUUID) {
         this.authCodeUUID = authCodeUUID;
+    }
+
+    public byte[] getToken() {
+        return token;
+    }
+
+    public void setToken(byte[] token) {
+        this.token = token;
     }
 
     public OffsetDateTime getExpiresAt() {
