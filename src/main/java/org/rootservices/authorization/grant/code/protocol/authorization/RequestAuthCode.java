@@ -1,10 +1,8 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
-import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * Created by tommackenzie on 4/16/15.

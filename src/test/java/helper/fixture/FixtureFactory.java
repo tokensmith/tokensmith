@@ -28,6 +28,17 @@ public class FixtureFactory {
         return client;
     }
 
+    public static ConfidentialClient makeConfidentialClient(Client client) {
+        ConfidentialClient confidentialClient = new ConfidentialClient();
+        confidentialClient.setUuid(UUID.randomUUID());
+        confidentialClient.setClient(client);
+        TextHasher textHasher = new TextHasherImpl();
+        String hashedPassword = textHasher.run("password");
+        confidentialClient.setPassword(hashedPassword.getBytes());
+
+        return confidentialClient;
+    }
+
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
         Scope scope = new Scope();
@@ -52,7 +63,9 @@ public class FixtureFactory {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         authCode.setCode("authortization_code".getBytes());
-        authCode.setExpiresAt(OffsetDateTime.now());
+        authCode.setResourceOwnerUUID(resourceOwnerUUID);
+        authCode.setClientUUID(clientUUID);
+        authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(1));
 
         return authCode;
     }
@@ -61,6 +74,7 @@ public class FixtureFactory {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
         accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
+        accessRequest.setAuthCodeUUID(authCodeUUID);
 
         return accessRequest;
     }

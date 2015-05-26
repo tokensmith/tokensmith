@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.request.AuthRequest;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 

@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,14 +6,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.ValidateParams;
-import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.authenticate.LoginResourceOwner;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.request.AuthRequest;
-import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;

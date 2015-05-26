@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.exception;
+package org.rootservices.authorization.exception;
 
 /**
  * Created by tommackenzie on 2/8/15.

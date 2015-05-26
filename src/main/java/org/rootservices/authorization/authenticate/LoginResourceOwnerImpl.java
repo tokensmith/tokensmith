@@ -1,12 +1,11 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.authenticate;
 
-import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.IsTextEqualToHash;
-import org.rootservices.authorization.security.TextHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,16 +25,14 @@ import java.util.UUID;
 @Component
 public class LoginResourceOwnerImpl implements LoginResourceOwner {
 
-    @Autowired
-    private IsTextEqualToHash isTextEqualToHash;
-
-    @Autowired
+    private MatchPasswords matchPasswords;
     private ResourceOwnerRepository resourceOwnerRepository;
 
     public LoginResourceOwnerImpl() {}
 
-    public LoginResourceOwnerImpl(IsTextEqualToHash isTextEqualToHash, ResourceOwnerRepository resourceOwnerRepository) {
-        this.isTextEqualToHash = isTextEqualToHash;
+    @Autowired
+    public LoginResourceOwnerImpl(MatchPasswords matchPasswords, ResourceOwnerRepository resourceOwnerRepository) {
+        this.matchPasswords = matchPasswords;
         this.resourceOwnerRepository = resourceOwnerRepository;
     }
 
@@ -51,24 +48,10 @@ public class LoginResourceOwnerImpl implements LoginResourceOwner {
                 e, ErrorCode.RESOURCE_OWNER_NOT_FOUND.getCode());
         }
 
-        String hashedPassword = "";
-        try {
-            hashedPassword = new String(resourceOwner.getPassword(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnauthorizedException(
-                ErrorCode.UNSUPPORTED_ENCODING.getMessage(),
-                e, ErrorCode.UNSUPPORTED_ENCODING.getCode());
-        }
-
-        boolean passwordsMatch = isTextEqualToHash.run(
-            plainTextPassword, hashedPassword
+        boolean passwordsMatch = matchPasswords.run(
+            plainTextPassword, resourceOwner.getPassword()
         );
 
-        if ( !passwordsMatch ) {
-            throw new UnauthorizedException(
-                ErrorCode.PASSWORD_MISMATCH.getMessage(),
-                ErrorCode.PASSWORD_MISMATCH.getCode());
-        }
         return resourceOwner.getUuid();
     }
 }

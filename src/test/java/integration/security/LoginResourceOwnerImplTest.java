@@ -3,8 +3,8 @@ package integration.security;
 import helper.fixture.FixtureFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.grant.code.authenticate.LoginResourceOwner;
-import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.authenticate.LoginResourceOwner;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -33,7 +33,7 @@ public class LoginResourceOwnerImplTest {
     private LoginResourceOwner subject;
 
     @Test
-    public void run() throws UnauthorizedException, UnsupportedEncodingException {
+    public void run() throws UnauthorizedException {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 

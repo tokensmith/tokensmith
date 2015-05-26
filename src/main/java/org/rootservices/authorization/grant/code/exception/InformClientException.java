@@ -1,5 +1,7 @@
 package org.rootservices.authorization.grant.code.exception;
 
+import org.rootservices.authorization.exception.BaseInformException;
+
 import java.net.URI;
 
 /**

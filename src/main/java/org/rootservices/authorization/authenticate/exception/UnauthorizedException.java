@@ -1,8 +1,6 @@
-package org.rootservices.authorization.grant.code.authenticate.exception;
+package org.rootservices.authorization.authenticate.exception;
 
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.exception.BaseInformException;
-import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
+import org.rootservices.authorization.exception.BaseInformException;
 
 /**
  * Created by tommackenzie on 4/13/15.

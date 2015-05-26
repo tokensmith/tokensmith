@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuthCodeMapper {
-    public void insert(@Param("authCode") AuthCode authCode);
+    void insert(@Param("authCode") AuthCode authCode);
 }

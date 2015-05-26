@@ -4,19 +4,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AccessRequestMapper">
 
-    <resultMap id="authRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
+    <resultMap id="accessRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler"/>
-        <result column="authCodeUUID" property="auth_code_uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt"/>
+        <collection property="scopes"
+                    resultMap="org.rootservices.authorization.persistence.mapper.ScopeMapper.scope"
+                    columnPrefix="scope_"
+                    javaType="ArrayList"/>
     </resultMap>
 
     <insert id="insert">
         insert into access_request (uuid, redirect_URI, auth_code_uuid)
         values (
-        #{accessRequest.uuid},
-        #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-        #{accessRequest.authCodeUUID}
+            #{accessRequest.uuid},
+            #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{accessRequest.authCodeUUID}
         )
     </insert>
+
+    <select id="getByClientUUIDAndAuthCode" resultMap="accessRequest">
+        select
+            access_request.uuid,
+            access_request.redirect_uri,
+            access_request.auth_code_uuid,
+            access_request.created_at,
+            scope.uuid as scope_uuid,
+            scope.name as scope_name,
+            scope.created_at as scope_created_at
+        from access_request
+        left join access_request_scopes on access_request_scopes.access_request_uuid = access_request.uuid
+        join scope on scope.uuid = access_request_scopes.scope_uuid
+        join auth_code on auth_code.uuid = access_request.auth_code_uuid
+        where auth_code.client_uuid = #{clientUUID}
+        and auth_code.code = decode(#{authCode}, 'escape')
+        and auth_code.expires_at > current_timestamp
+    </select>
 </mapper>

@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.junit.Before;
 import org.junit.Test;
