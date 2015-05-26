@@ -2,6 +2,7 @@ package org.rootservices.authorization.persistence.entity;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ public class AccessRequest {
     private Optional<URI> redirectURI;
     private UUID authCodeUUID;
     private Date createdAt;
+    private List<Scope> scopes;
 
     public AccessRequest() {}
 
@@ -52,5 +54,13 @@ public class AccessRequest {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<Scope> getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(List<Scope> scopes) {
+        this.scopes = scopes;
     }
 }

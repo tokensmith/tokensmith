@@ -1,11 +1,11 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import helper.fixture.persistence.LoadClientWithScopes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.grant.code.authenticate.GrantAuthCode;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * Created by tommackenzie on 5/23/15.
@@ -25,10 +23,13 @@ import java.util.Optional;
 @Transactional
 public class TokenMapperTest {
 
-    private LoadClientWithScopes loadClientWithScopes;
+    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private ConfidentialClientRepository confidentialClientRepository;
 
     @Autowired
     private ScopeRepository scopeRepository;
@@ -43,6 +44,9 @@ public class TokenMapperTest {
     private AccessRequestRepository accessRequestRepository;
 
     @Autowired
+    private AccessRequestScopesRepository accessRequestScopesRepository;
+
+    @Autowired
     private AuthCodeRepository authCodeRepository;
 
     @Autowired
@@ -50,24 +54,25 @@ public class TokenMapperTest {
 
     @Before
     public void setUp() {
-        loadClientWithScopes = new LoadClientWithScopes(clientRepository, scopeRepository, clientScopesRepository);
-    }
+        LoadClientWithScopes loadClientWithScopes = new LoadClientWithScopes(
+            clientRepository,
+            scopeRepository,
+            clientScopesRepository
+        );
 
-    private AuthCode setUpDatabase() throws URISyntaxException {
-        Client client = loadClientWithScopes.run();
-        ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        resourceOwnerRepository.insert(ro);
-        AuthCode authCode = FixtureFactory.makeAuthCode(ro.getUuid(), client.getUuid());
-        authCodeRepository.insert(authCode);
-        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(authCode.getUuid());
-        accessRequestRepository.insert(accessRequest);
-
-        return authCode;
+        loadConfidentialClientTokenReady = new LoadConfidentialClientTokenReady(
+            loadClientWithScopes,
+            confidentialClientRepository,
+            resourceOwnerRepository,
+            authCodeRepository,
+            accessRequestRepository,
+            accessRequestScopesRepository
+        );
     }
 
     @Test
     public void insert() throws URISyntaxException {
-        AuthCode authCode = setUpDatabase();
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
         Token token = FixtureFactory.makeToken(authCode.getUuid());
         subject.insert(token);
     }

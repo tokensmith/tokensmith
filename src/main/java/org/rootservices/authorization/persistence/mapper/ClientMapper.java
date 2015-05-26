@@ -11,7 +11,9 @@ import java.util.UUID;
  */
 @Repository
 public interface ClientMapper {
-    public Client getByUUID(@Param("uuid") UUID uuid);
-    public void insert(@Param("client") Client client);
+    Client getByUUID(@Param("uuid") UUID uuid);
+    void insert(@Param("client") Client client);
+    Client getByCredentialsAndAuthCode(@Param("uuid") UUID uuid, @Param("password") byte[] password, @Param("code") byte[] code);
+
 }
 

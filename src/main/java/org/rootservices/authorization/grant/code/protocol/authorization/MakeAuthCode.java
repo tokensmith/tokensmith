@@ -1,8 +1,7 @@
-package org.rootservices.authorization.grant.code.authenticate;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.rootservices.authorization.persistence.entity.AuthCode;
 
-import java.text.ParseException;
 import java.util.UUID;
 
 /**

@@ -1,12 +1,13 @@
 package org.rootservices.authorization.persistence.mapper;
 
+import helper.fixture.persistence.LoadClientWithScopes;
+import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.grant.code.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,28 +19,36 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+
 /**
  * Created by tommackenzie on 4/15/15.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@Transactional
 public class AccessRequestMapperTest {
 
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
+    private ConfidentialClientRepository confidentialClientRepository;
+    @Autowired
+    private ScopeRepository scopeRepository;
+    @Autowired
+    private ClientScopesRepository clientScopesRepository;
+    @Autowired
     private ResourceOwnerRepository resourceOwnerRepository;
     @Autowired
     private AuthCodeRepository authCodeRepository;
+    @Autowired
+    private AccessRequestRepository accessRequestRepository;
+    @Autowired
+    private AccessRequestScopesRepository accessRequestScopesRepository;
 
     @Autowired
     private AccessRequestMapper subject;
 
-    // assigned in setUp()
-    private UUID clientUUID;
-    private UUID resourceOwnerUUID;
-    private UUID authCodeUUID;
-    private URI redirectURI;
 
     /**
      * Creates foreign key relationships and assigns static variables
@@ -47,39 +56,69 @@ public class AccessRequestMapperTest {
      *
      * @throws URISyntaxException
      */
-    @Before
-    public void setUp() throws URISyntaxException {
+    public AuthCode prepareDataBaseForAccessRequestInsert(URI redirectURI) throws URISyntaxException {
 
         // create client to be used as the fk constraint.
-        clientUUID = UUID.randomUUID();
         ResponseType responseType = ResponseType.CODE;
-        redirectURI = new URI("https://rootservices.org");
-        Client client = new Client(clientUUID, responseType, redirectURI);
+        Client client = new Client(UUID.randomUUID(), responseType, redirectURI);
         clientRepository.insert(client);
 
         // create auth user to be used as fk constraint
-        resourceOwnerUUID = UUID.randomUUID();
         String email = "test@rootservices.com";
         byte[] password = "plainTextPassword".getBytes();
-        ResourceOwner authUser =  new ResourceOwner(resourceOwnerUUID, email, password);
-        resourceOwnerRepository.insert(authUser);
+        ResourceOwner ro =  new ResourceOwner(UUID.randomUUID(), email, password);
+        resourceOwnerRepository.insert(ro);
 
         // create auth code to be used as fk constraint
-        authCodeUUID = UUID.randomUUID();
         byte [] code = "authortization_code".getBytes();
         OffsetDateTime expiresAt = OffsetDateTime.now();
 
-        AuthCode authCode = new AuthCode(authCodeUUID, code, resourceOwnerUUID, clientUUID, expiresAt);
+        AuthCode authCode = new AuthCode(UUID.randomUUID(), code, ro.getUuid(), client.getUuid(), expiresAt);
         authCodeRepository.insert(authCode);
+
+        return authCode;
     }
 
     @Test
-    @Transactional
     public void insert() throws Exception {
-        UUID uuid = UUID.randomUUID();
+        URI redirectURI = new URI("https://rootservices.org");
+        AuthCode authCode = prepareDataBaseForAccessRequestInsert(redirectURI);
         AccessRequest accessRequest = new AccessRequest(
-                uuid, Optional.of(redirectURI), authCodeUUID
+                UUID.randomUUID(), Optional.of(redirectURI), authCode.getUuid()
         );
+
         subject.insert(accessRequest);
     }
+
+
+    @Test
+    public void getByClientUUIDAndAuthCode() throws URISyntaxException {
+        LoadClientWithScopes loadClientWithScopes = new LoadClientWithScopes(
+                clientRepository,
+                scopeRepository,
+                clientScopesRepository
+        );
+
+        LoadConfidentialClientTokenReady loadConfidentialClientTokenReady = new LoadConfidentialClientTokenReady(
+                loadClientWithScopes,
+                confidentialClientRepository,
+                resourceOwnerRepository,
+                authCodeRepository,
+                accessRequestRepository,
+                accessRequestScopesRepository
+        );
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AccessRequest ar = subject.getByClientUUIDAndAuthCode(
+                authCode.getClientUUID(), "authortization_code");
+
+        assertThat(ar).isNotNull();
+        assertThat(ar.getRedirectURI().isPresent()).isTrue();
+        assertThat(ar.getRedirectURI().get()).isEqualTo(new URI("https://rootservices.org"));
+
+        assertThat(ar.getScopes()).isNotNull();
+        assertThat(ar.getScopes().size()).isEqualTo(1);
+        assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
+    }
+
 }

@@ -1,13 +1,13 @@
 package org.rootservices.authorization.persistence.mapper;
 
+import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadClientWithScopes;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ClientScope;
-import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
+import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,7 +24,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+// @Transactional
 public class ClientMapperTest {
+
+    private LoadClientWithScopes loadClientWithScopes;
+
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Autowired
     private ScopeRepository scopeRepository;
@@ -45,39 +51,24 @@ public class ClientMapperTest {
         return client;
     }
 
-    private UUID insertScope() {
-        Scope scope = new Scope(
-                UUID.randomUUID(),
-                "profile"
+    @Before
+    public void setUp() {
+        loadClientWithScopes = new LoadClientWithScopes(
+                clientRepository,
+                scopeRepository,
+                clientScopesRepository
         );
-        scopeRepository.insert(scope);
-        return scope.getUuid();
-    }
-
-    private void insertClientScope(UUID clientUUID, UUID scopeUUID) {
-        ClientScope clientScope = new ClientScope(
-                UUID.randomUUID(), clientUUID, scopeUUID
-        );
-        clientScopesRepository.insert(clientScope);
     }
 
     @Test
-    @Transactional
     public void insert() throws URISyntaxException {
-        UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
-        URI redirectURI = new URI("https://rootservices.org");
-        Client client = new Client(uuid, rt, redirectURI);
-
+        Client client = FixtureFactory.makeClientWithScopes();
         subject.insert(client);
     }
 
     @Test
-    @Transactional
     public void getByUUID() throws URISyntaxException {
-        Client expectedClient = insertClient();
-        UUID scopeUUId = insertScope();
-        insertClientScope(expectedClient.getUuid(), scopeUUId);
+        Client expectedClient = loadClientWithScopes.run();
 
         Client actualClient = subject.getByUUID(expectedClient.getUuid());
 
@@ -85,12 +76,13 @@ public class ClientMapperTest {
         assertThat(actualClient.getResponseType()).isEqualTo(expectedClient.getResponseType());
         assertThat(actualClient.getCreatedAt()).isNotNull();
         assertThat(actualClient.getScopes().size()).isEqualTo(1);
-        assertThat(actualClient.getScopes().get(0).getUuid()).isEqualTo(scopeUUId);
+        assertThat(actualClient.getScopes().get(0).getUuid()).isEqualTo(
+                expectedClient.getScopes().get(0).getUuid()
+        );
         assertThat(actualClient.getScopes().get(0).getName()).isEqualTo("profile");
     }
 
     @Test
-    @Transactional
     public void getByUUIDNotFound() {
         Client actualClient = subject.getByUUID(UUID.randomUUID());
 

@@ -1,8 +1,4 @@
-package org.rootservices.authorization.grant.code.authenticate;
-
-import org.rootservices.authorization.grant.code.authenticate.exception.UnauthorizedException;
-import org.rootservices.authorization.grant.code.exception.InformClientException;
-import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
+package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import java.util.List;
 

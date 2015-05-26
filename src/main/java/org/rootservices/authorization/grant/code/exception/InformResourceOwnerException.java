@@ -1,5 +1,7 @@
 package org.rootservices.authorization.grant.code.exception;
 
+import org.rootservices.authorization.exception.BaseInformException;
+
 /**
  * Created by tommackenzie on 11/21/14.
  */
