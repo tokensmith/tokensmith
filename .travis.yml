@@ -7,8 +7,7 @@ addons:
   postgresql: "9.3"
 
 after_failure:
-  chmod +x $TRAVIS_BUILD_DIR/print_surefire_reports.sh
-  $TRAVIS_BUILD_DIR/print_surefire_reports.sh
+  chmod +x $TRAVIS_BUILD_DIR/print_surefire_reports.sh; $TRAVIS_BUILD_DIR/print_surefire_reports.sh
 
 before_script:
   - export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth_test";
