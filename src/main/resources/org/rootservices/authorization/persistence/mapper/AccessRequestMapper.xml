@@ -39,6 +39,6 @@
         join auth_code on auth_code.uuid = access_request.auth_code_uuid
         where auth_code.client_uuid = #{clientUUID}
         and auth_code.code = decode(#{authCode}, 'escape')
-        and auth_code.expires_at > current_timestamp
+
     </select>
 </mapper>
