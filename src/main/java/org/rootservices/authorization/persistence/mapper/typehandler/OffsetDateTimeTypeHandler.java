@@ -18,10 +18,11 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
     @Override
     public void setParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
         if (parameter == null) {
-            ps.setObject(i, null, Types.DATE);
+            ps.setObject(i, null, Types.TIMESTAMP);
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
-            ps.setObject(i, parameter.format(formatter), Types.TIMESTAMP);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSZ");
+            String formattedDate = parameter.format(formatter);
+            ps.setObject(i, formattedDate, Types.TIMESTAMP);
         }
     }
 
