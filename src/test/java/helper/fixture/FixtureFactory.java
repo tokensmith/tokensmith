@@ -65,7 +65,7 @@ public class FixtureFactory {
         authCode.setCode("authortization_code".getBytes());
         authCode.setResourceOwnerUUID(resourceOwnerUUID);
         authCode.setClientUUID(clientUUID);
-        authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(1));
+        authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
 
         return authCode;
     }

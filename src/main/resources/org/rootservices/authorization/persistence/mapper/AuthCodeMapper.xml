@@ -12,10 +12,11 @@
     </resultMap>
 
     <insert id="insert" >
-        insert into auth_code (uuid, code, client_uuid, expires_at)
+        insert into auth_code (uuid, code, resource_owner_uuid, client_uuid, expires_at)
         values (
             #{authCode.uuid},
             #{authCode.code},
+            #{authCode.resourceOwnerUUID},
             #{authCode.clientUUID},
             #{authCode.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
