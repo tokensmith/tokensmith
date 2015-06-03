@@ -40,7 +40,9 @@ public enum ErrorCode {
 
     RESOURCE_OWNER_NOT_FOUND (24, "The resource owner was not found"),
     PASSWORD_MISMATCH (25, "Password did not match"),
-    UNSUPPORTED_ENCODING (26, "");
+    UNSUPPORTED_ENCODING (26, ""),
+
+    ACCESS_REQUEST_NOT_FOUND (27, "access request was not found");
 
     private int code;
     private final String message;

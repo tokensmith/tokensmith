@@ -40,6 +40,12 @@ public class LoginConfidentialClientImpl implements LoginConfidentialClient {
                 plainTextPassword, confidentialClient.getPassword()
         );
 
+        if (!passwordsMatch) {
+            throw new UnauthorizedException(
+                    ErrorCode.PASSWORD_MISMATCH.getMessage(),
+                    ErrorCode.PASSWORD_MISMATCH.getCode()
+            );
+        }
         return confidentialClient;
     }
 }
