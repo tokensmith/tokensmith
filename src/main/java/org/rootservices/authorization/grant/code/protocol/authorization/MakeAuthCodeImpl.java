@@ -5,6 +5,8 @@ import org.rootservices.authorization.security.TextHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -14,27 +16,27 @@ import java.util.UUID;
 @Component
 public class MakeAuthCodeImpl implements MakeAuthCode {
 
-    @Autowired
-    private TextHasher textHasher;
 
-    public MakeAuthCodeImpl() {
-    }
-
-    public MakeAuthCodeImpl(TextHasher textHasher) {
-        this.textHasher = textHasher;
-    }
+    public MakeAuthCodeImpl() {}
 
     @Override
     public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, String authorizationCode, int secondsToExpire) {
 
-        String hashedAuthorizationCode = textHasher.run(authorizationCode);
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hash algorithm not found");
+        }
+
+        byte[] hashedAuthorizationCode = digest.digest(authorizationCode.getBytes());
 
         OffsetDateTime expiresAt = OffsetDateTime.now();
         expiresAt = expiresAt.plusSeconds(secondsToExpire);
 
         AuthCode authCode = new AuthCode(
                 UUID.randomUUID(),
-                hashedAuthorizationCode.getBytes(),
+                hashedAuthorizationCode,
                 resourceOwnerUUID,
                 clientUUID,
                 expiresAt
