@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/23/15.
  *
- * XXX left off here testing insert join to scopes.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GrantAuthCodeImplTest {

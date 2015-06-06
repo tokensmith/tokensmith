@@ -4,33 +4,33 @@ package org.rootservices.authorization.grant.code.protocol.token;
  * Created by tommackenzie on 6/3/15.
  */
 public class TokenResponse {
-    private String token;
-    private Integer secondsToExpiration;
-    private TokenType tokenType;
+    private String accessToken;
+    private Integer expiresIn;
+    private String tokenType;
 
     public TokenResponse(){}
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public Integer getSecondsToExpiration() {
-        return secondsToExpiration;
+    public Integer getExpiresIn() {
+        return expiresIn;
     }
 
-    public void setSecondsToExpiration(Integer secondsToExpiration) {
-        this.secondsToExpiration = secondsToExpiration;
+    public void setExpiresIn(Integer expiresIn) {
+        this.expiresIn = expiresIn;
     }
 
-    public TokenType getTokenType() {
+    public String getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(TokenType tokenType) {
+    public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
     }
 }

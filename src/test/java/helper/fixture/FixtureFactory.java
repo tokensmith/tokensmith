@@ -1,8 +1,8 @@
 package helper.fixture;
 
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.security.TextHasher;
-import org.rootservices.authorization.security.TextHasherImpl;
+import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.authorization.security.HashTextRandomSaltImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,7 +32,7 @@ public class FixtureFactory {
         ConfidentialClient confidentialClient = new ConfidentialClient();
         confidentialClient.setUuid(UUID.randomUUID());
         confidentialClient.setClient(client);
-        TextHasher textHasher = new TextHasherImpl();
+        HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run("password");
         confidentialClient.setPassword(hashedPassword.getBytes());
 
@@ -52,7 +52,7 @@ public class FixtureFactory {
         ResourceOwner ro = new ResourceOwner();
         ro.setUuid(UUID.randomUUID());
         ro.setEmail("test@rootservices.org");
-        TextHasher textHasher = new TextHasherImpl();
+        HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run("password");
         ro.setPassword(hashedPassword.getBytes());
 
