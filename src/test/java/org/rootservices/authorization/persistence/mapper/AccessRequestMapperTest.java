@@ -120,5 +120,4 @@ public class AccessRequestMapperTest {
         assertThat(ar.getScopes().size()).isEqualTo(1);
         assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
     }
-
 }

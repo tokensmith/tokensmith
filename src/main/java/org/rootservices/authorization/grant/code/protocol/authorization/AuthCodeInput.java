@@ -7,6 +7,8 @@ import java.util.List;
  *
  * A Value object that represents the inputs the
  * resource owner specifies when they request a Access Code
+ *
+ * TODO: should this be renamed to represent its a request object?
  */
 public class AuthCodeInput {
     private String userName;

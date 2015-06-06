@@ -10,12 +10,11 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,14 +23,16 @@ import java.util.UUID;
 @Component
 public class RequestTokenImpl implements RequestToken {
     private LoginConfidentialClient loginConfidentialClient;
+    private HashTextStaticSalt hashText;
     private AccessRequestRepository accessRequestRepository;
     private RandomString randomString;
     private MakeToken makeToken;
     private TokenRepository tokenRepository;
 
     @Autowired
-    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, AccessRequestRepository accessRequestRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository) {
+    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, HashTextStaticSalt hashText, AccessRequestRepository accessRequestRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository) {
         this.loginConfidentialClient = loginConfidentialClient;
+        this.hashText = hashText;
         this.accessRequestRepository = accessRequestRepository;
         this.randomString = randomString;
         this.makeToken = makeToken;
@@ -39,13 +40,15 @@ public class RequestTokenImpl implements RequestToken {
     }
 
     @Override
-    public TokenResponse run(UUID clientUUID, String clientPassword, String code, Optional<URI> redirectURI) throws UnauthorizedException, BaseInformException {
+    public TokenResponse run(TokenRequest tokenRequest) throws UnauthorizedException, BaseInformException {
 
-        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, clientPassword);
+        UUID clientUUID = UUID.fromString(tokenRequest.getClientUUID());
+        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenRequest.getClientPassword());
 
         AccessRequest accessRequest;
+        String hashedCode = hashText.run(tokenRequest.getCode());
         try {
-            accessRequest = accessRequestRepository.getByClientUUIDAndAuthCode(clientUUID, code);
+            accessRequest = accessRequestRepository.getByClientUUIDAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
             throw new BaseInformException("Access Request was not found", e, ErrorCode.ACCESS_REQUEST_NOT_FOUND.getCode());
         }
@@ -55,9 +58,9 @@ public class RequestTokenImpl implements RequestToken {
         tokenRepository.insert(token);
 
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken(plainTextToken);
-        tokenResponse.setSecondsToExpiration(makeToken.getSecondsToExpiration());
-        tokenResponse.setTokenType(makeToken.getTokenType());
+        tokenResponse.setAccessToken(plainTextToken);
+        tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
+        tokenResponse.setTokenType(makeToken.getTokenType().toString().toLowerCase());
         return tokenResponse;
     }
 }

@@ -2,39 +2,46 @@ package org.rootservices.authorization.grant.code.protocol.token;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 6/2/15.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class MakeBearerTokenImplTest {
 
+    @Mock
+    private HashTextStaticSalt mockHashText;
     private MakeToken subject;
-    private MessageDigest digest;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
-        subject = new MakeBearerTokenImpl();
-        digest = MessageDigest.getInstance("SHA-512");
+        subject = new MakeBearerTokenImpl(mockHashText);
     }
 
     @Test
     public void testRun() throws Exception {
         UUID authCodeUUID = UUID.randomUUID();
         String plainTextToken = "token";
-        byte[] hashedToken = digest.digest(plainTextToken.getBytes());
+        String hashedToken = "hashedToken";
+        when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
         Token actual = subject.run(authCodeUUID, plainTextToken);
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getAuthCodeUUID()).isEqualTo(authCodeUUID);
         assertThat(actual.getToken()).isNotNull();
-        assertThat(actual.getToken()).isEqualTo(hashedToken);
+        assertThat(actual.getToken()).isEqualTo(hashedToken.getBytes());
         assertThat(actual.getExpiresAt()).isNotNull();
     }
 

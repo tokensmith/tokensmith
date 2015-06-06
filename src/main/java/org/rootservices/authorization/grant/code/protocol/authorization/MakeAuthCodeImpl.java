@@ -1,7 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.security.TextHasher;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,20 +16,17 @@ import java.util.UUID;
 @Component
 public class MakeAuthCodeImpl implements MakeAuthCode {
 
+    private HashTextStaticSalt hashText;
 
-    public MakeAuthCodeImpl() {}
+    @Autowired
+    public MakeAuthCodeImpl(HashTextStaticSalt hashText) {
+        this.hashText = hashText;
+    }
 
     @Override
     public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, String authorizationCode, int secondsToExpire) {
 
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Hash algorithm not found");
-        }
-
-        byte[] hashedAuthorizationCode = digest.digest(authorizationCode.getBytes());
+        byte[] hashedAuthorizationCode = hashText.run(authorizationCode).getBytes();;
 
         OffsetDateTime expiresAt = OffsetDateTime.now();
         expiresAt = expiresAt.plusSeconds(secondsToExpire);

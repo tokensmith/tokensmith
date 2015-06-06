@@ -1,6 +1,8 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
@@ -13,8 +15,15 @@ import java.util.UUID;
  */
 @Component
 public class MakeBearerTokenImpl implements MakeToken {
+
     private static final Integer SECONDS_TO_EXPIRATION = 3600;
     private static final TokenType TOKEN_TYPE = TokenType.BEARER;
+    private HashTextStaticSalt hashText;
+
+    @Autowired
+    public MakeBearerTokenImpl(HashTextStaticSalt hashText) {
+        this.hashText = hashText;
+    }
 
     @Override
     public Token run(UUID authCodeUUID, String plainTextToken) {
@@ -23,14 +32,7 @@ public class MakeBearerTokenImpl implements MakeToken {
         token.setUuid(UUID.randomUUID());
         token.setAuthCodeUUID(authCodeUUID);
 
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Hash algorithm not found");
-        }
-
-        byte[] hashedToken = digest.digest(plainTextToken.getBytes());
+        byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
 

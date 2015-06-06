@@ -35,7 +35,7 @@
             scope.created_at as scope_created_at
         from access_request
         left join access_request_scopes on access_request_scopes.access_request_uuid = access_request.uuid
-        join scope on scope.uuid = access_request_scopes.scope_uuid
+        left join scope on scope.uuid = access_request_scopes.scope_uuid
         join auth_code on auth_code.uuid = access_request.auth_code_uuid
         where auth_code.client_uuid = #{clientUUID}
         and auth_code.code = decode(#{authCode}, 'escape')

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.security.TextHasher;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,15 +18,16 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/17/15.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class MakeAuthCodeImplTest {
 
-    private MessageDigest digest;
+    @Mock
+    private HashTextStaticSalt mockHashText;
     private MakeAuthCode subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
-        subject = new MakeAuthCodeImpl();
-        digest = MessageDigest.getInstance("SHA-512");
+        subject = new MakeAuthCodeImpl(mockHashText);
     }
 
     @Test
@@ -36,12 +37,15 @@ public class MakeAuthCodeImplTest {
         UUID clientUUID = UUID.randomUUID();
         int secondsToExpire = 60*10;
         String randomString = "randomString";
-        byte[] hashedRandomString = digest.digest(randomString.getBytes());
+        String hashedRandomString = "hashedRandomString";
+
+        when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
+
         AuthCode actual = subject.run(resourceOwnerUUID, clientUUID, randomString, secondsToExpire);
 
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getResourceOwnerUUID()).isEqualTo(resourceOwnerUUID);
         assertThat(actual.getClientUUID()).isEqualTo(clientUUID);
-        assertThat(actual.getCode()).isEqualTo(hashedRandomString);
+        assertThat(actual.getCode()).isEqualTo(hashedRandomString.getBytes());
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
  * Created by tommackenzie on 4/13/15.
  */
 @Component
-public class TextHasherImpl implements TextHasher {
+public class HashTextRandomSaltImpl implements HashTextRandomSalt {
 
-    public TextHasherImpl() {}
+    public HashTextRandomSaltImpl() {}
 
     @Override
     public String run(String plainText) {

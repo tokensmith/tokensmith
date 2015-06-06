@@ -1,10 +1,11 @@
-package org.rootservices.authorization.authenticate;
+package integration.authenticate;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadClientWithScopes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.Client;
