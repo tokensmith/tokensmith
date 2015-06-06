@@ -15,7 +15,7 @@
                     javaType="ArrayList"/>
     </resultMap>
 
-    <insert id="insert" >
+    <insert id="insert">
         insert into client (uuid, response_type, redirect_URI)
         values (
             #{client.uuid},
@@ -38,4 +38,5 @@
         join scope on scope.uuid = client_scopes.scope_uuid
         where client.uuid = #{uuid}
     </select>
+
 </mapper>

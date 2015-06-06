@@ -1,16 +1,15 @@
 package helper.fixture;
 
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.security.TextHasher;
-import org.rootservices.authorization.security.TextHasherImpl;
+import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.authorization.security.HashTextRandomSaltImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -29,6 +28,17 @@ public class FixtureFactory {
         return client;
     }
 
+    public static ConfidentialClient makeConfidentialClient(Client client) {
+        ConfidentialClient confidentialClient = new ConfidentialClient();
+        confidentialClient.setUuid(UUID.randomUUID());
+        confidentialClient.setClient(client);
+        HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
+        String hashedPassword = textHasher.run("password");
+        confidentialClient.setPassword(hashedPassword.getBytes());
+
+        return confidentialClient;
+    }
+
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
         Scope scope = new Scope();
@@ -42,10 +52,40 @@ public class FixtureFactory {
         ResourceOwner ro = new ResourceOwner();
         ro.setUuid(UUID.randomUUID());
         ro.setEmail("test@rootservices.org");
-        TextHasher textHasher = new TextHasherImpl();
+        HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run("password");
         ro.setPassword(hashedPassword.getBytes());
 
         return ro;
+    }
+
+    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID) {
+        AuthCode authCode = new AuthCode();
+        authCode.setUuid(UUID.randomUUID());
+        authCode.setCode("authortization_code".getBytes());
+        authCode.setResourceOwnerUUID(resourceOwnerUUID);
+        authCode.setClientUUID(clientUUID);
+        authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
+
+        return authCode;
+    }
+
+    public static AccessRequest makeAccessRequest(UUID authCodeUUID) throws URISyntaxException {
+        AccessRequest accessRequest = new AccessRequest();
+        accessRequest.setUuid(UUID.randomUUID());
+        accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
+        accessRequest.setAuthCodeUUID(authCodeUUID);
+
+        return accessRequest;
+    }
+
+    public static Token makeToken(UUID authCodeUUID) {
+        Token token = new Token();
+        token.setUuid(UUID.randomUUID());
+        token.setAuthCodeUUID(authCodeUUID);
+        token.setToken("token".getBytes());
+        token.setExpiresAt(OffsetDateTime.now());
+
+        return token;
     }
 }
