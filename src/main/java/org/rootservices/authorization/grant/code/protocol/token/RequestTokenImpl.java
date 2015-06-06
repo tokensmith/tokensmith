@@ -4,6 +4,7 @@ import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.BaseInformException;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
@@ -40,7 +41,7 @@ public class RequestTokenImpl implements RequestToken {
     }
 
     @Override
-    public TokenResponse run(TokenRequest tokenRequest) throws UnauthorizedException, BaseInformException {
+    public TokenResponse run(TokenRequest tokenRequest) throws UnauthorizedException, AuthorizationCodeNotFound {
 
         UUID clientUUID = UUID.fromString(tokenRequest.getClientUUID());
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenRequest.getClientPassword());
@@ -50,7 +51,7 @@ public class RequestTokenImpl implements RequestToken {
         try {
             accessRequest = accessRequestRepository.getByClientUUIDAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
-            throw new BaseInformException("Access Request was not found", e, ErrorCode.ACCESS_REQUEST_NOT_FOUND.getCode());
+            throw new AuthorizationCodeNotFound("Access Request was not found", e, ErrorCode.ACCESS_REQUEST_NOT_FOUND.getCode());
         }
 
         String plainTextToken = randomString.run();
