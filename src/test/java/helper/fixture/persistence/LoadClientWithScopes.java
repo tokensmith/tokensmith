@@ -24,13 +24,11 @@ import java.util.UUID;
  * +uuid   --->  +client_uuid     /--->  +uuid
  *               +scope_uuid  ---/
  */
-@Component
+
 public class LoadClientWithScopes {
-    @Autowired
+
     private ClientRepository clientRepository;
-    @Autowired
     private ScopeRepository scopeRepository;
-    @Autowired
     private ClientScopesRepository clientScopesRepository;
 
     public LoadClientWithScopes(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {

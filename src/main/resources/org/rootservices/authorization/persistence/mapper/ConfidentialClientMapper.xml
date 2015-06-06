@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.ConfidentialClientMapper">
+
+    <resultMap id="confidentialClient" type="org.rootservices.authorization.persistence.entity.ConfidentialClient">
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <association property="client"
+                     resultMap="org.rootservices.authorization.persistence.mapper.ClientMapper.client"
+                     columnPrefix="client_"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into confidential_client (uuid, client_uuid, password)
+        values (
+            #{confidentialClient.uuid},
+            #{confidentialClient.client.uuid},
+            #{confidentialClient.password}
+        )
+    </insert>
+
+    <select id="getByClientUUID" resultMap="confidentialClient">
+        select
+            confidential_client.uuid,
+            confidential_client.password,
+            confidential_client.created_at,
+            client.uuid as client_uuid,
+            client.response_type as client_response_type,
+            client.redirect_URI as client_redirect_URI,
+            client.created_at as client_created_at,
+            scope.uuid as client_scope_uuid,
+            scope.name as client_scope_name,
+            scope.created_at as client_scope_created_at
+        from confidential_client
+        join client on client.uuid = confidential_client.client_uuid
+        join client_scopes on client_scopes.client_uuid = client.uuid
+        join scope on scope.uuid = client_scopes.scope_uuid
+        where client.uuid = #{clientUUID}
+    </select>
+</mapper>
