@@ -61,7 +61,7 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
         authCodeRepository.insert(authCode);
 
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), redirectURI, authCode.getUuid()
+                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI, authCode.getUuid()
         );
         accessRequestRepository.insert(accessRequest);
 

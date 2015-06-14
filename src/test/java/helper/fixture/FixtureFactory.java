@@ -70,9 +70,11 @@ public class FixtureFactory {
         return authCode;
     }
 
-    public static AccessRequest makeAccessRequest(UUID authCodeUUID) throws URISyntaxException {
+    public static AccessRequest makeAccessRequest(UUID resourceOwnerUUID, UUID clientUUID, UUID authCodeUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
+        accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
+        accessRequest.setClientUUID(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
         accessRequest.setAuthCodeUUID(authCodeUUID);
 

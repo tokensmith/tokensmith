@@ -60,7 +60,12 @@ public class AccessRequestScopesMapperTest {
         authCodeRepository.insert(authCode);
 
         // finally, create the access reqeust.
-        AccessRequest accessRequest = new AccessRequest(UUID.randomUUID(), Optional.of(redirectURI), authCodeUUID);
+        AccessRequest accessRequest = new AccessRequest(
+                UUID.randomUUID(),
+                authUser.getUuid(),
+                client.getUuid(),
+                Optional.of(redirectURI),
+                authCodeUUID);
         accessRequestRepository.insert(accessRequest);
 
         return accessRequest;
