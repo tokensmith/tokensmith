@@ -84,7 +84,11 @@ public class AccessRequestMapperTest {
         URI redirectURI = new URI("https://rootservices.org");
         AuthCode authCode = prepareDataBaseForAccessRequestInsert(redirectURI);
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), Optional.of(redirectURI), authCode.getUuid()
+                UUID.randomUUID(),
+                authCode.getResourceOwnerUUID(),
+                authCode.getClientUUID(),
+                Optional.of(redirectURI),
+                authCode.getUuid()
         );
 
         subject.insert(accessRequest);

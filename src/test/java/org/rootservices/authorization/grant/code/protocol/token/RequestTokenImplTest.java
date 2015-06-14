@@ -78,7 +78,9 @@ public class RequestTokenImplTest {
         String hashedCode = "hased-valid-authorization-code";
         when(mockHashText.run(tokenRequest.getCode())).thenReturn(hashedCode);
 
-        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(UUID.randomUUID());
+        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
+                UUID.randomUUID(), client.getUuid(), UUID.randomUUID()
+        );
         when(mockAccessRequestRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(accessRequest);
 
         when(mockRandomString.run()).thenReturn("random-string");
