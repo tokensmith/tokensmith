@@ -51,21 +51,12 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
 
     public String run(UUID resourceOwnerUUID, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) {
 
-        String authorizationCode = randomString.run();
-        AuthCode authCode = makeAuthCode.run(
-                resourceOwnerUUID,
-                ClientUUID,
-                authorizationCode,
-                SECONDS_TO_EXPIRATION
-        );
-        authCodeRepository.insert(authCode);
-
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI, authCode.getUuid()
+                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI, null
         );
         accessRequestRepository.insert(accessRequest);
 
-        // link access request to scopes.
+        // add scopes to access request.
         if (scopeNames.size() > 0 ) {
             List<Scope> scopes = scopeRepository.findByName(scopeNames);
             for (Scope scope : scopes) {
@@ -75,6 +66,19 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
                 accessRequestScopesRepository.insert(accessRequestScope);
             }
         }
+
+        String authorizationCode = randomString.run();
+        AuthCode authCode = makeAuthCode.run(
+                resourceOwnerUUID,
+                ClientUUID,
+                accessRequest,
+                authorizationCode,
+                SECONDS_TO_EXPIRATION
+        );
+
+        authCodeRepository.insert(authCode);
+
+
 
         return authorizationCode;
     }

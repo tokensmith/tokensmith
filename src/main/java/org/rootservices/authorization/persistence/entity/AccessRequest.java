@@ -60,10 +60,12 @@ public class AccessRequest {
         this.redirectURI = redirectURI;
     }
 
+    @Deprecated
     public UUID getAuthCodeUUID() {
         return authCodeUUID;
     }
 
+    @Deprecated
     public void setAuthCodeUUID(UUID authCodeUUID) {
         this.authCodeUUID = authCodeUUID;
     }

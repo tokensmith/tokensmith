@@ -6,10 +6,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.persistence.entity.AuthCode;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.AuthCodeMapper;
 
-import static org.junit.Assert.*;
+import java.util.UUID;
+
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 4/10/15.
@@ -32,5 +36,26 @@ public class AuthCodeRepositoryImplTest {
         AuthCode authCode = new AuthCode();
         subject.insert(authCode);
         verify(mockMapper).insert(authCode);
+    }
+
+    @Test
+    public void getByClientUUIDAndAuthCode() throws RecordNotFoundException {
+        UUID clientUUID = UUID.randomUUID();
+        String code = "authorization-code";
+        AuthCode expected = new AuthCode();
+        when(mockMapper.getByClientUUIDAndAuthCode(clientUUID, code)).thenReturn(expected);
+
+        AuthCode actual = subject.getByClientUUIDAndAuthCode(clientUUID, code);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByClientUUIDAndAuthCodeRecordNotFound() throws RecordNotFoundException {
+        UUID clientUUID = UUID.randomUUID();
+        String code = "authorization-code";
+        when(mockMapper.getByClientUUIDAndAuthCode(clientUUID, code)).thenReturn(null);
+
+        subject.getByClientUUIDAndAuthCode(clientUUID, code);
     }
 }
