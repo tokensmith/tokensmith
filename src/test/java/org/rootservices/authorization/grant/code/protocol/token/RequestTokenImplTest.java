@@ -9,12 +9,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.BaseInformException;
-import org.rootservices.authorization.persistence.entity.AccessRequest;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
+import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
@@ -39,7 +37,7 @@ public class RequestTokenImplTest {
     @Mock
     private HashTextStaticSalt mockHashText;
     @Mock
-    private AccessRequestRepository mockAccessRequestRepository;
+    private AuthCodeRepository mockAuthCodeRepository;
     @Mock
     private RandomString mockRandomString;
     @Mock
@@ -54,7 +52,7 @@ public class RequestTokenImplTest {
         subject = new RequestTokenImpl(
                 mockLoginConfidentialClient,
                 mockHashText,
-                mockAccessRequestRepository,
+                mockAuthCodeRepository,
                 mockRandomString,
                 mockMakeToken,
                 mockTokenRepository
@@ -78,10 +76,14 @@ public class RequestTokenImplTest {
         String hashedCode = "hased-valid-authorization-code";
         when(mockHashText.run(tokenRequest.getCode())).thenReturn(hashedCode);
 
+        UUID resourceOwnerUUID = UUID.randomUUID();
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                UUID.randomUUID(), client.getUuid(), UUID.randomUUID()
+                resourceOwnerUUID, client.getUuid(), UUID.randomUUID()
         );
-        when(mockAccessRequestRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(accessRequest);
+        AuthCode authCode = FixtureFactory.makeAuthCode(
+                resourceOwnerUUID, client.getUuid(), accessRequest
+        );
+        when(mockAuthCodeRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(authCode);
 
         when(mockRandomString.run()).thenReturn("random-string");
 
@@ -116,7 +118,7 @@ public class RequestTokenImplTest {
             actual = subject.run(tokenRequest);
             fail("No exception was thrown. Expected UnauthorizedException");
         } catch (UnauthorizedException e) {
-            verify(mockAccessRequestRepository, never()).getByClientUUIDAndAuthCode(client.getUuid(), tokenRequest.getCode());
+            verify(mockAuthCodeRepository, never()).getByClientUUIDAndAuthCode(client.getUuid(), tokenRequest.getCode());
             verify(mockTokenRepository, never()).insert(any(Token.class));
         } catch (BaseInformException e) {
             fail("BaseInformException was thrown. Expected UnauthorizedException");

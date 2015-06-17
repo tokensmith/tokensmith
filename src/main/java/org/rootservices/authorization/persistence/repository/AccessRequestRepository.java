@@ -10,5 +10,4 @@ import java.util.UUID;
  */
 public interface AccessRequestRepository {
     void insert(AccessRequest authRequest);
-    AccessRequest getByClientUUIDAndAuthCode(UUID clientUUID, String code) throws RecordNotFoundException;
 }

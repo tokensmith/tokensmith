@@ -25,22 +25,4 @@
             #{accessRequest.authCodeUUID}
         )
     </insert>
-
-    <select id="getByClientUUIDAndAuthCode" resultMap="accessRequest">
-        select
-            access_request.uuid,
-            access_request.redirect_uri,
-            access_request.auth_code_uuid,
-            access_request.created_at,
-            scope.uuid as scope_uuid,
-            scope.name as scope_name,
-            scope.created_at as scope_created_at
-        from access_request
-        left join access_request_scopes on access_request_scopes.access_request_uuid = access_request.uuid
-        left join scope on scope.uuid = access_request_scopes.scope_uuid
-        join auth_code on auth_code.uuid = access_request.auth_code_uuid
-        where auth_code.client_uuid = #{clientUUID}
-        and auth_code.code = decode(#{authCode}, 'escape')
-        and auth_code.expires_at > current_timestamp
-    </select>
 </mapper>

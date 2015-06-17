@@ -59,12 +59,13 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID) {
+    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         authCode.setCode("authortization_code".getBytes());
         authCode.setResourceOwnerUUID(resourceOwnerUUID);
         authCode.setClientUUID(clientUUID);
+        authCode.setAccessRequest(accessRequest);
         authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
 
         return authCode;
