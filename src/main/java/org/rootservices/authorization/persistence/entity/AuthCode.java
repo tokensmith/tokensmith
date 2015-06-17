@@ -11,16 +11,18 @@ public class AuthCode {
     private byte[] code;
     private UUID resourceOwnerUUID;
     private UUID clientUUID;
+    private AccessRequest accessRequest;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
     public AuthCode() {}
 
-    public AuthCode(UUID uuid, byte[] code, UUID resourceOwnerUUID, UUID clientUUID, OffsetDateTime expiresAt) {
+    public AuthCode(UUID uuid, byte[] code, UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest, OffsetDateTime expiresAt) {
         this.uuid = uuid;
         this.code = code;
         this.resourceOwnerUUID = resourceOwnerUUID;
         this.clientUUID = clientUUID;
+        this.accessRequest = accessRequest;
         this.expiresAt = expiresAt;
     }
     public UUID getUuid() {
@@ -53,6 +55,14 @@ public class AuthCode {
 
     public void setClientUUID(UUID clientUUID) {
         this.clientUUID = clientUUID;
+    }
+
+    public AccessRequest getAccessRequest() {
+        return accessRequest;
+    }
+
+    public void setAccessRequest(AccessRequest accessRequest) {
+        this.accessRequest = accessRequest;
     }
 
     public OffsetDateTime getExpiresAt() {

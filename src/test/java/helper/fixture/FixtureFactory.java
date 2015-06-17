@@ -59,20 +59,23 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID) {
+    public static AuthCode makeAuthCode(UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         authCode.setCode("authortization_code".getBytes());
         authCode.setResourceOwnerUUID(resourceOwnerUUID);
         authCode.setClientUUID(clientUUID);
+        authCode.setAccessRequest(accessRequest);
         authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
 
         return authCode;
     }
 
-    public static AccessRequest makeAccessRequest(UUID authCodeUUID) throws URISyntaxException {
+    public static AccessRequest makeAccessRequest(UUID resourceOwnerUUID, UUID clientUUID, UUID authCodeUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
+        accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
+        accessRequest.setClientUUID(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
         accessRequest.setAuthCodeUUID(authCodeUUID);
 

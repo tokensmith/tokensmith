@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization;
 
+import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 
 import java.util.UUID;
@@ -10,5 +11,5 @@ import java.util.UUID;
  * This is a creational pattern. Is it a factory?
  */
 public interface MakeAuthCode {
-    AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, String authorizationCode, int secondsToExpire);
+    AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest, String authorizationCode, int secondsToExpire);
 }

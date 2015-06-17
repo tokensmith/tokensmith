@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization;
 
+import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class MakeAuthCodeImpl implements MakeAuthCode {
     }
 
     @Override
-    public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, String authorizationCode, int secondsToExpire) {
+    public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest, String authorizationCode, int secondsToExpire) {
 
         byte[] hashedAuthorizationCode = hashText.run(authorizationCode).getBytes();;
 
@@ -36,6 +37,7 @@ public class MakeAuthCodeImpl implements MakeAuthCode {
                 hashedAuthorizationCode,
                 resourceOwnerUUID,
                 clientUUID,
+                accessRequest,
                 expiresAt
         );
 

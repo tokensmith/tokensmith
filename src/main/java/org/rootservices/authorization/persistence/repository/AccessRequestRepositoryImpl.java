@@ -27,13 +27,4 @@ public class AccessRequestRepositoryImpl implements AccessRequestRepository {
     public void insert(AccessRequest accessRequest) {
         accessRequestMapper.insert(accessRequest);
     }
-
-    @Override
-    public AccessRequest getByClientUUIDAndAuthCode(UUID clientUUID, String code) throws RecordNotFoundException {
-        AccessRequest accessRequest = accessRequestMapper.getByClientUUIDAndAuthCode(clientUUID, code);
-        if (accessRequest == null) {
-            throw new RecordNotFoundException("Access Request not found");
-        }
-        return accessRequest;
-    }
 }

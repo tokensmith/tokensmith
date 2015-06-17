@@ -52,45 +52,48 @@ public class GrantAuthCodeImplTest {
         );
     }
 
+    // TODO: this test is too complex come back and fix it.
     @Test
     public void testRun() throws Exception {
         // parameters to pass into method in test
         UUID resourceOwnerUUID = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
+
+        String randomString = "randomString";
+        when(mockRandomString.run()).thenReturn(randomString);
+
         List<String> scopeNames = new ArrayList<>();
         scopeNames.add("profile");
-
-        // responses from mocks/spy objects.
-        String randomString = "randomString";
-        AuthCode authCode = new AuthCode();
-        authCode.setUuid(UUID.randomUUID());
 
         List<Scope> scopes = new ArrayList<>();
         Scope scope = new Scope(UUID.randomUUID(), "profile");
         scopes.add(scope);
-
-        when(mockRandomString.run()).thenReturn(randomString);
-        when(mockMakeAuthCode.run(
-                resourceOwnerUUID, clientUUID, randomString, subject.getSecondsToExpiration()
-        )).thenReturn(authCode);
 
         when(mockScopeRepository.findByName(scopeNames)).thenReturn(scopes);
 
         ArgumentCaptor<AccessRequest> ARCaptor = ArgumentCaptor.forClass(AccessRequest.class);
         ArgumentCaptor<AccessRequestScope> ARSCaptor = ArgumentCaptor.forClass(AccessRequestScope.class);
 
+        AuthCode authCode = new AuthCode();
+        authCode.setUuid(UUID.randomUUID());
+        when(mockMakeAuthCode.run(
+                any(UUID.class), any(UUID.class),any(AccessRequest.class), any(String.class), any(Integer.class)
+        )).thenReturn(authCode);
+
         String actual = subject.run(resourceOwnerUUID, clientUUID, redirectURI, scopeNames);
 
         assertThat(actual).isEqualTo(randomString);
-        verify(mockAuthCodeRepository).insert(authCode);
+
         verify(mockAccessRequestRepository).insert(ARCaptor.capture());
         verify(mockAccessRequestScopesRepository).insert(ARSCaptor.capture());
+        verify(mockAuthCodeRepository).insert(authCode);
 
         // check access request assigned correct values.
         assertThat(ARCaptor.getValue().getUuid()).isNotNull();
         assertThat(ARCaptor.getValue().getRedirectURI()).isEqualTo(redirectURI);
-        assertThat(ARCaptor.getValue().getAuthCodeUUID()).isEqualTo(authCode.getUuid());
+        assertThat(ARCaptor.getValue().getAuthCodeUUID()).isEqualTo(null);
+        assertThat(ARCaptor.getValue().getClientUUID()).isEqualTo(clientUUID);
 
         // check that access request scope assigned correct values.
         assertThat(ARSCaptor.getValue().getUuid()).isNotNull();
