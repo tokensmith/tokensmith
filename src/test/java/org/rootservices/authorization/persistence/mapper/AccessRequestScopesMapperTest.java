@@ -51,16 +51,15 @@ public class AccessRequestScopesMapperTest {
         ResourceOwner authUser =  new ResourceOwner(resourceOwnerUUID, email, password);
         resourceOwnerRepository.insert(authUser);
 
-        // create auth code to be used as fk constraint
-        UUID authCodeUUID = UUID.randomUUID();
-        byte [] code = "authortization_code".getBytes();
-        OffsetDateTime expiresAt = OffsetDateTime.now();
-
-        AuthCode authCode = new AuthCode(authCodeUUID, code, resourceOwnerUUID, clientUUID, expiresAt);
-        authCodeRepository.insert(authCode);
 
         // finally, create the access reqeust.
-        AccessRequest accessRequest = new AccessRequest(UUID.randomUUID(), Optional.of(redirectURI), authCodeUUID);
+        AccessRequest accessRequest = new AccessRequest(
+                UUID.randomUUID(),
+                authUser.getUuid(),
+                client.getUuid(),
+                Optional.of(redirectURI),
+                null
+        );
         accessRequestRepository.insert(accessRequest);
 
         return accessRequest;

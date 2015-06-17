@@ -11,6 +11,8 @@ import java.util.UUID;
  */
 public class AccessRequest {
     private UUID uuid;
+    private UUID resourceOwnerUUID;
+    private UUID clientUUID;
     private Optional<URI> redirectURI;
     private UUID authCodeUUID;
     private Date createdAt;
@@ -18,8 +20,10 @@ public class AccessRequest {
 
     public AccessRequest() {}
 
-    public AccessRequest(UUID uuid, Optional<URI> redirectURI, UUID authCodeUUID) {
+    public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI, UUID authCodeUUID) {
         this.uuid = uuid;
+        this.resourceOwnerUUID = resourceOwnerUUID;
+        this.clientUUID = clientUUID;
         this.redirectURI = redirectURI;
         this.authCodeUUID = authCodeUUID;
     }
@@ -32,6 +36,22 @@ public class AccessRequest {
         this.uuid = uuid;
     }
 
+    public UUID getResourceOwnerUUID() {
+        return resourceOwnerUUID;
+    }
+
+    public void setResourceOwnerUUID(UUID resourceOwnerUUID) {
+        this.resourceOwnerUUID = resourceOwnerUUID;
+    }
+
+    public UUID getClientUUID() {
+        return clientUUID;
+    }
+
+    public void setClientUUID(UUID clientUUID) {
+        this.clientUUID = clientUUID;
+    }
+
     public Optional<URI> getRedirectURI() {
         return redirectURI;
     }
@@ -40,10 +60,12 @@ public class AccessRequest {
         this.redirectURI = redirectURI;
     }
 
+    @Deprecated
     public UUID getAuthCodeUUID() {
         return authCodeUUID;
     }
 
+    @Deprecated
     public void setAuthCodeUUID(UUID authCodeUUID) {
         this.authCodeUUID = authCodeUUID;
     }

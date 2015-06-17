@@ -35,9 +35,11 @@ public class LoadConfidentialClientTokenReady {
         confidentialClientRepository.insert(confidentialClient);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
-        AuthCode authCode = FixtureFactory.makeAuthCode(ro.getUuid(), client.getUuid());
-        authCodeRepository.insert(authCode);
-        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(authCode.getUuid());
+
+        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
+                ro.getUuid(), client.getUuid(), null
+        );
+
         accessRequestRepository.insert(accessRequest);
 
         // make access request scopes match client.
@@ -49,6 +51,10 @@ public class LoadConfidentialClientTokenReady {
             );
             accessRequestScopesRepository.insert(ars);
         }
+
+        AuthCode authCode = FixtureFactory.makeAuthCode(ro.getUuid(), client.getUuid(), accessRequest);
+        authCodeRepository.insert(authCode);
+
 
         return authCode;
     }

@@ -38,35 +38,4 @@ public class AccessRequestRepositoryImplTest {
         subject.insert(accessRequest);
         verify(mockAuthRequestMapper).insert(accessRequest);
     }
-
-    @Test
-    public void getByClientUUIDAndAuthCode() throws RecordNotFoundException {
-        AccessRequest expected = new AccessRequest();
-
-        UUID clientUUID = UUID.randomUUID();
-        String code = "valid-authorization-code";
-
-        when(mockAuthRequestMapper.getByClientUUIDAndAuthCode(clientUUID, code)).thenReturn(expected);
-        AccessRequest actual = subject.getByClientUUIDAndAuthCode(clientUUID, code);
-
-        assertThat(actual).isEqualTo(expected);
-
-    }
-
-    @Test
-    public void getByClientUUIDAndAuthCodeRecordNotFound(){
-
-        UUID clientUUID = UUID.randomUUID();
-        String code = "invalid-authorization-code";
-
-        when(mockAuthRequestMapper.getByClientUUIDAndAuthCode(clientUUID, code)).thenReturn(null);
-        AccessRequest actual = null;
-
-        try{
-            actual = subject.getByClientUUIDAndAuthCode(clientUUID, code);
-            fail("Expected RecordNotFoundException");
-        } catch (RecordNotFoundException e) {
-            assertThat(actual).isNull();
-        }
-    }
 }
