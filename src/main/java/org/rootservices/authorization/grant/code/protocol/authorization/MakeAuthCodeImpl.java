@@ -25,7 +25,7 @@ public class MakeAuthCodeImpl implements MakeAuthCode {
     }
 
     @Override
-    public AuthCode run(UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest, String authorizationCode, int secondsToExpire) {
+    public AuthCode run(AccessRequest accessRequest, String authorizationCode, int secondsToExpire) {
 
         byte[] hashedAuthorizationCode = hashText.run(authorizationCode).getBytes();;
 
@@ -35,8 +35,6 @@ public class MakeAuthCodeImpl implements MakeAuthCode {
         AuthCode authCode = new AuthCode(
                 UUID.randomUUID(),
                 hashedAuthorizationCode,
-                resourceOwnerUUID,
-                clientUUID,
                 accessRequest,
                 expiresAt
         );

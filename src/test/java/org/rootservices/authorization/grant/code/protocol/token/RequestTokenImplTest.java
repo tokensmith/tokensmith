@@ -80,9 +80,7 @@ public class RequestTokenImplTest {
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
                 resourceOwnerUUID, client.getUuid(), UUID.randomUUID()
         );
-        AuthCode authCode = FixtureFactory.makeAuthCode(
-                resourceOwnerUUID, client.getUuid(), accessRequest
-        );
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
         when(mockAuthCodeRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(authCode);
 
         when(mockRandomString.run()).thenReturn("random-string");
