@@ -9,19 +9,15 @@ import java.util.UUID;
 public class AuthCode {
     private UUID uuid;
     private byte[] code;
-    private UUID resourceOwnerUUID;
-    private UUID clientUUID;
     private AccessRequest accessRequest;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
     public AuthCode() {}
 
-    public AuthCode(UUID uuid, byte[] code, UUID resourceOwnerUUID, UUID clientUUID, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+    public AuthCode(UUID uuid, byte[] code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
         this.uuid = uuid;
         this.code = code;
-        this.resourceOwnerUUID = resourceOwnerUUID;
-        this.clientUUID = clientUUID;
         this.accessRequest = accessRequest;
         this.expiresAt = expiresAt;
     }
@@ -39,22 +35,6 @@ public class AuthCode {
 
     public void setCode(byte[] code) {
         this.code = code;
-    }
-
-    public UUID getResourceOwnerUUID() {
-        return resourceOwnerUUID;
-    }
-
-    public void setResourceOwnerUUID(UUID resourceOwnerUUID) {
-        this.resourceOwnerUUID = resourceOwnerUUID;
-    }
-
-    public UUID getClientUUID() {
-        return clientUUID;
-    }
-
-    public void setClientUUID(UUID clientUUID) {
-        this.clientUUID = clientUUID;
     }
 
     public AccessRequest getAccessRequest() {

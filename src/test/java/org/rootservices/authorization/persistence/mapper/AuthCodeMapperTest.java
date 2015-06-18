@@ -68,7 +68,7 @@ public class AuthCodeMapperTest {
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(resourceOwner.getUuid(), client.getUuid(), accessRequest);
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
         subject.insert(authCode);
     }
 
@@ -90,7 +90,7 @@ public class AuthCodeMapperTest {
         );
         AuthCode expected = loadConfidentialClientTokenReady.run();
 
-        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getClientUUID(), "authortization_code");
+        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), "authortization_code");
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
