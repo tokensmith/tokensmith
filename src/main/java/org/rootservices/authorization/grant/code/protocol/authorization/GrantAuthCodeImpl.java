@@ -69,8 +69,6 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
 
         String authorizationCode = randomString.run();
         AuthCode authCode = makeAuthCode.run(
-                resourceOwnerUUID,
-                ClientUUID,
                 accessRequest,
                 authorizationCode,
                 SECONDS_TO_EXPIRATION

@@ -52,9 +52,10 @@ public class LoadConfidentialClientTokenReady {
             accessRequestScopesRepository.insert(ars);
         }
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(ro.getUuid(), client.getUuid(), accessRequest);
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
         authCodeRepository.insert(authCode);
 
+        authCode.setAccessRequest(accessRequest);
 
         return authCode;
     }

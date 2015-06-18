@@ -78,7 +78,7 @@ public class GrantAuthCodeImplTest {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         when(mockMakeAuthCode.run(
-                any(UUID.class), any(UUID.class),any(AccessRequest.class), any(String.class), any(Integer.class)
+                any(AccessRequest.class), any(String.class), any(Integer.class)
         )).thenReturn(authCode);
 
         String actual = subject.run(resourceOwnerUUID, clientUUID, redirectURI, scopeNames);

@@ -37,7 +37,6 @@ public class MakeAuthCodeImplTest {
         // parameters to method in test.
         UUID resourceOwnerUUID = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
-        UUID accessRequestUUID = UUID.randomUUID();
         int secondsToExpire = 60*10;
         String randomString = "randomString";
         String hashedRandomString = "hashedRandomString";
@@ -45,11 +44,9 @@ public class MakeAuthCodeImplTest {
         when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
 
         AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerUUID, clientUUID, null);
-        AuthCode actual = subject.run(resourceOwnerUUID, clientUUID, ar, randomString, secondsToExpire);
+        AuthCode actual = subject.run(ar, randomString, secondsToExpire);
 
         assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getResourceOwnerUUID()).isEqualTo(resourceOwnerUUID);
-        assertThat(actual.getClientUUID()).isEqualTo(clientUUID);
         assertThat(actual.getCode()).isEqualTo(hashedRandomString.getBytes());
         assertThat(actual.getAccessRequest()).isEqualTo(ar);
     }
