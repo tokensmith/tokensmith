@@ -57,8 +57,7 @@ public class AccessRequestScopesMapperTest {
                 UUID.randomUUID(),
                 authUser.getUuid(),
                 client.getUuid(),
-                Optional.of(redirectURI),
-                null
+                Optional.of(redirectURI)
         );
         accessRequestRepository.insert(accessRequest);
 

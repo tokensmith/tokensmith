@@ -62,8 +62,7 @@ public class AuthCodeMapperTest {
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
                 resourceOwner.getUuid(),
-                client.getUuid(),
-                null
+                client.getUuid()
         );
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.

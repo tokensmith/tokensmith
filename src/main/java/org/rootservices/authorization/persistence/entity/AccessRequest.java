@@ -14,18 +14,16 @@ public class AccessRequest {
     private UUID resourceOwnerUUID;
     private UUID clientUUID;
     private Optional<URI> redirectURI;
-    private UUID authCodeUUID;
     private Date createdAt;
     private List<Scope> scopes;
 
     public AccessRequest() {}
 
-    public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI, UUID authCodeUUID) {
+    public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI) {
         this.uuid = uuid;
         this.resourceOwnerUUID = resourceOwnerUUID;
         this.clientUUID = clientUUID;
         this.redirectURI = redirectURI;
-        this.authCodeUUID = authCodeUUID;
     }
 
     public UUID getUuid() {
@@ -58,16 +56,6 @@ public class AccessRequest {
 
     public void setRedirectURI(Optional<URI> redirectURI) {
         this.redirectURI = redirectURI;
-    }
-
-    @Deprecated
-    public UUID getAuthCodeUUID() {
-        return authCodeUUID;
-    }
-
-    @Deprecated
-    public void setAuthCodeUUID(UUID authCodeUUID) {
-        this.authCodeUUID = authCodeUUID;
     }
 
     public Date getCreatedAt() {
