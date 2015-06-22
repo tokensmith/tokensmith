@@ -37,7 +37,7 @@ public class LoadConfidentialClientTokenReady {
         resourceOwnerRepository.insert(ro);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                ro.getUuid(), client.getUuid(), null
+                ro.getUuid(), client.getUuid()
         );
 
         accessRequestRepository.insert(accessRequest);

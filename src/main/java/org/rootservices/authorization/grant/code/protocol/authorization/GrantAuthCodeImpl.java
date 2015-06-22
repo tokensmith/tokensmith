@@ -52,7 +52,7 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
     public String run(UUID resourceOwnerUUID, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) {
 
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI, null
+                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI
         );
         accessRequestRepository.insert(accessRequest);
 

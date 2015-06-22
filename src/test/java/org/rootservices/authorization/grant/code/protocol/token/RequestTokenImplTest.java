@@ -78,15 +78,15 @@ public class RequestTokenImplTest {
 
         UUID resourceOwnerUUID = UUID.randomUUID();
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwnerUUID, client.getUuid(), UUID.randomUUID()
+                resourceOwnerUUID, client.getUuid()
         );
         AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
         when(mockAuthCodeRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(authCode);
 
         when(mockRandomString.run()).thenReturn("random-string");
 
-        Token token = FixtureFactory.makeToken(accessRequest.getAuthCodeUUID());
-        when(mockMakeToken.run(accessRequest.getAuthCodeUUID(), "random-string")).thenReturn(token);
+        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        when(mockMakeToken.run(authCode.getUuid(), "random-string")).thenReturn(token);
         when(mockMakeToken.getSecondsToExpiration()).thenReturn(3600);
         when(mockMakeToken.getTokenType()).thenReturn(TokenType.BEARER);
 

@@ -16,13 +16,12 @@
     </resultMap>
 
     <insert id="insert">
-        insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI, auth_code_uuid)
+        insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI)
         values (
             #{accessRequest.uuid},
             #{accessRequest.resourceOwnerUUID},
             #{accessRequest.clientUUID},
-            #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-            #{accessRequest.authCodeUUID}
+            #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
         )
     </insert>
 </mapper>

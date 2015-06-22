@@ -43,7 +43,7 @@ public class MakeAuthCodeImplTest {
 
         when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
 
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerUUID, clientUUID, null);
+        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerUUID, clientUUID);
         AuthCode actual = subject.run(ar, randomString, secondsToExpire);
 
         assertThat(actual.getUuid()).isNotNull();
