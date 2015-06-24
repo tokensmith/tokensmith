@@ -1,10 +1,9 @@
-package org.rootservices.authorization.grant.code.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
 
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ScopesException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.validator.exception.*;
-import org.rootservices.authorization.persistence.entity.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

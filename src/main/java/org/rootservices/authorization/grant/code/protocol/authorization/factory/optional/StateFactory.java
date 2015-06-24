@@ -1,6 +1,6 @@
-package org.rootservices.authorization.grant.code.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
 
-import org.rootservices.authorization.grant.code.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
 
 import java.util.List;
 import java.util.Optional;

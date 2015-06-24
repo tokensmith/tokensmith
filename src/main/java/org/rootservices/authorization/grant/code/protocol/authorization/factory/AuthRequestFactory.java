@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.factory;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory;
 
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;

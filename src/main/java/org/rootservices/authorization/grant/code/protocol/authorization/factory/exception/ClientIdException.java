@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.factory.exception;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.exception;
 
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 
