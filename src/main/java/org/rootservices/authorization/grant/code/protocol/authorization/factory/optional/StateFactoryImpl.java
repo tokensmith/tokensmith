@@ -2,9 +2,9 @@ package org.rootservices.authorization.grant.code.protocol.authorization.factory
 
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
-import org.rootservices.authorization.grant.code.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
