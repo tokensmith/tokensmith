@@ -1,9 +1,9 @@
-package org.rootservices.authorization.grant.code.validator;
+package org.rootservices.authorization.grant.code.protocol.authorization.validator;
 
-import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.grant.code.validator.exception.NoItemsError;
-import org.rootservices.authorization.grant.code.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.NoItemsError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.ParamIsNullError;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

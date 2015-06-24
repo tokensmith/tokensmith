@@ -8,9 +8,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.RedirectUriException;
-import org.rootservices.authorization.grant.code.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
 
 import java.net.URI;
 import java.net.URISyntaxException;

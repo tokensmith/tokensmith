@@ -2,11 +2,11 @@ package org.rootservices.authorization.grant.code.protocol.authorization.factory
 
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
-import org.rootservices.authorization.grant.code.validator.RequiredParam;
-import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.grant.code.validator.exception.NoItemsError;
-import org.rootservices.authorization.grant.code.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.NoItemsError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.ParamIsNullError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

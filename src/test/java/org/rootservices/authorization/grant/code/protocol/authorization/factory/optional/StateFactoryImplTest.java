@@ -7,9 +7,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
-import org.rootservices.authorization.grant.code.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
 
 import java.util.ArrayList;
 import java.util.List;
