@@ -1,13 +1,13 @@
-package org.rootservices.authorization.grant.code.factory;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory;
 
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.factory.exception.*;
-import org.rootservices.authorization.grant.code.factory.optional.RedirectUriFactory;
-import org.rootservices.authorization.grant.code.factory.optional.ScopesFactory;
-import org.rootservices.authorization.grant.code.factory.required.ClientIdFactory;
-import org.rootservices.authorization.grant.code.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.optional.RedirectUriFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.optional.ScopesFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.required.ClientIdFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.required.ResponseTypeFactory;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;

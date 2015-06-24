@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.required;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
 import org.rootservices.authorization.grant.code.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;

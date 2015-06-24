@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,11 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.factory.exception.ScopesException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.util.ArrayList;
 import java.util.List;

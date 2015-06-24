@@ -1,6 +1,6 @@
-package org.rootservices.authorization.grant.code.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
 
-import org.rootservices.authorization.grant.code.factory.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.RedirectUriException;
 
 import java.net.URI;
 import java.util.List;

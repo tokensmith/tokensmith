@@ -4,7 +4,7 @@ import helper.ValidateParamsAttributes;
 import org.junit.Test;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 

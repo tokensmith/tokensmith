@@ -2,9 +2,9 @@ package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.factory.AuthRequestFactory;
-import org.rootservices.authorization.grant.code.factory.exception.StateException;
-import org.rootservices.authorization.grant.code.factory.optional.StateFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.AuthRequestFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.optional.StateFactory;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateAuthRequest;

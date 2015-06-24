@@ -1,6 +1,6 @@
-package org.rootservices.authorization.grant.code.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.required;
 
-import org.rootservices.authorization.grant.code.factory.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
 
 import java.util.List;
 import java.util.UUID;

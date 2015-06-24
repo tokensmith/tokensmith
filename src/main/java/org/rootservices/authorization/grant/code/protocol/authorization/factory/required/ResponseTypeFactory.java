@@ -1,6 +1,6 @@
-package org.rootservices.authorization.grant.code.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.factory.required;
 
-import org.rootservices.authorization.grant.code.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.util.List;
