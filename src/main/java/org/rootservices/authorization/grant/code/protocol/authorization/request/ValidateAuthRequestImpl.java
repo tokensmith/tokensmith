@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.request;
+package org.rootservices.authorization.grant.code.protocol.authorization.request;
 
 import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;

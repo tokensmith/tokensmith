@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.request;
+package org.rootservices.authorization.grant.code.protocol.authorization.request;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
