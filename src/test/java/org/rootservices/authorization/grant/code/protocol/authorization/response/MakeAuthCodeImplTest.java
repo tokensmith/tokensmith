@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization;
+package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -6,11 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.MakeAuthCode;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.MakeAuthCodeImpl;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 

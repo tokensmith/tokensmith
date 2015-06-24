@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization;
+package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
 import java.net.URI;
 import java.util.List;

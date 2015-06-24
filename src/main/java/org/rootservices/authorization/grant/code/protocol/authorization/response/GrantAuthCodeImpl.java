@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization;
+package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AccessRequestScope;

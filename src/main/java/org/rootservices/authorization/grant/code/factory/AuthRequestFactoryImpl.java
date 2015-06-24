@@ -1,6 +1,6 @@
 package org.rootservices.authorization.grant.code.factory;
 
-import org.rootservices.authorization.grant.code.request.GetClientRedirect;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.factory.exception.*;
@@ -8,9 +8,8 @@ import org.rootservices.authorization.grant.code.factory.optional.RedirectUriFac
 import org.rootservices.authorization.grant.code.factory.optional.ScopesFactory;
 import org.rootservices.authorization.grant.code.factory.required.ClientIdFactory;
 import org.rootservices.authorization.grant.code.factory.required.ResponseTypeFactory;
-import org.rootservices.authorization.grant.code.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.entity.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

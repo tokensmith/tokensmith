@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code;
+package org.rootservices.authorization.grant.code.protocol.authorization.request;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +9,8 @@ import org.rootservices.authorization.grant.code.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.factory.exception.ResponseTypeException;
-import org.rootservices.authorization.grant.code.request.GetClientRedirect;
-import org.rootservices.authorization.grant.code.request.GetClientRedirectImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirectImpl;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;

@@ -1,8 +1,7 @@
-package org.rootservices.authorization.grant.code.request;
+package org.rootservices.authorization.grant.code.protocol.authorization.request;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.authorization.persistence.entity.Scope;
 
 import java.net.URI;
 import java.util.ArrayList;
