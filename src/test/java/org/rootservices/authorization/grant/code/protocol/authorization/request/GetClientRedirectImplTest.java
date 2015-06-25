@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ResponseTypeException;

@@ -1,6 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;

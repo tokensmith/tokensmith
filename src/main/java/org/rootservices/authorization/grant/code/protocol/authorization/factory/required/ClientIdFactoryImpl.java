@@ -1,6 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.factory.required;
 
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;

@@ -1,6 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
 
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.*;

@@ -2,15 +2,12 @@ package org.rootservices.authorization.grant.code.protocol.token;
 
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
-import org.rootservices.authorization.exception.BaseInformException;
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
-import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;

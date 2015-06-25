@@ -1,15 +1,13 @@
 package org.rootservices.authorization.authenticate;
 
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.security.IsTextEqualToHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 /**
