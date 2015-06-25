@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.constant;
+package org.rootservices.authorization.constant;
 
 /**
  * Created by tommackenzie on 2/4/15.
