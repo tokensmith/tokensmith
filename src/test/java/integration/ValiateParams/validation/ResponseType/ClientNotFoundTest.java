@@ -3,9 +3,8 @@ package integration.ValiateParams.validation.ResponseType;
 import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.grant.code.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.exception.InformClientException;
-import org.rootservices.authorization.grant.code.factory.exception.StateException;
+import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
