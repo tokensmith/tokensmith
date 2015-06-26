@@ -11,14 +11,12 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.exception.BaseInformException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 
 import java.net.URISyntaxException;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -65,16 +63,16 @@ public class RequestTokenImplTest {
         Client client = FixtureFactory.makeClientWithScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setClientUUID(client.getUuid().toString());
-        tokenRequest.setClientPassword("client-password");
-        tokenRequest.setCode("valid-authorization-code");
-        tokenRequest.setRedirectUri(client.getRedirectURI().toString());
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setClientUUID(client.getUuid().toString());
+        tokenInput.setClientPassword("client-password");
+        tokenInput.setCode("valid-authorization-code");
+        tokenInput.setRedirectUri(client.getRedirectURI().toString());
 
-        when(mockLoginConfidentialClient.run(client.getUuid(), tokenRequest.getClientPassword())).thenReturn(confidentialClient);
+        when(mockLoginConfidentialClient.run(client.getUuid(), tokenInput.getClientPassword())).thenReturn(confidentialClient);
 
         String hashedCode = "hased-valid-authorization-code";
-        when(mockHashText.run(tokenRequest.getCode())).thenReturn(hashedCode);
+        when(mockHashText.run(tokenInput.getCode())).thenReturn(hashedCode);
 
         UUID resourceOwnerUUID = UUID.randomUUID();
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
@@ -90,7 +88,7 @@ public class RequestTokenImplTest {
         when(mockMakeToken.getSecondsToExpiration()).thenReturn(3600);
         when(mockMakeToken.getTokenType()).thenReturn(TokenType.BEARER);
 
-        TokenResponse actual = subject.run(tokenRequest);
+        TokenResponse actual = subject.run(tokenInput);
         assertThat(actual).isNotNull();
         assertThat(actual.getAccessToken()).isNotNull();
         assertThat(actual.getExpiresIn()).isEqualTo(3600);
@@ -103,20 +101,20 @@ public class RequestTokenImplTest {
 
         Client client = FixtureFactory.makeClientWithScopes();
 
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setClientUUID(client.getUuid().toString());
-        tokenRequest.setClientPassword("client-password");
-        tokenRequest.setCode("valid-authorization-code");
-        tokenRequest.setRedirectUri(client.getRedirectURI().toString());
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setClientUUID(client.getUuid().toString());
+        tokenInput.setClientPassword("client-password");
+        tokenInput.setCode("valid-authorization-code");
+        tokenInput.setRedirectUri(client.getRedirectURI().toString());
 
-        when(mockLoginConfidentialClient.run(client.getUuid(), tokenRequest.getClientPassword())).thenThrow(UnauthorizedException.class);
+        when(mockLoginConfidentialClient.run(client.getUuid(), tokenInput.getClientPassword())).thenThrow(UnauthorizedException.class);
 
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenRequest);
+            actual = subject.run(tokenInput);
             fail("No exception was thrown. Expected UnauthorizedException");
         } catch (UnauthorizedException e) {
-            verify(mockAuthCodeRepository, never()).getByClientUUIDAndAuthCode(client.getUuid(), tokenRequest.getCode());
+            verify(mockAuthCodeRepository, never()).getByClientUUIDAndAuthCode(client.getUuid(), tokenInput.getCode());
             verify(mockTokenRepository, never()).insert(any(Token.class));
         } catch (BaseInformException e) {
             fail("BaseInformException was thrown. Expected UnauthorizedException");

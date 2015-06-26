@@ -40,13 +40,13 @@ public class RequestTokenImpl implements RequestToken {
     }
 
     @Override
-    public TokenResponse run(TokenRequest tokenRequest) throws UnauthorizedException, AuthorizationCodeNotFound {
+    public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound {
 
-        UUID clientUUID = UUID.fromString(tokenRequest.getClientUUID());
-        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenRequest.getClientPassword());
+        UUID clientUUID = UUID.fromString(tokenInput.getClientUUID());
+        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
 
         AuthCode authCode = null;
-        String hashedCode = hashText.run(tokenRequest.getCode());
+        String hashedCode = hashText.run(tokenInput.getCode());
 
         try {
             authCode = authCodeRepository.getByClientUUIDAndAuthCode(clientUUID, hashedCode);
