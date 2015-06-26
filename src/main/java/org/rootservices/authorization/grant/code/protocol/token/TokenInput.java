@@ -1,23 +1,24 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
-import java.net.URI;
-import java.util.UUID;
+import java.util.Optional;
 
 /**
- * Created by tommackenzie on 6/26/15.
+ * Created by tommackenzie on 6/4/15.
  */
-public class TokenRequest {
-    private UUID clientUUID;
+public class TokenInput {
+    private String clientUUID;
     private String clientPassword;
     private String grantType;
     private String code;
-    private URI redirectUri;
+    private String redirectUri;
 
-    public UUID getClientUUID() {
+    public TokenInput(){}
+
+    public String getClientUUID() {
         return clientUUID;
     }
 
-    public void setClientUUID(UUID clientUUID) {
+    public void setClientUUID(String clientUUID) {
         this.clientUUID = clientUUID;
     }
 
@@ -41,15 +42,15 @@ public class TokenRequest {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(String authorizationCode) {
         this.code = code;
     }
 
-    public URI getRedirectUri() {
+    public String getRedirectUri() {
         return redirectUri;
     }
 
-    public void setRedirectUri(URI redirectUri) {
+    public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
     }
 }
