@@ -62,7 +62,8 @@ public class AuthCodeMapperTest {
 
         AuthCode expected = loadConfidentialClientTokenReady.run();
 
-        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), "authortization_code");
+        String code = new String(expected.getCode());
+        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
