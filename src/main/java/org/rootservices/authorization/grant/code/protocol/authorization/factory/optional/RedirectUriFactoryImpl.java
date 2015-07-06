@@ -19,14 +19,10 @@ import java.util.Optional;
 @Component
 public class RedirectUriFactoryImpl implements RedirectUriFactory {
 
-    @Autowired
     private OptionalParam optionalParam;
-
-    @Autowired
     private UrlValidator urlValidator;
 
-    public RedirectUriFactoryImpl() {}
-
+    @Autowired
     public RedirectUriFactoryImpl(OptionalParam optionalParam, UrlValidator urlValidator) {
         this.optionalParam = optionalParam;
         this.urlValidator = urlValidator;

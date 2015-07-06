@@ -11,7 +11,6 @@ import org.rootservices.authorization.persistence.mapper.TokenMapper;
 
 import java.util.UUID;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 

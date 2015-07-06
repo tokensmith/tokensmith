@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,13 +22,14 @@ import java.util.UUID;
  * +uuid   --->  +client_uuid     /--->  +uuid
  *               +scope_uuid  ---/
  */
-
+@Component
 public class LoadClientWithScopes {
 
     private ClientRepository clientRepository;
     private ScopeRepository scopeRepository;
     private ClientScopesRepository clientScopesRepository;
 
+    @Autowired
     public LoadClientWithScopes(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
         this.clientRepository = clientRepository;
         this.scopeRepository = scopeRepository;

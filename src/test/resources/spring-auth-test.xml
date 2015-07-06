@@ -13,6 +13,7 @@
     <context:annotation-config/>
 
     <context:component-scan base-package="org.rootservices"/>
+    <context:component-scan base-package="helper"/>
 
     <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="#{systemEnvironment['AUTH_DB_DRIVER']}" />
@@ -36,12 +37,8 @@
         <property name="basePackage" value="org.rootservices.authorization.persistence.mapper"/>
     </bean>
 
-    <bean id="urlValidator" class="org.apache.commons.validator.routines.UrlValidator">
-        <constructor-arg>
-            <list value-type="java.lang.String">
-                <value>https</value>
-            </list>
-        </constructor-arg>
-    </bean>
-
+    <beans>
+        <context:annotation-config/>
+        <bean class="org.rootservices.config.AppConfig"/>
+    </beans>
 </beans>
