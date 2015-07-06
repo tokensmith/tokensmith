@@ -7,6 +7,10 @@ import org.rootservices.authorization.exception.BaseInformException;
  */
 public class AuthorizationCodeNotFound extends BaseInformException {
 
+    public AuthorizationCodeNotFound(String message, int code) {
+        super(message, code);
+    }
+
     public AuthorizationCodeNotFound(String message, Throwable domainCause, int code) {
         super(message, domainCause, code);
     }

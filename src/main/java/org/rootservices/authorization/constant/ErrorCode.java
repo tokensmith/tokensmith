@@ -42,7 +42,10 @@ public enum ErrorCode {
     PASSWORD_MISMATCH (25, "Password did not match"),
     UNSUPPORTED_ENCODING (26, ""),
 
-    ACCESS_REQUEST_NOT_FOUND (27, "access request was not found");
+    ACCESS_REQUEST_NOT_FOUND (27, "access request was not found"),
+    DUPLICATE_KEY (28, "there was a duplicate key in the payload"),
+    INVALID_PAYLOAD (29, "the payload couldn't be parsed"),
+    MISSING_KEY (30, "A key is missing from the payload");
 
     private int code;
     private final String message;

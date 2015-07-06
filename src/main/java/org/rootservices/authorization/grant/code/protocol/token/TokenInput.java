@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
+import java.io.BufferedReader;
 import java.util.Optional;
 
 /**
@@ -8,9 +9,7 @@ import java.util.Optional;
 public class TokenInput {
     private String clientUUID;
     private String clientPassword;
-    private String grantType;
-    private String code;
-    private String redirectUri;
+    private BufferedReader payload;
 
     public TokenInput(){}
 
@@ -30,27 +29,11 @@ public class TokenInput {
         this.clientPassword = clientPassword;
     }
 
-    public String getGrantType() {
-        return grantType;
+    public BufferedReader getPayload() {
+        return payload;
     }
 
-    public void setGrantType(String grantType) {
-        this.grantType = grantType;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String authorizationCode) {
-        this.code = code;
-    }
-
-    public String getRedirectUri() {
-        return redirectUri;
-    }
-
-    public void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
+    public void setPayload(BufferedReader payload) {
+        this.payload = payload;
     }
 }
