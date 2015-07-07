@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;

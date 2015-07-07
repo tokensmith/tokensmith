@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.grant.code.protocol.authorization.ValidateParams;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;

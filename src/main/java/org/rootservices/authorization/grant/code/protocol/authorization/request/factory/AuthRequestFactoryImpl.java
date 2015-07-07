@@ -1,14 +1,16 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.factory;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.factory;
 
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.*;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.optional.RedirectUriFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.optional.ScopesFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.ScopesFactory;
 import org.rootservices.authorization.grant.code.protocol.authorization.factory.required.ClientIdFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.required.ResponseTypeFactory;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ScopesException;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,7 +72,7 @@ public class AuthRequestFactoryImpl implements AuthRequestFactory {
         try {
             responseType = responseTypeFactory.makeResponseType(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
-        } catch (ResponseTypeException|ScopesException e) {
+        } catch (ResponseTypeException |ScopesException e) {
             URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
             throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
         }

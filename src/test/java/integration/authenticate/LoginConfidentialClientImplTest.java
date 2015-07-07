@@ -34,25 +34,14 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @Transactional
 public class LoginConfidentialClientImplTest {
 
+    @Autowired
     private LoadClientWithScopes loadClientWithScopes;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private ScopeRepository scopeRepository;
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
     @Autowired
     private ConfidentialClientRepository confidentialClientRepository;
 
     @Autowired
     private LoginConfidentialClient subject;
 
-    @Before
-    public void setUp(){
-        loadClientWithScopes = new LoadClientWithScopes(
-                clientRepository, scopeRepository, clientScopesRepository
-        );
-    }
 
     public ConfidentialClient prepareDatabaseForTest() throws URISyntaxException {
         Client client = loadClientWithScopes.run();

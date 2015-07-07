@@ -23,52 +23,11 @@ import java.net.URISyntaxException;
 @Transactional
 public class TokenMapperTest {
 
+    @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
 
     @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ConfidentialClientRepository confidentialClientRepository;
-
-    @Autowired
-    private ScopeRepository scopeRepository;
-
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
-
-    @Autowired
-    private ResourceOwnerRepository resourceOwnerRepository;
-
-    @Autowired
-    private AccessRequestRepository accessRequestRepository;
-
-    @Autowired
-    private AccessRequestScopesRepository accessRequestScopesRepository;
-
-    @Autowired
-    private AuthCodeRepository authCodeRepository;
-
-    @Autowired
     private TokenMapper subject;
-
-    @Before
-    public void setUp() {
-        LoadClientWithScopes loadClientWithScopes = new LoadClientWithScopes(
-            clientRepository,
-            scopeRepository,
-            clientScopesRepository
-        );
-
-        loadConfidentialClientTokenReady = new LoadConfidentialClientTokenReady(
-            loadClientWithScopes,
-            confidentialClientRepository,
-            resourceOwnerRepository,
-            authCodeRepository,
-            accessRequestRepository,
-            accessRequestScopesRepository
-        );
-    }
 
     @Test
     public void insert() throws URISyntaxException {

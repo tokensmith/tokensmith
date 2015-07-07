@@ -4,7 +4,7 @@ import helper.ValidateParamsAttributes;
 import integration.ValiateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
