@@ -30,24 +30,30 @@ public class OptionalURITypeHandler implements TypeHandler<Optional<URI>> {
                 throw new SQLException("Retrieving code - URI is malformed");
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public Optional<URI> getResult(ResultSet rs, int columnIndex) throws SQLException {
-        try {
-            return Optional.ofNullable(new URI(rs.getString(columnIndex)));
-        } catch (URISyntaxException e) {
-            throw new SQLException("Retrieving code - URI is malformed");
+        if ( rs.getString(columnIndex) != null) {
+            try {
+                return Optional.ofNullable(new URI(rs.getString(columnIndex)));
+            } catch (URISyntaxException e) {
+                throw new SQLException("Retrieving code - URI is malformed");
+            }
         }
+        return Optional.empty();
     }
 
     @Override
     public Optional<URI> getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        try {
-            return Optional.ofNullable(new URI(cs.getString(columnIndex)));
-        } catch (URISyntaxException e) {
-            throw new SQLException("Retrieving code - URI is malformed");
+        if (cs.getString(columnIndex) != null) {
+            try {
+                return Optional.ofNullable(new URI(cs.getString(columnIndex)));
+            } catch (URISyntaxException e) {
+                throw new SQLException("Retrieving code - URI is malformed");
+            }
         }
+        return Optional.empty();
     }
 }

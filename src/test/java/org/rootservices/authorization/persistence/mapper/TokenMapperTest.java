@@ -31,7 +31,7 @@ public class TokenMapperTest {
 
     @Test
     public void insert() throws URISyntaxException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
         Token token = FixtureFactory.makeToken(authCode.getUuid());
         subject.insert(token);
     }
