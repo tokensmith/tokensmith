@@ -187,7 +187,7 @@ public class RequestTokenImplTest {
 
 
     @Test
-    public void testMissingRedirectUriExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
         AuthCode authCode = loadConfidentialClientTokenReady.run();
 
         StringReader sr = new StringReader(
