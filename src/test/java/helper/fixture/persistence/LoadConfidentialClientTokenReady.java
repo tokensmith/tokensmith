@@ -6,7 +6,9 @@ import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -33,7 +35,7 @@ public class LoadConfidentialClientTokenReady {
         this.accessRequestScopesRepository = accessRequestScopesRepository;
     }
 
-    public AuthCode run() throws URISyntaxException {
+    public AuthCode run(boolean redirectUriIsPresent) throws URISyntaxException {
         Client client = loadClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
@@ -43,6 +45,10 @@ public class LoadConfidentialClientTokenReady {
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
                 ro.getUuid(), client.getUuid()
         );
+
+        if (!redirectUriIsPresent) {
+            accessRequest.setRedirectURI(Optional.<URI>empty());
+        }
 
         accessRequestRepository.insert(accessRequest);
 

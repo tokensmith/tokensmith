@@ -60,17 +60,43 @@ public class AuthCodeMapperTest {
     @Test
     public void getByClientUUIDAndAuthCode() throws URISyntaxException {
 
-        AuthCode expected = loadConfidentialClientTokenReady.run();
+        AuthCode expected = loadConfidentialClientTokenReady.run(true);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
-        assertThat(actual.getAccessRequest()).isNotNull();
-        assertThat(actual.getAccessRequest().getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
-        assertThat(actual.getAccessRequest().getScopes()).isNotNull();
-        assertThat(actual.getAccessRequest().getScopes().size()).isEqualTo(1);
-        assertThat(actual.getAccessRequest().getScopes().get(0).getName()).isEqualTo("profile");
+
+        // access request.
+        AccessRequest ar = actual.getAccessRequest();
+        assertThat(ar).isNotNull();
+        assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
+        assertThat(ar.getScopes()).isNotNull();
+        assertThat(ar.getScopes().size()).isEqualTo(1);
+        assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(ar.getRedirectURI().isPresent()).isTrue();
+        assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.REDIRECT_URI);
+    }
+
+    @Test
+    public void getByClientUUIDAndAuthCodeRedirectURIIsNotPresent() throws URISyntaxException {
+
+        AuthCode expected = loadConfidentialClientTokenReady.run(false);
+
+        String code = new String(expected.getCode());
+        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
+
+        // access request.
+        AccessRequest ar = actual.getAccessRequest();
+        assertThat(ar).isNotNull();
+        assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
+        assertThat(ar.getScopes()).isNotNull();
+        assertThat(ar.getScopes().size()).isEqualTo(1);
+        assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(ar.getRedirectURI().isPresent()).isFalse();
     }
 }
