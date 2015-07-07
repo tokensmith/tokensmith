@@ -6,7 +6,7 @@
 
     <resultMap id="accessRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt"/>
         <collection property="scopes"
