@@ -3,6 +3,8 @@ package helper.fixture;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.HashTextRandomSalt;
 import org.rootservices.authorization.security.HashTextRandomSaltImpl;
+import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.HashTextStaticSaltImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,10 +19,14 @@ import java.util.UUID;
  */
 public class FixtureFactory {
 
+    public static String PLAIN_TEXT_PASSWORD = "password";
+    public static String REDIRECT_URI = "https://rootservices.org";
+    public static String PLAIN_TEXT_AUTHORIZATION_CODE = "authortization_code";
+
     public static Client makeClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
-        URI redirectUri = new URI("https://rootservices.org");
+        URI redirectUri = new URI(REDIRECT_URI);
 
         Client client = new Client(uuid, rt, redirectUri);
         List<Scope> scopes = makeScopes();
@@ -33,8 +39,8 @@ public class FixtureFactory {
         confidentialClient.setUuid(UUID.randomUUID());
         confidentialClient.setClient(client);
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
-        String hashedPassword = textHasher.run("password");
-        confidentialClient.setPassword(hashedPassword.getBytes());
+        String password = textHasher.run(PLAIN_TEXT_PASSWORD);
+        confidentialClient.setPassword(password.getBytes());
 
         return confidentialClient;
     }
@@ -53,7 +59,7 @@ public class FixtureFactory {
         ro.setUuid(UUID.randomUUID());
         ro.setEmail("test@rootservices.org");
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
-        String hashedPassword = textHasher.run("password");
+        String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
         ro.setPassword(hashedPassword.getBytes());
 
         return ro;
@@ -62,7 +68,9 @@ public class FixtureFactory {
     public static AuthCode makeAuthCode(AccessRequest accessRequest) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
-        authCode.setCode("authortization_code".getBytes());
+        HashTextStaticSalt textHasher = new HashTextStaticSaltImpl();
+        String hashedCode = textHasher.run(PLAIN_TEXT_AUTHORIZATION_CODE);
+        authCode.setCode(hashedCode.getBytes());
         authCode.setAccessRequest(accessRequest);
         authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
 
@@ -74,7 +82,7 @@ public class FixtureFactory {
         accessRequest.setUuid(UUID.randomUUID());
         accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
         accessRequest.setClientUUID(clientUUID);
-        accessRequest.setRedirectURI(Optional.of(new URI("https://rootservices.org")));
+        accessRequest.setRedirectURI(Optional.of(new URI(REDIRECT_URI)));
 
         return accessRequest;
     }

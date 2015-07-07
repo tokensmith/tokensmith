@@ -3,6 +3,8 @@ package helper.fixture.persistence;
 import helper.fixture.FixtureFactory;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import java.util.UUID;
  *
  * Loads a client that is ready for a token to be persisted.
  */
+@Component
 public class LoadConfidentialClientTokenReady {
     private LoadClientWithScopes loadClientWithScopes;
     private ConfidentialClientRepository confidentialClientRepository;
@@ -20,6 +23,7 @@ public class LoadConfidentialClientTokenReady {
     private AccessRequestRepository accessRequestRepository;
     private AccessRequestScopesRepository accessRequestScopesRepository;
 
+    @Autowired
     public LoadConfidentialClientTokenReady(LoadClientWithScopes loadClientWithScopes, ConfidentialClientRepository confidentialClientRepository, ResourceOwnerRepository resourceOwnerRepository, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
         this.loadClientWithScopes = loadClientWithScopes;
         this.confidentialClientRepository = confidentialClientRepository;

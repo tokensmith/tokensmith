@@ -3,8 +3,6 @@ package org.rootservices.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -14,11 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
-import java.util.Calendar;
-import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -31,21 +25,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class AuthCodeMapperTest {
 
     @Autowired
+    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    @Autowired
     private ClientRepository clientRepository;
-    @Autowired
-    private ScopeRepository scopeRepository;
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
-    @Autowired
-    private ConfidentialClientRepository confidentialClientRepository;
-    @Autowired
-    private AuthCodeRepository authCodeRepository;
     @Autowired
     private ResourceOwnerRepository resourceOwnerRepository;
     @Autowired
     private AccessRequestRepository accessRequestRepository;
-    @Autowired
-    private AccessRequestScopesRepository accessRequestScopesRepository;
 
     @Autowired
     private AuthCodeMapper subject;
@@ -73,23 +59,11 @@ public class AuthCodeMapperTest {
 
     @Test
     public void getByClientUUIDAndAuthCode() throws URISyntaxException {
-        LoadClientWithScopes loadClientWithScopes = new LoadClientWithScopes(
-                clientRepository,
-                scopeRepository,
-                clientScopesRepository
-        );
 
-        LoadConfidentialClientTokenReady loadConfidentialClientTokenReady = new LoadConfidentialClientTokenReady(
-                loadClientWithScopes,
-                confidentialClientRepository,
-                resourceOwnerRepository,
-                authCodeRepository,
-                accessRequestRepository,
-                accessRequestScopesRepository
-        );
         AuthCode expected = loadConfidentialClientTokenReady.run();
 
-        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), "authortization_code");
+        String code = new String(expected.getCode());
+        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());

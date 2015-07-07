@@ -1,6 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,15 +9,29 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.exception.BaseInformException;
+import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
+import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,68 +44,35 @@ import static org.mockito.Mockito.*;
 /**
  * Created by tommackenzie on 6/2/15.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:spring-auth-test.xml")
+@Transactional
 public class RequestTokenImplTest {
 
-    @Mock
-    private LoginConfidentialClient mockLoginConfidentialClient;
-    @Mock
-    private HashTextStaticSalt mockHashText;
-    @Mock
-    private AuthCodeRepository mockAuthCodeRepository;
-    @Mock
-    private RandomString mockRandomString;
-    @Mock
-    private MakeToken mockMakeToken;
-    @Mock
-    private TokenRepository mockTokenRepository;
+    @Autowired
+    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
 
+    @Autowired
     private RequestToken subject;
-
-    @Before
-    public void setUp() {
-        subject = new RequestTokenImpl(
-                mockLoginConfidentialClient,
-                mockHashText,
-                mockAuthCodeRepository,
-                mockRandomString,
-                mockMakeToken,
-                mockTokenRepository
-        );
-    }
 
     @Test
     public void testRun() throws Exception {
 
-        Client client = FixtureFactory.makeClientWithScopes();
-        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
 
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setClientUUID(client.getUuid().toString());
-        tokenRequest.setClientPassword("client-password");
-        tokenRequest.setCode("valid-authorization-code");
-        tokenRequest.setRedirectUri(client.getRedirectURI().toString());
-
-        when(mockLoginConfidentialClient.run(client.getUuid(), tokenRequest.getClientPassword())).thenReturn(confidentialClient);
-
-        String hashedCode = "hased-valid-authorization-code";
-        when(mockHashText.run(tokenRequest.getCode())).thenReturn(hashedCode);
-
-        UUID resourceOwnerUUID = UUID.randomUUID();
-        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwnerUUID, client.getUuid()
+        StringReader sr = new StringReader(
+            "{\"grant_type\": \"authorization_code\", " +
+            "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
         );
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
-        when(mockAuthCodeRepository.getByClientUUIDAndAuthCode(client.getUuid(), hashedCode)).thenReturn(authCode);
+        BufferedReader json = new BufferedReader(sr);
 
-        when(mockRandomString.run()).thenReturn("random-string");
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
-        when(mockMakeToken.run(authCode.getUuid(), "random-string")).thenReturn(token);
-        when(mockMakeToken.getSecondsToExpiration()).thenReturn(3600);
-        when(mockMakeToken.getTokenType()).thenReturn(TokenType.BEARER);
-
-        TokenResponse actual = subject.run(tokenRequest);
+        TokenResponse actual = subject.run(tokenInput);
         assertThat(actual).isNotNull();
         assertThat(actual.getAccessToken()).isNotNull();
         assertThat(actual.getExpiresIn()).isEqualTo(3600);
@@ -99,29 +81,143 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException {
+    public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException {
 
-        Client client = FixtureFactory.makeClientWithScopes();
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
 
-        TokenRequest tokenRequest = new TokenRequest();
-        tokenRequest.setClientUUID(client.getUuid().toString());
-        tokenRequest.setClientPassword("client-password");
-        tokenRequest.setCode("valid-authorization-code");
-        tokenRequest.setRedirectUri(client.getRedirectURI().toString());
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \"" + FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \"" + authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
 
-        when(mockLoginConfidentialClient.run(client.getUuid(), tokenRequest.getClientPassword())).thenThrow(UnauthorizedException.class);
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword("wrong-password");
 
+        UnauthorizedException expected = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenRequest);
+            actual = subject.run(tokenInput);
             fail("No exception was thrown. Expected UnauthorizedException");
         } catch (UnauthorizedException e) {
-            verify(mockAuthCodeRepository, never()).getByClientUUIDAndAuthCode(client.getUuid(), tokenRequest.getCode());
-            verify(mockTokenRepository, never()).insert(any(Token.class));
+            expected = e;
         } catch (BaseInformException e) {
             fail("BaseInformException was thrown. Expected UnauthorizedException");
         }
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getMessage());
         assertThat(actual).isNull();
     }
 
+    @Test
+    public void testMissingGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
+
+        // payload with out grant type.
+        StringReader sr = new StringReader(
+            "{\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected BadRequestException");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected BadRequestException");
+        } catch (BadRequestException e ) {
+            expected = e;
+        }
+        catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected BadRequestException");
+        }
+
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
+        assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("grant_type");
+        assertThat(actual).isNull();
+    }
+
+
+    @Test
+    public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
+
+        StringReader sr = new StringReader(
+            "{\"grant_type\": \"authorization_code\", " +
+            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected BadRequestException");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected BadRequestException");
+        } catch (BadRequestException e ) {
+            expected = e;
+        }
+        catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected BadRequestException");
+        }
+
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
+        assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("code");
+        assertThat(actual).isNull();
+    }
+
+
+    @Test
+    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run();
+
+        StringReader sr = new StringReader(
+            "{\"grant_type\": \"authorization_code\", " +
+            "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        AuthorizationCodeNotFound expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected AuthorizationCodeNotFound");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (BadRequestException e ) {
+            fail("BadRequestException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (AuthorizationCodeNotFound e) {
+            expected = e;
+        } catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected AuthorizationCodeNotFound");
+        }
+
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+        assertThat(actual).isNull();
+    }
 }
