@@ -58,7 +58,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRun() throws Exception {
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -83,7 +83,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException {
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -115,7 +115,7 @@ public class RequestTokenImplTest {
 
     @Test
     public void testMissingGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
         // payload with out grant type.
         StringReader sr = new StringReader(
@@ -152,7 +152,7 @@ public class RequestTokenImplTest {
 
     @Test
     public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -188,7 +188,7 @@ public class RequestTokenImplTest {
 
     @Test
     public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
