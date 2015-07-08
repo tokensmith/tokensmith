@@ -65,7 +65,9 @@ public class RequestTokenImpl implements RequestToken {
         } catch (InvalidValueException e) {
             e.printStackTrace();
         } catch (MissingKeyException e) {
-            throw new BadRequestException("Bad request", e, ErrorCode.MISSING_KEY.getCode());
+            throw new BadRequestException(
+                "Bad request", "invalid_request", e.getKey() + " is a required field", e, ErrorCode.MISSING_KEY.getCode()
+            );
         }
 
         AuthCode authCode = null;
