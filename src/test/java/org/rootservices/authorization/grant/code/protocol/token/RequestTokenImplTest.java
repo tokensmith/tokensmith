@@ -146,6 +146,8 @@ public class RequestTokenImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
         assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("grant_type");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
+        assertThat(expected.getDescription()).isEqualTo("grant_type is a required field");
         assertThat(actual).isNull();
     }
 
@@ -182,6 +184,8 @@ public class RequestTokenImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
         assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("code");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
+        assertThat(expected.getDescription()).isEqualTo("code is a required field");
         assertThat(actual).isNull();
     }
 
