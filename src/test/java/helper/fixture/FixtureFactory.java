@@ -20,13 +20,14 @@ import java.util.UUID;
 public class FixtureFactory {
 
     public static String PLAIN_TEXT_PASSWORD = "password";
-    public static String REDIRECT_URI = "https://rootservices.org";
+    public static String SECURE_REDIRECT_URI = "https://rootservices.org";
+    public static String REDIRECT_URI = "http://www.rootservices.org";
     public static String PLAIN_TEXT_AUTHORIZATION_CODE = "authortization_code";
 
     public static Client makeClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
-        URI redirectUri = new URI(REDIRECT_URI);
+        URI redirectUri = new URI(SECURE_REDIRECT_URI);
 
         Client client = new Client(uuid, rt, redirectUri);
         List<Scope> scopes = makeScopes();
@@ -82,7 +83,7 @@ public class FixtureFactory {
         accessRequest.setUuid(UUID.randomUUID());
         accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
         accessRequest.setClientUUID(clientUUID);
-        accessRequest.setRedirectURI(Optional.of(new URI(REDIRECT_URI)));
+        accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
 
         return accessRequest;
     }

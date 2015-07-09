@@ -2,6 +2,7 @@ package org.rootservices.authorization.grant.code.protocol.token.validator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.TokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
@@ -89,6 +90,8 @@ public class IsTokenRequestValidImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getKey()).isEqualTo("grant_type");
         assertThat(expected.getValue()).isEqualTo("invalid");
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getMessage());
         assertThat(actual).isNull();
     }
 
@@ -130,6 +133,8 @@ public class IsTokenRequestValidImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getKey()).isEqualTo("redirect_uri");
         assertThat(expected.getValue()).isEqualTo("http://www.rootservices.org/continue");
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getMessage());
         assertThat(actual).isNull();
     }
 }
