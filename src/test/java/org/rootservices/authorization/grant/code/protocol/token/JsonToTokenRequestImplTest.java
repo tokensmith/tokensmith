@@ -1,24 +1,14 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import org.apache.commons.validator.routines.UrlValidator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequestImpl;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
-import org.rootservices.authorization.grant.code.protocol.token.validator.IsTokenRequestValid;
-import org.rootservices.authorization.grant.code.protocol.token.validator.IsTokenRequestValidImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

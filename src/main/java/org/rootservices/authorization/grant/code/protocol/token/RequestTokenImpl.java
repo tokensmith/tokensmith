@@ -59,7 +59,9 @@ public class RequestTokenImpl implements RequestToken {
         try {
             tokenRequest = jsonToTokenRequest.run(tokenInput.getPayload());
         } catch (DuplicateKeyException e) {
-            e.printStackTrace();
+            throw new BadRequestException(
+                "Bad request", "invalid_request", e.getKey() + " is repeated", e, e.getCode()
+            );
         } catch (InvalidPayloadException e) {
             e.printStackTrace();
         } catch (InvalidValueException e) {
