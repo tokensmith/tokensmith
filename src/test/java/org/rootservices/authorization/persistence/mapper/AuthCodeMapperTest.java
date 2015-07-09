@@ -1,7 +1,6 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +75,7 @@ public class AuthCodeMapperTest {
         assertThat(ar.getScopes().size()).isEqualTo(1);
         assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
         assertThat(ar.getRedirectURI().isPresent()).isTrue();
-        assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.REDIRECT_URI);
+        assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.SECURE_REDIRECT_URI);
     }
 
     @Test

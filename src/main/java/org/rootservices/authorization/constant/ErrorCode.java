@@ -45,7 +45,9 @@ public enum ErrorCode {
     ACCESS_REQUEST_NOT_FOUND (27, "access request was not found"),
     DUPLICATE_KEY (28, "there was a duplicate key in the payload"),
     INVALID_PAYLOAD (29, "the payload couldn't be parsed"),
-    MISSING_KEY (30, "A key is missing from the payload");
+    MISSING_KEY (30, "A key is missing from the payload"),
+    REDIRECT_URI_INVALID (31, "redirect uri is invalid"),
+    GRANT_TYPE_INVALID (32, "grant type is invalid");
 
     private int code;
     private final String message;
