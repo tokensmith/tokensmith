@@ -298,4 +298,115 @@ public class RequestTokenImplTest {
         assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
         assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
     }
+
+    @Test
+    public void testGrantTypeRepeatedExpect400() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        TokenResponse actual = null;
+        BadRequestException expected = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
+        assertThat(expected.getDescription()).isEqualTo("grant_type is repeated");
+        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
+    public void testCodeRepeatedExpect400() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        TokenResponse actual = null;
+        BadRequestException expected = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
+        assertThat(expected.getDescription()).isEqualTo("code is repeated");
+        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
+    public void testRedirectUriRepeatedExpect400() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"," +
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        TokenResponse actual = null;
+        BadRequestException expected = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
+        assertThat(expected.getDescription()).isEqualTo("redirect_uri is repeated");
+        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+    }
 }
