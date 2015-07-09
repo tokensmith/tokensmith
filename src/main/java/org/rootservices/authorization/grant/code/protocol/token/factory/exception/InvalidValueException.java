@@ -1,14 +1,16 @@
 package org.rootservices.authorization.grant.code.protocol.token.factory.exception;
 
+import org.rootservices.authorization.exception.BaseInformException;
+
 /**
  * Created by tommackenzie on 7/3/15.
  */
-public class InvalidValueException extends Exception {
+public class InvalidValueException extends BaseInformException {
     private String key;
     private String value;
 
-    public InvalidValueException(String message, String key, String value) {
-        super(message);
+    public InvalidValueException(String message, int code, String key, String value) {
+        super(message, code);
         this.key = key;
         this.value = value;
     }

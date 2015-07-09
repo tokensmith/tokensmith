@@ -224,4 +224,78 @@ public class RequestTokenImplTest {
         assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
         assertThat(actual).isNull();
     }
+
+    @Test
+    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \""+ FixtureFactory.REDIRECT_URI + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
+        assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
+        assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
+    }
+
+    @Test
+    public void testRedirectUriIsNotValidExpectBadRequestException() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \"foo\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
+        assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
+        assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
+    }
 }
