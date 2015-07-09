@@ -1,6 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.token.validator;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.TokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
@@ -35,7 +36,7 @@ public class IsTokenRequestValidImpl implements IsTokenRequestValid {
         if (grantType != null && grantType.equals("authorization_code")) {
             return true;
         } else if ( grantType != null && !grantType.equals("authorization_code")) {
-            throw new InvalidValueException("grant_type value is incorrect.", "grant_type", grantType);
+            throw new InvalidValueException(ErrorCode.GRANT_TYPE_INVALID.getMessage(), ErrorCode.GRANT_TYPE_INVALID.getCode(), "grant_type", grantType);
         }
         throw new MissingKeyException("missing grant_type", "grant_type");
     }
@@ -53,6 +54,6 @@ public class IsTokenRequestValidImpl implements IsTokenRequestValid {
         } else if (!redirectUri.isPresent()) {
             return true;
         }
-        throw new InvalidValueException("redirect_uri value is incorrect", "redirect_uri", redirectUri.get().toString());
+        throw new InvalidValueException(ErrorCode.REDIRECT_URI_INVALID.getMessage(), ErrorCode.REDIRECT_URI_INVALID.getCode(), "redirect_uri", redirectUri.get().toString());
     }
 }
