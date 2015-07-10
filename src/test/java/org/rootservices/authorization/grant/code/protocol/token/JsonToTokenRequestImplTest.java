@@ -5,10 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,7 +28,7 @@ public class JsonToTokenRequestImplTest {
     private JsonToTokenRequest subject;
 
     @Test
-    public void run() throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException {
+    public void run() throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
 
         StringReader sr = new StringReader("{\"grant_type\": \"authorization_code\", \"code\": \"test-code\", \"redirect_uri\": \"https://rootservices.org/continue\"}");
         BufferedReader json = new BufferedReader(sr);
@@ -61,6 +58,8 @@ public class JsonToTokenRequestImplTest {
         } catch (MissingKeyException e) {
             fail("DuplicateKeyException was expected.");
         } catch (InvalidValueException e) {
+            fail("DuplicateKeyException was expected.");
+        } catch (UnknownKeyException e) {
             fail("DuplicateKeyException was expected.");
         }
         assertThat(expected).isNotNull();
@@ -95,6 +94,8 @@ public class JsonToTokenRequestImplTest {
             fail("InvalidValueException was expected.");
         } catch (InvalidValueException e) {
             expected = e;
+        } catch (UnknownKeyException e) {
+            fail("InvalidValueException was expected.");
         }
         assertThat(expected).isNotNull();
         assertThat(expected.getKey()).isEqualTo("redirect_uri");
@@ -121,6 +122,8 @@ public class JsonToTokenRequestImplTest {
             fail("InvalidPayloadException was expected.");
         } catch (InvalidPayloadException e) {
             expected = e;
+        } catch (UnknownKeyException e) {
+            fail("InvalidPayloadException was expected.");
         }
         assertThat(expected).isNotNull();
         assertThat(expected.getDomainCause()).isInstanceOf(IOException.class);
@@ -147,10 +150,47 @@ public class JsonToTokenRequestImplTest {
             fail("MissingKeyException was expected");
         } catch (MissingKeyException e) {
             expected = e;
+        } catch (UnknownKeyException e) {
+            fail("MissingKeyException was expected");
         }
         assertThat(expected).isNotNull();
         assertThat(expected.getKey()).isEqualTo("grant_type");
         assertThat(actual).isNull();
+    }
+
+    @Test
+    public void runHasClientIdExpectUnknownKeyException() {
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \"test-code\", " +
+                "\"redirect_uri\": \"https://rootservices.org/continue\"," +
+                "\"client_id\": \"42415ecb-857d-4ff3-9223-f1c133b06205\"}"
+        );
+
+        BufferedReader json = new BufferedReader(sr);
+
+        UnknownKeyException expected = null;
+        TokenRequest actual = null;
+        try {
+            actual = subject.run(json);
+            fail("UnknownKeyException was expected");
+        } catch (DuplicateKeyException e) {
+            fail("UnknownKeyException was expected");
+        } catch (InvalidPayloadException e) {
+            fail("UnknownKeyException was expected");
+        } catch (InvalidValueException e) {
+            fail("UnknownKeyException was expected");
+        } catch (MissingKeyException e) {
+            fail("UnknownKeyException was expected");
+        } catch (UnknownKeyException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.UNKNOWN_KEY.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.UNKNOWN_KEY.getMessage());
+        assertThat(expected.getKey()).isEqualTo("client_id");
     }
 
 }

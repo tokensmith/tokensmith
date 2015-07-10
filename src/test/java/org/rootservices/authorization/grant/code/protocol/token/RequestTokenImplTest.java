@@ -14,10 +14,7 @@ import org.rootservices.authorization.exception.BaseInformException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
@@ -374,7 +371,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRedirectUriRepeatedExpect400() throws URISyntaxException{
+    public void testRedirectUriRepeatedExpectBadRequest() throws URISyntaxException{
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true);
 
@@ -408,5 +405,43 @@ public class RequestTokenImplTest {
         assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
         assertThat(expected.getDescription()).isEqualTo("redirect_uri is repeated");
         assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+    }
+
+    @Test
+    public void testHasClientIdExpectBadRequest() throws URISyntaxException{
+
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"," +
+                "\"client_id\": \"42415ecb-857d-4ff3-9223-f1c133b06205\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        TokenResponse actual = null;
+        BadRequestException expected = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("BadRequestException expected");
+        } catch (UnauthorizedException e) {
+            fail("BadRequestException expected");
+        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
+            fail("BadRequestException expected");
+        } catch (BadRequestException e) {
+            expected = e;
+        }
+
+        assertThat(actual).isNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.UNKNOWN_KEY.getCode());
+        assertThat(expected.getError()).isEqualTo("invalid_request");
+        assertThat(expected.getDescription()).isEqualTo("client_id is a unknown key");
+        assertThat(expected.getDomainCause()).isInstanceOf(UnknownKeyException.class);
     }
 }

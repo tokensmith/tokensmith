@@ -2,12 +2,10 @@ package org.rootservices.authorization.grant.code.protocol.token.factory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.TokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.grant.code.protocol.token.validator.IsTokenRequestValid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +32,7 @@ public class JsonToTokenRequestImpl implements JsonToTokenRequest {
     }
 
     @Override
-    public TokenRequest run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException {
+    public TokenRequest run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
         TokenRequest tokenRequest = null;
         try {
             tokenRequest = objectMapper.readValue(json, TokenRequest.class);
@@ -50,6 +48,10 @@ public class JsonToTokenRequestImpl implements JsonToTokenRequest {
                 throw dke;
             }
             // TODO: Throw InvalidPayload here.
+        } catch (UnrecognizedPropertyException e) {
+            throw new UnknownKeyException(
+                ErrorCode.UNKNOWN_KEY.getMessage(), e.getPropertyName(), e, ErrorCode.UNKNOWN_KEY.getCode()
+            );
         } catch (IOException e) {
             throw new InvalidPayloadException(
                 ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
