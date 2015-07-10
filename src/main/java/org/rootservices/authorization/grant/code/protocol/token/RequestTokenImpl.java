@@ -81,11 +81,15 @@ public class RequestTokenImpl implements RequestToken {
         try {
             authCode = authCodeRepository.getByClientUUIDAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
-            throw new AuthorizationCodeNotFound("Access Request was not found", e, ErrorCode.ACCESS_REQUEST_NOT_FOUND.getCode());
+            throw new AuthorizationCodeNotFound(
+                "Access Request was not found", "invalid_grant", e, ErrorCode.ACCESS_REQUEST_NOT_FOUND.getCode()
+            );
         }
 
         if ( ! doRedirectUrisMatch(tokenRequest.getRedirectUri(), authCode.getAccessRequest().getRedirectURI()) ) {
-            throw new AuthorizationCodeNotFound("Access Request was not found", ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+            throw new AuthorizationCodeNotFound(
+                "Access Request was not found", "invalid_grant", ErrorCode.REDIRECT_URI_MISMATCH.getCode()
+            );
         }
 
         String plainTextToken = randomString.run();
