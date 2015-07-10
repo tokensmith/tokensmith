@@ -6,10 +6,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidPayloadException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
@@ -71,6 +68,10 @@ public class RequestTokenImpl implements RequestToken {
         } catch (MissingKeyException e) {
             throw new BadRequestException(
                 "Bad request", "invalid_request", e.getKey() + " is a required field", e, ErrorCode.MISSING_KEY.getCode()
+            );
+        } catch (UnknownKeyException e) {
+            throw new BadRequestException(
+                "Bad request", "invalid_request", e.getKey() + " is a unknown key", e, e.getCode()
             );
         }
 
