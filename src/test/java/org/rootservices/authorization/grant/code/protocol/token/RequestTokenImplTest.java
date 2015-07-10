@@ -256,6 +256,7 @@ public class RequestTokenImplTest {
         assertThat(actual).isNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
         assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
         assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
     }
 
@@ -293,6 +294,7 @@ public class RequestTokenImplTest {
         assertThat(actual).isNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
         assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
         assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
     }
 
@@ -330,6 +332,7 @@ public class RequestTokenImplTest {
         assertThat(actual).isNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
         assertThat(expected.getDescription()).isEqualTo("grant_type is repeated");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
         assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -367,6 +370,7 @@ public class RequestTokenImplTest {
         assertThat(actual).isNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
         assertThat(expected.getDescription()).isEqualTo("code is repeated");
+        assertThat(expected.getError()).isEqualTo("invalid_request");
         assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
     }
 
@@ -403,6 +407,7 @@ public class RequestTokenImplTest {
 
         assertThat(actual).isNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
+        assertThat(expected.getError()).isEqualTo("invalid_request");
         assertThat(expected.getDescription()).isEqualTo("redirect_uri is repeated");
         assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
     }
