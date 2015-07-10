@@ -35,7 +35,7 @@ public enum ErrorCode {
 
     CLIENT_NOT_FOUND (20, "client was not found"),
     RESPONSE_TYPE_MISMATCH (21, "response type provided does not match client's response type."),
-    REDIRECT_URI_MISMATCH (22, "redirect uri provided does not match client's response type."),
+    REDIRECT_URI_MISMATCH (22, "redirect uri provided does not match client's."),
     RESPONSE_TYPE_NOT_CODE (23, "response type provided is not CODE"),
 
     RESOURCE_OWNER_NOT_FOUND (24, "The resource owner was not found"),
