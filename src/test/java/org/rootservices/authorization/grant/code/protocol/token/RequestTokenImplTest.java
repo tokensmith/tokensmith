@@ -140,8 +140,7 @@ public class RequestTokenImplTest {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         String grantType = "unknown_grant_type";
-
-        // payload with out grant type.
+        
         StringReader sr = new StringReader(
                 "{\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
                 "\"grant_type\": \"" + grantType + "\","+
