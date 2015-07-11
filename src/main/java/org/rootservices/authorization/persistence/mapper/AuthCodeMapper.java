@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface AuthCodeMapper {
     void insert(@Param("authCode") AuthCode authCode);
-    AuthCode getByClientUUIDAndAuthCode(@Param("clientUUID") UUID clientUUID, @Param("code") String code);
+    AuthCode getByClientUUIDAndAuthCodeAndNotRevoked(@Param("clientUUID") UUID clientUUID, @Param("code") String code);
 }

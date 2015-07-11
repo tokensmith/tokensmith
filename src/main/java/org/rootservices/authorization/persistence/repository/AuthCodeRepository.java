@@ -10,5 +10,5 @@ import java.util.UUID;
  */
 public interface AuthCodeRepository {
     void insert(AuthCode authCode);
-    AuthCode getByClientUUIDAndAuthCode(UUID clientUUID, String code) throws RecordNotFoundException;
+    AuthCode getByClientUUIDAndAuthCodeAndNotRevoked(UUID clientUUID, String code) throws RecordNotFoundException;
 }

@@ -52,20 +52,21 @@ public class AuthCodeMapperTest {
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false);
         subject.insert(authCode);
     }
 
     @Test
-    public void getByClientUUIDAndAuthCode() throws URISyntaxException {
+    public void getByClientUUIDAndAuthCodeAndNotRevoked() throws URISyntaxException {
 
-        AuthCode expected = loadConfidentialClientTokenReady.run(true);
+        AuthCode expected = loadConfidentialClientTokenReady.run(true, false);
 
         String code = new String(expected.getCode());
-        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
+        assertThat(actual.isRevoked()).isFalse();
 
         // access request.
         AccessRequest ar = actual.getAccessRequest();
@@ -79,12 +80,12 @@ public class AuthCodeMapperTest {
     }
 
     @Test
-    public void getByClientUUIDAndAuthCodeRedirectURIIsNotPresent() throws URISyntaxException {
+    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenRedirectURIIsNotPresent() throws URISyntaxException {
 
-        AuthCode expected = loadConfidentialClientTokenReady.run(false);
+        AuthCode expected = loadConfidentialClientTokenReady.run(false, false);
 
         String code = new String(expected.getCode());
-        AuthCode actual = subject.getByClientUUIDAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);
 
         assertThat(actual).isNotNull();
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
@@ -97,5 +98,17 @@ public class AuthCodeMapperTest {
         assertThat(ar.getScopes().size()).isEqualTo(1);
         assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
         assertThat(ar.getRedirectURI().isPresent()).isFalse();
+    }
+
+
+    @Test
+    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenCodeIsRevoked() throws URISyntaxException {
+
+        AuthCode expected = loadConfidentialClientTokenReady.run(false, true);
+
+        String code = new String(expected.getCode());
+        AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);
+        assertThat(actual).isNull();
+
     }
 }

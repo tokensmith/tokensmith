@@ -66,12 +66,13 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static AuthCode makeAuthCode(AccessRequest accessRequest) {
+    public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl();
         String hashedCode = textHasher.run(PLAIN_TEXT_AUTHORIZATION_CODE);
         authCode.setCode(hashedCode.getBytes());
+        authCode.setRevoked(isRevoked);
         authCode.setAccessRequest(accessRequest);
         authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
 
