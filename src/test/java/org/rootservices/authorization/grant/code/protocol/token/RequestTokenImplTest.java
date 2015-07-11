@@ -2,25 +2,16 @@ package org.rootservices.authorization.grant.code.protocol.token;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.exception.BaseInformException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.security.HashTextStaticSalt;
-import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,15 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+
 
 /**
  * Created by tommackenzie on 6/2/15.
@@ -55,7 +42,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRun() throws Exception {
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -80,7 +67,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException {
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -112,7 +99,7 @@ public class RequestTokenImplTest {
 
     @Test
     public void testMissingGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         // payload with out grant type.
         StringReader sr = new StringReader(
@@ -151,7 +138,7 @@ public class RequestTokenImplTest {
 
     @Test
     public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -185,11 +172,10 @@ public class RequestTokenImplTest {
         assertThat(expected.getDescription()).isEqualTo("code is a required field");
         assertThat(actual).isNull();
     }
-
-
+    
     @Test
-    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws URISyntaxException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -219,13 +205,52 @@ public class RequestTokenImplTest {
 
         assertThat(expected).isNotNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+        assertThat(expected.getError()).isEqualTo("invalid_grant");
         assertThat(actual).isNull();
     }
 
     @Test
+    public void testIsRevokedExpectAuthorizationCodeNotFound() throws URISyntaxException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, true);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                "\"code\": \"" + FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"redirect_uri\": \"" + authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        AuthorizationCodeNotFound expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected AuthorizationCodeNotFound");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (BadRequestException e ) {
+            fail("BadRequestException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (AuthorizationCodeNotFound e) {
+            expected = e;
+        } catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected AuthorizationCodeNotFound");
+        }
+
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.AUTH_CODE_NOT_FOUND.getCode());
+        assertThat(expected.getError()).isEqualTo("invalid_grant");
+        assertThat(actual).isNull();
+    }
+
+
+    @Test
     public void testRedirectUriIsNotHttpsExpectBadRequestException() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -263,7 +288,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRedirectUriIsNotValidExpectBadRequestException() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -299,9 +324,9 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testGrantTypeRepeatedExpect400() throws URISyntaxException{
+    public void testGrantTypeRepeatedExpectBadRequestException() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -337,9 +362,9 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testCodeRepeatedExpect400() throws URISyntaxException{
+    public void testCodeRepeatedExpectBadRequestException() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -377,7 +402,7 @@ public class RequestTokenImplTest {
     @Test
     public void testRedirectUriRepeatedExpectBadRequest() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -415,7 +440,7 @@ public class RequestTokenImplTest {
     @Test
     public void testHasClientIdExpectBadRequest() throws URISyntaxException{
 
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true);
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +

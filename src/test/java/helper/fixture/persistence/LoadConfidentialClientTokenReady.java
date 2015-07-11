@@ -35,7 +35,7 @@ public class LoadConfidentialClientTokenReady {
         this.accessRequestScopesRepository = accessRequestScopesRepository;
     }
 
-    public AuthCode run(boolean redirectUriIsPresent) throws URISyntaxException {
+    public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked) throws URISyntaxException {
         Client client = loadClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
@@ -62,7 +62,7 @@ public class LoadConfidentialClientTokenReady {
             accessRequestScopesRepository.insert(ars);
         }
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest);
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked);
         authCodeRepository.insert(authCode);
 
         authCode.setAccessRequest(accessRequest);
