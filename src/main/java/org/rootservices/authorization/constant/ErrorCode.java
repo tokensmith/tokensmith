@@ -35,14 +35,14 @@ public enum ErrorCode {
 
     CLIENT_NOT_FOUND (20, "client was not found"),
     RESPONSE_TYPE_MISMATCH (21, "response type provided does not match client's response type."),
-    REDIRECT_URI_MISMATCH (22, "redirect uri provided does not match client's response type."),
+    REDIRECT_URI_MISMATCH (22, "redirect uri provided does not match client's."),
     RESPONSE_TYPE_NOT_CODE (23, "response type provided is not CODE"),
 
     RESOURCE_OWNER_NOT_FOUND (24, "The resource owner was not found"),
     PASSWORD_MISMATCH (25, "Password did not match"),
     UNSUPPORTED_ENCODING (26, ""),
 
-    ACCESS_REQUEST_NOT_FOUND (27, "access request was not found"),
+    AUTH_CODE_NOT_FOUND(27, "authorization code was not found"),
     DUPLICATE_KEY (28, "there was a duplicate key in the payload"),
     INVALID_PAYLOAD (29, "the payload couldn't be parsed"),
     MISSING_KEY (30, "A key is missing from the payload"),
