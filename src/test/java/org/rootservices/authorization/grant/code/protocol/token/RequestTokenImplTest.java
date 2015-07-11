@@ -135,6 +135,45 @@ public class RequestTokenImplTest {
         assertThat(actual).isNull();
     }
 
+    @Test
+    public void testUnsupportedGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
+
+        String grantType = "unknown_grant_type";
+
+        // payload with out grant type.
+        StringReader sr = new StringReader(
+                "{\"code\": \""+ FixtureFactory.PLAIN_TEXT_AUTHORIZATION_CODE + "\", " +
+                "\"grant_type\": \"" + grantType + "\","+
+                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected BadRequestException");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected BadRequestException");
+        } catch (BadRequestException e ) {
+            expected = e;
+        } catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected BadRequestException");
+        }
+
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getCode());
+        assertThat(((InvalidValueException) expected.getDomainCause()).getKey()).isEqualTo("grant_type");
+        assertThat(expected.getError()).isEqualTo("unsupported_grant_type");
+        assertThat(expected.getDescription()).isEqualTo(grantType + " is not supported");
+        assertThat(actual).isNull();
+    }
 
     @Test
     public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {

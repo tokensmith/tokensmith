@@ -62,9 +62,15 @@ public class RequestTokenImpl implements RequestToken {
         } catch (InvalidPayloadException e) {
             e.printStackTrace();
         } catch (InvalidValueException e) {
-            throw new BadRequestException(
-                "Bad request", "invalid_request", e.getKey() + " is invalid", e, e.getCode()
-            );
+            if (e.getCode() == ErrorCode.GRANT_TYPE_INVALID.getCode()) {
+                throw new BadRequestException(
+                    "Bad request", "unsupported_grant_type", e.getValue() + " is not supported", e, e.getCode()
+                );
+            } else {
+                throw new BadRequestException(
+                    "Bad request", "invalid_request", e.getKey() + " is invalid", e, e.getCode()
+                );
+            }
         } catch (MissingKeyException e) {
             throw new BadRequestException(
                 "Bad request", "invalid_request", e.getKey() + " is a required field", e, ErrorCode.MISSING_KEY.getCode()
