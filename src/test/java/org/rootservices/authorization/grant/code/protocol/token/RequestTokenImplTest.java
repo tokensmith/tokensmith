@@ -172,43 +172,7 @@ public class RequestTokenImplTest {
         assertThat(expected.getDescription()).isEqualTo("code is a required field");
         assertThat(actual).isNull();
     }
-
-    @Test
-    public void testExpectAuthorizationCodeNotFound() throws URISyntaxException {
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
-
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \"incorrect-auth-code\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        AuthorizationCodeNotFound expected = null;
-        TokenResponse actual = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("No exception was thrown. Expected AuthorizationCodeNotFound");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (BadRequestException e ) {
-            fail("BadRequestException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (AuthorizationCodeNotFound e) {
-            expected = e;
-        } catch (BaseInformException e) {
-            fail("BaseInformException was thrown. Expected AuthorizationCodeNotFound");
-        }
-
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.AUTH_CODE_NOT_FOUND.getCode());
-        assertThat(expected.getError()).isEqualTo("invalid_grant");
-        assertThat(actual).isNull();
-    }
-
+    
     @Test
     public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws URISyntaxException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
