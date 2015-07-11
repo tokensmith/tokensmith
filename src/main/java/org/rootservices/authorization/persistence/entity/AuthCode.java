@@ -9,6 +9,7 @@ import java.util.UUID;
 public class AuthCode {
     private UUID uuid;
     private byte[] code;
+    private Boolean revoked;
     private AccessRequest accessRequest;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
@@ -18,9 +19,19 @@ public class AuthCode {
     public AuthCode(UUID uuid, byte[] code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
         this.uuid = uuid;
         this.code = code;
+        this.revoked = false;
         this.accessRequest = accessRequest;
         this.expiresAt = expiresAt;
     }
+
+    public AuthCode(UUID uuid, byte[] code, Boolean revoked, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+        this.uuid = uuid;
+        this.code = code;
+        this.revoked = revoked;
+        this.accessRequest = accessRequest;
+        this.expiresAt = expiresAt;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
@@ -35,6 +46,14 @@ public class AuthCode {
 
     public void setCode(byte[] code) {
         this.code = code;
+    }
+
+    public Boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
     }
 
     public AccessRequest getAccessRequest() {
