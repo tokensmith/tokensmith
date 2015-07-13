@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ public class JsonToTokenRequestImpl implements JsonToTokenRequest {
     private IsTokenRequestValid isTokenRequestValid;
 
     @Autowired
-    public JsonToTokenRequestImpl(ObjectMapper objectMapper, IsTokenRequestValid isTokenRequestValid){
+    public JsonToTokenRequestImpl(ObjectMapper objectMapper, IsTokenRequestValid isTokenRequestValid) {
         this.objectMapper = objectMapper;
         this.isTokenRequestValid = isTokenRequestValid;
     }
@@ -37,30 +38,40 @@ public class JsonToTokenRequestImpl implements JsonToTokenRequest {
         try {
             tokenRequest = objectMapper.readValue(json, TokenRequest.class);
         } catch (JsonParseException e) {
-            // TODO: see if jackson will throw a more specific exception.
-            Pattern p = Pattern.compile("Duplicate field \'(\\w+)\'\\n(.*)");
-            Matcher m = p.matcher(e.getMessage());
-            if ( m.matches() ) {
-                String key = m.group(1);
-                DuplicateKeyException dke = new DuplicateKeyException(
-                    ErrorCode.DUPLICATE_KEY.getMessage(), e, ErrorCode.DUPLICATE_KEY.getCode(), key
+            // TODO: see if jackson can throw a specific exception for duplicates.
+            Optional<String> duplicateKey = getJsonParseExceptionDuplicateKey(e);
+            if (duplicateKey.isPresent()) {
+                throw new DuplicateKeyException(
+                    ErrorCode.DUPLICATE_KEY.getMessage(), e, ErrorCode.DUPLICATE_KEY.getCode(), duplicateKey.get()
                 );
-                throw dke;
             }
-            // TODO: Throw InvalidPayload here.
+
+            throw new InvalidPayloadException(
+                    ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
+            );
         } catch (UnrecognizedPropertyException e) {
             throw new UnknownKeyException(
-                ErrorCode.UNKNOWN_KEY.getMessage(), e.getPropertyName(), e, ErrorCode.UNKNOWN_KEY.getCode()
+                    ErrorCode.UNKNOWN_KEY.getMessage(), e.getPropertyName(), e, ErrorCode.UNKNOWN_KEY.getCode()
             );
         } catch (IOException e) {
             throw new InvalidPayloadException(
-                ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
+                    ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
             );
         }
 
         isTokenRequestValid.run(tokenRequest);
 
         return tokenRequest;
+    }
+
+    private Optional<String> getJsonParseExceptionDuplicateKey(JsonParseException e) {
+        Optional<String> key = Optional.empty();
+        Pattern p = Pattern.compile("Duplicate field \'(\\w+)\'\\n(.*)");
+        Matcher m = p.matcher(e.getMessage());
+        if (m.matches()) {
+            key = Optional.of(m.group(1));
+        }
+        return key;
     }
 
 }

@@ -65,7 +65,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException {
+    public void testLoginClientFails() throws URISyntaxException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -98,7 +98,39 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testMissingGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testInvalidJsonExpectBadRequest() throws URISyntaxException {
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
+
+        StringReader sr = new StringReader("foo");
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        BadRequestException expected = null;
+        TokenResponse actual = null;
+        try {
+            actual = subject.run(tokenInput);
+            fail("No exception was thrown. Expected BadRequestException");
+        } catch (UnauthorizedException e) {
+            fail("UnauthorizedException was thrown. Expected BadRequestException");
+        } catch (BadRequestException e ) {
+            expected = e;
+        } catch (BaseInformException e) {
+            fail("BaseInformException was thrown. Expected BadRequestException");
+        }
+        assertThat(actual).isNull();
+        assertThat(expected).isNotNull();
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getCode());
+        assertThat(expected.getError()).isEqualTo("invalid_request");
+        assertThat(expected.getDescription()).isEqualTo("payload is not json");
+
+    }
+
+    @Test
+    public void testMissingGrantTypeExpectBadRequestException() throws URISyntaxException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         // payload with out grant type.
@@ -122,8 +154,7 @@ public class RequestTokenImplTest {
             fail("UnauthorizedException was thrown. Expected BadRequestException");
         } catch (BadRequestException e ) {
             expected = e;
-        }
-        catch (BaseInformException e) {
+        } catch (BaseInformException e) {
             fail("BaseInformException was thrown. Expected BadRequestException");
         }
 
@@ -136,7 +167,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testUnsupportedGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testUnsupportedGrantTypeExpectBadRequestException() throws URISyntaxException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         String grantType = "unknown_grant_type";
@@ -175,7 +206,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testMissingCodeExpectBadRequestException() throws URISyntaxException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
@@ -512,4 +543,6 @@ public class RequestTokenImplTest {
         assertThat(expected.getDescription()).isEqualTo("client_id is a unknown key");
         assertThat(expected.getDomainCause()).isInstanceOf(UnknownKeyException.class);
     }
+
+
 }
