@@ -22,4 +22,27 @@ public class BadRequestException extends BaseInformException {
     public String getDescription() {
         return description;
     }
+
+    public static class Builder {
+        private String message;
+        private Throwable domainCause;
+        private int code;
+        private String error;
+        private String description;
+
+        public Builder() {}
+
+        public Builder DuplicateKey(String key, int code, Throwable domainCause) {
+            this.message = "Bad request";
+            this.error = "invalid_request";
+            this.description = key + " is repeated";
+            this.domainCause = domainCause;
+            this.code = code;
+            return this;
+        }
+
+        public BadRequestException build() {
+            return new BadRequestException(message, error, description, domainCause, code);
+        }
+    }
 }

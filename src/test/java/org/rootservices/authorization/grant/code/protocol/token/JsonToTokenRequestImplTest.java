@@ -133,6 +133,35 @@ public class JsonToTokenRequestImplTest {
     }
 
     @Test
+    public void runBadJsonExpectInvalidPayloadException() {
+
+        StringReader sr = new StringReader("foo");
+        BufferedReader json = new BufferedReader(sr);
+
+        InvalidPayloadException expected = null;
+        TokenRequest actual = null;
+        try {
+            actual = subject.run(json);
+            fail("InvalidPayloadException was expected.");
+        } catch (DuplicateKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (InvalidValueException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (MissingKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (InvalidPayloadException e) {
+            expected = e;
+        } catch (UnknownKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        }
+        assertThat(expected).isNotNull();
+        assertThat(expected.getDomainCause()).isInstanceOf(IOException.class);
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getMessage());
+        assertThat(actual).isNull();
+    }
+
+    @Test
     public void runJsonIsEmptyContainerExpectMissingKeyException() {
 
         StringReader sr = new StringReader("{}");
