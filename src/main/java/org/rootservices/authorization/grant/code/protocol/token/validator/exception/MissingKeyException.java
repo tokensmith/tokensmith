@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.token.factory.exception;
+package org.rootservices.authorization.grant.code.protocol.token.validator.exception;
 
 /**
  * Created by tommackenzie on 7/4/15.
