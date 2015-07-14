@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

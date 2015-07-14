@@ -8,6 +8,9 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.BadReq
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
@@ -62,13 +65,10 @@ public class RequestTokenImpl implements RequestToken {
             throw badRequestExceptionBuilder.DuplicateKey(e.getKey(), e.getCode(), e).build();
         } catch (InvalidPayloadException e) {
             throw badRequestExceptionBuilder.InvalidPayload(e.getCode(), e).build();
+        } catch (GrantTypeInvalidException e) {
+            throw badRequestExceptionBuilder.UnsupportedGrantType(e.getValue(), e.getCode(), e).build();
         } catch (InvalidValueException e) {
-            if (e.getCode() == ErrorCode.GRANT_TYPE_INVALID.getCode()) {
-                throw badRequestExceptionBuilder.UnsupportedGrantType(e.getValue(), e.getCode(), e).build();
-
-            } else {
-                throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
-            }
+            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (MissingKeyException e) {
             throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
         } catch (UnknownKeyException e) {

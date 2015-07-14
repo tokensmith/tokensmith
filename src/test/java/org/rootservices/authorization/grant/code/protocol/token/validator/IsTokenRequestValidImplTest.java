@@ -4,8 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.TokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,19 +74,21 @@ public class IsTokenRequestValidImplTest {
     }
 
     @Test
-    public void grantTypeIsNotAuthorizationCodeExpectInvalidValueException() throws URISyntaxException {
+    public void grantTypeIsNotAuthorizationCodeExpectGrantTypeInvalidException() throws URISyntaxException {
         TokenRequest tokenRequest = makeTokenRequest();
         tokenRequest.setGrantType("invalid");
 
-        InvalidValueException expected = null;
+        GrantTypeInvalidException expected = null;
         Boolean actual = null;
         try {
             actual = subject.run(tokenRequest);
-            fail("InvalidValueException expected.");
-        } catch (InvalidValueException e) {
+            fail("GrantTypeInvalidException expected.");
+        } catch (GrantTypeInvalidException e) {
             expected = e;
+        } catch (InvalidValueException e) {
+            fail("GrantTypeInvalidException expected.");
         } catch (MissingKeyException e) {
-            fail("InvalidValueException expected.");
+            fail("GrantTypeInvalidException expected.");
         }
         assertThat(expected).isNotNull();
         assertThat(expected.getKey()).isEqualTo("grant_type");
