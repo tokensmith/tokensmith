@@ -1,9 +1,11 @@
 package org.rootservices.authorization.persistence.repository;
 
 import org.rootservices.authorization.persistence.entity.AuthCode;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.AuthCodeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -24,8 +26,12 @@ public class AuthCodeRepositoryImpl implements AuthCodeRepository {
     }
 
     @Override
-    public void insert(AuthCode authCode) {
-        authCodeMapper.insert(authCode);
+    public void insert(AuthCode authCode) throws DuplicateRecordException {
+        try {
+            authCodeMapper.insert(authCode);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateRecordException("Could not insert auth_code record.", e);
+        }
     }
 
     @Override

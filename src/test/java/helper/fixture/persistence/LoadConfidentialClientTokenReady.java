@@ -2,6 +2,7 @@ package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class LoadConfidentialClientTokenReady {
         this.accessRequestScopesRepository = accessRequestScopesRepository;
     }
 
-    public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked) throws URISyntaxException {
+    public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked) throws URISyntaxException, DuplicateRecordException {
         Client client = loadClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);

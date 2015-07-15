@@ -4,14 +4,18 @@ import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.postgresql.util.PSQLException;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -56,8 +60,33 @@ public class AuthCodeMapperTest {
         subject.insert(authCode);
     }
 
+    @Test(expected = DuplicateKeyException.class)
+    public void insertDuplicateExpectDuplicateKeyException() throws URISyntaxException {
+
+        // prepare db for test.
+        Client client = FixtureFactory.makeClientWithScopes();
+        clientRepository.insert(client);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        resourceOwnerRepository.insert(resourceOwner);
+
+        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
+                resourceOwner.getUuid(),
+                client.getUuid()
+        );
+        accessRequestRepository.insert(accessRequest);
+        // end prepare db for test.
+
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false);
+        subject.insert(authCode);
+
+        // insert duplicate.
+        authCode.setUuid(UUID.randomUUID());
+        subject.insert(authCode);
+    }
+
     @Test
-    public void getByClientUUIDAndAuthCodeAndNotRevoked() throws URISyntaxException {
+    public void getByClientUUIDAndAuthCodeAndNotRevoked() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode expected = loadConfidentialClientTokenReady.run(true, false);
 
@@ -80,7 +109,7 @@ public class AuthCodeMapperTest {
     }
 
     @Test
-    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenRedirectURIIsNotPresent() throws URISyntaxException {
+    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenRedirectURIIsNotPresent() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode expected = loadConfidentialClientTokenReady.run(false, false);
 
@@ -102,7 +131,7 @@ public class AuthCodeMapperTest {
 
 
     @Test
-    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenCodeIsRevoked() throws URISyntaxException {
+    public void getByClientUUIDAndAuthCodeAndNotRevokedWhenCodeIsRevoked() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode expected = loadConfidentialClientTokenReady.run(false, true);
 

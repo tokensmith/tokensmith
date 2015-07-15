@@ -11,6 +11,7 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.Author
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,7 +66,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRunLoginClientFails() throws URISyntaxException, UnauthorizedException, RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException {
+    public void testRunLoginClientFails() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -98,7 +99,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testMissingGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testMissingGrantTypeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         // payload with out grant type.
@@ -136,7 +137,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testUnsupportedGrantTypeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testUnsupportedGrantTypeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         String grantType = "unknown_grant_type";
@@ -175,7 +176,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testMissingCodeExpectBadRequestException() throws RecordNotFoundException, InvalidValueException, InvalidPayloadException, MissingKeyException, DuplicateKeyException, URISyntaxException, UnauthorizedException {
+    public void testMissingCodeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
@@ -212,7 +213,7 @@ public class RequestTokenImplTest {
     }
     
     @Test
-    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws URISyntaxException {
+    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
         StringReader sr = new StringReader(
@@ -248,7 +249,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testIsRevokedExpectAuthorizationCodeNotFound() throws URISyntaxException {
+    public void testIsRevokedExpectAuthorizationCodeNotFound() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, true);
 
         StringReader sr = new StringReader(
@@ -286,7 +287,7 @@ public class RequestTokenImplTest {
 
 
     @Test
-    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws URISyntaxException{
+    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -324,7 +325,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRedirectUriIsNotValidExpectBadRequestException() throws URISyntaxException{
+    public void testRedirectUriIsNotValidExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -362,7 +363,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testGrantTypeRepeatedExpectBadRequestException() throws URISyntaxException{
+    public void testGrantTypeRepeatedExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -400,7 +401,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testCodeRepeatedExpectBadRequestException() throws URISyntaxException{
+    public void testCodeRepeatedExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -438,7 +439,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testRedirectUriRepeatedExpectBadRequest() throws URISyntaxException{
+    public void testRedirectUriRepeatedExpectBadRequest() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
@@ -476,7 +477,7 @@ public class RequestTokenImplTest {
     }
 
     @Test
-    public void testHasClientIdExpectBadRequest() throws URISyntaxException{
+    public void testHasClientIdExpectBadRequest() throws URISyntaxException, DuplicateRecordException {
 
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
 
