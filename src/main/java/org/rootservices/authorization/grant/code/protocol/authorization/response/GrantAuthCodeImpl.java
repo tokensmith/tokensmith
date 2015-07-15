@@ -4,6 +4,7 @@ import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AccessRequestScope;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AccessRequestScopesRepository;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
@@ -74,7 +75,11 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
                 SECONDS_TO_EXPIRATION
         );
 
-        authCodeRepository.insert(authCode);
+        try {
+            authCodeRepository.insert(authCode);
+        } catch(DuplicateRecordException e) {
+            // TODO: retry
+        }
 
 
 

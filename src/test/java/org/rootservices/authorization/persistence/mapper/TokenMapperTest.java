@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,7 +31,7 @@ public class TokenMapperTest {
     private TokenMapper subject;
 
     @Test
-    public void insert() throws URISyntaxException {
+    public void insert() throws URISyntaxException, DuplicateRecordException {
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false);
         Token token = FixtureFactory.makeToken(authCode.getUuid());
         subject.insert(token);

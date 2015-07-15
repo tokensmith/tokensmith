@@ -4,10 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.persistence.entity.AuthCode;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.AuthCodeMapper;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
@@ -32,10 +35,17 @@ public class AuthCodeRepositoryImplTest {
     }
 
     @Test
-    public void testInsert() throws Exception {
+    public void testInsert() throws DuplicateRecordException {
         AuthCode authCode = new AuthCode();
         subject.insert(authCode);
         verify(mockMapper).insert(authCode);
+    }
+
+    @Test(expected = DuplicateRecordException.class)
+    public void testInsertDuplicateExpectDuplicateRecordException() throws DuplicateRecordException {
+        AuthCode authCode = new AuthCode();
+        Mockito.doThrow(new DuplicateKeyException("message")).when(mockMapper).insert(authCode);
+        subject.insert(authCode);
     }
 
     @Test
