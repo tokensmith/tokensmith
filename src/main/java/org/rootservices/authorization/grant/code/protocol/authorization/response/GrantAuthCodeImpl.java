@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
+import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AccessRequestScope;
 import org.rootservices.authorization.persistence.entity.AuthCode;
@@ -23,34 +24,23 @@ import java.util.UUID;
  */
 @Component
 public class GrantAuthCodeImpl implements GrantAuthCode {
-    private static final int SECONDS_TO_EXPIRATION = 120;
-    @Autowired
-    private RandomString randomString;
-    @Autowired
-    private MakeAuthCode makeAuthCode;
-    @Autowired
-    private AuthCodeRepository authCodeRepository;
-    @Autowired
     private AccessRequestRepository accessRequestRepository;
-    // additions.
-    @Autowired
     private ScopeRepository scopeRepository;
-    @Autowired
     private AccessRequestScopesRepository accessRequestScopesRepository;
+    private InsertAuthCodeWithRetry insertAuthCodeWithRetry;
 
     public GrantAuthCodeImpl() {}
 
-    public GrantAuthCodeImpl(RandomString randomString, MakeAuthCode makeAuthCode, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, ScopeRepository scopeRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
-        this.randomString = randomString;
-        this.makeAuthCode = makeAuthCode;
-        this.authCodeRepository = authCodeRepository;
+    @Autowired
+    public GrantAuthCodeImpl(AccessRequestRepository accessRequestRepository, ScopeRepository scopeRepository, AccessRequestScopesRepository accessRequestScopesRepository, InsertAuthCodeWithRetry insertAuthCodeWithRetry) {
         this.accessRequestRepository = accessRequestRepository;
         this.scopeRepository = scopeRepository;
         this.accessRequestRepository = accessRequestRepository;
         this.accessRequestScopesRepository = accessRequestScopesRepository;
+        this.insertAuthCodeWithRetry = insertAuthCodeWithRetry;
     }
 
-    public String run(UUID resourceOwnerUUID, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) {
+    public String run(UUID resourceOwnerUUID, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
 
         AccessRequest accessRequest = new AccessRequest(
                 UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI
@@ -68,26 +58,7 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
             }
         }
 
-        String authorizationCode = randomString.run();
-        AuthCode authCode = makeAuthCode.run(
-                accessRequest,
-                authorizationCode,
-                SECONDS_TO_EXPIRATION
-        );
-
-        try {
-            authCodeRepository.insert(authCode);
-        } catch(DuplicateRecordException e) {
-            // TODO: retry
-        }
-
-
-
+        String authorizationCode = insertAuthCodeWithRetry.run(accessRequest, 1);
         return authorizationCode;
     }
-
-    public int getSecondsToExpiration() {
-        return SECONDS_TO_EXPIRATION;
-    }
-
 }

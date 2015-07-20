@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,38 +35,32 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GrantAuthCodeImplTest {
     @Mock
-    private RandomString mockRandomString;
-    @Mock
-    private MakeAuthCode mockMakeAuthCode;
-    @Mock
-    private AuthCodeRepository mockAuthCodeRepository;
-    @Mock
     private AccessRequestRepository mockAccessRequestRepository;
     @Mock
     private ScopeRepository mockScopeRepository;
     @Mock
     private AccessRequestScopesRepository mockAccessRequestScopesRepository;
+    @Mock
+    private InsertAuthCodeWithRetry mockInsertAuthCodeWithRetry;
 
     private GrantAuthCode subject;
 
     @Before
     public void setUp() {
         subject = new GrantAuthCodeImpl(
-            mockRandomString, mockMakeAuthCode, mockAuthCodeRepository, mockAccessRequestRepository, mockScopeRepository, mockAccessRequestScopesRepository
+            mockAccessRequestRepository, mockScopeRepository, mockAccessRequestScopesRepository, mockInsertAuthCodeWithRetry
         );
     }
 
     // TODO: this test is too complex come back and fix it.
     @Test
     public void testRun() throws Exception {
-        // parameters to pass into method in test
+        // parameters to pass into run method.
         UUID resourceOwnerUUID = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
 
-        String randomString = "randomString";
-        when(mockRandomString.run()).thenReturn(randomString);
-
+        // scopes to add to the access request.
         List<String> scopeNames = new ArrayList<>();
         scopeNames.add("profile");
 
@@ -78,19 +73,14 @@ public class GrantAuthCodeImplTest {
         ArgumentCaptor<AccessRequest> ARCaptor = ArgumentCaptor.forClass(AccessRequest.class);
         ArgumentCaptor<AccessRequestScope> ARSCaptor = ArgumentCaptor.forClass(AccessRequestScope.class);
 
-        AuthCode authCode = new AuthCode();
-        authCode.setUuid(UUID.randomUUID());
-        when(mockMakeAuthCode.run(
-                any(AccessRequest.class), any(String.class), any(Integer.class)
-        )).thenReturn(authCode);
+        when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class), anyInt())).thenReturn("randomString");
 
         String actual = subject.run(resourceOwnerUUID, clientUUID, redirectURI, scopeNames);
 
-        assertThat(actual).isEqualTo(randomString);
+        assertThat(actual).isEqualTo("randomString");
 
         verify(mockAccessRequestRepository).insert(ARCaptor.capture());
         verify(mockAccessRequestScopesRepository).insert(ARSCaptor.capture());
-        verify(mockAuthCodeRepository).insert(authCode);
 
         // check access request assigned correct values.
         assertThat(ARCaptor.getValue().getUuid()).isNotNull();
