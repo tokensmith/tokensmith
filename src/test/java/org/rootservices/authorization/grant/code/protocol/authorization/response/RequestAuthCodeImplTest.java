@@ -10,6 +10,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.ValidateParams;
+import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.*;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -146,7 +147,7 @@ public class RequestAuthCodeImplTest {
     }
 
     @Test
-    public void testRunFailsLogin() throws URISyntaxException, UnauthorizedException {
+    public void testRunFailsLogin() throws URISyntaxException, UnauthorizedException, AuthCodeInsertException {
         UUID clientId = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
         String scope = "profile";
@@ -172,6 +173,8 @@ public class RequestAuthCodeImplTest {
         } catch (InformResourceOwnerException e) {
             fail("Expected UnauthorizedException");
         } catch (InformClientException e) {
+            fail("Expected UnauthorizedException");
+        } catch (AuthCodeInsertException e) {
             fail("Expected UnauthorizedException");
         }
 
