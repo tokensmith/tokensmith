@@ -7,6 +7,7 @@ import org.rootservices.authorization.exception.BaseInformException;
  */
 public class UnknownKeyException extends BaseInformException {
     private String key;
+
     public UnknownKeyException(String message, String key, Throwable domainCause, int code) {
         super(message, domainCause, code);
         this.key = key;
