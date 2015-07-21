@@ -58,7 +58,8 @@ public class FixtureFactory {
     public static ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
         ro.setUuid(UUID.randomUUID());
-        ro.setEmail("test@rootservices.org");
+
+        ro.setEmail("test-" + UUID.randomUUID().toString() + "@rootservices.org");
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
         ro.setPassword(hashedPassword.getBytes());
@@ -66,11 +67,11 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked) {
+    public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl();
-        String hashedCode = textHasher.run(PLAIN_TEXT_AUTHORIZATION_CODE);
+        String hashedCode = textHasher.run(plainTextAuthCode);
         authCode.setCode(hashedCode.getBytes());
         authCode.setRevoked(isRevoked);
         authCode.setAccessRequest(accessRequest);

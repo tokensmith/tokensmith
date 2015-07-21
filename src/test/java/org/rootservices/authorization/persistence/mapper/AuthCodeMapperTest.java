@@ -8,6 +8,7 @@ import org.postgresql.util.PSQLException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,6 +36,8 @@ public class AuthCodeMapperTest {
     private ResourceOwnerRepository resourceOwnerRepository;
     @Autowired
     private AccessRequestRepository accessRequestRepository;
+    @Autowired
+    private RandomString randomString;
 
     @Autowired
     private AuthCodeMapper subject;
@@ -56,7 +59,8 @@ public class AuthCodeMapperTest {
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false);
+        String plainTextAuthCode = randomString.run();
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false, plainTextAuthCode);
         subject.insert(authCode);
     }
 
@@ -77,7 +81,8 @@ public class AuthCodeMapperTest {
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false);
+        String plainTextAuthCode = randomString.run();
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false, plainTextAuthCode);
         subject.insert(authCode);
 
         // insert duplicate.
@@ -88,7 +93,8 @@ public class AuthCodeMapperTest {
     @Test
     public void getByClientUUIDAndAuthCodeAndNotRevoked() throws URISyntaxException, DuplicateRecordException {
 
-        AuthCode expected = loadConfidentialClientTokenReady.run(true, false);
+        String plainTextAuthCode = randomString.run();
+        AuthCode expected = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);
@@ -110,8 +116,8 @@ public class AuthCodeMapperTest {
 
     @Test
     public void getByClientUUIDAndAuthCodeAndNotRevokedWhenRedirectURIIsNotPresent() throws URISyntaxException, DuplicateRecordException {
-
-        AuthCode expected = loadConfidentialClientTokenReady.run(false, false);
+        String plainTextAuthCode = randomString.run();
+        AuthCode expected = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);
@@ -132,8 +138,8 @@ public class AuthCodeMapperTest {
 
     @Test
     public void getByClientUUIDAndAuthCodeAndNotRevokedWhenCodeIsRevoked() throws URISyntaxException, DuplicateRecordException {
-
-        AuthCode expected = loadConfidentialClientTokenReady.run(false, true);
+        String plainTextAuthCode = randomString.run();
+        AuthCode expected = loadConfidentialClientTokenReady.run(false, true, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(expected.getAccessRequest().getClientUUID(), code);

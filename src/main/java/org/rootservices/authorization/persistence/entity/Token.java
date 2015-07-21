@@ -10,6 +10,7 @@ public class Token {
     private UUID uuid;
     private UUID authCodeUUID;
     private byte[] token;
+    private boolean revoked;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
@@ -44,6 +45,14 @@ public class Token {
 
     public void setToken(byte[] token) {
         this.token = token;
+    }
+
+    public boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
     }
 
     public OffsetDateTime getExpiresAt() {

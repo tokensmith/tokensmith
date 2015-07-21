@@ -48,7 +48,8 @@ public enum ErrorCode {
     MISSING_KEY (30, "A key is missing from the payload"),
     REDIRECT_URI_INVALID (31, "redirect uri is invalid"),
     GRANT_TYPE_INVALID (32, "grant type is invalid"),
-    UNKNOWN_KEY (33, "A key is unrecognized");
+    UNKNOWN_KEY (33, "A key is unrecognized"),
+    COMPROMISED_AUTH_CODE (34, "Authorization code has already been used");
 
     private int code;
     private final String message;
