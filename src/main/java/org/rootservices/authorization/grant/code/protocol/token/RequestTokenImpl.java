@@ -5,11 +5,13 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
+import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
@@ -47,7 +49,7 @@ public class RequestTokenImpl implements RequestToken {
     }
 
     @Override
-    public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException {
+    public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
 
         UUID clientUUID = UUID.fromString(tokenInput.getClientUUID());
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
@@ -100,7 +102,16 @@ public class RequestTokenImpl implements RequestToken {
 
         String plainTextToken = randomString.run();
         Token token = makeToken.run(authCode.getUuid(), plainTextToken);
-        tokenRepository.insert(token);
+        try {
+            tokenRepository.insert(token);
+        } catch (DuplicateRecordException e) {
+            tokenRepository.revoke(authCode.getUuid());
+
+            throw new CompromisedCodeException(
+                ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),
+                "invalid_grant", e, ErrorCode.COMPROMISED_AUTH_CODE.getCode()
+            );
+        }
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(plainTextToken);

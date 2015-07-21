@@ -37,7 +37,7 @@ public class LoginResourceOwnerImplTest {
         resourceOwnerRepository.insert(ro);
 
         UUID actual = subject.run(
-            "test@rootservices.org", "password"
+            ro.getEmail(), "password"
         );
 
         assertThat(actual).isEqualTo(ro.getUuid());
@@ -49,7 +49,7 @@ public class LoginResourceOwnerImplTest {
         UUID actual = null;
         try {
             actual = subject.run(
-                "test@rootservices.org", "password"
+                "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
             );
         } catch (UnauthorizedException e) {
             assertThat(e.getDomainCause()).isInstanceOf(RecordNotFoundException.class);
@@ -67,7 +67,7 @@ public class LoginResourceOwnerImplTest {
         UUID actual = null;
         try {
             actual = subject.run(
-                 "test@rootservices.org", "wrong-password"
+                 ro.getEmail(), "wrong-password"
             );
         } catch (UnauthorizedException e) {
             assertThat(e.getDomainCause()).isNull();

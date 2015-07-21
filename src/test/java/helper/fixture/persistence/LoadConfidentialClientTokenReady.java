@@ -36,7 +36,7 @@ public class LoadConfidentialClientTokenReady {
         this.accessRequestScopesRepository = accessRequestScopesRepository;
     }
 
-    public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked) throws URISyntaxException, DuplicateRecordException {
+    public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked, String plainTextAuthCode) throws URISyntaxException, DuplicateRecordException {
         Client client = loadClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
@@ -63,7 +63,7 @@ public class LoadConfidentialClientTokenReady {
             accessRequestScopesRepository.insert(ars);
         }
 
-        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked);
+        AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked, plainTextAuthCode);
         authCodeRepository.insert(authCode);
 
         authCode.setAccessRequest(accessRequest);

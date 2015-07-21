@@ -4,6 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.rootservices.authorization.persistence.mapper.TokenMapper">
 
+    <resultMap id="token" type="org.rootservices.authorization.persistence.entity.Token">
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="token" property="token"/>
+        <result column="revoked" property="revoked"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="getByAuthCodeUUID" resultMap="token">
+        select
+            token.uuid,
+            token.auth_code_uuid,
+            token.revoked,
+            token.expires_at,
+            token.created_at
+        from token
+        where token.auth_code_uuid = #{authCodeUUID}
+    </select>
+
     <insert id="insert" >
         insert into token (uuid, auth_code_uuid, token, expires_at)
         values (
@@ -13,4 +33,11 @@
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
+
+    <update id="revoke">
+        update token
+        set revoked = true
+        where token.auth_code_uuid = #{authCodeUUID}
+    </update>
+
 </mapper>

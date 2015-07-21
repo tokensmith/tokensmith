@@ -1,0 +1,1 @@
+alter table token add constraint auth_code_uuid_unique unique (auth_code_uuid);
