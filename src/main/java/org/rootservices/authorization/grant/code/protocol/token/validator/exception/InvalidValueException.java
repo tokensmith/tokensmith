@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.token.factory.exception;
+package org.rootservices.authorization.grant.code.protocol.token.validator.exception;
 
 import org.rootservices.authorization.exception.BaseInformException;
 
