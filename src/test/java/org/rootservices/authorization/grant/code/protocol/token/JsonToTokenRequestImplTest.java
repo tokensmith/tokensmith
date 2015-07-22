@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -107,6 +109,35 @@ public class JsonToTokenRequestImplTest {
     public void runJsonIsEmptyExpectInvalidPayloadException() {
 
         StringReader sr = new StringReader("");
+        BufferedReader json = new BufferedReader(sr);
+
+        InvalidPayloadException expected = null;
+        TokenRequest actual = null;
+        try {
+            actual = subject.run(json);
+            fail("InvalidPayloadException was expected.");
+        } catch (DuplicateKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (InvalidValueException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (MissingKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        } catch (InvalidPayloadException e) {
+            expected = e;
+        } catch (UnknownKeyException e) {
+            fail("InvalidPayloadException was expected.");
+        }
+        assertThat(expected).isNotNull();
+        assertThat(expected.getDomainCause()).isInstanceOf(IOException.class);
+        assertThat(expected.getCode()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getCode());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getMessage());
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    public void runBadJsonExpectInvalidPayloadException() {
+
+        StringReader sr = new StringReader("foo");
         BufferedReader json = new BufferedReader(sr);
 
         InvalidPayloadException expected = null;
