@@ -3,8 +3,9 @@ package org.rootservices.authorization.grant.code.protocol.token.validator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.TokenRequest;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.InvalidValueException;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.MissingKeyException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class IsTokenRequestValidImpl implements IsTokenRequestValid {
         if (grantType != null && grantType.equals("authorization_code")) {
             return true;
         } else if ( grantType != null && !grantType.equals("authorization_code")) {
-            throw new InvalidValueException(ErrorCode.GRANT_TYPE_INVALID.getMessage(), ErrorCode.GRANT_TYPE_INVALID.getCode(), "grant_type", grantType);
+            throw new GrantTypeInvalidException(ErrorCode.GRANT_TYPE_INVALID.getMessage(), ErrorCode.GRANT_TYPE_INVALID.getCode(), "grant_type", grantType);
         }
         throw new MissingKeyException("missing grant_type", "grant_type");
     }

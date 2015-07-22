@@ -6,8 +6,12 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
+import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Token;
@@ -31,6 +35,7 @@ import java.util.UUID;
 public class RequestTokenImpl implements RequestToken {
     private LoginConfidentialClient loginConfidentialClient;
     private JsonToTokenRequest jsonToTokenRequest;
+    private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private AuthCodeRepository authCodeRepository;
     private RandomString randomString;
@@ -38,9 +43,10 @@ public class RequestTokenImpl implements RequestToken {
     private TokenRepository tokenRepository;
 
     @Autowired
-    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository) {
+    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.jsonToTokenRequest = jsonToTokenRequest;
+        this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.authCodeRepository = authCodeRepository;
         this.randomString = randomString;
@@ -58,29 +64,17 @@ public class RequestTokenImpl implements RequestToken {
         try {
             tokenRequest = jsonToTokenRequest.run(tokenInput.getPayload());
         } catch (DuplicateKeyException e) {
-            throw new BadRequestException(
-                "Bad request", "invalid_request", e.getKey() + " is repeated", e, e.getCode()
-            );
+            throw badRequestExceptionBuilder.DuplicateKey(e.getKey(), e.getCode(), e).build();
         } catch (InvalidPayloadException e) {
-            e.printStackTrace();
+            throw badRequestExceptionBuilder.InvalidPayload(e.getCode(), e).build();
+        } catch (GrantTypeInvalidException e) {
+            throw badRequestExceptionBuilder.UnsupportedGrantType(e.getValue(), e.getCode(), e).build();
         } catch (InvalidValueException e) {
-            if (e.getCode() == ErrorCode.GRANT_TYPE_INVALID.getCode()) {
-                throw new BadRequestException(
-                    "Bad request", "unsupported_grant_type", e.getValue() + " is not supported", e, e.getCode()
-                );
-            } else {
-                throw new BadRequestException(
-                    "Bad request", "invalid_request", e.getKey() + " is invalid", e, e.getCode()
-                );
-            }
+            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (MissingKeyException e) {
-            throw new BadRequestException(
-                "Bad request", "invalid_request", e.getKey() + " is a required field", e, ErrorCode.MISSING_KEY.getCode()
-            );
+            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
         } catch (UnknownKeyException e) {
-            throw new BadRequestException(
-                "Bad request", "invalid_request", e.getKey() + " is a unknown key", e, e.getCode()
-            );
+            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
         }
 
         AuthCode authCode = null;

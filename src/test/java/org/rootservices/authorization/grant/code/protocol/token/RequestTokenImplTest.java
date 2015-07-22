@@ -11,9 +11,10 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.Author
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,6 @@ import static org.fest.assertions.api.Assertions.fail;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
-// @Transactional
 public class RequestTokenImplTest {
 
     @Autowired
@@ -201,6 +201,7 @@ public class RequestTokenImplTest {
     public void testMissingCodeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+
 
         StringReader sr = new StringReader(
             "{\"grant_type\": \"authorization_code\", " +
@@ -613,5 +614,4 @@ public class RequestTokenImplTest {
         assertThat(exception.getDomainCause()).isInstanceOf(DuplicateRecordException.class);
 
     }
-
 }
