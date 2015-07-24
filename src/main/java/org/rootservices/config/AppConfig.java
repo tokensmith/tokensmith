@@ -30,4 +30,9 @@ public class AppConfig {
         String[] schemes = {"https",};
         return new UrlValidator(schemes);
     }
+
+    @Bean
+    public String salt() {
+        return System.getenv("AUTH_SALT");
+    }
 }
