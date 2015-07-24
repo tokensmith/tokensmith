@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.entity;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class ResourceOwner {
     private UUID uuid;
     private String email;
     private byte[] password;
-    private Date createdAt;
+    private OffsetDateTime createdAt;
 
     public ResourceOwner() {}
 
@@ -45,11 +46,11 @@ public class ResourceOwner {
         this.password = password;
     }
 
-    public Date getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
