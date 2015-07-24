@@ -8,7 +8,7 @@
         <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="response_type" property="responseType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler"/>
-        <result column="created_at" property="createdAt" />
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <collection property="scopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.ScopeMapper.scope"
                     columnPrefix="scope_"

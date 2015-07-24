@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
-        assertThat(actualUser.getCreatedAt()).isInstanceOf(Date.class);
+        assertThat(actualUser.getCreatedAt()).isInstanceOf(OffsetDateTime.class);
     }
 
     @Test
@@ -74,6 +75,6 @@ public class ResourceOwnerMapperTest {
         assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
-        assertThat(actualUser.getCreatedAt()).isInstanceOf(Date.class);
+        assertThat(actualUser.getCreatedAt()).isInstanceOf(OffsetDateTime.class);
     }
 }
