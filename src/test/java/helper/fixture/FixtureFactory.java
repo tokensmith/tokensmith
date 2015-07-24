@@ -5,6 +5,7 @@ import org.rootservices.authorization.security.HashTextRandomSalt;
 import org.rootservices.authorization.security.HashTextRandomSaltImpl;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.HashTextStaticSaltImpl;
+import org.rootservices.config.AppConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,7 +23,6 @@ public class FixtureFactory {
     public static String PLAIN_TEXT_PASSWORD = "password";
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String REDIRECT_URI = "http://www.rootservices.org";
-    public static String PLAIN_TEXT_AUTHORIZATION_CODE = "authortization_code";
 
     public static Client makeClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
@@ -70,7 +70,8 @@ public class FixtureFactory {
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
         AuthCode authCode = new AuthCode();
         authCode.setUuid(UUID.randomUUID());
-        HashTextStaticSalt textHasher = new HashTextStaticSaltImpl();
+        AppConfig config = new AppConfig();
+        HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
         String hashedCode = textHasher.run(plainTextAuthCode);
         authCode.setCode(hashedCode.getBytes());
         authCode.setRevoked(isRevoked);
