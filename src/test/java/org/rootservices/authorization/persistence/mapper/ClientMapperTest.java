@@ -10,6 +10,7 @@ import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,41 +23,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-// @Transactional
+@Transactional
 public class ClientMapperTest {
 
+    @Autowired
     private LoadClientWithScopes loadClientWithScopes;
-
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ScopeRepository scopeRepository;
-
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
-
     @Autowired
     private ClientMapper subject;
-
-    public Client insertClient() throws URISyntaxException{
-        UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
-        URI redirectURI = new URI("https://rootservices.org");
-        Client client = new Client(uuid, rt, redirectURI);
-
-        subject.insert(client);
-        return client;
-    }
-
-    @Before
-    public void setUp() {
-        loadClientWithScopes = new LoadClientWithScopes(
-                clientRepository,
-                scopeRepository,
-                clientScopesRepository
-        );
-    }
 
     @Test
     public void insert() throws URISyntaxException {
