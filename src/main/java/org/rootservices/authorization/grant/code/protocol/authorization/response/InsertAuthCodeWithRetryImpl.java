@@ -18,20 +18,20 @@ public class InsertAuthCodeWithRetryImpl implements InsertAuthCodeWithRetry {
     private static final int MAX_RETRY_ATTEMPTS = 3;
 
     private RandomString randomString;
-    private MakeAuthCode makeAuthCode;
+    private AuthCodeBuilder authCodeBuilder;
     private AuthCodeRepository authCodeRepository;
 
     @Autowired
-    public InsertAuthCodeWithRetryImpl(RandomString randomString, MakeAuthCode makeAuthCode, AuthCodeRepository authCodeRepository) {
+    public InsertAuthCodeWithRetryImpl(RandomString randomString, AuthCodeBuilder authCodeBuilder, AuthCodeRepository authCodeRepository) {
         this.randomString = randomString;
-        this.makeAuthCode = makeAuthCode;
+        this.authCodeBuilder = authCodeBuilder;
         this.authCodeRepository = authCodeRepository;
     }
 
     @Override
     public String run(AccessRequest accessRequest, int attemptNumber) throws AuthCodeInsertException {
         String authorizationCode = randomString.run();
-        AuthCode authCode = makeAuthCode.run(
+        AuthCode authCode = authCodeBuilder.run(
                 accessRequest,
                 authorizationCode,
                 SECONDS_TO_EXPIRATION

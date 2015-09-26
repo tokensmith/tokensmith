@@ -20,15 +20,15 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 4/17/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MakeAuthCodeImplTest {
+public class AuthCodeBuilderImplTest {
 
     @Mock
     private HashTextStaticSalt mockHashText;
-    private MakeAuthCode subject;
+    private AuthCodeBuilder subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
-        subject = new MakeAuthCodeImpl(mockHashText);
+        subject = new AuthCodeBuilderImpl(mockHashText);
     }
 
     @Test
