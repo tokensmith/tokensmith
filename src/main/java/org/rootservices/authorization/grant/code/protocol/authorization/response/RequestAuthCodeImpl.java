@@ -7,6 +7,7 @@ import org.rootservices.authorization.grant.code.exception.InformClientException
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,15 +28,15 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
     @Autowired
     private GrantAuthCode grantAuthCode;
     @Autowired
-    private MakeAuthResponse makeAuthResponse;
+    private AuthResponseBuilder authResponseBuilder;
 
     public RequestAuthCodeImpl() {}
 
-    public RequestAuthCodeImpl(ValidateParams validateParams, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, MakeAuthResponse makeAuthResponse) {
+    public RequestAuthCodeImpl(ValidateParams validateParams, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseBuilder authResponseBuilder) {
         this.validateParams = validateParams;
         this.loginResourceOwner = loginResourceOwner;
         this.grantAuthCode = grantAuthCode;
-        this.makeAuthResponse = makeAuthResponse;
+        this.authResponseBuilder = authResponseBuilder;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
             authRequest.getScopes()
         );
 
-        AuthResponse authResponse = makeAuthResponse.run(
+        AuthResponse authResponse = authResponseBuilder.run(
                 authRequest.getClientId(),
                 authorizationCode,
                 authRequest.getState(),
