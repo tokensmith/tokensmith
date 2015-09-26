@@ -13,12 +13,12 @@ import java.util.UUID;
  * Created by tommackenzie on 4/17/15.
  */
 @Component
-public class MakeAuthCodeImpl implements MakeAuthCode {
+public class AuthCodeBuilderImpl implements AuthCodeBuilder {
 
     private HashTextStaticSalt hashText;
 
     @Autowired
-    public MakeAuthCodeImpl(HashTextStaticSalt hashText) {
+    public AuthCodeBuilderImpl(HashTextStaticSalt hashText) {
         this.hashText = hashText;
     }
 

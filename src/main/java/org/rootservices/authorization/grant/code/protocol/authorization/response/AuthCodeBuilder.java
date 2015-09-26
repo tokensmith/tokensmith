@@ -8,8 +8,8 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 4/17/15.
  *
- * This is a creational pattern. Is it a factory?
+ * This is a creational pattern. Is it a builder?
  */
-public interface MakeAuthCode {
+public interface AuthCodeBuilder {
     AuthCode run(AccessRequest accessRequest, String authorizationCode, int secondsToExpire);
 }

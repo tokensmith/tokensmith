@@ -25,13 +25,13 @@ public class InsertAuthCodeWithRetryImplTest {
     @Mock
     private RandomString mockRandomString;
     @Mock
-    private MakeAuthCode mockMakeAuthCode;
+    private AuthCodeBuilder mockAuthCodeBuilder;
     @Mock
     private AuthCodeRepository mockAuthCodeRepository;
 
     @Before
     public void setUp() {
-        subject = new InsertAuthCodeWithRetryImpl(mockRandomString, mockMakeAuthCode, mockAuthCodeRepository);
+        subject = new InsertAuthCodeWithRetryImpl(mockRandomString, mockAuthCodeBuilder, mockAuthCodeRepository);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class InsertAuthCodeWithRetryImplTest {
         String authorizationCode = "randomString";
         when(mockRandomString.run()).thenReturn(authorizationCode);
         AuthCode authCode = new AuthCode();
-        when(mockMakeAuthCode.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
+        when(mockAuthCodeBuilder.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
 
         String actual = subject.run(accessRequest, 1);
         assertThat(actual).isEqualTo(authorizationCode);
@@ -55,7 +55,7 @@ public class InsertAuthCodeWithRetryImplTest {
         String authorizationCode = "randomString";
         when(mockRandomString.run()).thenReturn(authorizationCode);
         AuthCode authCode = new AuthCode();
-        when(mockMakeAuthCode.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
+        when(mockAuthCodeBuilder.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
 
         doThrow(DuplicateRecordException.class)
         .doNothing().when(mockAuthCodeRepository).insert(authCode);
@@ -73,7 +73,7 @@ public class InsertAuthCodeWithRetryImplTest {
         String authorizationCode = "randomString";
         when(mockRandomString.run()).thenReturn(authorizationCode);
         AuthCode authCode = new AuthCode();
-        when(mockMakeAuthCode.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
+        when(mockAuthCodeBuilder.run(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
 
         doThrow(DuplicateRecordException.class)
         .doThrow(DuplicateRecordException.class)

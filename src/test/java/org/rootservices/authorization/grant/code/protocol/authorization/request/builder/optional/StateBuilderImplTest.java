@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.builder.optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,15 +6,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilderImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static junit.framework.TestCase.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -24,51 +25,50 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 2/1/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ScopesBuilderImplTest {
+public class StateBuilderImplTest {
 
     @Mock
     private OptionalParam mockOptionalParam;
 
-    private ScopesBuilder subject;
+    private StateBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new ScopesBuilderImpl(mockOptionalParam);
+        subject = new StateBuilderImpl(mockOptionalParam);
     }
 
     @Test
-    public void testMakeScopes() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<String> expected = new ArrayList<>();
-        expected.add("profile");
+    public void testMakeState() throws MoreThanOneItemError, EmptyValueError, StateException {
+        String expectedValue = "state";
+        Optional<String> expected = Optional.ofNullable(expectedValue);
 
         List<String> items = new ArrayList<>();
-        items.add(expected.get(0).toString());
+        items.add(expectedValue);
 
         when(mockOptionalParam.run(items)).thenReturn(true);
-
-        List<String> actual = subject.makeScopes(items);
+        Optional<String> actual = subject.makeState(items);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testMakeScopesWhenScopesAreNull() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<String> expected = new ArrayList<>();
+    public void testMakeStateWhenStatesAreNull() throws MoreThanOneItemError, EmptyValueError, StateException {
+        Optional<String> expected = Optional.ofNullable(null);
+
         List<String> items = null;
 
         when(mockOptionalParam.run(items)).thenReturn(true);
-
-        List<String> actual = subject.makeScopes(items);
+        Optional<String> actual = subject.makeState(items);
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testMakeScopesWhenScopesAreEmptyList() throws MoreThanOneItemError, EmptyValueError, ScopesException {
-        List<String> expected = new ArrayList<>();
+    public void testMakeStateEmptyList() throws MoreThanOneItemError, EmptyValueError, StateException {
+        Optional<String> expected = Optional.empty();
+
         List<String> items = new ArrayList<>();
 
         when(mockOptionalParam.run(items)).thenReturn(true);
-
-        List<String> actual = subject.makeScopes(items);
+        Optional<String> actual = subject.makeState(items);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -81,30 +81,29 @@ public class ScopesBuilderImplTest {
         when(mockOptionalParam.run(items)).thenThrow(EmptyValueError.class);
 
         try {
-            subject.makeScopes(items);
-            fail("ScopesException was expected.");
-        } catch (ScopesException e) {
+            subject.makeState(items);
+            fail("StateException was expected.");
+        } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_EMPTY_VALUE.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_EMPTY_VALUE.getCode());
         }
-
     }
 
     @Test
     public void testMakeScopesMoreThanOneItemError() throws MoreThanOneItemError, EmptyValueError {
 
         List<String> items = new ArrayList<>();
-        items.add("profile");
-        items.add("profile");
+        items.add("Scope1");
+        items.add("Scope2");
 
         when(mockOptionalParam.run(items)).thenThrow(MoreThanOneItemError.class);
 
         try {
-            subject.makeScopes(items);
-            fail("ScopesException was expected.");
-        } catch (ScopesException e) {
+            subject.makeState(items);
+            fail("StateException was expected.");
+        } catch (StateException e) {
             assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode());
         }
     }
 }
