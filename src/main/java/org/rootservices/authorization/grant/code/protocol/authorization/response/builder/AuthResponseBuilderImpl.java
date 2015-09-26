@@ -1,7 +1,8 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.response;
+package org.rootservices.authorization.grant.code.protocol.authorization.response.builder;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.AuthResponse;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -16,14 +17,14 @@ import java.util.UUID;
  * Created by tommackenzie on 4/29/15.
  */
 @Component
-public class MakeAuthResponseImpl implements MakeAuthResponse {
+public class AuthResponseBuilderImpl implements AuthResponseBuilder {
 
     @Autowired
     private ClientRepository clientRepository;
 
-    public MakeAuthResponseImpl() {}
+    public AuthResponseBuilderImpl() {}
 
-    public MakeAuthResponseImpl(ClientRepository clientRepository) {
+    public AuthResponseBuilderImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 

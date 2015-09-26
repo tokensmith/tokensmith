@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.builder.required;
 
 import org.junit.Before;
 import org.junit.Test;
