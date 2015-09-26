@@ -1,15 +1,15 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.request.buider;
 
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.ClientIdException;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.optional.RedirectUriBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.required.ClientIdBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ClientIdBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;

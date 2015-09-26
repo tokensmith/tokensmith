@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilderImpl;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -20,15 +22,15 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 4/17/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MakeAuthCodeImplTest {
+public class AuthCodeBuilderImplTest {
 
     @Mock
     private HashTextStaticSalt mockHashText;
-    private MakeAuthCode subject;
+    private AuthCodeBuilder subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
-        subject = new MakeAuthCodeImpl(mockHashText);
+        subject = new AuthCodeBuilderImpl(mockHashText);
     }
 
     @Test

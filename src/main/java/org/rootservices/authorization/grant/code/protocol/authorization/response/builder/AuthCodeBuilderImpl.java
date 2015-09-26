@@ -1,5 +1,6 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.response;
+package org.rootservices.authorization.grant.code.protocol.authorization.response.builder;
 
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -13,12 +14,12 @@ import java.util.UUID;
  * Created by tommackenzie on 4/17/15.
  */
 @Component
-public class MakeAuthCodeImpl implements MakeAuthCode {
+public class AuthCodeBuilderImpl implements AuthCodeBuilder {
 
     private HashTextStaticSalt hashText;
 
     @Autowired
-    public MakeAuthCodeImpl(HashTextStaticSalt hashText) {
+    public AuthCodeBuilderImpl(HashTextStaticSalt hashText) {
         this.hashText = hashText;
     }
 

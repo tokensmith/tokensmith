@@ -1,7 +1,8 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.builder.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ClientIdBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;

@@ -1,8 +1,9 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.builder.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;

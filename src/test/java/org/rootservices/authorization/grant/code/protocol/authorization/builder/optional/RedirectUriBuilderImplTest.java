@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.builder.optional;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Before;
@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.optional.RedirectUriBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.optional.RedirectUriBuilderImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;

@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilderImpl;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 
@@ -23,16 +25,16 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 4/29/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MakeAuthResponseImplTest {
+public class AuthResponseBuilderImplTest {
 
     @Mock
     private ClientRepository clientRepository;
 
-    private MakeAuthResponse subject;
+    private AuthResponseBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new MakeAuthResponseImpl(clientRepository);
+        subject = new AuthResponseBuilderImpl(clientRepository);
     }
 
     @Test
