@@ -1,6 +1,6 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.builder.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional;
 
-import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
 
 import java.net.URI;
 import java.util.List;
