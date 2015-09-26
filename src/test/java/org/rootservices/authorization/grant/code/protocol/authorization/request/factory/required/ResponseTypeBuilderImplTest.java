@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ResponseTypeException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.required.ResponseTypeFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.required.ResponseTypeFactoryImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -27,16 +27,16 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 2/1/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ResponseTypeFactoryImplTest {
+public class ResponseTypeBuilderImplTest {
 
     @Mock
     private RequiredParam mockRequiredParam;
 
-    private ResponseTypeFactory subject;
+    private ResponseTypeBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new ResponseTypeFactoryImpl(mockRequiredParam);
+        subject = new ResponseTypeBuilderImpl(mockRequiredParam);
     }
 
     @Test

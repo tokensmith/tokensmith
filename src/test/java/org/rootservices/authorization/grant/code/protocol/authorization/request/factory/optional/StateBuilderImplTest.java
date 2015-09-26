@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.StateFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.StateFactoryImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -25,16 +25,16 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 2/1/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class StateFactoryImplTest {
+public class StateBuilderImplTest {
 
     @Mock
     private OptionalParam mockOptionalParam;
 
-    private StateFactory subject;
+    private StateBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new StateFactoryImpl(mockOptionalParam);
+        subject = new StateBuilderImpl(mockOptionalParam);
     }
 
     @Test

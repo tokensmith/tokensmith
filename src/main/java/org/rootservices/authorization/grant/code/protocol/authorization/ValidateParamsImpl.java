@@ -2,9 +2,9 @@ package org.rootservices.authorization.grant.code.protocol.authorization;
 
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.AuthRequestFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.StateFactory;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.AuthRequestBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateAuthRequest;
@@ -22,10 +22,10 @@ import java.util.Optional;
 public class ValidateParamsImpl implements ValidateParams {
 
     @Autowired
-    private AuthRequestFactory authRequestFactory;
+    private AuthRequestBuilder authRequestBuilder;
 
     @Autowired
-    private StateFactory stateFactory;
+    private StateBuilder stateFactory;
 
     @Autowired
     private GetClientRedirect getClientRedirect;
@@ -37,7 +37,7 @@ public class ValidateParamsImpl implements ValidateParams {
     public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = null;
-        authRequest = authRequestFactory.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
+        authRequest = authRequestBuilder.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
 
         Optional<String> cleanedStates;
         try {
