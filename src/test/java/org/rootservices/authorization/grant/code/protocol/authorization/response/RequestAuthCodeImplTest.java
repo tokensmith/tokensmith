@@ -11,8 +11,8 @@ import org.rootservices.authorization.grant.code.exception.InformClientException
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.ValidateParams;
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
-import org.rootservices.authorization.grant.code.protocol.authorization.response.*;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
@@ -43,7 +43,7 @@ public class RequestAuthCodeImplTest {
     @Mock
     private GrantAuthCode mockGrantAuthCode;
     @Mock
-    private MakeAuthResponse mockMakeAuthResponse;
+    private AuthResponseBuilder mockAuthResponseBuilder;
 
     private RequestAuthCode subject;
 
@@ -53,7 +53,7 @@ public class RequestAuthCodeImplTest {
                 mockValidateParams,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
-                mockMakeAuthResponse
+                mockAuthResponseBuilder
         );
     }
 
@@ -132,7 +132,7 @@ public class RequestAuthCodeImplTest {
                         authRequest.getScopes())
         ).thenReturn(randomString);
 
-        when(mockMakeAuthResponse.run(
+        when(mockAuthResponseBuilder.run(
                 authRequest.getClientId(),
                 randomString,
                 authRequest.getState(),

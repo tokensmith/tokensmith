@@ -1,5 +1,6 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.response;
+package org.rootservices.authorization.grant.code.protocol.authorization.response.builder;
 
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.security.HashTextStaticSalt;

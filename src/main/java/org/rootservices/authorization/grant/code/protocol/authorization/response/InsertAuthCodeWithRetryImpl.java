@@ -1,6 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
+import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
