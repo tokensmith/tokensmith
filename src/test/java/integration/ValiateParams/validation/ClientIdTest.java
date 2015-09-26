@@ -5,8 +5,8 @@ import integration.ValiateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 
 import java.util.UUID;
 

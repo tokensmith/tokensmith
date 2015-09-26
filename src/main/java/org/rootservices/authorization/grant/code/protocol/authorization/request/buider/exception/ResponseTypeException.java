@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.BaseException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.BaseException;
 
 import java.util.UUID;
 

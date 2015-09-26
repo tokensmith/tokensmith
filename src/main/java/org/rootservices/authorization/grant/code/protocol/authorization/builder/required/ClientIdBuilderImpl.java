@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.builder.required;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.ClientIdException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -17,14 +17,14 @@ import java.util.UUID;
  * Created by tommackenzie on 1/31/15.
  */
 @Component
-public class ClientIdFactoryImpl implements ClientIdFactory {
+public class ClientIdBuilderImpl implements ClientIdBuilder {
 
     @Autowired
     RequiredParam requiredParam;
 
-    public ClientIdFactoryImpl() {}
+    public ClientIdBuilderImpl() {}
 
-    public ClientIdFactoryImpl(RequiredParam requiredParam) {
+    public ClientIdBuilderImpl(RequiredParam requiredParam) {
         this.requiredParam = requiredParam;
     }
 

@@ -7,7 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.optional.RedirectUriBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.optional.RedirectUriBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 2/1/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RedirectUriFactoryImplTest {
+public class RedirectUriBuilderImplTest {
 
     @Mock
     private OptionalParam mockOptionalParam;
@@ -34,11 +36,11 @@ public class RedirectUriFactoryImplTest {
     @Mock
     private UrlValidator mockUrlValidator;
 
-    private RedirectUriFactory subject;
+    private RedirectUriBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new RedirectUriFactoryImpl(mockOptionalParam, mockUrlValidator);
+        subject = new RedirectUriBuilderImpl(mockOptionalParam, mockUrlValidator);
     }
 
     @Test

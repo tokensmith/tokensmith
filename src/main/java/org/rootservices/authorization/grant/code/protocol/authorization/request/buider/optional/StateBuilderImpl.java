@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -15,14 +15,14 @@ import java.util.Optional;
  * Created by tommackenzie on 1/31/15.
  */
 @Component
-public class StateFactoryImpl implements StateFactory {
+public class StateBuilderImpl implements StateBuilder {
 
     @Autowired
     OptionalParam optionalParam;
 
-    public StateFactoryImpl() {}
+    public StateBuilderImpl() {}
 
-    public StateFactoryImpl(OptionalParam optionalParam) {
+    public StateBuilderImpl(OptionalParam optionalParam) {
         this.optionalParam = optionalParam;
     }
 
