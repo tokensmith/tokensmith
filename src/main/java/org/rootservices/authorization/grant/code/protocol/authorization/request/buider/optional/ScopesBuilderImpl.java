@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ScopesException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import java.util.List;
  * Created by tommackenzie on 1/31/15.
  */
 @Component
-public class ScopesFactoryImpl implements ScopesFactory {
+public class ScopesBuilderImpl implements ScopesBuilder {
 
     @Autowired
     OptionalParam optionalParam;
 
-    public ScopesFactoryImpl() {}
+    public ScopesBuilderImpl() {}
 
-    public ScopesFactoryImpl(OptionalParam optionalParam) {
+    public ScopesBuilderImpl(OptionalParam optionalParam) {
         this.optionalParam = optionalParam;
     }
 

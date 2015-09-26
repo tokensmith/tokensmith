@@ -1,7 +1,7 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request.factory.required;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -17,14 +17,14 @@ import java.util.List;
  * Created by tommackenzie on 1/31/15.
  */
 @Component
-public class ResponseTypeFactoryImpl implements ResponseTypeFactory {
+public class ResponseTypeBuilderImpl implements ResponseTypeBuilder {
 
     @Autowired
     RequiredParam requiredParam;
 
-    public ResponseTypeFactoryImpl() {}
+    public ResponseTypeBuilderImpl() {}
 
-    public ResponseTypeFactoryImpl(RequiredParam requiredParam) {
+    public ResponseTypeBuilderImpl(RequiredParam requiredParam) {
         this.requiredParam = requiredParam;
     }
 
