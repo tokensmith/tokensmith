@@ -6,7 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.ClientIdException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.required.ClientIdBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.required.ClientIdBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -22,16 +24,16 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClientIdFactoryImplTest {
+public class ClientIdBuilderImplTest {
 
     @Mock
     private RequiredParam mockRequiredParam;
 
-    private ClientIdFactory subject;
+    private ClientIdBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new ClientIdFactoryImpl(mockRequiredParam);
+        subject = new ClientIdBuilderImpl(mockRequiredParam);
     }
 
     @Test

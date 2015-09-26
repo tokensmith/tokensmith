@@ -1,8 +1,8 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.factory.optional;
+package org.rootservices.authorization.grant.code.protocol.authorization.builder.optional;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.factory.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.builder.exception.RedirectUriException;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -17,13 +17,13 @@ import java.util.Optional;
  * Created by tommackenzie on 2/1/15.
  */
 @Component
-public class RedirectUriFactoryImpl implements RedirectUriFactory {
+public class RedirectUriBuilderImpl implements RedirectUriBuilder {
 
     private OptionalParam optionalParam;
     private UrlValidator urlValidator;
 
     @Autowired
-    public RedirectUriFactoryImpl(OptionalParam optionalParam, UrlValidator urlValidator) {
+    public RedirectUriBuilderImpl(OptionalParam optionalParam, UrlValidator urlValidator) {
         this.optionalParam = optionalParam;
         this.urlValidator = urlValidator;
     }

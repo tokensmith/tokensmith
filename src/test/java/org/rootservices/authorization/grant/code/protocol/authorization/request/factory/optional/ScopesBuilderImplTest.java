@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.exception.ScopesException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.ScopesFactory;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.factory.optional.ScopesFactoryImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilderImpl;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
 import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
@@ -24,16 +24,16 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 2/1/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ScopesFactoryImplTest {
+public class ScopesBuilderImplTest {
 
     @Mock
     private OptionalParam mockOptionalParam;
 
-    private ScopesFactory subject;
+    private ScopesBuilder subject;
 
     @Before
     public void setUp() {
-        subject = new ScopesFactoryImpl(mockOptionalParam);
+        subject = new ScopesBuilderImpl(mockOptionalParam);
     }
 
     @Test
