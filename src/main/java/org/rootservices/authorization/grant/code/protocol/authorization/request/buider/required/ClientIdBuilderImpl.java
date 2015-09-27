@@ -2,12 +2,11 @@ package org.rootservices.authorization.grant.code.protocol.authorization.request
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ClientIdException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ClientIdBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.NoItemsError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.RequiredParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.NoItemsError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.ParamIsNullError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

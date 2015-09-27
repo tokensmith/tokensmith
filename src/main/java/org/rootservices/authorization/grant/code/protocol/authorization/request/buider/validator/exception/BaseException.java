@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.validator.exception;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception;
 
 /**
  * Created by tommackenzie on 2/2/15.
