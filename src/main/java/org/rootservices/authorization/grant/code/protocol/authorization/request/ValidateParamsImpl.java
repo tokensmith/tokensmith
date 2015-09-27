@@ -5,6 +5,7 @@ import org.rootservices.authorization.grant.code.exception.InformResourceOwnerEx
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.AuthRequestBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
