@@ -23,34 +23,12 @@ public class ValidateParamsImpl implements ValidateParams {
     private AuthRequestBuilder authRequestBuilder;
 
     @Autowired
-    private StateBuilder stateFactory;
-
-    @Autowired
-    private GetClientRedirect getClientRedirect;
-
-    @Autowired
     private ValidateAuthRequest validateAuthRequest;
 
     @Override
     public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
-        AuthRequest authRequest = null;
-        authRequest = authRequestBuilder.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes);
-
-        Optional<String> cleanedStates;
-        try {
-            cleanedStates = stateFactory.makeState(states);
-            authRequest.setState(cleanedStates);
-        } catch (StateException e) {
-
-            URI clientRedirectURI = getClientRedirect.run(
-                    authRequest.getClientId(),
-                    authRequest.getRedirectURI(),
-                    e
-            );
-            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
-        }
-
+        AuthRequest authRequest = authRequestBuilder.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes, states);
         validateAuthRequest.run(authRequest);
 
         return authRequest;
