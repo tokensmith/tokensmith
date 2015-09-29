@@ -19,14 +19,14 @@ import java.util.Optional;
  * Created by tommackenzie on 11/19/14.
  */
 @Component
-public class ValidateAuthRequestImpl implements ValidateAuthRequest {
+public class CompareClientToAuthRequestImpl implements CompareClientToAuthRequest {
 
     @Autowired
     private ClientRepository clientRepository;
 
-    public ValidateAuthRequestImpl() {}
+    public CompareClientToAuthRequestImpl() {}
 
-    public ValidateAuthRequestImpl(ClientRepository clientRepository) {
+    public CompareClientToAuthRequestImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
