@@ -9,11 +9,11 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilderImpl;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.RequiredParam;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.NoItemsError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.RequiredParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.NoItemsError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.ParamIsNullError;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.util.ArrayList;

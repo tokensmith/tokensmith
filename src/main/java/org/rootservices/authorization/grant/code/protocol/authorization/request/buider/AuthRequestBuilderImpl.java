@@ -11,7 +11,7 @@ import org.rootservices.authorization.grant.code.protocol.authorization.request.
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ClientIdBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

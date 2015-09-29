@@ -1,9 +1,11 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.validator;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.builder.validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.OptionalParamImpl;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.MoreThanOneItemError;
 
 import java.util.ArrayList;
 import java.util.List;

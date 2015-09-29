@@ -9,9 +9,9 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilderImpl;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.MoreThanOneItemError;
 
 import java.util.ArrayList;
 import java.util.List;

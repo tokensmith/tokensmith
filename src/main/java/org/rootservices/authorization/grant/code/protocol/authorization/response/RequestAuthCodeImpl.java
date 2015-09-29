@@ -1,12 +1,12 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
-import org.rootservices.authorization.grant.code.protocol.authorization.ValidateParams;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateParams;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
