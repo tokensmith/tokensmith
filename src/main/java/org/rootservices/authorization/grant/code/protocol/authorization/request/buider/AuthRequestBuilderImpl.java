@@ -73,29 +73,20 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
 
         ResponseType responseType;
         List<String> cleanedScopes;
+        Optional<String> cleanedStates;
         try {
             responseType = responseTypeBuilder.makeResponseType(responseTypes);
             cleanedScopes = scopesBuilder.makeScopes(scopes);
-        } catch (ResponseTypeException |ScopesException e) {
+            cleanedStates = stateBuilder.makeState(states);
+        } catch (ResponseTypeException |ScopesException| StateException e) {
             URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
             throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
         }
 
         authRequest.setResponseType(responseType);
         authRequest.setScopes(cleanedScopes);
-
-        Optional<String> cleanedStates;
-        try {
-            cleanedStates = stateBuilder.makeState(states);
-        } catch (StateException e) {
-            URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
-        }
-
         authRequest.setState(cleanedStates);
 
         return authRequest;
     }
-
-
 }
