@@ -2,8 +2,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.request
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.*;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

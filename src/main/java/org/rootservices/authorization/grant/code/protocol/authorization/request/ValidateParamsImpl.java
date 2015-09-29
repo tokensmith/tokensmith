@@ -1,13 +1,11 @@
-package org.rootservices.authorization.grant.code.protocol.authorization;
+package org.rootservices.authorization.grant.code.protocol.authorization.request;
 
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.AuthRequestBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.AuthRequest;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateAuthRequest;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

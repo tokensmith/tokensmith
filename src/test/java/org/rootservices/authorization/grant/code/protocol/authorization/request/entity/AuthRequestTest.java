@@ -1,7 +1,8 @@
-package org.rootservices.authorization.grant.code.protocol.authorization.request;
+package org.rootservices.authorization.grant.code.protocol.authorization.request.entity;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 
 import java.net.URI;
 import java.util.ArrayList;

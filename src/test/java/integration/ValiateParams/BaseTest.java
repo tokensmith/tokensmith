@@ -4,7 +4,7 @@ import helper.ValidateParamsAttributes;
 import helper.fixture.persistence.LoadClientWithScopes;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.grant.code.protocol.authorization.ValidateParams;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateParams;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;

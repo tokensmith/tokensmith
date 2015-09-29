@@ -10,9 +10,9 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilderImpl;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.OptionalParam;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.EmptyValueError;
-import org.rootservices.authorization.grant.code.protocol.authorization.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.OptionalParam;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.exception.MoreThanOneItemError;
 
 import java.net.URI;
 import java.net.URISyntaxException;
