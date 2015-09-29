@@ -1,20 +1,19 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.request.buider;
 
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ClientIdException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.*;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.GetClientRedirect;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ResponseTypeException;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.StateBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ClientIdBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.required.ResponseTypeBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.net.URI;
 import java.util.List;
@@ -40,20 +39,24 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
     private ScopesBuilder scopesBuilder;
 
     @Autowired
+    private StateBuilder stateBuilder;
+
+    @Autowired
     private GetClientRedirect getClientRedirect;
 
     public AuthRequestBuilderImpl() {}
 
-    public AuthRequestBuilderImpl(ClientIdBuilder clientIdBuilder, ResponseTypeBuilder responseTypeBuilder, RedirectUriBuilder redirectUriBuilder, ScopesBuilder scopesBuilder, GetClientRedirect getClientRedirect) {
+    public AuthRequestBuilderImpl(ClientIdBuilder clientIdBuilder, ResponseTypeBuilder responseTypeBuilder, RedirectUriBuilder redirectUriBuilder, ScopesBuilder scopesBuilder, StateBuilder stateBuilder, GetClientRedirect getClientRedirect) {
         this.clientIdBuilder = clientIdBuilder;
         this.responseTypeBuilder = responseTypeBuilder;
         this.redirectUriBuilder = redirectUriBuilder;
         this.scopesBuilder = scopesBuilder;
         this.getClientRedirect = getClientRedirect;
+        this.stateBuilder = stateBuilder;
     }
 
     @Override
-    public AuthRequest makeAuthRequest(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes) throws InformResourceOwnerException, InformClientException {
+    public AuthRequest makeAuthRequest(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = new AuthRequest();
 
@@ -80,6 +83,16 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
 
         authRequest.setResponseType(responseType);
         authRequest.setScopes(cleanedScopes);
+
+        Optional<String> cleanedStates;
+        try {
+            cleanedStates = stateBuilder.makeState(states);
+        } catch (StateException e) {
+            URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
+            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
+        }
+
+        authRequest.setState(cleanedStates);
 
         return authRequest;
     }
