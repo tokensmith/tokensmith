@@ -7,6 +7,6 @@ import org.rootservices.authorization.grant.code.protocol.authorization.request.
 /**
  * Created by tommackenzie on 11/19/14.
  */
-public interface ValidateAuthRequest {
+public interface CompareClientToAuthRequest {
     boolean run(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException;
 }

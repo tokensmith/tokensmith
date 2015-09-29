@@ -27,16 +27,16 @@ import static org.fest.assertions.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ValidateAuthRequestImplTest {
+public class CompareClientToAuthRequestImplTest {
 
     @Mock
     private ClientRepository mockClientRepository;
 
-    private ValidateAuthRequest subject;
+    private CompareClientToAuthRequest subject;
 
     @Before
     public void setUp() {
-        subject = new ValidateAuthRequestImpl(mockClientRepository);
+        subject = new CompareClientToAuthRequestImpl(mockClientRepository);
     }
 
     @Test
