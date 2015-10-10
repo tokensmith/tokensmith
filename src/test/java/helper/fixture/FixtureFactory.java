@@ -35,6 +35,12 @@ public class FixtureFactory {
         return client;
     }
 
+    public static Client makeClientWithOpenIdScopes() throws URISyntaxException {
+        Client client = makeClientWithScopes();
+        client.setScopes(makeOpenIdScopes());
+        return client;
+    }
+
     public static ConfidentialClient makeConfidentialClient(Client client) {
         ConfidentialClient confidentialClient = new ConfidentialClient();
         confidentialClient.setUuid(UUID.randomUUID());
@@ -51,6 +57,15 @@ public class FixtureFactory {
         Scope scope = new Scope();
         scope.setUuid(UUID.randomUUID());
         scope.setName("profile");
+        scopes.add(scope);
+        return scopes;
+    }
+
+    public static List<Scope> makeOpenIdScopes() {
+        List<Scope> scopes = new ArrayList<>();
+        Scope scope = new Scope();
+        scope.setUuid(UUID.randomUUID());
+        scope.setName("openid");
         scopes.add(scope);
         return scopes;
     }
