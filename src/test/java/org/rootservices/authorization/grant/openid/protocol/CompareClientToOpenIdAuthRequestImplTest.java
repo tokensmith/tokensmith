@@ -9,6 +9,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
+import org.rootservices.authorization.grant.openid.protocol.authorization.request.CompareClientToOpenIdAuthRequest;
+import org.rootservices.authorization.grant.openid.protocol.authorization.request.CompareClientToOpenIdAuthRequestImpl;
 import org.rootservices.authorization.grant.openid.protocol.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
