@@ -48,6 +48,12 @@
             <version>0.3m</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.rootservices</groupId>
+            <artifactId>jwt</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Database Drivers -->
         <dependency>
             <groupId>org.postgresql</groupId>
