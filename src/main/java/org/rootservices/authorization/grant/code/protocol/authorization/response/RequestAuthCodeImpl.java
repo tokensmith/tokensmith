@@ -11,6 +11,9 @@ import org.rootservices.authorization.grant.code.protocol.authorization.response
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -18,17 +21,17 @@ import java.util.UUID;
  *
  * Section 4.1.2
  */
-@Component
+@Component("requestAuthCodeImpl")
 public class RequestAuthCodeImpl implements RequestAuthCode {
 
     @Autowired
     private ValidateParams validateParams;
     @Autowired
-    private LoginResourceOwner loginResourceOwner;
+    protected LoginResourceOwner loginResourceOwner;
     @Autowired
-    private GrantAuthCode grantAuthCode;
+    protected GrantAuthCode grantAuthCode;
     @Autowired
-    private AuthResponseBuilder authResponseBuilder;
+    protected AuthResponseBuilder authResponseBuilder;
 
     public RequestAuthCodeImpl() {}
 
@@ -50,24 +53,32 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
             input.getStates()
         );
 
-        UUID resourceOwnerUUID = loginResourceOwner.run(
-            input.getUserName(), input.getPlainTextPassword()
+        return makeAuthResponse(
+                input.getUserName(),
+                input.getPlainTextPassword(),
+                authRequest.getClientId(),
+                authRequest.getRedirectURI(),
+                authRequest.getScopes(),
+                authRequest.getState()
         );
+    }
+
+    protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException {
+
+        UUID resourceOwnerUUID = loginResourceOwner.run(userName, password);
 
         String authorizationCode = grantAuthCode.run(
-            resourceOwnerUUID,
-            authRequest.getClientId(),
-            authRequest.getRedirectURI(),
-            authRequest.getScopes()
+                resourceOwnerUUID,
+                clientId,
+                redirectUri,
+                scopes
         );
 
-        AuthResponse authResponse = authResponseBuilder.run(
-                authRequest.getClientId(),
+        return authResponseBuilder.run(
+                clientId,
                 authorizationCode,
-                authRequest.getState(),
-                authRequest.getRedirectURI()
+                state,
+                redirectUri
         );
-
-        return authResponse;
     }
 }

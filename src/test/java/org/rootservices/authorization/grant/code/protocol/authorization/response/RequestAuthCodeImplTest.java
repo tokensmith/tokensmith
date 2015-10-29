@@ -1,5 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
+import helper.fixture.FixtureFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,12 +19,14 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -57,35 +61,24 @@ public class RequestAuthCodeImplTest {
         );
     }
 
-    public AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {
-        AuthCodeInput input = new AuthCodeInput();
-        input.setUserName("resourceOwner@rootservices.org");
-        input.setPlainTextPassword("plainTextPassword");
+    public AuthRequest makeAuthRequest(AuthCodeInput input) throws URISyntaxException {
 
-        List<String> clientIds = new ArrayList<>();
-        clientIds.add(clientId.toString());
-        input.setClientIds(clientIds);
+        Optional<URI> redirectUri = Optional.empty();
+        if (input.getRedirectUris() != null && input.getRedirectUris().get(0) != null ) {
+            redirectUri = Optional.of(new URI(input.getRedirectUris().get(0)));
+        }
 
-        List<String> responseTypes = new ArrayList<>();
-        responseTypes.add(rt.toString());
-        input.setResponseTypes(responseTypes);
-
-        List<String> scopes = new ArrayList<>();
-        scopes.add(scope.toString());
-        input.setScopes(scopes);
-
-        return input;
-    }
-
-    public AuthRequest makeAuthRequest(String scope) throws URISyntaxException {
-        List<String> scopes = new ArrayList<>();
-        scopes.add(scope);
+        Optional<String> state = Optional.empty();
+        if (input.getStates() != null && input.getStates().get(0) != null) {
+            state = Optional.of(input.getStates().get(0));
+        }
 
         AuthRequest authRequest = new AuthRequest(
-                UUID.randomUUID(),
-                ResponseType.CODE,
-                Optional.of(new URI("https://rootservices.org")),
-                scopes
+                UUID.fromString(input.getClientIds().get(0)),
+                ResponseType.valueOf(input.getResponseTypes().get(0)),
+                redirectUri,
+                input.getScopes(),
+                state
         );
 
         return authRequest;
@@ -98,18 +91,22 @@ public class RequestAuthCodeImplTest {
         String scope = "profile";
 
         // parameter to pass into method in test
-        AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
+        AuthCodeInput input = FixtureFactory.makeAuthCodeInput(clientId, rt, scope);
 
-        // responses from mocked dependencies.
-        AuthRequest authRequest = makeAuthRequest(scope);
+        // response from mockValidateParams.
+        AuthRequest authRequest = makeAuthRequest(input);
+
+        // response from mockLoginResourceOwner.
         UUID resourceOwnerUUID = UUID.randomUUID();
+
+        // response from mockGrantAuthCode.
         String randomString = "randomString";
 
         // expected response from method in test
         AuthResponse expectedAuthResponse = new AuthResponse();
         expectedAuthResponse.setCode(randomString);
         expectedAuthResponse.setState(authRequest.getState());
-        expectedAuthResponse.setRedirectUri(authRequest.getRedirectURI().get());
+        expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
 
         // stubbing
         when(mockValidateParams.run(
@@ -141,21 +138,31 @@ public class RequestAuthCodeImplTest {
 
         AuthResponse actual = subject.run(input);
 
-        assertThat(actual.getCode()).isEqualTo(expectedAuthResponse.getCode());
-        assertThat(actual.getRedirectUri()).isEqualTo(expectedAuthResponse.getRedirectUri());
-        assertThat(actual.getState()).isEqualTo(expectedAuthResponse.getState());
+        assertThat(actual.getCode(), is(expectedAuthResponse.getCode()));
+        assertThat(actual.getRedirectUri(), is(expectedAuthResponse.getRedirectUri()));
+        assertThat(actual.getState(), is(expectedAuthResponse.getState()));
     }
 
     @Test
-    public void testRunFailsLogin() throws URISyntaxException, UnauthorizedException, AuthCodeInsertException {
+    public void failsLoginShouldThrowUnauthorizedException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
         UUID clientId = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
         String scope = "profile";
 
         // parameters to method in test
-        AuthCodeInput input = makeAuthCodeInput(clientId, rt, scope);
+        AuthCodeInput input = FixtureFactory.makeAuthCodeInput(clientId, rt, scope);
 
-        // stubbing
+        // response from mockValidateParams
+        AuthRequest authRequest = makeAuthRequest(input);
+
+        when(mockValidateParams.run(
+                input.getClientIds(),
+                input.getResponseTypes(),
+                input.getRedirectUris(),
+                input.getScopes(),
+                input.getStates()
+        )).thenReturn(authRequest);
+
         when(mockLoginResourceOwner.run(
                 input.getUserName(),
                 input.getPlainTextPassword()
@@ -178,7 +185,7 @@ public class RequestAuthCodeImplTest {
             fail("Expected UnauthorizedException");
         }
 
-        assertThat(authResponse).isNull();
-        assertThat(expectedException).isNotNull();
+        assertThat(authResponse, is(nullValue()));
+        assertThat(expectedException, is(notNullValue()));
     }
 }

@@ -19,11 +19,12 @@ public class AuthRequest {
 
     public AuthRequest() {}
 
-    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<String> scopes) {
+    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<String> scopes, Optional<String> state) {
         this.clientId = clientId;
         this.responseType = responseType;
         this.redirectURI = redirectURI;
         this.scopes = scopes;
+        this.state = state;
     }
 
     public UUID getClientId() {
