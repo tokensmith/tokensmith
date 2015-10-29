@@ -17,6 +17,16 @@ public class OpenIdAuthRequest {
     private List<String> scopes;
     private Optional<String> state;
 
+    public OpenIdAuthRequest() {}
+
+    public OpenIdAuthRequest(UUID clientId, ResponseType responseType, URI redirectURI, List<String> scopes, Optional<String> state) {
+        this.clientId = clientId;
+        this.responseType = responseType;
+        this.redirectURI = redirectURI;
+        this.scopes = scopes;
+        this.state = state;
+    }
+
     public UUID getClientId() {
         return clientId;
     }

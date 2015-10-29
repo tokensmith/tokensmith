@@ -1,5 +1,6 @@
 package helper.fixture;
 
+import org.rootservices.authorization.grant.code.protocol.authorization.response.AuthCodeInput;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.HashTextRandomSalt;
 import org.rootservices.authorization.security.HashTextRandomSaltImpl;
@@ -70,11 +71,14 @@ public class FixtureFactory {
         return scopes;
     }
 
+    public static String makeRandomEmail() {
+        return "test-" + UUID.randomUUID().toString() + "@rootservices.org";
+    }
     public static ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
         ro.setUuid(UUID.randomUUID());
 
-        ro.setEmail("test-" + UUID.randomUUID().toString() + "@rootservices.org");
+        ro.setEmail(makeRandomEmail());
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
         ro.setPassword(hashedPassword.getBytes());
@@ -114,5 +118,25 @@ public class FixtureFactory {
         token.setExpiresAt(OffsetDateTime.now());
 
         return token;
+    }
+
+    public static AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {
+        AuthCodeInput input = new AuthCodeInput();
+        input.setUserName(makeRandomEmail());
+        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
+
+        List<String> clientIds = new ArrayList<>();
+        clientIds.add(clientId.toString());
+        input.setClientIds(clientIds);
+
+        List<String> responseTypes = new ArrayList<>();
+        responseTypes.add(rt.toString());
+        input.setResponseTypes(responseTypes);
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add(scope.toString());
+        input.setScopes(scopes);
+
+        return input;
     }
 }
