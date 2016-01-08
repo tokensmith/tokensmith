@@ -103,6 +103,7 @@ public class AuthCodeMapperTest {
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
         assertThat(actual.isRevoked()).isFalse();
 
+
         // access request.
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar).isNotNull();
