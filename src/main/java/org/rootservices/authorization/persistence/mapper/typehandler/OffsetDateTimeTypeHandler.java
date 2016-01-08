@@ -20,7 +20,7 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
         if (parameter == null) {
             ps.setObject(i, null, Types.TIMESTAMP);
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSZ");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
             String formattedDate = parameter.format(formatter);
             ps.setObject(i, formattedDate, Types.TIMESTAMP);
         }

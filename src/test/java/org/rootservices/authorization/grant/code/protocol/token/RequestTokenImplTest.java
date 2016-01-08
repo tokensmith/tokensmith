@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.exception.BaseInformException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
@@ -598,11 +597,11 @@ public class RequestTokenImplTest {
         try {
             actual = subject.run(tokenInput);
         } catch (UnauthorizedException e) {
-            fail("expected CompromisedCodeException");
+            fail("actual UnauthorizedException, expected CompromisedCodeException");
         } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
-            fail("expected CompromisedCodeException");
+            fail("actual AuthorizationCodeNotFound, expected CompromisedCodeException");
         } catch (BadRequestException e) {
-            fail("expected CompromisedCodeException");
+            fail("actual BadRequestException expected CompromisedCodeException");
         } catch (CompromisedCodeException e) {
             exception = e;
         }

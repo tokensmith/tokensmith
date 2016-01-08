@@ -24,6 +24,7 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,9 +61,25 @@ public class RequestTokenImpl implements RequestToken {
         UUID clientUUID = UUID.fromString(tokenInput.getClientUUID());
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
 
+        TokenRequest tokenRequest = payloadToTokenRequest(tokenInput.getPayload());
+        String hashedCode = hashText.run(tokenRequest.getCode());
+        AuthCode authCode = fetchAndVerifyAuthCode(clientUUID, hashedCode, tokenRequest.getRedirectUri());
+
+        String plainTextToken = randomString.run();
+        Token token = grantToken(authCode.getUuid(), plainTextToken);
+
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setAccessToken(plainTextToken);
+        tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
+        tokenResponse.setTokenType(makeToken.getTokenType().toString().toLowerCase());
+        return tokenResponse;
+    }
+
+    private TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
+
         TokenRequest tokenRequest = null;
         try {
-            tokenRequest = jsonToTokenRequest.run(tokenInput.getPayload());
+            tokenRequest = jsonToTokenRequest.run(payload);
         } catch (DuplicateKeyException e) {
             throw badRequestExceptionBuilder.DuplicateKey(e.getKey(), e.getCode(), e).build();
         } catch (InvalidPayloadException e) {
@@ -76,42 +93,25 @@ public class RequestTokenImpl implements RequestToken {
         } catch (UnknownKeyException e) {
             throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
         }
+        return tokenRequest;
+    }
 
-        AuthCode authCode = null;
-        String hashedCode = hashText.run(tokenRequest.getCode());
-
+    private AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
+        AuthCode authCode;
         try {
             authCode = authCodeRepository.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
             throw new AuthorizationCodeNotFound(
-                "Access Request was not found", "invalid_grant", e, ErrorCode.AUTH_CODE_NOT_FOUND.getCode()
+                    "Access Request was not found", "invalid_grant", e, ErrorCode.AUTH_CODE_NOT_FOUND.getCode()
             );
         }
 
-        if ( ! doRedirectUrisMatch(tokenRequest.getRedirectUri(), authCode.getAccessRequest().getRedirectURI()) ) {
+        if ( ! doRedirectUrisMatch(tokenRequestRedirectUri, authCode.getAccessRequest().getRedirectURI()) ) {
             throw new AuthorizationCodeNotFound(
-                "Access Request was not found", "invalid_grant", ErrorCode.REDIRECT_URI_MISMATCH.getCode()
+                    "Access Request was not found", "invalid_grant", ErrorCode.REDIRECT_URI_MISMATCH.getCode()
             );
         }
-
-        String plainTextToken = randomString.run();
-        Token token = makeToken.run(authCode.getUuid(), plainTextToken);
-        try {
-            tokenRepository.insert(token);
-        } catch (DuplicateRecordException e) {
-            tokenRepository.revoke(authCode.getUuid());
-
-            throw new CompromisedCodeException(
-                ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),
-                "invalid_grant", e, ErrorCode.COMPROMISED_AUTH_CODE.getCode()
-            );
-        }
-
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(plainTextToken);
-        tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
-        tokenResponse.setTokenType(makeToken.getTokenType().toString().toLowerCase());
-        return tokenResponse;
+        return authCode;
     }
 
     private Boolean doRedirectUrisMatch(Optional<URI> redirectUriA, Optional<URI> redirectUriB) {
@@ -119,8 +119,26 @@ public class RequestTokenImpl implements RequestToken {
         if ( redirectUriA.isPresent() && ! redirectUriB.isPresent()) {
             matches = false;
         } else if ( !redirectUriA.isPresent() && redirectUriB.isPresent()) {
-            matches =false;
+            matches = false;
+        } else if ( redirectUriA.get().equals(redirectUriB.get())) {
+            matches = true;
         }
         return matches;
+    }
+
+    private Token grantToken(UUID authCodeUUID, String plainTextToken) throws CompromisedCodeException {
+        Token token = makeToken.run(authCodeUUID, plainTextToken);
+
+        try {
+            tokenRepository.insert(token);
+        } catch (DuplicateRecordException e) {
+            tokenRepository.revoke(authCodeUUID);
+
+            throw new CompromisedCodeException(
+                    ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),
+                    "invalid_grant", e, ErrorCode.COMPROMISED_AUTH_CODE.getCode()
+            );
+        }
+        return token;
     }
 }
