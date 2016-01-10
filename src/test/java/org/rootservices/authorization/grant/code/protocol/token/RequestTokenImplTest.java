@@ -10,6 +10,9 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.Author
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestException;
 import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.request.TokenInput;
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenResponse;
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
@@ -69,7 +72,7 @@ public class RequestTokenImplTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getAccessToken()).isNotNull();
         assertThat(actual.getExpiresIn()).isEqualTo(3600);
-        assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER.toString().toLowerCase());
+        assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER);
 
     }
 
