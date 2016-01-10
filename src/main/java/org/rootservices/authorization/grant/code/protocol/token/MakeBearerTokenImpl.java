@@ -1,12 +1,11 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

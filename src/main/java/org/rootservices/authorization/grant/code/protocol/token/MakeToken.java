@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.Token;
 
 import java.util.UUID;

@@ -9,6 +9,9 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.Compro
 import org.rootservices.authorization.grant.code.protocol.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
+import org.rootservices.authorization.grant.code.protocol.token.request.TokenInput;
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenResponse;
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
@@ -71,7 +74,7 @@ public class RequestTokenImpl implements RequestToken {
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(plainTextToken);
         tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
-        tokenResponse.setTokenType(makeToken.getTokenType().toString().toLowerCase());
+        tokenResponse.setTokenType(TokenType.BEARER);
         return tokenResponse;
     }
 
