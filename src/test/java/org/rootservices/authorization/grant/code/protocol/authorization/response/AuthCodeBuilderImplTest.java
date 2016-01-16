@@ -10,6 +10,7 @@ import org.rootservices.authorization.grant.code.protocol.authorization.response
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilderImpl;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +37,7 @@ public class AuthCodeBuilderImplTest {
     @Test
     public void testRun() throws Exception {
         // parameters to method in test.
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         UUID clientUUID = UUID.randomUUID();
         int secondsToExpire = 60*10;
         String randomString = "randomString";
@@ -44,7 +45,7 @@ public class AuthCodeBuilderImplTest {
 
         when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
 
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerUUID, clientUUID);
+        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner, clientUUID);
         AuthCode actual = subject.run(ar, randomString, secondsToExpire);
 
         assertThat(actual.getUuid()).isNotNull();

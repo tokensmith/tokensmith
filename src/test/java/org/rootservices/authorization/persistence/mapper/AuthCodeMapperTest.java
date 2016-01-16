@@ -53,7 +53,7 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
+                resourceOwner,
                 client.getUuid()
         );
         accessRequestRepository.insert(accessRequest);
@@ -75,7 +75,7 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
+                resourceOwner,
                 client.getUuid()
         );
         accessRequestRepository.insert(accessRequest);
@@ -103,16 +103,24 @@ public class AuthCodeMapperTest {
         assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
         assertThat(actual.isRevoked()).isFalse();
 
-
         // access request.
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar).isNotNull();
         assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
+        assertThat(ar.getRedirectURI().isPresent()).isTrue();
+        assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.SECURE_REDIRECT_URI);
+
+        // resource owner
+        ResourceOwner ro = ar.getResourceOwner();
+        assertThat(ro).isNotNull();
+        assertThat(ro.getCreatedAt()).isNotNull();
+        assertThat(ro.getEmail()).isEqualTo(actual.getAccessRequest().getResourceOwner().getEmail());
+        assertThat(ro.getUuid()).isEqualTo(actual.getAccessRequest().getResourceOwner().getUuid());
+
+        // scopes
         assertThat(ar.getScopes()).isNotNull();
         assertThat(ar.getScopes().size()).isEqualTo(1);
         assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
-        assertThat(ar.getRedirectURI().isPresent()).isTrue();
-        assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.SECURE_REDIRECT_URI);
     }
 
     @Test

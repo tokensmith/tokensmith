@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Created by tommackenzie on 4/13/15.
@@ -36,17 +37,18 @@ public class LoginResourceOwnerImplTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
-        UUID actual = subject.run(
+        ResourceOwner actual = subject.run(
             ro.getEmail(), "password"
         );
 
-        assertThat(actual).isEqualTo(ro.getUuid());
+        assertThat(actual).isNotNull();
+        assertThat(actual.getUuid()).isEqualTo(ro.getUuid());
     }
 
     @Test
     public void resourceOwnerNotFound() {
 
-        UUID actual = null;
+        ResourceOwner actual = null;
         try {
             actual = subject.run(
                 "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
@@ -64,7 +66,7 @@ public class LoginResourceOwnerImplTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
-        UUID actual = null;
+        ResourceOwner actual = null;
         try {
             actual = subject.run(
                  ro.getEmail(), "wrong-password"

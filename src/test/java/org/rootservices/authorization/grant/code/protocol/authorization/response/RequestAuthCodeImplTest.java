@@ -15,6 +15,7 @@ import org.rootservices.authorization.grant.code.protocol.authorization.request.
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
@@ -97,7 +98,7 @@ public class RequestAuthCodeImplTest {
         AuthRequest authRequest = makeAuthRequest(input);
 
         // response from mockLoginResourceOwner.
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
         // response from mockGrantAuthCode.
         String randomString = "randomString";
@@ -120,10 +121,10 @@ public class RequestAuthCodeImplTest {
         when(mockLoginResourceOwner.run(
                         input.getUserName(),
                         input.getPlainTextPassword())
-        ).thenReturn(resourceOwnerUUID);
+        ).thenReturn(resourceOwner);
 
         when(mockGrantAuthCode.run(
-                        resourceOwnerUUID,
+                        resourceOwner,
                         authRequest.getClientId(),
                         authRequest.getRedirectURI(),
                         authRequest.getScopes())
@@ -174,7 +175,7 @@ public class RequestAuthCodeImplTest {
             authResponse = subject.run(input);
         } catch (UnauthorizedException e) {
             verify(mockGrantAuthCode, never()).run(
-                any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
+                any(ResourceOwner.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
             );
             expectedException = e;
         } catch (InformResourceOwnerException e) {
