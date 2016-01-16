@@ -15,15 +15,27 @@ import java.util.List;
  */
 public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
+    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
+
     @Override
     public void setParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
         if (parameter == null) {
             ps.setObject(i, null, Types.TIMESTAMP);
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
-            String formattedDate = parameter.format(formatter);
+            String formattedDate = parameter.format(formatterForInsert);
+            formattedDate = lowercaseZ(formattedDate);
             ps.setObject(i, formattedDate, Types.TIMESTAMP);
         }
+    }
+
+    /**
+     * postgres doesn't like uppercase Z which represents +0 GMT
+     *
+     * @param datetime
+     * @return
+     */
+    protected String lowercaseZ(String datetime) {
+        return datetime.replace("Z","z");
     }
 
     @Override
