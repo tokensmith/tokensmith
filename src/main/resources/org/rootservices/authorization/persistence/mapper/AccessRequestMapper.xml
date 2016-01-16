@@ -6,9 +6,12 @@
 
     <resultMap id="accessRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="client_uuid" property="client_uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
-        <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <association property="resourceOwner"
+                     resultMap="org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper.resourceOwner"
+                     columnPrefix="ro_"/>
         <collection property="scopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.ScopeMapper.scope"
                     columnPrefix="scope_"
@@ -19,7 +22,7 @@
         insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI)
         values (
             #{accessRequest.uuid},
-            #{accessRequest.resourceOwnerUUID},
+            #{accessRequest.resourceOwner.uuid},
             #{accessRequest.clientUUID},
             #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
         )

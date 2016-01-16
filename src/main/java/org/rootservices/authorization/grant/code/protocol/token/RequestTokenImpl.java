@@ -68,6 +68,10 @@ public class RequestTokenImpl implements RequestToken {
         String hashedCode = hashText.run(tokenRequest.getCode());
         AuthCode authCode = fetchAndVerifyAuthCode(clientUUID, hashedCode, tokenRequest.getRedirectUri());
 
+        // should return a response object indicating whether its openid extension or not.
+
+        // below here belongs in another class.
+
         String plainTextToken = randomString.run();
         Token token = grantToken(authCode.getUuid(), plainTextToken);
 

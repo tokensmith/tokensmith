@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 public interface AccessRequestMapper {
     void insert(@Param("accessRequest") AccessRequest accessRequest);
-    AccessRequest getByClientUUIDAndAuthCode(@Param("clientUUID") UUID clienUUID, @Param("authCode") String authCode);
 }
