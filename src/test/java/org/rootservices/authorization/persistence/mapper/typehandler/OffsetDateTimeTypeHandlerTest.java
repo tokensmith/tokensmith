@@ -35,7 +35,7 @@ public class OffsetDateTimeTypeHandlerTest {
 
         subject.setParameter(mockPreparedStatement, 1, dateTime, JdbcType.TIMESTAMP);
         verify(mockPreparedStatement, times(1)).setObject(
-                1, "2015-05-14 11:58:22.173960Z", Types.TIMESTAMP
+                1, "2015-05-14 11:58:22.173960z", Types.TIMESTAMP
         );
     }
     @Test
