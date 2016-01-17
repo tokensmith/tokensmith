@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
-    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSX");
+    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSxxx");
 
     @Override
     public void setParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
@@ -23,19 +23,8 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
             ps.setObject(i, null, Types.TIMESTAMP);
         } else {
             String formattedDate = parameter.format(formatterForInsert);
-            formattedDate = lowercaseZ(formattedDate);
             ps.setObject(i, formattedDate, Types.TIMESTAMP);
         }
-    }
-
-    /**
-     * postgres doesn't like uppercase Z which represents +0 GMT
-     *
-     * @param datetime
-     * @return
-     */
-    protected String lowercaseZ(String datetime) {
-        return datetime.replace("Z","z");
     }
 
     @Override
@@ -45,12 +34,13 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSSSX");
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSX");
 
+        String columnValue = rs.getString(columnName);
         OffsetDateTime result = null;
-        if (rs.getString(columnName) != null) {
+        if (columnValue != null) {
             for (String datePattern: datePatterns) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
                 try {
-                    result = OffsetDateTime.parse(rs.getString(columnName), formatter);
+                    result = OffsetDateTime.parse(columnValue, formatter);
                     break;
                 } catch (DateTimeParseException stupidException) {
                     continue;
