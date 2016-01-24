@@ -1,7 +1,5 @@
 package org.rootservices.authorization.grant.code.protocol.token.response;
 
-import java.util.Optional;
-
 /**
  * Created by tommackenzie on 6/3/15.
  *

@@ -8,7 +8,6 @@ import org.rootservices.authorization.grant.code.exception.InformResourceOwnerEx
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,10 +65,10 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
 
     protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException {
 
-        ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
+        UUID resourceOwnerUUID = loginResourceOwner.run(userName, password);
 
         String authorizationCode = grantAuthCode.run(
-                resourceOwner,
+                resourceOwnerUUID,
                 clientId,
                 redirectUri,
                 scopes

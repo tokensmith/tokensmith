@@ -35,15 +35,11 @@
             access_request.uuid as ar_uuid,
             access_request.redirect_uri as ar_redirect_uri,
             access_request.created_at as ar_created_at,
-            resource_owner.uuid as ar_ro_uuid,
-            resource_owner.email as ar_ro_email,
-            resource_owner.created_at as ar_ro_created_at,
             scope.uuid as ar_scope_uuid,
             scope.name as ar_scope_name,
             scope.created_at as ar_scope_created_at
         from auth_code
         join access_request on access_request.uuid = auth_code.access_request_uuid
-        join resource_owner on resource_owner.uuid = access_request.resource_owner_uuid
         left join access_request_scopes on access_request_scopes.access_request_uuid = access_request.uuid
         left join scope on scope.uuid = access_request_scopes.scope_uuid
         where access_request.client_uuid = #{clientUUID}

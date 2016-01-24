@@ -1,7 +1,10 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
-import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.entity.AccessRequest;
+import org.rootservices.authorization.persistence.entity.AccessRequestScope;
+import org.rootservices.authorization.persistence.entity.AuthCode;
+import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AccessRequestScopesRepository;
@@ -37,10 +40,10 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
         this.insertAuthCodeWithRetry = insertAuthCodeWithRetry;
     }
 
-    public String run(ResourceOwner resourceOwner, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
+    public String run(UUID resourceOwnerUUID, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
 
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), resourceOwner, ClientUUID, redirectURI
+                UUID.randomUUID(), resourceOwnerUUID, ClientUUID, redirectURI
         );
         accessRequestRepository.insert(accessRequest);
 
