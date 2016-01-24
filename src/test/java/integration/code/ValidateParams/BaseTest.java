@@ -26,6 +26,7 @@ import static org.fest.assertions.api.Assertions.fail;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
+@Transactional
 public abstract class BaseTest {
 
     @Autowired
