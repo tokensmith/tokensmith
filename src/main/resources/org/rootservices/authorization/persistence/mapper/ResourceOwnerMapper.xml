@@ -8,7 +8,6 @@
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
-        <result column="is_revoked" property="isRevoked"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
@@ -26,5 +25,14 @@
         select uuid, email, password, created_at
         from resource_owner
         where email = #{email}
+    </select>
+
+    <select id="getByAccessToken" resultMap="resourceOwner">
+        select ro.uuid, ro.email, ro.password, ro.created_at
+        from resource_owner ro
+        join access_request on access_request.resource_owner_uuid = ro.uuid
+        join auth_code on auth_code.access_request_uuid = access_request.uuid
+        join token on token.auth_code_uuid = auth_code.uuid
+        where token.token = #{accessToken}
     </select>
 </mapper>
