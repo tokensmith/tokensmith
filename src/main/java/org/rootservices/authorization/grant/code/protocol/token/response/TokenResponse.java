@@ -6,12 +6,12 @@ import java.util.Optional;
  * Created by tommackenzie on 6/3/15.
  *
  * Value object
- * http://martinfowler.com/eaaCatalog/valueObject.html
  */
 public class TokenResponse {
     private String accessToken;
     private Integer expiresIn;
     private TokenType tokenType;
+    private Extension extension;
 
     public TokenResponse(){}
 
@@ -37,5 +37,13 @@ public class TokenResponse {
 
     public void setTokenType(TokenType tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public Extension getExtension() {
+        return extension;
+    }
+
+    public void setExtension(Extension extension) {
+        this.extension = extension;
     }
 }

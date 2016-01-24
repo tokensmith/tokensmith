@@ -6,6 +6,7 @@ import java.util.UUID;
 
 /**
  * Created by tommackenzie on 6/26/15.
+ *
  */
 public class TokenRequest {
     private String grantType;

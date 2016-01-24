@@ -10,6 +10,7 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.BadReq
 import org.rootservices.authorization.grant.code.protocol.token.factory.JsonToTokenRequest;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.grant.code.protocol.token.request.TokenInput;
+import org.rootservices.authorization.grant.code.protocol.token.response.Extension;
 import org.rootservices.authorization.grant.code.protocol.token.response.TokenResponse;
 import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
@@ -17,6 +18,7 @@ import org.rootservices.authorization.grant.code.protocol.token.validator.except
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
+import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,6 +61,19 @@ public class RequestTokenImpl implements RequestToken {
         this.tokenRepository = tokenRepository;
     }
 
+    /**
+     * Login a confidential client
+     * Make token request
+     * Validate token request
+     * Fetches authorization code.
+     *
+     * @param tokenInput
+     * @return
+     * @throws UnauthorizedException
+     * @throws AuthorizationCodeNotFound
+     * @throws BadRequestException
+     * @throws CompromisedCodeException
+     */
     @Override
     public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
 
@@ -65,12 +81,10 @@ public class RequestTokenImpl implements RequestToken {
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
 
         TokenRequest tokenRequest = payloadToTokenRequest(tokenInput.getPayload());
+
+        // once more grant types are implemented then code below will moved to its own class.
         String hashedCode = hashText.run(tokenRequest.getCode());
         AuthCode authCode = fetchAndVerifyAuthCode(clientUUID, hashedCode, tokenRequest.getRedirectUri());
-
-        // should return a response object indicating whether its openid extension or not.
-
-        // below here belongs in another class.
 
         String plainTextToken = randomString.run();
         Token token = grantToken(authCode.getUuid(), plainTextToken);
@@ -79,9 +93,23 @@ public class RequestTokenImpl implements RequestToken {
         tokenResponse.setAccessToken(plainTextToken);
         tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
         tokenResponse.setTokenType(TokenType.BEARER);
+
+        Extension extension = Extension.NONE;
+        if (isOpenId(authCode.getAccessRequest().getScopes())) {
+            extension = Extension.IDENTITY;
+        }
+        tokenResponse.setExtension(extension);
+
         return tokenResponse;
     }
 
+    /**
+     * Makes a token request and validates the token request is accurate.
+     *
+     * @param payload
+     * @return
+     * @throws BadRequestException
+     */
     private TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
 
         TokenRequest tokenRequest = null;
@@ -147,5 +175,14 @@ public class RequestTokenImpl implements RequestToken {
             );
         }
         return token;
+    }
+
+    private Boolean isOpenId(List<Scope> scopes) {
+        for(Scope scope: scopes) {
+            if (scope.getName().equalsIgnoreCase("openid")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

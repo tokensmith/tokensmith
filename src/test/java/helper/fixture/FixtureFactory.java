@@ -55,6 +55,7 @@ public class FixtureFactory {
 
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
+
         Scope scope = new Scope();
         scope.setUuid(UUID.randomUUID());
         scope.setName("profile");
