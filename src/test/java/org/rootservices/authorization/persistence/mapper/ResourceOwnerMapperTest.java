@@ -1,13 +1,18 @@
 package org.rootservices.authorization.persistence.mapper;
 
+import helper.fixture.persistence.openid.LoadOpenIdConfidentialClientAll;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -19,10 +24,14 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@Transactional
 public class ResourceOwnerMapperTest {
 
     @Autowired
-    ResourceOwnerMapper subject;
+    private LoadOpenIdConfidentialClientAll loadOpenIdConfidentialClientAll;
+
+    @Autowired
+    private ResourceOwnerMapper subject;
 
     public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
@@ -34,7 +43,6 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    @Transactional
     public void insert() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
@@ -43,7 +51,6 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    @Transactional
     public void getByUUID() {
         ResourceOwner expectedUser = insertResourceOwner();
         ResourceOwner actualUser = subject.getByUUID(expectedUser.getUuid());
@@ -56,7 +63,6 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    @Transactional
     public void getByUUIDAuthUserNotFound() {
 
         ResourceOwner actualUser = subject.getByUUID(UUID.randomUUID());
@@ -65,7 +71,6 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    @Transactional
     public void getByEmail() {
 
         ResourceOwner expectedUser = insertResourceOwner();
@@ -76,5 +81,16 @@ public class ResourceOwnerMapperTest {
         assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
         assertThat(actualUser.getCreatedAt()).isNotNull();
         assertThat(actualUser.getCreatedAt()).isInstanceOf(OffsetDateTime.class);
+    }
+
+    @Test
+    public void getByAccessToken() throws DuplicateRecordException, URISyntaxException {
+        Token token = loadOpenIdConfidentialClientAll.run();
+        ResourceOwner actual = subject.getByAccessToken(token.getToken());
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getEmail()).isNotNull();
+        assertThat(actual.getCreatedAt()).isNotNull();
     }
 }

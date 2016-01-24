@@ -19,20 +19,19 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@Transactional
 public class ScopeMapperTest {
 
     @Autowired
     private ScopeMapper subject;
 
     @Test
-    @Transactional
     public void insert() {
         Scope scope = new Scope(UUID.randomUUID(), "some-scope");
         subject.insert(scope);
     }
 
     @Test
-    @Transactional
     public void findByName() {
         String scopeName = "some-scope";
         Scope scope = new Scope(UUID.randomUUID(), scopeName);

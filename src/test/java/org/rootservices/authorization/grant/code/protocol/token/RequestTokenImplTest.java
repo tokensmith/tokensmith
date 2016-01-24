@@ -57,6 +57,7 @@ public class RequestTokenImplTest {
     private RequestToken subject;
 
     @Test
+    @Transactional
     public void testRun() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -83,10 +84,10 @@ public class RequestTokenImplTest {
     }
 
     @Test
+    @Transactional
     public void shouldBeOpendIdExtension() throws Exception {
         String plainTextAuthCode = randomString.run();
 
-        // loadConfidentialClientOpendIdTokenReady.setLoadClientWithScopes(loadClientWithOpenIdScope);
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
 
         StringReader sr = new StringReader(
