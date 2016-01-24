@@ -70,4 +70,8 @@ public class LoadConfidentialClientTokenReady {
 
         return authCode;
     }
+
+    public void setLoadClientWithScopes(LoadClientWithScopes loadClientWithScopes) {
+        this.loadClientWithScopes = loadClientWithScopes;
+    }
 }

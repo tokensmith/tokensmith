@@ -1,6 +1,8 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadClientWithOpenIdScope;
+import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,7 @@ import org.rootservices.authorization.grant.code.protocol.token.exception.BadReq
 import org.rootservices.authorization.grant.code.protocol.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.grant.code.protocol.token.factory.exception.*;
 import org.rootservices.authorization.grant.code.protocol.token.request.TokenInput;
+import org.rootservices.authorization.grant.code.protocol.token.response.Extension;
 import org.rootservices.authorization.grant.code.protocol.token.response.TokenResponse;
 import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
@@ -43,6 +46,13 @@ public class RequestTokenImplTest {
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
 
     @Autowired
+    private LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady;
+
+    // to be used in loadConfidentialClientOpendIdTokenReady
+    @Autowired
+    private LoadClientWithOpenIdScope loadClientWithOpenIdScope;
+
+    @Autowired
     private TokenRepository tokenRepository;
 
     @Autowired
@@ -73,8 +83,39 @@ public class RequestTokenImplTest {
         assertThat(actual.getAccessToken()).isNotNull();
         assertThat(actual.getExpiresIn()).isEqualTo(3600);
         assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER);
+        assertThat(actual.getExtension()).isEqualTo(Extension.NONE);
 
     }
+
+    @Test
+    public void shouldBeOpendIdExtension() throws Exception {
+        String plainTextAuthCode = randomString.run();
+
+        loadConfidentialClientOpendIdTokenReady.setLoadClientWithScopes(loadClientWithOpenIdScope);
+        AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
+
+        StringReader sr = new StringReader(
+                "{\"grant_type\": \"authorization_code\", " +
+                        "\"code\": \""+ plainTextAuthCode + "\", " +
+                        "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        );
+        BufferedReader json = new BufferedReader(sr);
+
+        TokenInput tokenInput = new TokenInput();
+        tokenInput.setPayload(json);
+        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
+        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        TokenResponse actual = subject.run(tokenInput);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getAccessToken()).isNotNull();
+        assertThat(actual.getExpiresIn()).isEqualTo(3600);
+        assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER);
+        assertThat(actual.getExtension()).isEqualTo(Extension.IDENTITY);
+
+    }
+
+    //TODO: should this be moved to integration namespace?
 
     @Test
     @Transactional
@@ -528,18 +569,19 @@ public class RequestTokenImplTest {
 
     @Test
     @Transactional
-    public void testHasClientIdExpectBadRequest() throws URISyntaxException, DuplicateRecordException {
+    public void shouldThrowBadRequestWhenPayloadHasUnknownKey() throws URISyntaxException, DuplicateRecordException {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
+        // client_id should not be in payload.
+        StringReader payload = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
                 "\"code\": \""+ plainTextAuthCode + "\", " +
                 "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"," +
                 "\"client_id\": \"42415ecb-857d-4ff3-9223-f1c133b06205\"}"
         );
-        BufferedReader json = new BufferedReader(sr);
+        BufferedReader json = new BufferedReader(payload);
 
         TokenInput tokenInput = new TokenInput();
         tokenInput.setPayload(json);
