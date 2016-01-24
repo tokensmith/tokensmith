@@ -1,8 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithOpenIdScope;
-import helper.fixture.persistence.LoadClientWithScopes;
+import helper.fixture.persistence.openid.LoadClientWithOpenIdScope;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,10 +47,6 @@ public class RequestTokenImplTest {
     @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady;
 
-    // to be used in loadConfidentialClientOpendIdTokenReady
-    @Autowired
-    private LoadClientWithOpenIdScope loadClientWithOpenIdScope;
-
     @Autowired
     private TokenRepository tokenRepository;
 
@@ -91,7 +86,7 @@ public class RequestTokenImplTest {
     public void shouldBeOpendIdExtension() throws Exception {
         String plainTextAuthCode = randomString.run();
 
-        loadConfidentialClientOpendIdTokenReady.setLoadClientWithScopes(loadClientWithOpenIdScope);
+        // loadConfidentialClientOpendIdTokenReady.setLoadClientWithScopes(loadClientWithOpenIdScope);
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
 
         StringReader sr = new StringReader(

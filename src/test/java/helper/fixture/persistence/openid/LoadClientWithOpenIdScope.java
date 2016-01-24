@@ -1,6 +1,7 @@
-package helper.fixture.persistence;
+package helper.fixture.persistence.openid;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadClientWithScopes;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;

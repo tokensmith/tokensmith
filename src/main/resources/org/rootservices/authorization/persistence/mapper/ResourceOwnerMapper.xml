@@ -8,6 +8,7 @@
         <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="is_revoked" property="isRevoked"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
