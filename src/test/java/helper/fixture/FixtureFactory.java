@@ -7,7 +7,11 @@ import org.rootservices.authorization.security.HashTextRandomSaltImpl;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.HashTextStaticSaltImpl;
 import org.rootservices.config.AppConfig;
+import org.rootservices.jwt.entity.jwk.KeyType;
+import org.rootservices.jwt.entity.jwk.RSAKeyPair;
+import org.rootservices.jwt.entity.jwk.Use;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
@@ -139,5 +143,38 @@ public class FixtureFactory {
         input.setScopes(scopes);
 
         return input;
+    }
+
+    public static RSAPrivateKey makeRSAPrivateKey() {
+        RSAPrivateKey rsaPrivateKey = new RSAPrivateKey();
+        rsaPrivateKey.setUuid(UUID.randomUUID());
+        rsaPrivateKey.setUse(PrivateKeyUse.SIGNATURE);
+        rsaPrivateKey.setModulus(new BigInteger("1"));
+        rsaPrivateKey.setPublicExponent(new BigInteger("2"));
+        rsaPrivateKey.setPrivateExponent(new BigInteger("3"));
+        rsaPrivateKey.setPrimeP(new BigInteger("4"));
+        rsaPrivateKey.setPrimeQ(new BigInteger("5"));
+        rsaPrivateKey.setPrimeExponentP(new BigInteger("6"));
+        rsaPrivateKey.setPrimeExponentQ(new BigInteger("7"));
+        rsaPrivateKey.setCrtCoefficient(new BigInteger("8"));
+        rsaPrivateKey.setActive(true);
+
+        return rsaPrivateKey;
+    }
+
+    public static RSAKeyPair makeRSAKeyPair() {
+        return new RSAKeyPair(
+                Optional.of("test-key-id"),
+                KeyType.RSA,
+                Use.SIGNATURE,
+                new BigInteger("1"),
+                new BigInteger("2"),
+                new BigInteger("3"),
+                new BigInteger("4"),
+                new BigInteger("5"),
+                new BigInteger("6"),
+                new BigInteger("7"),
+                new BigInteger("8")
+        );
     }
 }

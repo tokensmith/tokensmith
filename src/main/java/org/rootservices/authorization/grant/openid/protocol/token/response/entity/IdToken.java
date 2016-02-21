@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.openid.protocol.authorization.response.entity;
+package org.rootservices.authorization.grant.openid.protocol.token.response.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.rootservices.jwt.entity.jwt.Claims;
@@ -32,9 +32,11 @@ public class IdToken extends Claims {
     @JsonProperty(value="preferred_username")
     private Optional<String> preferredUsername;
 
+    // not in db
     @JsonProperty(value="profile")
     private Optional<URI> profile;
 
+    // not in db
     @JsonProperty(value="picture")
     private Optional<URI> picture;
 
@@ -68,10 +70,10 @@ public class IdToken extends Claims {
     @JsonProperty(value="address")
     private Optional<Address> address;
 
-    @JsonProperty(value="phoneNumber")
+    @JsonProperty(value="phone_number")
     private Optional<String> phoneNumber;
 
-    @JsonProperty(value="phoneNumber")
+    @JsonProperty(value="phone_number_verified")
     private Optional<Boolean> phoneNumberVerified;
 
     // end standard claims.
