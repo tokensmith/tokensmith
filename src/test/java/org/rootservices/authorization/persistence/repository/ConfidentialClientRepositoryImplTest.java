@@ -3,9 +3,8 @@ package org.rootservices.authorization.persistence.repository;
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -22,7 +21,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 5/24/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ConfidentialClientRepositoryImplTest {
 
     @Mock
@@ -32,6 +30,7 @@ public class ConfidentialClientRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new ConfidentialClientRepositoryImpl(mockConfidentialClientMapper);
     }
 
