@@ -3,9 +3,8 @@ package org.rootservices.authorization.grant.openid.protocol.authorization.respo
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.AuthCodeInput;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.AuthResponse;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 10/27/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class RequestOpenIdAuthCodeImplTest {
 
     @Mock
@@ -46,6 +44,7 @@ public class RequestOpenIdAuthCodeImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new RequestOpenIdAuthCodeImpl(
                 mockValidateOpenIdParams,
                 mockLoginResourceOwner,

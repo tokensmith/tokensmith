@@ -3,9 +3,8 @@ package org.rootservices.authorization.grant.openid.protocol.authorization.reque
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.validator.RequiredParam;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 10/2/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class OpenIdRedirectUriBuilderImplTest {
 
     @Mock
@@ -39,6 +37,7 @@ public class OpenIdRedirectUriBuilderImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new OpenIdRedirectUriBuilderImpl(mockRequiredParam, mockUrlValidator);
     }
 

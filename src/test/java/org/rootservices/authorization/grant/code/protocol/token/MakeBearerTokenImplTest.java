@@ -2,13 +2,11 @@ package org.rootservices.authorization.grant.code.protocol.token;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
@@ -18,7 +16,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 6/2/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class MakeBearerTokenImplTest {
 
     @Mock
@@ -27,6 +24,7 @@ public class MakeBearerTokenImplTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
+        MockitoAnnotations.initMocks(this);
         subject = new MakeBearerTokenImpl(mockHashText);
     }
 

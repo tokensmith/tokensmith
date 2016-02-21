@@ -2,9 +2,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.respons
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/29/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AuthResponseBuilderImplTest {
 
     @Mock
@@ -34,6 +32,7 @@ public class AuthResponseBuilderImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new AuthResponseBuilderImpl(clientRepository);
     }
 
