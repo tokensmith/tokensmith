@@ -2,14 +2,12 @@ package org.rootservices.authorization.persistence.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ClientMapper;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,7 +19,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 11/16/14.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ClientRepositoryImplTest {
 
     @Mock
@@ -31,6 +28,7 @@ public class ClientRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new ClientRepositoryImpl(mockMapper);
     }
 

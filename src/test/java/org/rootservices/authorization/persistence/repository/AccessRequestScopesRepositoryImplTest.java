@@ -2,9 +2,8 @@ package org.rootservices.authorization.persistence.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.AccessRequestScope;
 import org.rootservices.authorization.persistence.mapper.AccessRequestScopesMapper;
 
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Created by tommackenzie on 5/19/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AccessRequestScopesRepositoryImplTest {
 
     @Mock
@@ -27,6 +25,7 @@ public class AccessRequestScopesRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new AccessRequestScopesRepositoryImpl(mockAccessRequestScopesMapper);
     }
     @Test
