@@ -2,24 +2,16 @@ package org.rootservices.authorization.persistence.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.AccessRequestMapper;
 
-import java.util.UUID;
-
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 4/15/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AccessRequestRepositoryImplTest {
 
     @Mock
@@ -29,6 +21,7 @@ public class AccessRequestRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new AccessRequestRepositoryImpl(mockAuthRequestMapper);
     }
 

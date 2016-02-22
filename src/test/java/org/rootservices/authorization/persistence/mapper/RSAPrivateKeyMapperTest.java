@@ -41,17 +41,17 @@ public class RSAPrivateKeyMapperTest {
         RSAPrivateKey actual = subject.getMostRecentAndActiveForSigning();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(rsaPrivateKeyA.getUuid()));
-        assertThat(actual.getUse(), is(rsaPrivateKeyA.getUse()));
+        assertThat(actual.getUuid(), is(rsaPrivateKeyB.getUuid()));
+        assertThat(actual.getUse(), is(rsaPrivateKeyB.getUse()));
 
-        assertThat(actual.getModulus(), is(rsaPrivateKeyA.getModulus()));
-        assertThat(actual.getPublicExponent(), is(rsaPrivateKeyA.getPublicExponent()));
-        assertThat(actual.getPrivateExponent(), is(rsaPrivateKeyA.getPrivateExponent()));
-        assertThat(actual.getPrimeP(), is(rsaPrivateKeyA.getPrimeP()));
-        assertThat(actual.getPrimeQ(), is(rsaPrivateKeyA.getPrimeQ()));
-        assertThat(actual.getPrimeExponentP(), is(rsaPrivateKeyA.getPrimeExponentP()));
-        assertThat(actual.getPrimeExponentQ(), is(rsaPrivateKeyA.getPrimeExponentQ()));
-        assertThat(actual.getCrtCoefficient(), is(rsaPrivateKeyA.getCrtCoefficient()));
+        assertThat(actual.getModulus(), is(rsaPrivateKeyB.getModulus()));
+        assertThat(actual.getPublicExponent(), is(rsaPrivateKeyB.getPublicExponent()));
+        assertThat(actual.getPrivateExponent(), is(rsaPrivateKeyB.getPrivateExponent()));
+        assertThat(actual.getPrimeP(), is(rsaPrivateKeyB.getPrimeP()));
+        assertThat(actual.getPrimeQ(), is(rsaPrivateKeyB.getPrimeQ()));
+        assertThat(actual.getPrimeExponentP(), is(rsaPrivateKeyB.getPrimeExponentP()));
+        assertThat(actual.getPrimeExponentQ(), is(rsaPrivateKeyB.getPrimeExponentQ()));
+        assertThat(actual.getCrtCoefficient(), is(rsaPrivateKeyB.getCrtCoefficient()));
 
         assertThat(actual.isActive(), is(true));
         assertThat(actual.getCreatedAt(), is(notNullValue()));

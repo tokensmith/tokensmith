@@ -2,10 +2,9 @@ package org.rootservices.authorization.grant.code.protocol.authorization.respons
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.AccessRequestScopesRepository;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 4/23/15.
  *
  */
-@RunWith(MockitoJUnitRunner.class)
 public class GrantAuthCodeImplTest {
     @Mock
     private AccessRequestRepository mockAccessRequestRepository;
@@ -42,6 +40,7 @@ public class GrantAuthCodeImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new GrantAuthCodeImpl(
             mockAccessRequestRepository, mockScopeRepository, mockAccessRequestScopesRepository, mockInsertAuthCodeWithRetry
         );

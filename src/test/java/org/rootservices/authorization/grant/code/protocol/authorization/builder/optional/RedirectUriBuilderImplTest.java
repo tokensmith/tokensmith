@@ -3,9 +3,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.builder
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.RedirectUriException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.RedirectUriBuilder;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 2/1/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class RedirectUriBuilderImplTest {
 
     @Mock
@@ -40,6 +38,7 @@ public class RedirectUriBuilderImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new RedirectUriBuilderImpl(mockOptionalParam, mockUrlValidator);
     }
 

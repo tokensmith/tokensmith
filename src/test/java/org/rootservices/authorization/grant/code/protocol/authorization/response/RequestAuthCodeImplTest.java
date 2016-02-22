@@ -4,9 +4,8 @@ import helper.fixture.FixtureFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
@@ -37,7 +36,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/20/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class RequestAuthCodeImplTest {
 
     @Mock
@@ -53,6 +51,7 @@ public class RequestAuthCodeImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new RequestAuthCodeImpl(
                 mockValidateParams,
                 mockLoginResourceOwner,
