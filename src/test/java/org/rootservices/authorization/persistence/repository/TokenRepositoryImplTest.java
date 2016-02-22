@@ -3,10 +3,8 @@ package org.rootservices.authorization.persistence.repository;
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.rootservices.authorization.grant.code.protocol.token.factory.exception.DuplicateKeyException;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.mapper.TokenMapper;
@@ -20,7 +18,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Created by tommackenzie on 5/23/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class TokenRepositoryImplTest {
 
     @Mock
@@ -30,6 +27,7 @@ public class TokenRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new TokenRepositoryImpl(mockTokenMapper);
     }
 

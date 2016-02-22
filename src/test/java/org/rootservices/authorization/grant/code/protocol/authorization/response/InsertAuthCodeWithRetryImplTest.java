@@ -2,9 +2,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.respons
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.grant.code.protocol.authorization.exception.AuthCodeInsertException;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.*;
 /**
  * Created by tommackenzie on 7/16/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class InsertAuthCodeWithRetryImplTest {
 
     private InsertAuthCodeWithRetry subject;
@@ -32,6 +30,7 @@ public class InsertAuthCodeWithRetryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new InsertAuthCodeWithRetryImpl(mockRandomString, mockAuthCodeBuilder, mockAuthCodeRepository);
     }
 

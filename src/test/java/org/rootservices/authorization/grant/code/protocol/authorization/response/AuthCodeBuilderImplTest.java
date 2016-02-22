@@ -3,9 +3,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.respons
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthCodeBuilderImpl;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
@@ -21,7 +20,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/17/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AuthCodeBuilderImplTest {
 
     @Mock
@@ -30,6 +28,7 @@ public class AuthCodeBuilderImplTest {
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
+        MockitoAnnotations.initMocks(this);
         subject = new AuthCodeBuilderImpl(mockHashText);
     }
 

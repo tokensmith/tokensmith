@@ -2,9 +2,8 @@ package org.rootservices.authorization.persistence.repository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.mapper.ScopeMapper;
 
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 5/12/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ScopeRepositoryImplTest {
 
     @Mock
@@ -30,6 +28,7 @@ public class ScopeRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new ScopeRepositoryImpl(mockScopeMapper);
     }
 

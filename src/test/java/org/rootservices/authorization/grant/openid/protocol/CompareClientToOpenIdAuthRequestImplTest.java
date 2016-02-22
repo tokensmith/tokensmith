@@ -3,9 +3,8 @@ package org.rootservices.authorization.grant.openid.protocol;
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
@@ -31,7 +30,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 9/30/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class CompareClientToOpenIdAuthRequestImplTest {
     @Mock
     private ClientRepository mockClientRepository;
@@ -40,6 +38,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new CompareClientToOpenIdAuthRequestImpl(mockClientRepository);
     }
 
