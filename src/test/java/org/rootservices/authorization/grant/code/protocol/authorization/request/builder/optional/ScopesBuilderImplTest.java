@@ -2,9 +2,8 @@ package org.rootservices.authorization.grant.code.protocol.authorization.request
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.optional.ScopesBuilder;
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 2/1/15.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ScopesBuilderImplTest {
 
     @Mock
@@ -33,6 +31,7 @@ public class ScopesBuilderImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new ScopesBuilderImpl(mockOptionalParam);
     }
 

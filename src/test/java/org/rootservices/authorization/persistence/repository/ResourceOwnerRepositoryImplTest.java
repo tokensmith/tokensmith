@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.repository;
 
+import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
@@ -7,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.UUID;
 
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.*;
 /**
  * Created by tommackenzie on 10/11/14.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class ResourceOwnerRepositoryImplTest {
 
     @Mock
@@ -27,6 +26,7 @@ public class ResourceOwnerRepositoryImplTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         subject = new ResourceOwnerRepositoryImpl(mockMapper);
     }
 
