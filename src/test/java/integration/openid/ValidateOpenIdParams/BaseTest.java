@@ -11,6 +11,7 @@ import org.rootservices.authorization.grant.openid.protocol.authorization.reques
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 
@@ -22,6 +23,7 @@ import static org.fest.assertions.api.Assertions.fail;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
+@Transactional
 public abstract class BaseTest {
 
     @Autowired

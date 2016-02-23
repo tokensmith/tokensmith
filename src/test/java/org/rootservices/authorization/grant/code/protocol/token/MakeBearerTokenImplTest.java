@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 

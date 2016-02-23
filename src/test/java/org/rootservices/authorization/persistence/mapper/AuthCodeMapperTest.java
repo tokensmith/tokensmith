@@ -107,6 +107,8 @@ public class AuthCodeMapperTest {
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar).isNotNull();
         assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
+
+        // scopes
         assertThat(ar.getScopes()).isNotNull();
         assertThat(ar.getScopes().size()).isEqualTo(1);
         assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");

@@ -84,4 +84,12 @@ public class ResourceOwnerRepositoryImplTest {
         subject.insert(authUser);
         verify(mockMapper, times(1)).insert(authUser);
     }
+
+    @Test(expected= RecordNotFoundException.class)
+    public void getByAccessTokenShouldThrowNoRecordFound() throws RecordNotFoundException{
+        byte[] accessToken = "accessToken".getBytes();
+
+        when(mockMapper.getByAccessToken(accessToken)).thenReturn(null);
+        subject.getByAccessToken(accessToken);
+    }
 }

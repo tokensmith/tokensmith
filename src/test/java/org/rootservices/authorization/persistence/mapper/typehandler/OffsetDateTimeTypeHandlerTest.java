@@ -35,9 +35,34 @@ public class OffsetDateTimeTypeHandlerTest {
 
         subject.setParameter(mockPreparedStatement, 1, dateTime, JdbcType.TIMESTAMP);
         verify(mockPreparedStatement, times(1)).setObject(
-                1, "2015-05-14 11:58:22.173960+0000", Types.TIMESTAMP
+                1, "2015-05-14 11:58:22.17396+00:00", Types.TIMESTAMP
         );
     }
+
+    @Test
+    public void testSetParameterMinusSixOffset() throws SQLException {
+        String timeStampZeroOffset = "2015-05-14T11:58:22.17396-06:00";
+        PreparedStatement mockPreparedStatement = mock(PreparedStatement.class);
+        OffsetDateTime dateTime = OffsetDateTime.parse(timeStampZeroOffset);
+
+        subject.setParameter(mockPreparedStatement, 1, dateTime, JdbcType.TIMESTAMP);
+        verify(mockPreparedStatement, times(1)).setObject(
+                1, "2015-05-14 11:58:22.17396-06:00", Types.TIMESTAMP
+        );
+    }
+
+    @Test
+    public void testSetParameterMinusSixThirtyOffset() throws SQLException {
+        String timeStampZeroOffset = "2015-05-14T11:58:22.17396-06:30";
+        PreparedStatement mockPreparedStatement = mock(PreparedStatement.class);
+        OffsetDateTime dateTime = OffsetDateTime.parse(timeStampZeroOffset);
+
+        subject.setParameter(mockPreparedStatement, 1, dateTime, JdbcType.TIMESTAMP);
+        verify(mockPreparedStatement, times(1)).setObject(
+                1, "2015-05-14 11:58:22.17396-06:30", Types.TIMESTAMP
+        );
+    }
+
     @Test
     public void testGetResultsSixDigitsFractionSeconds() throws Exception {
         String timeStampWithSixDigitFraction = "2015-05-14 11:58:22.782889-05";

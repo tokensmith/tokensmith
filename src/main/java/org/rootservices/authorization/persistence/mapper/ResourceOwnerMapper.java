@@ -12,7 +12,8 @@ import java.util.UUID;
  */
 @Repository
 public interface ResourceOwnerMapper {
-    public ResourceOwner getByUUID(@Param("uuid") UUID uuid);
-    public ResourceOwner getByEmail(@Param("email") String email);
-    public void insert(@Param("authUser") ResourceOwner authUser);
+    ResourceOwner getByUUID(@Param("uuid") UUID uuid);
+    ResourceOwner getByEmail(@Param("email") String email);
+    void insert(@Param("authUser") ResourceOwner authUser);
+    ResourceOwner getByAccessToken(@Param("accessToken") byte[] accessToken);
 }

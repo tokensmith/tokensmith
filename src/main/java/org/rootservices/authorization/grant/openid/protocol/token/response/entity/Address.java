@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.openid.protocol.authorization.response.entity;
+package org.rootservices.authorization.grant.openid.protocol.token.response.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

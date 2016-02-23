@@ -37,6 +37,12 @@
         <property name="basePackage" value="org.rootservices.authorization.persistence.mapper"/>
     </bean>
 
+    <bean name = "loadConfidentialClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfidentialClientTokenReady">
+        <property name="loadClientWithScopes">
+            <bean class="helper.fixture.persistence.openid.LoadClientWithOpenIdScope" />
+        </property>
+    </bean>
+
     <beans>
         <context:annotation-config/>
         <bean class="org.rootservices.config.AppConfig"/>
