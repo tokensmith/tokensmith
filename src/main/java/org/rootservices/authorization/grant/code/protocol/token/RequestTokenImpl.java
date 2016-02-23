@@ -67,12 +67,12 @@ public class RequestTokenImpl implements RequestToken {
      * Validate token request
      * Fetches authorization code.
      *
-     * @param tokenInput
-     * @return
-     * @throws UnauthorizedException
-     * @throws AuthorizationCodeNotFound
-     * @throws BadRequestException
-     * @throws CompromisedCodeException
+     * @param tokenInput Request object with data that is needed to make a token
+     * @return TokenResponse A response object that resembles a OAuth2 token response
+     * @throws UnauthorizedException The client was not able to authenticate
+     * @throws AuthorizationCodeNotFound Could not make the token because the authorization could not be found (may have expired, may not exist, maybe revoked)
+     * @throws BadRequestException The tokenInput.payload could not be translated to a, TokenRequest
+     * @throws CompromisedCodeException The authorization code has already been used to generate a token.
      */
     @Override
     public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
