@@ -37,7 +37,7 @@ public class LoadClientWithScopes {
     }
 
     public Client run() throws URISyntaxException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = makeClientWithScopes();
         clientRepository.insert(client);
 
         for (Scope scope: client.getScopes()) {
@@ -48,5 +48,9 @@ public class LoadClientWithScopes {
             clientScopesRepository.insert(clientScope);
         }
         return client;
+    }
+
+    protected Client makeClientWithScopes() throws URISyntaxException {
+        return FixtureFactory.makeClientWithScopes();
     }
 }

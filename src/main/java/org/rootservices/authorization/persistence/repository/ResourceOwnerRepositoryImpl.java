@@ -25,24 +25,33 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
     }
 
     public ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException {
-        ResourceOwner authUser = resourceOwnerMapper.getByUUID(uuid);
-        if (authUser != null) {
-            return authUser;
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByUUID(uuid);
+        if (resourceOwner != null) {
+            return resourceOwner;
         }
 
-        throw new RecordNotFoundException("AuthUser: " + uuid.toString());
+        throw new RecordNotFoundException("Resource Owner: " + uuid.toString());
     }
 
     public ResourceOwner getByEmail(String email) throws RecordNotFoundException {
-        ResourceOwner authUser = resourceOwnerMapper.getByEmail(email);
-        if (authUser != null) {
-            return authUser;
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByEmail(email);
+        if (resourceOwner != null) {
+            return resourceOwner;
         }
 
-        throw new RecordNotFoundException("AuthUser: " + email);
+        throw new RecordNotFoundException("Resource Owner: " + email);
     }
 
     public void insert(ResourceOwner resourceOwner) {
         resourceOwnerMapper.insert(resourceOwner);
+    }
+
+    @Override
+    public ResourceOwner getByAccessToken(byte[] accessToken) throws RecordNotFoundException {
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByAccessToken(accessToken);
+        if (resourceOwner != null) {
+            return resourceOwner;
+        }
+        throw new RecordNotFoundException("Resource Owner:");
     }
 }

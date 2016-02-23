@@ -6,6 +6,7 @@
 
 <configuration>
     <settings>
+        <setting name="logImpl" value="LOG4J"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
@@ -18,5 +19,8 @@
 
         <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"
                      javaType="java.time.OffsetDateTime" jdbcType="DATE" />
+
+        <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"
+                     javaType="java.math.BigInteger" jdbcType="BLOB" />
     </typeHandlers>
 </configuration>

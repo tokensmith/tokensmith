@@ -15,13 +15,14 @@ import java.util.List;
  */
 public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
+    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSxxx");
+
     @Override
     public void setParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
         if (parameter == null) {
             ps.setObject(i, null, Types.TIMESTAMP);
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSZ");
-            String formattedDate = parameter.format(formatter);
+            String formattedDate = parameter.format(formatterForInsert);
             ps.setObject(i, formattedDate, Types.TIMESTAMP);
         }
     }
@@ -33,12 +34,13 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSSSX");
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSX");
 
+        String columnValue = rs.getString(columnName);
         OffsetDateTime result = null;
-        if (rs.getString(columnName) != null) {
+        if (columnValue != null) {
             for (String datePattern: datePatterns) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
                 try {
-                    result = OffsetDateTime.parse(rs.getString(columnName), formatter);
+                    result = OffsetDateTime.parse(columnValue, formatter);
                     break;
                 } catch (DateTimeParseException stupidException) {
                     continue;

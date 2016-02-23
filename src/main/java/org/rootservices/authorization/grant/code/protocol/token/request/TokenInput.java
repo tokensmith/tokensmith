@@ -1,4 +1,4 @@
-package org.rootservices.authorization.grant.code.protocol.token;
+package org.rootservices.authorization.grant.code.protocol.token.request;
 
 import java.io.BufferedReader;
 import java.util.Optional;
