@@ -9,7 +9,6 @@ CREATE TABLE resource_owner_profile (
     profile                 varchar(245),
     picture                 varchar(245),
     website                 varchar(245),
-    email_verified          boolean default false NOT NULL,
     gender                  varchar(7),
     birth_date              timestamp with time zone,
     zone_info               varchar(50),

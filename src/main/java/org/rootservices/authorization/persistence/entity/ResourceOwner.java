@@ -8,10 +8,10 @@ import java.util.UUID;
  * Created by tommackenzie on 9/22/14.
  */
 public class ResourceOwner {
-
     private UUID uuid;
     private String email;
     private byte[] password;
+    private Boolean emailVerified;
     private OffsetDateTime createdAt;
 
     public ResourceOwner() {}
@@ -44,6 +44,14 @@ public class ResourceOwner {
 
     public void setPassword(byte[] password) {
         this.password = password;
+    }
+
+    public Boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 
     public OffsetDateTime getCreatedAt() {

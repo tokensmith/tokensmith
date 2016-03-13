@@ -68,7 +68,6 @@ public class ProfileMapperTest {
         assertThat(actual.getPicture().get().toString(), is("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039"));
         assertThat(actual.getWebsite().isPresent(), is(true));
         assertThat(actual.getWebsite().get().toString(), is("http://starwars.wikia.com"));
-        assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getGender().isPresent(), is(true));
         assertThat(actual.getGender().get(), is(Gender.MALE));
         assertThat(actual.getBirthDate().isPresent(), is(false));
