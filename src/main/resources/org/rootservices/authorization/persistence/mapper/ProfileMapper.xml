@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.ProfileMapper">
+
+    <resultMap id="resourceOwnerProfile" type="org.rootservices.authorization.persistence.entity.Profile">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="name" property="name" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="family_name" property="familyName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="middle_name" property="middleName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="nick_name" property="nickName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="preferred_user_name" property="preferredUserName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="profile" property="profile" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="picture" property="picture" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="website" property="website" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="email_verified" property="emailVerified" />
+        <result column="gender" property="gender" javaType="org.rootservices.authorization.persistence.entity.Gender" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler"/>
+        <result column="birth_date" property="birthDate" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler"/>
+        <result column="zone_info" property="zoneInfo" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="locale" property="locale" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="phone_number" property="phoneNumber" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="phone_number_verified" property="phoneNumberVerified" />
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into resource_owner_profile
+        (
+            id,
+            resource_owner_id,
+            name,
+            family_name,
+            middle_name,
+            nick_name,
+            preferred_user_name,
+            profile,
+            picture,
+            website,
+            email_verified,
+            gender,
+            birth_date,
+            zone_info,
+            locale,
+            phone_number,
+            phone_number_verified
+        )
+        values (
+            #{profile.id},
+            #{profile.resourceOwnerId},
+            #{profile.name, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.familyName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.middleName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.nickName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.preferredUserName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.profile, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.picture, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.website, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.emailVerified},
+            #{profile.gender, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler},
+            #{profile.birthDate, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler},
+            #{profile.zoneInfo, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.locale, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.phoneNumber, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.phoneNumberVerified}
+        )
+    </insert>
+
+    <select id="getById" resultMap="resourceOwnerProfile">
+        select
+            profile.id,
+            profile.resource_owner_id,
+            profile.name,
+            profile.family_name,
+            profile.middle_name,
+            profile.nick_name,
+            profile.preferred_user_name,
+            profile.profile,
+            profile.picture,
+            profile.website,
+            profile.email_verified,
+            profile.gender,
+            profile.birth_date,
+            profile.zone_info,
+            profile.locale,
+            profile.phone_number,
+            profile.phone_number_verified,
+            profile.updated_at,
+            profile.created_at
+        from resource_owner_profile as profile
+        where id = #{id}
+    </select>
+</mapper>

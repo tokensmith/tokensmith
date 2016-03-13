@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.RSAPrivateKeyMapper">
 
     <resultMap id="rsaPrivateKey" type="org.rootservices.authorization.persistence.entity.RSAPrivateKey">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="use" property="use" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="modulus" property="modulus" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
         <result column="public_exponent" property="publicExponent" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
