@@ -19,7 +19,6 @@ public class Profile {
     private Optional<URI> profile;
     private Optional<URI> picture;
     private Optional<URI> website;
-    private Boolean emailVerified;
     private Optional<Gender> gender;
     private Optional<OffsetDateTime> birthDate;
     private Optional<String> zoneInfo;
@@ -107,14 +106,6 @@ public class Profile {
 
     public void setWebsite(Optional<URI> website) {
         this.website = website;
-    }
-
-    public Boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(Boolean emailVerified) {
-        this.emailVerified = emailVerified;
     }
 
     public Optional<Gender> getGender() {

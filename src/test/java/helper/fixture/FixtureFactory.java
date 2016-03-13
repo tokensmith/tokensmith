@@ -105,7 +105,6 @@ public class FixtureFactory {
         profile.setProfile(Optional.of(new URI("http://starwars.wikia.com/wiki/Obi-Wan_Kenobi")));
         profile.setPicture(Optional.of(new URI("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039")));
         profile.setWebsite(Optional.of(new URI("http://starwars.wikia.com")));
-        profile.setEmailVerified(false);
         profile.setGender(Optional.of(Gender.MALE));
         profile.setBirthDate(Optional.empty());
         profile.setZoneInfo(Optional.empty());

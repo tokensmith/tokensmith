@@ -15,7 +15,6 @@
         <result column="profile" property="profile" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="picture" property="picture" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="website" property="website" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
-        <result column="email_verified" property="emailVerified" />
         <result column="gender" property="gender" javaType="org.rootservices.authorization.persistence.entity.Gender" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler"/>
         <result column="birth_date" property="birthDate" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler"/>
         <result column="zone_info" property="zoneInfo" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
@@ -39,7 +38,6 @@
             profile,
             picture,
             website,
-            email_verified,
             gender,
             birth_date,
             zone_info,
@@ -58,7 +56,6 @@
             #{profile.profile, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
             #{profile.picture, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
             #{profile.website, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-            #{profile.emailVerified},
             #{profile.gender, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler},
             #{profile.birthDate, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler},
             #{profile.zoneInfo, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
@@ -80,7 +77,6 @@
             profile.profile,
             profile.picture,
             profile.website,
-            profile.email_verified,
             profile.gender,
             profile.birth_date,
             profile.zone_info,
