@@ -7,6 +7,7 @@
     <resultMap id="resourceOwnerProfile" type="org.rootservices.authorization.persistence.entity.Profile">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="address_id" property="address_id" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalUUIDTypeHandler"/>
         <result column="name" property="name" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="family_name" property="familyName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="middle_name" property="middleName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
@@ -30,6 +31,7 @@
         (
             id,
             resource_owner_id,
+            address_id,
             name,
             family_name,
             middle_name,
@@ -48,6 +50,7 @@
         values (
             #{profile.id},
             #{profile.resourceOwnerId},
+            #{profile.addressId, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalUUIDTypeHandler},
             #{profile.name, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.familyName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.middleName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
