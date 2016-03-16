@@ -4,7 +4,6 @@ import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -20,7 +19,6 @@ import java.net.URISyntaxException;
  * Loads all data associated with a confidential client.
  *  - scopes (openid)
  *  - resource owner
- *  - resource owner profile
  *  - access request
  *  - access request scopes (openid)
  *  - auth code
@@ -29,26 +27,22 @@ import java.net.URISyntaxException;
 @Component
 public class LoadOpenIdConfidentialClientAll {
     private LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady;
-    private ProfileRepository profileRepository;
     private RandomString randomString;
     private TokenRepository tokenRepository;
 
     @Autowired
-    public LoadOpenIdConfidentialClientAll(LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady, ProfileRepository profileRepository, RandomString randomString, TokenRepository tokenRepository){
+    public LoadOpenIdConfidentialClientAll(LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady, RandomString randomString, TokenRepository tokenRepository){
         this.loadConfidentialClientOpendIdTokenReady = loadConfidentialClientOpendIdTokenReady;
-        this.profileRepository = profileRepository;
         this.randomString = randomString;
         this.tokenRepository = tokenRepository;
     }
 
     public Token run() throws DuplicateRecordException, URISyntaxException {
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, "plain-text-auth-code");
-
         Token token = FixtureFactory.makeToken(authCode.getUuid());
         String accessToken = randomString.run();
         token.setToken(accessToken.getBytes());
         tokenRepository.insert(token);
-
         return token;
     }
 }

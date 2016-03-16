@@ -2,7 +2,6 @@ package org.rootservices.authorization.persistence.entity;
 
 import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 /**

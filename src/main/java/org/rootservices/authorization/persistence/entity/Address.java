@@ -9,6 +9,7 @@ import java.util.UUID;
  */
 public class Address {
     private UUID id;
+    private UUID profileId;
     private String streetAddress;
     private Optional<String> streetAddress2;
     private String locality;
@@ -24,6 +25,14 @@ public class Address {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(UUID profileId) {
+        this.profileId = profileId;
     }
 
     public String getStreetAddress() {
