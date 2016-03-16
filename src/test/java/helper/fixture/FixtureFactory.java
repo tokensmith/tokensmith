@@ -97,6 +97,7 @@ public class FixtureFactory {
 
         profile.setId(UUID.randomUUID());
         profile.setResourceOwnerId(resourceOwnerId);
+        profile.setAddressId(Optional.<UUID>empty());
         profile.setName(Optional.of("Obi-Wan Kenobi"));
         profile.setFamilyName(Optional.of("Kenobi"));
         profile.setMiddleName(Optional.empty());
@@ -115,10 +116,9 @@ public class FixtureFactory {
         return profile;
     }
 
-    public static Address makeAddress(UUID profileId) {
+    public static Address makeAddress() {
         Address address = new Address();
         address.setId(UUID.randomUUID());
-        address.setProfileId(profileId);
         address.setStreetAddress("123 Jedi High Council Rd.");
         address.setStreetAddress2(Optional.empty());
         address.setLocality("Coruscant");
