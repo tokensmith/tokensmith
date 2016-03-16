@@ -35,19 +35,28 @@ public class AddressMapperTest {
     @Autowired
     private AddressMapper subject;
 
+    private Profile prepareDbForTest() throws URISyntaxException {
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(ro);
+
+        Profile profile = FixtureFactory.makeProfile(ro.getUuid());
+        profileMapper.insert(profile);
+
+        return profile;
+    }
 
     @Test
     public void insertShouldInsertProfile() throws URISyntaxException {
-
-        Address address = FixtureFactory.makeAddress();
+        Profile profile = prepareDbForTest();
+        Address address = FixtureFactory.makeAddress(profile.getId());
 
         subject.insert(address);
     }
 
     @Test
     public void getByIdShouldGetAddress() throws URISyntaxException {
-
-        Address address = FixtureFactory.makeAddress();
+        Profile profile = prepareDbForTest();
+        Address address = FixtureFactory.makeAddress(profile.getId());
         subject.insert(address);
 
         Address actual = subject.getById(address.getId());

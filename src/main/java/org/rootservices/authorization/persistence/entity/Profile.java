@@ -11,7 +11,6 @@ import java.util.UUID;
 public class Profile {
     private UUID id;
     private UUID resourceOwnerId;
-    private Optional<UUID> addressId;
     private Optional<String> name;
     private Optional<String> familyName;
     private Optional<String> middleName;
@@ -43,14 +42,6 @@ public class Profile {
 
     public void setResourceOwnerId(UUID resourceOwnerId) {
         this.resourceOwnerId = resourceOwnerId;
-    }
-
-    public Optional<UUID> getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(Optional<UUID> addressId) {
-        this.addressId = addressId;
     }
 
     public Optional<String> getName() {

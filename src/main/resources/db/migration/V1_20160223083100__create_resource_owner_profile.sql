@@ -1,7 +1,6 @@
 CREATE TABLE resource_owner_profile (
     id                      UUID PRIMARY KEY,
     resource_owner_id       UUID references resource_owner(uuid) NOT NULL,
-    address_id              UUID references address(id),
     name                    varchar(245),
     family_name             varchar(245),
     middle_name             varchar(245),

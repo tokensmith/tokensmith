@@ -10,7 +10,6 @@
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
-
     </resultMap>
 
     <insert id="insert" >
@@ -30,12 +29,7 @@
     </select>
 
     <select id="getByAccessToken" resultMap="resourceOwner">
-        select
-            ro.uuid,
-            ro.email,
-            ro.password,
-            ro.email_verified,
-            ro.created_at
+        select ro.uuid, ro.email, ro.password, ro.email_verified, ro.created_at
         from resource_owner ro
         join access_request on access_request.resource_owner_uuid = ro.uuid
         join auth_code on auth_code.access_request_uuid = access_request.uuid

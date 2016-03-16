@@ -40,7 +40,6 @@ public class LoadConfidentialClientTokenReady {
         Client client = loadClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
-
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 

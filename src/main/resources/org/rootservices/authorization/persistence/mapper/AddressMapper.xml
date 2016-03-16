@@ -6,6 +6,7 @@
 
     <resultMap id="address" type="org.rootservices.authorization.persistence.entity.Address">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="resource_owner_profile_id" property="profileId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="street_address" property="streetAddress" />
         <result column="street_address2" property="streetAddress2" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="locality" property="locality" />
@@ -17,8 +18,9 @@
     </resultMap>
 
     <insert id="insert">
-        insert into address (
+        insert into resource_owner_profile_address (
             id,
+            resource_owner_profile_id,
             street_address,
             street_address2,
             locality,
@@ -27,6 +29,7 @@
             country
         ) values (
             #{address.id},
+            #{address.profileId},
             #{address.streetAddress},
             #{address.streetAddress2, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{address.locality},
@@ -39,6 +42,7 @@
     <select id="getById" resultMap="address">
         select
             id,
+            resource_owner_profile_id,
             street_address,
             street_address2,
             locality,
@@ -47,7 +51,7 @@
             country,
             updated_at,
             created_at
-        from address
+        from resource_owner_profile_address
         where id = #{id}
     </select>
 </mapper>
