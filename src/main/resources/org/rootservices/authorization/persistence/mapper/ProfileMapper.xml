@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ProfileMapper">
 
-    <resultMap id="resourceOwnerProfile" type="org.rootservices.authorization.persistence.entity.Profile">
+    <resultMap id="profile" type="org.rootservices.authorization.persistence.entity.Profile">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="name" property="name" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
@@ -23,6 +23,13 @@
         <result column="phone_number_verified" property="phoneNumberVerified" />
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+        <association property="addresses"
+                     resultMap="org.rootservices.authorization.persistence.mapper.AddressMapper.address"
+                     columnPrefix="address_"/>
+        <association property="givenNames"
+                     resultMap="org.rootservices.authorization.persistence.mapper.GivenNameMapper.givenName"
+                     columnPrefix="given_name_"/>
     </resultMap>
 
     <insert id="insert">
@@ -65,7 +72,7 @@
         )
     </insert>
 
-    <select id="getById" resultMap="resourceOwnerProfile">
+    <select id="getById" resultMap="profile">
         select
             profile.id,
             profile.resource_owner_id,
@@ -87,5 +94,46 @@
             profile.created_at
         from resource_owner_profile as profile
         where id = #{id}
+    </select>
+
+    <select id="getByResourceId" resultMap="profile">
+        select
+            profile.id,
+            profile.resource_owner_id,
+            profile.name,
+            profile.family_name,
+            profile.middle_name,
+            profile.nick_name,
+            profile.preferred_user_name,
+            profile.profile,
+            profile.picture,
+            profile.website,
+            profile.gender,
+            profile.birth_date,
+            profile.zone_info,
+            profile.locale,
+            profile.phone_number,
+            profile.phone_number_verified,
+            profile.updated_at,
+            profile.created_at,
+            address.id as address_id,
+            address.resource_owner_profile_id as address_resource_owner_profile_id,
+            address.street_address as address_street_address,
+            address.street_address2 as address_street_address2,
+            address.locality as address_locality,
+            address.region as address_region,
+            address.postal_code as address_postal_code,
+            address.country as address_country,
+            address.updated_at as address_updated_at,
+            address.created_at as address_created_at,
+            given_name.id as given_name_id,
+            given_name.resource_owner_profile_id as given_name_resource_owner_profile_id,
+            given_name.given_name as given_name_given_name,
+            given_name.created_at as given_name_created_at,
+            given_name.updated_at as given_name_updated_at
+        from resource_owner_profile as profile
+        left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
+        left join resource_owner_profile_given_name given_name on given_name.resource_owner_profile_id = profile.id
+        where profile.resource_owner_id = #{resourceOwnerId}
     </select>
 </mapper>
