@@ -2,6 +2,8 @@ package org.rootservices.authorization.persistence.entity;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +27,11 @@ public class Profile {
     private Optional<String> locale;
     private Optional<String> phoneNumber;
     private Boolean phoneNumberVerified;
+
+    // TODO: move to constructor?
+    private List<Address> addresses = new ArrayList<>();
+    private List<GivenName> givenNames = new ArrayList<>();
+
     private OffsetDateTime updatedAt;
     private OffsetDateTime createdAt;
 
@@ -154,6 +161,22 @@ public class Profile {
 
     public void setPhoneNumberVerified(Boolean phoneNumberVerified) {
         this.phoneNumberVerified = phoneNumberVerified;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<GivenName> getGivenNames() {
+        return givenNames;
+    }
+
+    public void setGivenNames(List<GivenName> givenNames) {
+        this.givenNames = givenNames;
     }
 
     public OffsetDateTime getUpdatedAt() {
