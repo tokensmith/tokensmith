@@ -15,56 +15,53 @@ import java.util.Optional;
 @Component
 public class ProfileToIdTokenImpl implements ProfileToIdToken {
 
+    @Override
     public void toProfileClaims(IdToken idToken, Profile profile){
 
-        // TODO: family_name can be many just like given names.
-
-        // given_name,
+        idToken.setLastName(makeFamiyNamesClaim(profile.getFamilyNames()));
         idToken.setFirstName(makeGivenNamesClaim(profile.getGivenNames()));
-
-        // middle_name,
         idToken.setMiddleName(profile.getMiddleName());
-
-        // nickname,
         idToken.setNickName(profile.getNickName());
-
-        // preferred_username,
         idToken.setPreferredUsername(profile.getPreferredUserName());
-
-        // profile,
         idToken.setProfile(profile.getProfile());
-
-        // picture,
         idToken.setPicture(profile.getPicture());
-
-        // website,
         idToken.setWebsite(profile.getWebsite());
-
-        // gender
         idToken.setGender(makeGenderClaim(profile.getGender()));
-
-        // birthdate,
         idToken.setBirthdate(profile.getBirthDate());
-
-        // zoneinfo,
         idToken.setZoneInfo(profile.getZoneInfo());
-
-        // locale,
         idToken.setLocale(profile.getLocale());
-
-        // updated_at.
         Optional<Long> updatedAt = Optional.of(profile.getUpdatedAt().toEpochSecond());
         idToken.setUpdatedAt(updatedAt);
     }
 
+    @Override
     public void toEmailClaims(IdToken idToken, String email, Boolean isVerified) {
         idToken.setEmail(Optional.of(email));
         idToken.setEmailVerified(Optional.of(isVerified));
     }
 
+    @Override
     public void toPhoneClaims(IdToken idToken, Optional<String> phone, Boolean isVerified) {
         idToken.setPhoneNumber(phone);
         idToken.setPhoneNumberVerified(Optional.of(isVerified));
+    }
+
+    @Override
+    public Optional<String> makeFamiyNamesClaim(List<FamilyName> familyNames) {
+        String names = null;
+        for(FamilyName familyName: familyNames) {
+            if (names == null) {
+                names = familyName.getName();
+            } else {
+                names += " " + familyName.getName();
+            }
+        }
+
+        Optional<String> namesClaim = Optional.empty();
+        if (names != null) {
+            namesClaim = Optional.of(names);
+        }
+        return namesClaim;
     }
 
     public Optional<String> makeGivenNamesClaim(List<GivenName> givenNames) {
