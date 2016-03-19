@@ -29,7 +29,11 @@ public class ProfileMapperTest {
     @Autowired
     private AddressMapper addressMapper;
 
-    @Autowired GivenNameMapper givenNameMapper;
+    @Autowired
+    private GivenNameMapper givenNameMapper;
+
+    @Autowired
+    private FamilyNameMapper familyNameMapper;
 
     @Autowired
     private ProfileMapper subject;
@@ -58,8 +62,6 @@ public class ProfileMapperTest {
         assertThat(actual.getResourceOwnerId(), is(notNullValue()));
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
-        assertThat(actual.getFamilyName().isPresent(), is(true));
-        assertThat(actual.getFamilyName().get(), is("Kenobi"));
         assertThat(actual.getMiddleName().isPresent(), is(false));
         assertThat(actual.getNickName().isPresent(), is(true));
         assertThat(actual.getNickName().get(), is("Ben"));
@@ -82,6 +84,8 @@ public class ProfileMapperTest {
         assertThat(actual.getAddresses().size(), is(0));
         assertThat(actual.getGivenNames(), is(notNullValue()));
         assertThat(actual.getGivenNames().size(), is(0));
+        assertThat(actual.getFamilyNames(), is(notNullValue()));
+        assertThat(actual.getFamilyNames().size(), is(0));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
@@ -98,6 +102,9 @@ public class ProfileMapperTest {
         GivenName  givenName = FixtureFactory.makeGivenName(profile.getId());
         givenNameMapper.insert(givenName);
 
+        FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
+        familyNameMapper.insert(familyName);
+
         Address address = FixtureFactory.makeAddress(profile.getId());
         addressMapper.insert(address);
 
@@ -108,8 +115,6 @@ public class ProfileMapperTest {
         assertThat(actual.getResourceOwnerId(), is(notNullValue()));
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
-        assertThat(actual.getFamilyName().isPresent(), is(true));
-        assertThat(actual.getFamilyName().get(), is("Kenobi"));
         assertThat(actual.getMiddleName().isPresent(), is(false));
         assertThat(actual.getNickName().isPresent(), is(true));
         assertThat(actual.getNickName().get(), is("Ben"));
@@ -141,13 +146,19 @@ public class ProfileMapperTest {
         assertThat(actual.getAddresses().get(0).getUpdatedAt(), is(notNullValue()));
         assertThat(actual.getAddresses().get(0).getCreatedAt(), is(notNullValue()));
 
-
         assertThat(actual.getGivenNames(), is(notNullValue()));
         assertThat(actual.getGivenNames().size(), is(1));
         assertThat(actual.getGivenNames().get(0).getId(), is(givenName.getId()));
         assertThat(actual.getGivenNames().get(0).getName(), is(givenName.getName()));
         assertThat(actual.getGivenNames().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getGivenNames().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getFamilyNames(), is(notNullValue()));
+        assertThat(actual.getFamilyNames().size(), is(1));
+        assertThat(actual.getFamilyNames().get(0).getId(), is(familyName.getId()));
+        assertThat(actual.getFamilyNames().get(0).getName(), is(familyName.getName()));
+        assertThat(actual.getFamilyNames().get(0).getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getFamilyNames().get(0).getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
