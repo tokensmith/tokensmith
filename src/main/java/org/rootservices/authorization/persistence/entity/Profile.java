@@ -14,7 +14,6 @@ public class Profile {
     private UUID id;
     private UUID resourceOwnerId;
     private Optional<String> name;
-    private Optional<String> familyName;
     private Optional<String> middleName;
     private Optional<String> nickName;
     private Optional<String> preferredUserName;
@@ -31,6 +30,7 @@ public class Profile {
     // TODO: move to constructor?
     private List<Address> addresses = new ArrayList<>();
     private List<GivenName> givenNames = new ArrayList<>();
+    private List<FamilyName> familyNames = new ArrayList<>();
 
     private OffsetDateTime updatedAt;
     private OffsetDateTime createdAt;
@@ -57,14 +57,6 @@ public class Profile {
 
     public void setName(Optional<String> name) {
         this.name = name;
-    }
-
-    public Optional<String> getFamilyName() {
-        return familyName;
-    }
-
-    public void setFamilyName(Optional<String> familyName) {
-        this.familyName = familyName;
     }
 
     public Optional<String> getMiddleName() {
@@ -177,6 +169,14 @@ public class Profile {
 
     public void setGivenNames(List<GivenName> givenNames) {
         this.givenNames = givenNames;
+    }
+
+    public List<FamilyName> getFamilyNames() {
+        return familyNames;
+    }
+
+    public void setFamilyNames(List<FamilyName> familyNames) {
+        this.familyNames = familyNames;
     }
 
     public OffsetDateTime getUpdatedAt() {

@@ -53,7 +53,7 @@ public class AddrToAddrClaimsImplTest {
         String expectedFormatted = "123 Jedi High Council Rd.\n" +
                 "Coruscant, Coruscant 12345\n" +
                 "Old Republic";
-        
+
         assertThat(actual.getFormatted(), is(expectedFormatted));
     }
 }

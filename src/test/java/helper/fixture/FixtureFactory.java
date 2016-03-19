@@ -98,7 +98,7 @@ public class FixtureFactory {
         profile.setId(UUID.randomUUID());
         profile.setResourceOwnerId(resourceOwnerId);
         profile.setName(Optional.of("Obi-Wan Kenobi"));
-        profile.setFamilyName(Optional.of("Kenobi"));
+        // profile.setFamilyName(Optional.of("Kenobi"));
         profile.setMiddleName(Optional.empty());
         profile.setNickName(Optional.of("Ben"));
         profile.setPreferredUserName(Optional.of("Ben Kenobi"));
@@ -136,6 +136,15 @@ public class FixtureFactory {
         givenName.setName("Obi-Wan");
 
         return givenName;
+    }
+
+    public static FamilyName makeFamilyName(UUID profileId){
+        FamilyName familyName = new FamilyName();
+        familyName.setId(UUID.randomUUID());
+        familyName.setResourceOwnerProfileId(profileId);
+        familyName.setName("Kenobi");
+
+        return familyName;
     }
 
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
