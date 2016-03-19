@@ -78,7 +78,7 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
             throw new IdTokenException("key is invalid", e);
         }
 
-
+        // TODO: need to write a factory for idToken
         IdToken idToken = new IdToken();
         idToken.setEmail(Optional.of(resourceOwner.getEmail()));
 

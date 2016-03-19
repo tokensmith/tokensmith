@@ -172,6 +172,14 @@ public class ProfileToIdTokenImplTest {
     }
 
     @Test
+    public void makeGivenNamesClaimWhenEmptyShouldAssign() throws Exception {
+        List<GivenName> givenNames = new ArrayList<>();
+
+        Optional<String> actual = subject.makeGivenNamesClaim(givenNames);
+        assertThat(actual.isPresent(), is(false));
+    }
+
+    @Test
     public void makeFamilyNamesClaimWhenManyShouldAssign() throws Exception {
         FamilyName firstFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
         FamilyName secondFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
@@ -195,6 +203,14 @@ public class ProfileToIdTokenImplTest {
         Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Kenobi"));
+    }
+
+    @Test
+    public void makeFamilyNamesClaimWhenEmptyShouldAssign() throws Exception {
+        List<FamilyName> familyNames = new ArrayList<>();
+
+        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        assertThat(actual.isPresent(), is(false));
     }
 
     @Test
