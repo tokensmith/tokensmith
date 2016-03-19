@@ -4,6 +4,7 @@ import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
+import org.rootservices.authorization.persistence.entity.FamilyName;
 import org.rootservices.authorization.persistence.entity.Gender;
 import org.rootservices.authorization.persistence.entity.GivenName;
 import org.rootservices.authorization.persistence.entity.Profile;
@@ -35,10 +36,20 @@ public class ProfileToIdTokenImplTest {
         Profile profile = FixtureFactory.makeProfile(UUID.randomUUID());
         profile.setUpdatedAt(OffsetDateTime.now());
 
+        FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
+        profile.getFamilyNames().add(familyName);
+
+        GivenName givenName = FixtureFactory.makeGivenName(profile.getId());
+        profile.getGivenNames().add(givenName);
+
         IdToken actual = new IdToken();
         subject.toProfileClaims(actual, profile);
 
-        // firstName  = givenNames,
+        assertThat(actual.getLastName().isPresent(), is(true));
+        assertThat(actual.getLastName().get(), is(familyName.getName()));
+
+        assertThat(actual.getFirstName().isPresent(), is(true));
+        assertThat(actual.getFirstName().get(), is(givenName.getName()));
 
         assertThat(actual.getMiddleName().isPresent(), is(false));
 
@@ -158,6 +169,32 @@ public class ProfileToIdTokenImplTest {
         Optional<String> actual = subject.makeGivenNamesClaim(givenNames);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Obi-Wan"));
+    }
+
+    @Test
+    public void makeFamilyNamesClaimWhenManyShouldAssign() throws Exception {
+        FamilyName firstFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+        FamilyName secondFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+
+        List<FamilyName> familyNames = new ArrayList<>();
+        familyNames.add(firstFamilyName);
+        familyNames.add(secondFamilyName);
+
+        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        assertThat(actual.isPresent(), is(true));
+        assertThat(actual.get(), is("Kenobi Kenobi"));
+    }
+
+    @Test
+    public void makeFamilyNamesClaimWhenOneShouldAssign() throws Exception {
+        FamilyName familyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+
+        List<FamilyName> familyNames = new ArrayList<>();
+        familyNames.add(familyName);
+
+        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        assertThat(actual.isPresent(), is(true));
+        assertThat(actual.get(), is("Kenobi"));
     }
 
     @Test
