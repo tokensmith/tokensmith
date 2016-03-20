@@ -44,7 +44,7 @@ public class LoadConfidentialClientTokenReady {
         resourceOwnerRepository.insert(ro);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                ro.getUuid(), client.getUuid()
+                ro, client.getUuid()
         );
 
         if (!redirectUriIsPresent) {

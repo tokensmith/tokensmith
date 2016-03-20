@@ -59,6 +59,7 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
 
         String hashedAccessToken = hashText.run(accessToken);
 
+        // TODO: needs ro, scopes, and eventually claims.. so the access request with all the goods.
         ResourceOwner resourceOwner = null;
         try {
             resourceOwner = resourceOwnerRepository.getByAccessToken(hashedAccessToken.getBytes());
