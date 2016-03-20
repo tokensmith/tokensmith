@@ -19,7 +19,7 @@
         insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI)
         values (
             #{accessRequest.uuid},
-            #{accessRequest.resourceOwnerUUID},
+            #{accessRequest.resourceOwner.uuid},
             #{accessRequest.clientUUID},
             #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
         )

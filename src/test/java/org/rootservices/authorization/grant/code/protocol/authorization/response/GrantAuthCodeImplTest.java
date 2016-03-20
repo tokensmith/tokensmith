@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -50,7 +51,7 @@ public class GrantAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         // parameters to pass into run method.
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
 
@@ -69,7 +70,7 @@ public class GrantAuthCodeImplTest {
 
         when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class), anyInt())).thenReturn("randomString");
 
-        String actual = subject.run(resourceOwnerUUID, clientUUID, redirectURI, scopeNames);
+        String actual = subject.run(ro, clientUUID, redirectURI, scopeNames);
 
         assertThat(actual).isEqualTo("randomString");
 

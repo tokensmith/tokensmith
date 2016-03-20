@@ -161,10 +161,10 @@ public class FixtureFactory {
         return authCode;
     }
 
-    public static AccessRequest makeAccessRequest(UUID resourceOwnerUUID, UUID clientUUID) throws URISyntaxException {
+    public static AccessRequest makeAccessRequest(ResourceOwner resourceOwner, UUID clientUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
-        accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
+        accessRequest.setResourceOwner(resourceOwner);
         accessRequest.setClientUUID(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
 
