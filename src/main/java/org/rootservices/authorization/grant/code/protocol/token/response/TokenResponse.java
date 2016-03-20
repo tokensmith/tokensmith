@@ -1,5 +1,9 @@
 package org.rootservices.authorization.grant.code.protocol.token.response;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Created by tommackenzie on 6/3/15.
  *
@@ -10,6 +14,9 @@ public class TokenResponse {
     private Integer expiresIn;
     private TokenType tokenType;
     private Extension extension;
+
+    // Optional
+    private List<String> scopes = new ArrayList<>();
 
     public TokenResponse(){}
 
@@ -43,5 +50,9 @@ public class TokenResponse {
 
     public void setExtension(Extension extension) {
         this.extension = extension;
+    }
+
+    public TokenResponse(List<String> scopes) {
+        this.scopes = scopes;
     }
 }
