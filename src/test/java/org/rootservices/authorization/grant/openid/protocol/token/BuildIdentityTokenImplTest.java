@@ -8,11 +8,13 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.IdTokenException;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.KeyNotFoundException;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.ResourceOwnerNotFoundException;
+import org.rootservices.authorization.grant.openid.protocol.token.factory.IdTokenFactory;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -51,6 +53,10 @@ public class BuildIdentityTokenImplTest {
     private PrivateKeyTranslator mockPrivateKeyTranslator;
     @Mock
     private AppFactory mockJwtAppFactory;
+    @Mock
+    private ProfileRepository mockProfileRepository;
+    @Mock
+    private IdTokenFactory mockIdTokenFactory;
 
     @Before
     public void setUp() {
@@ -60,7 +66,9 @@ public class BuildIdentityTokenImplTest {
                 mockRsaPrivateKeyRepository,
                 mockResourceOwnerRepository,
                 mockPrivateKeyTranslator,
-                mockJwtAppFactory
+                mockJwtAppFactory,
+                mockProfileRepository,
+                mockIdTokenFactory
         );
     }
 

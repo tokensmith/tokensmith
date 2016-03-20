@@ -4,12 +4,14 @@ import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ProfileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 /**
  * Created by tommackenzie on 3/17/16.
  */
+@Component
 public class ProfileRepositoryImpl implements ProfileRepository {
     private ProfileMapper profileMapper;
 

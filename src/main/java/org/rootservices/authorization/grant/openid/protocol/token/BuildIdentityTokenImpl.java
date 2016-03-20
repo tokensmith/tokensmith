@@ -3,11 +3,13 @@ package org.rootservices.authorization.grant.openid.protocol.token;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.IdTokenException;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.KeyNotFoundException;
 import org.rootservices.authorization.grant.openid.protocol.token.exception.ResourceOwnerNotFoundException;
+import org.rootservices.authorization.grant.openid.protocol.token.factory.IdTokenFactory;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -38,14 +40,18 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
     private ResourceOwnerRepository resourceOwnerRepository;
     private PrivateKeyTranslator privateKeyTranslator;
     private AppFactory jwtAppFactory;
+    private ProfileRepository profileRepository;
+    private IdTokenFactory idTokenFactory;
 
     @Autowired
-    public BuildIdentityTokenImpl(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerRepository resourceOwnerRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory) {
+    public BuildIdentityTokenImpl(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerRepository resourceOwnerRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.privateKeyTranslator = privateKeyTranslator;
         this.jwtAppFactory = jwtAppFactory;
+        this.profileRepository = profileRepository;
+        this.idTokenFactory = idTokenFactory;
     }
 
     @Override
@@ -78,7 +84,9 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
             throw new IdTokenException("key is invalid", e);
         }
 
-        // TODO: need to write a factory for idToken
+        // TODO: need to fetch the profile
+        // TODO: integrate factory.
+
         IdToken idToken = new IdToken();
         idToken.setEmail(Optional.of(resourceOwner.getEmail()));
 

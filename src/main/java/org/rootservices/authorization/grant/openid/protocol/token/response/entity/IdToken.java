@@ -32,11 +32,9 @@ public class IdToken extends Claims {
     @JsonProperty(value="preferred_username")
     private Optional<String> preferredUsername;
 
-    // not in db
     @JsonProperty(value="profile")
     private Optional<URI> profile;
 
-    // not in db
     @JsonProperty(value="picture")
     private Optional<URI> picture;
 
