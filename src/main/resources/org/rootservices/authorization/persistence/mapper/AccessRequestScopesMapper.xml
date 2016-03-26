@@ -4,12 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AccessRequestScopesMapper">
 
+    <resultMap id="accessRequestScope" type="org.rootservices.authorization.persistence.entity.AccessRequestScope">
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="access_request_uuid" property="accessRequestUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+        <association property="scope"
+            resultMap="org.rootservices.authorization.persistence.mapper.ScopeMapper.scope"
+            columnPrefix="scope_"/>
+
+    </resultMap>
+
     <insert id="insert">
         insert into access_request_scopes (uuid, access_request_uuid, scope_uuid)
         values (
             #{accessRequestScope.uuid},
             #{accessRequestScope.accessRequestUUID},
-            #{accessRequestScope.scopeUUID}
+            #{accessRequestScope.scope.uuid}
         )
     </insert>
 

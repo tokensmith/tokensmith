@@ -49,7 +49,7 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
             List<Scope> scopes = scopeRepository.findByName(scopeNames);
             for (Scope scope : scopes) {
                 AccessRequestScope accessRequestScope = new AccessRequestScope(
-                        UUID.randomUUID(), accessRequest.getUuid(), scope.getUuid()
+                        UUID.randomUUID(), accessRequest.getUuid(), scope
                 );
                 accessRequestScopesRepository.insert(accessRequestScope);
             }

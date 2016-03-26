@@ -9,13 +9,15 @@ import java.util.UUID;
 public class AccessRequestScope {
     private UUID uuid;
     private UUID accessRequestUUID;
-    private UUID scopeUUID;
+    private Scope scope;
     private OffsetDateTime createdAt;
 
-    public AccessRequestScope(UUID uuid, UUID accessRequestUUID, UUID scopeUUID) {
+    public AccessRequestScope() {}
+
+    public AccessRequestScope(UUID uuid, UUID accessRequestUUID, Scope scope) {
         this.uuid = uuid;
         this.accessRequestUUID = accessRequestUUID;
-        this.scopeUUID = scopeUUID;
+        this.scope = scope;
     }
 
     public UUID getUuid() {
@@ -34,12 +36,12 @@ public class AccessRequestScope {
         this.accessRequestUUID = accessRequestUUID;
     }
 
-    public UUID getScopeUUID() {
-        return scopeUUID;
+    public Scope getScope() {
+        return scope;
     }
 
-    public void setScopeUUID(UUID scopeUUID) {
-        this.scopeUUID = scopeUUID;
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public OffsetDateTime getCreatedAt() {
