@@ -85,7 +85,7 @@ public class GrantAuthCodeImplTest {
         // check that access request scope assigned correct values.
         assertThat(ARSCaptor.getValue().getUuid()).isNotNull();
         assertThat(ARSCaptor.getValue().getAccessRequestUUID()).isEqualTo(ARCaptor.getValue().getUuid());
-        assertThat(ARSCaptor.getValue().getScopeUUID()).isEqualTo(scope.getUuid());
+        assertThat(ARSCaptor.getValue().getScope().getUuid()).isEqualTo(scope.getUuid());
 
     }
 }
