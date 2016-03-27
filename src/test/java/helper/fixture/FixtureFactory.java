@@ -92,13 +92,12 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static Profile makeProfile(UUID resourceOwnerId) throws URISyntaxException {
+    public static Profile makeProfile(ResourceOwner resourceOwner) throws URISyntaxException {
         Profile profile = new Profile();
 
         profile.setId(UUID.randomUUID());
-        profile.setResourceOwnerId(resourceOwnerId);
+        profile.setResourceOwner(resourceOwner);
         profile.setName(Optional.of("Obi-Wan Kenobi"));
-        // profile.setFamilyName(Optional.of("Kenobi"));
         profile.setMiddleName(Optional.empty());
         profile.setNickName(Optional.of("Ben"));
         profile.setPreferredUserName(Optional.of("Ben Kenobi"));
@@ -161,10 +160,10 @@ public class FixtureFactory {
         return authCode;
     }
 
-    public static AccessRequest makeAccessRequest(ResourceOwner resourceOwner, UUID clientUUID) throws URISyntaxException {
+    public static AccessRequest makeAccessRequest(UUID resourceOwnerId, UUID clientUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
-        accessRequest.setResourceOwner(resourceOwner);
+        accessRequest.setResourceOwnerUUID(resourceOwnerId);
         accessRequest.setClientUUID(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
 

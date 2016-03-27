@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Profile;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ProfileMapper;
 
@@ -33,10 +34,12 @@ public class ProfileRepositoryImplTest {
 
     @Test
     public void testGetByResourceOwnerIdShouldReturnProfile() throws Exception {
-        Profile profile = FixtureFactory.makeProfile(UUID.randomUUID());
-        when(mockProfileMapper.getByResourceId(profile.getResourceOwnerId())).thenReturn(profile);
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
-        Profile actual = subject.getByResourceOwnerId(profile.getResourceOwnerId());
+        Profile profile = FixtureFactory.makeProfile(ro);
+        when(mockProfileMapper.getByResourceId(ro.getUuid())).thenReturn(profile);
+
+        Profile actual = subject.getByResourceOwnerId(ro.getUuid());
         assertThat(actual, is(profile));
     }
 

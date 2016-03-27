@@ -117,7 +117,7 @@ public class RequestOpenIdAuthCodeImplTest {
         ).thenReturn(resourceOwner);
 
         when(mockGrantAuthCode.run(
-                        resourceOwner,
+                        resourceOwner.getUuid(),
                         authRequest.getClientId(),
                         Optional.of(authRequest.getRedirectURI()),
                         authRequest.getScopes())

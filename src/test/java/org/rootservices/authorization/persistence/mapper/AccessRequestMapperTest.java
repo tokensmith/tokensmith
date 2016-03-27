@@ -50,7 +50,7 @@ public class AccessRequestMapperTest {
         // end prepare db for test
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner,
+                resourceOwner.getUuid(),
                 client.getUuid()
         );
 
@@ -65,14 +65,7 @@ public class AccessRequestMapperTest {
         assertThat(actual.getUuid(), is(notNullValue()));
         assertThat(actual.getRedirectURI().isPresent(), is(true));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
-
-        assertThat(actual.getResourceOwner(), is(notNullValue()));
-        assertThat(actual.getResourceOwner().getUuid(), is(notNullValue()));
-        assertThat(actual.getResourceOwner().getEmail(), is(notNullValue()));
-        assertThat(actual.getResourceOwner().getPassword(), is(notNullValue()));
-        assertThat(actual.getResourceOwner().isEmailVerified(), is(false));
-        assertThat(actual.getResourceOwner().getCreatedAt(), is(notNullValue()));
-
+        assertThat(actual.getResourceOwnerUUID(), is(notNullValue()));
         assertThat(actual.getAccessRequestScopes(), is(notNullValue()));
         assertThat(actual.getAccessRequestScopes().size(), is(1));
         assertThat(actual.getAccessRequestScopes().get(0).getUuid(), is(notNullValue()));
@@ -83,7 +76,5 @@ public class AccessRequestMapperTest {
         assertThat(actual.getAccessRequestScopes().get(0).getScope().getName(), is(notNullValue()));
         assertThat(actual.getAccessRequestScopes().get(0).getScope().getName(), is("openid"));
         assertThat(actual.getAccessRequestScopes().get(0).getScope().getCreatedAt(), is(notNullValue()));
-
-
     }
 }

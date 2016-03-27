@@ -12,5 +12,5 @@ import java.util.UUID;
  * Created by tommackenzie on 4/23/15.
  */
 public interface GrantAuthCode {
-    String run(ResourceOwner resourceOwner, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopes) throws AuthCodeInsertException;
+    String run(UUID resourceOwnerId, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopes) throws AuthCodeInsertException;
 }

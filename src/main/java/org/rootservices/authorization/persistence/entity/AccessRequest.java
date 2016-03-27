@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public class AccessRequest {
     private UUID uuid;
-    private ResourceOwner resourceOwner;
+    private UUID resourceOwnerUUID;
     private UUID clientUUID;
     private Optional<URI> redirectURI;
     private List<AccessRequestScope> accessRequestScopes;
@@ -21,9 +21,9 @@ public class AccessRequest {
 
     public AccessRequest() {}
 
-    public AccessRequest(UUID uuid, ResourceOwner resourceOwner, UUID clientUUID, Optional<URI> redirectURI) {
+    public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI) {
         this.uuid = uuid;
-        this.resourceOwner = resourceOwner;
+        this.resourceOwnerUUID = resourceOwnerUUID;
         this.clientUUID = clientUUID;
         this.redirectURI = redirectURI;
     }
@@ -36,12 +36,12 @@ public class AccessRequest {
         this.uuid = uuid;
     }
 
-    public ResourceOwner getResourceOwner() {
-        return resourceOwner;
+    public UUID getResourceOwnerUUID() {
+        return resourceOwnerUUID;
     }
 
-    public void setResourceOwner(ResourceOwner resourceOwner) {
-        this.resourceOwner = resourceOwner;
+    public void setResourceOwnerUUID(UUID resourceOwnerUUID) {
+        this.resourceOwnerUUID = resourceOwnerUUID;
     }
 
     public UUID getClientUUID() {

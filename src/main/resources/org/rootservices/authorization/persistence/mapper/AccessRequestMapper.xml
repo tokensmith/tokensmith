@@ -6,13 +6,10 @@
 
     <resultMap id="accessRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
         <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="resource_owner_uuid" property="resourceOwnerUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
-
-        <association property="resourceOwner"
-                     resultMap="org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper.resourceOwner"
-                     columnPrefix="ro_"/>
 
         <collection property="accessRequestScopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.AccessRequestScopesMapper.accessRequestScope"
@@ -24,7 +21,7 @@
         insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI)
         values (
             #{accessRequest.uuid},
-            #{accessRequest.resourceOwner.uuid},
+            #{accessRequest.resourceOwnerUUID},
             #{accessRequest.clientUUID},
             #{accessRequest.redirectURI,  typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
         )
@@ -33,24 +30,17 @@
     <select id="getByAccessToken" resultMap="accessRequest">
         select
             ar.uuid,
+            ar.resource_owner_uuid,
             ar.redirect_uri,
             ar.created_at,
-            ro.uuid as ro_uuid,
-            ro.email as ro_email,
-            ro.password as ro_password,
-            ro.email_verified as ro_email_verified,
-            ro.created_at as ro_created_at,
-
             ars.uuid as ars_uuid,
             ars.created_at as ars_created_at,
-
             ars_scope.uuid as ars_scope_uuid,
             ars_scope.name as ars_scope_name,
             ars_scope.created_at as ars_scope_created_at
         from access_request as ar
         join access_request_scopes ars on ars.access_request_uuid = ar.uuid
         join scope ars_scope on ars_scope.uuid = ars.scope_uuid
-        join resource_owner ro on ro.uuid = ar.resource_owner_uuid
         join auth_code on auth_code.access_request_uuid = ar.uuid
         join token on token.auth_code_uuid = auth_code.uuid
         where token.token = #{accessToken}

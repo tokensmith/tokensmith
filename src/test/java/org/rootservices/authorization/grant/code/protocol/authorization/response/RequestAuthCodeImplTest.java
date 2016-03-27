@@ -123,7 +123,7 @@ public class RequestAuthCodeImplTest {
         ).thenReturn(resourceOwner);
 
         when(mockGrantAuthCode.run(
-                        resourceOwner,
+                        resourceOwner.getUuid(),
                         authRequest.getClientId(),
                         authRequest.getRedirectURI(),
                         authRequest.getScopes())
@@ -174,7 +174,7 @@ public class RequestAuthCodeImplTest {
             authResponse = subject.run(input);
         } catch (UnauthorizedException e) {
             verify(mockGrantAuthCode, never()).run(
-                any(ResourceOwner.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
+                any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
             );
             expectedException = e;
         } catch (InformResourceOwnerException e) {

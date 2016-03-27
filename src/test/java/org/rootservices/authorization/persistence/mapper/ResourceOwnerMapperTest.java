@@ -83,16 +83,4 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
-
-    @Test
-    public void getByAccessToken() throws DuplicateRecordException, URISyntaxException {
-        Token token = loadOpenIdConfidentialClientAll.run();
-        ResourceOwner actual = subject.getByAccessToken(token.getToken());
-
-        assertThat(actual.getUuid(), is(notNullValue()));
-        assertThat(actual.getEmail(), is(notNullValue()));
-        assertThat(actual.getPassword(), is(notNullValue()));
-        assertThat(actual.isEmailVerified(), is(false));
-        assertThat(actual.getCreatedAt(), is(notNullValue()));
-    }
 }

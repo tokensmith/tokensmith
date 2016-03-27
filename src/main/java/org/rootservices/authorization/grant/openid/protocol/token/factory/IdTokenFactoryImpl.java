@@ -4,6 +4,7 @@ import org.rootservices.authorization.grant.openid.protocol.token.response.entit
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.AddrToAddrClaims;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.ProfileToIdToken;
+import org.rootservices.authorization.persistence.entity.AccessRequestScope;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,18 +32,19 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
     }
 
     @Override
-    public IdToken make(List<String> claimRequest, String email, Boolean emailVerified, Profile profile) {
+    public IdToken make(List<AccessRequestScope> accessRequestScopes, Profile profile) {
         IdToken idToken = new IdToken();
 
-        if (claimRequest.contains(PROFILE)) {
+
+        if (hasScope(accessRequestScopes, PROFILE)) {
             profileToIdToken.toProfileClaims(idToken, profile);
         }
 
-        if (claimRequest.contains(EMAIL)) {
-            profileToIdToken.toEmailClaims(idToken, email, emailVerified);
+        if (hasScope(accessRequestScopes, EMAIL)) {
+            profileToIdToken.toEmailClaims(idToken, profile.getResourceOwner().getEmail(), profile.getResourceOwner().isEmailVerified());
         }
 
-        if (claimRequest.contains(PHONE)) {
+        if (hasScope(accessRequestScopes, PHONE)) {
             profileToIdToken.toPhoneClaims(
                 idToken,
                 profile.getPhoneNumber(),
@@ -50,7 +52,7 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
             );
         }
 
-        if (claimRequest.contains(ADDR) && profile.getAddresses().size() > 0) {
+        if (hasScope(accessRequestScopes, ADDR) && profile.getAddresses().size() > 0) {
             Address address = addrToAddrClaims.to(profile.getAddresses().get(0));
             idToken.setAddress(Optional.of(address));
         } else {
@@ -58,5 +60,14 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
         }
 
         return idToken;
+    }
+
+    protected Boolean hasScope(List<AccessRequestScope> accessRequestScopes, String scope) {
+        for(AccessRequestScope ars: accessRequestScopes){
+            if (scope.equals(ars.getScope().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

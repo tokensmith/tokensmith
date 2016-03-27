@@ -36,7 +36,7 @@ public class FamilyNameMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro.getUuid());
+        Profile profile = FixtureFactory.makeProfile(ro);
         profileMapper.insert(profile);
 
         return profile;

@@ -36,7 +36,7 @@ public class AccessRequestScopesMapperTest {
     @Autowired
     private AccessRequestScopesMapper subject;
 
-    public AccessRequest persistAcessReqeust() throws URISyntaxException {
+    public AccessRequest persistAccessReqeust() throws URISyntaxException {
         // create client to be used as the fk constraint.
         UUID clientUUID = UUID.randomUUID();
         ResponseType responseType = ResponseType.CODE;
@@ -45,16 +45,16 @@ public class AccessRequestScopesMapperTest {
         clientRepository.insert(client);
 
         // create resource owner to be used as fk constraint
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        UUID resourceOwnerId = UUID.randomUUID();
         String email = "test@rootservices.com";
         byte[] password = "plainTextPassword".getBytes();
-        ResourceOwner authUser =  new ResourceOwner(resourceOwnerUUID, email, password);
-        resourceOwnerRepository.insert(authUser);
+        ResourceOwner ro =  new ResourceOwner(resourceOwnerId, email, password);
+        resourceOwnerRepository.insert(ro);
 
         // finally, create the access reqeust.
         AccessRequest accessRequest = new AccessRequest(
                 UUID.randomUUID(),
-                authUser,
+                ro.getUuid(),
                 client.getUuid(),
                 Optional.of(redirectURI)
         );
@@ -71,7 +71,7 @@ public class AccessRequestScopesMapperTest {
 
     @Test
     public void insert() throws URISyntaxException {
-        AccessRequest accessRequest = persistAcessReqeust();
+        AccessRequest accessRequest = persistAccessReqeust();
         Scope scope = persistScope();
 
         AccessRequestScope accessRequestScope = new AccessRequestScope(
