@@ -20,6 +20,12 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         this.profileMapper = profileMapper;
     }
 
+
+    @Override
+    public void insert(Profile profile) {
+        profileMapper.insert(profile);
+    }
+
     @Override
     public Profile getByResourceOwnerId(UUID id) throws RecordNotFoundException {
         Profile profile = profileMapper.getByResourceId(id);

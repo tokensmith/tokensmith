@@ -1,12 +1,12 @@
 package org.rootservices.authorization.persistence.repository;
 
+import helper.fixture.FixtureFactory;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import java.util.UUID;
@@ -30,14 +30,8 @@ public class ResourceOwnerRepositoryImplTest {
         subject = new ResourceOwnerRepositoryImpl(mockMapper);
     }
 
-    public ResourceOwner makeAuthUser() {
-        UUID uuid = UUID.randomUUID();
-        byte [] password = "plainTextPassword".getBytes();
-        ResourceOwner authUser = new ResourceOwner(uuid, "test@rootservices.org", password);
-        return authUser;
-    }
 
-    @Test(expected= RecordNotFoundException.class)
+    @Test(expected=RecordNotFoundException.class)
     public void getByUUIDNoRecordFound() throws RecordNotFoundException{
         UUID uuid = UUID.randomUUID();
         when(mockMapper.getByUUID(uuid)).thenReturn(null);
@@ -47,7 +41,7 @@ public class ResourceOwnerRepositoryImplTest {
     @Test
     public void getByUUID() throws RecordNotFoundException{
 
-        ResourceOwner expectedAuthUser = makeAuthUser();
+        ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
 
         when(mockMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
         ResourceOwner actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
@@ -66,7 +60,7 @@ public class ResourceOwnerRepositoryImplTest {
     @Test
     public void getByEmail() throws RecordNotFoundException{
 
-        ResourceOwner expectedAuthUser = makeAuthUser();
+        ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
 
         when(mockMapper.getByEmail(
                 expectedAuthUser.getEmail())
@@ -80,7 +74,7 @@ public class ResourceOwnerRepositoryImplTest {
 
     @Test
     public void insert() {
-        ResourceOwner authUser = makeAuthUser();
+        ResourceOwner authUser = FixtureFactory.makeResourceOwner();
         subject.insert(authUser);
         verify(mockMapper, times(1)).insert(authUser);
     }
