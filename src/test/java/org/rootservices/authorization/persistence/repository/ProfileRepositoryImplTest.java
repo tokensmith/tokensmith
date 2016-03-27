@@ -10,10 +10,13 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ProfileMapper;
 
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -30,6 +33,15 @@ public class ProfileRepositoryImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new ProfileRepositoryImpl(mockProfileMapper);
+    }
+
+    @Test
+    public void insert() throws URISyntaxException {
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        subject.insert(profile);
+        verify(mockProfileMapper, times(1)).insert(profile);
     }
 
     @Test
