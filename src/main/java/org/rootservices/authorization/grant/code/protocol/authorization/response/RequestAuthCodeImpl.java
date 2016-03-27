@@ -69,7 +69,7 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
         String authorizationCode = grantAuthCode.run(
-                resourceOwner,
+                resourceOwner.getUuid(),
                 clientId,
                 redirectUri,
                 scopes

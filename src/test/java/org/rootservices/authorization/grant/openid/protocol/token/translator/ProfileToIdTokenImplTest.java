@@ -4,10 +4,7 @@ import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
-import org.rootservices.authorization.persistence.entity.FamilyName;
-import org.rootservices.authorization.persistence.entity.Gender;
-import org.rootservices.authorization.persistence.entity.GivenName;
-import org.rootservices.authorization.persistence.entity.Profile;
+import org.rootservices.authorization.persistence.entity.*;
 
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
@@ -33,7 +30,8 @@ public class ProfileToIdTokenImplTest {
 
     @Test
     public void toProfileClaimsShouldAssign() throws Exception {
-        Profile profile = FixtureFactory.makeProfile(UUID.randomUUID());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
         profile.setUpdatedAt(OffsetDateTime.now());
 
         FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());

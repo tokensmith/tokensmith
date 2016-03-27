@@ -43,7 +43,7 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro.getUuid());
+        Profile profile = FixtureFactory.makeProfile(ro);
         subject.insert(profile);
     }
 
@@ -52,14 +52,16 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro.getUuid());
+        Profile profile = FixtureFactory.makeProfile(ro);
         subject.insert(profile);
 
         Profile actual = subject.getById(profile.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getResourceOwnerId(), is(notNullValue()));
+        assertThat(actual.getResourceOwner(), is(notNullValue()));
+        // TODO: assertions for resource owner
+
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
         assertThat(actual.getMiddleName().isPresent(), is(false));
@@ -96,7 +98,7 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro.getUuid());
+        Profile profile = FixtureFactory.makeProfile(ro);
         subject.insert(profile);
 
         GivenName  givenName = FixtureFactory.makeGivenName(profile.getId());
@@ -112,7 +114,9 @@ public class ProfileMapperTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getResourceOwnerId(), is(notNullValue()));
+        assertThat(actual.getResourceOwner(), is(notNullValue()));
+        // TODO: assertions for resource owner
+
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
         assertThat(actual.getMiddleName().isPresent(), is(false));

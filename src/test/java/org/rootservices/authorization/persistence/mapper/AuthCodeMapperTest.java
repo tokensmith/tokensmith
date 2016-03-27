@@ -53,7 +53,7 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner,
+                resourceOwner.getUuid(),
                 client.getUuid()
         );
         accessRequestRepository.insert(accessRequest);
@@ -75,7 +75,7 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner,
+                resourceOwner.getUuid(),
                 client.getUuid()
         );
         accessRequestRepository.insert(accessRequest);

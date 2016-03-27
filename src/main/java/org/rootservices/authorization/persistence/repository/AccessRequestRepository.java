@@ -10,4 +10,5 @@ import java.util.UUID;
  */
 public interface AccessRequestRepository {
     void insert(AccessRequest authRequest);
+    AccessRequest getByAccessToken(String accessToken) throws RecordNotFoundException;
 }

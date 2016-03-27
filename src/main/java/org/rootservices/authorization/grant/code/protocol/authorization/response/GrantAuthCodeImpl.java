@@ -37,10 +37,10 @@ public class GrantAuthCodeImpl implements GrantAuthCode {
         this.insertAuthCodeWithRetry = insertAuthCodeWithRetry;
     }
 
-    public String run(ResourceOwner resourceOwner, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
+    public String run(UUID resourceOwnerId, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
 
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), resourceOwner, ClientUUID, redirectURI
+                UUID.randomUUID(), resourceOwnerId, ClientUUID, redirectURI
         );
         accessRequestRepository.insert(accessRequest);
 

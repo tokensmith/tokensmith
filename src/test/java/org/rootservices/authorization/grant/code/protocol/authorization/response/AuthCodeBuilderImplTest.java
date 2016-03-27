@@ -36,7 +36,7 @@ public class AuthCodeBuilderImplTest {
     @Test
     public void testRun() throws Exception {
         // parameters to method in test.
-        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         int secondsToExpire = 60*10;
         String randomString = "randomString";
@@ -44,7 +44,7 @@ public class AuthCodeBuilderImplTest {
 
         when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
 
-        AccessRequest ar = FixtureFactory.makeAccessRequest(ro, clientUUID);
+        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerId, clientUUID);
         AuthCode actual = subject.run(ar, randomString, secondsToExpire);
 
         assertThat(actual.getUuid()).isNotNull();

@@ -8,9 +8,9 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.AddrToAddrClaims;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.ProfileToIdToken;
-import org.rootservices.authorization.persistence.entity.Address;
-import org.rootservices.authorization.persistence.entity.Profile;
+import org.rootservices.authorization.persistence.entity.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +29,6 @@ import static org.mockito.Mockito.when;
  */
 public class IdTokenFactoryImplTest {
 
-    private static String EMAIL = FixtureFactory.makeRandomEmail();
-
     @Mock
     private ProfileToIdToken mockProfileToIdToken;
     @Mock
@@ -46,11 +44,18 @@ public class IdTokenFactoryImplTest {
 
     @Test
     public void makeWhenProfileShouldOnlyAddProfileClaims() throws Exception {
-        Profile profile = new Profile();
-        List<String> claimsRequest = new ArrayList<>();
-        claimsRequest.add("profile");
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
 
-        IdToken actual = subject.make(claimsRequest, EMAIL, true, profile);
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+        AccessRequestScope ars = new AccessRequestScope();
+        Scope scope = new Scope();
+        scope.setName("profile");
+        ars.setScope(scope);
+        accessRequestScopes.add(ars);
+
+
+        IdToken actual = subject.make(accessRequestScopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -62,11 +67,17 @@ public class IdTokenFactoryImplTest {
 
     @Test
     public void makeWhenEmailShouldOnlyAddEmailClaims() throws Exception {
-        Profile profile = new Profile();
-        List<String> claimsRequest = new ArrayList<>();
-        claimsRequest.add("email");
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
 
-        IdToken actual = subject.make(claimsRequest, EMAIL, true, profile);
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+        AccessRequestScope ars = new AccessRequestScope();
+        Scope scope = new Scope();
+        scope.setName("email");
+        ars.setScope(scope);
+        accessRequestScopes.add(ars);
+
+        IdToken actual = subject.make(accessRequestScopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -78,11 +89,17 @@ public class IdTokenFactoryImplTest {
 
     @Test
     public void makeWhenPhoneShouldOnlyAddhoneClaims() throws Exception {
-        Profile profile = new Profile();
-        List<String> claimsRequest = new ArrayList<>();
-        claimsRequest.add("phone");
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
 
-        IdToken actual = subject.make(claimsRequest, EMAIL, true, profile);
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+        AccessRequestScope ars = new AccessRequestScope();
+        Scope scope = new Scope();
+        scope.setName("phone");
+        ars.setScope(scope);
+        accessRequestScopes.add(ars);
+
+        IdToken actual = subject.make(accessRequestScopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -94,16 +111,22 @@ public class IdTokenFactoryImplTest {
 
     @Test
     public void makeWhenAddressShouldOnlyAddAddressClaims() throws Exception {
-        Profile profile = new Profile();
-        profile.getAddresses().add(new Address());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
+        Address address = FixtureFactory.makeAddress(profile.getId());
+        profile.getAddresses().add(address);
 
-        List<String> claimsRequest = new ArrayList<>();
-        claimsRequest.add("address");
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+        AccessRequestScope ars = new AccessRequestScope();
+        Scope scope = new Scope();
+        scope.setName("address");
+        ars.setScope(scope);
+        accessRequestScopes.add(ars);
 
         org.rootservices.authorization.grant.openid.protocol.token.response.entity.Address addressClaim = new org.rootservices.authorization.grant.openid.protocol.token.response.entity.Address();
         when(mockAddrToAddrClaims.to(profile.getAddresses().get(0))).thenReturn(addressClaim);
 
-        IdToken actual = subject.make(claimsRequest, EMAIL, true, profile);
+        IdToken actual = subject.make(accessRequestScopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(true));
@@ -117,12 +140,17 @@ public class IdTokenFactoryImplTest {
 
     @Test
     public void makeWhenAddressAndProfileHasNoAddressShouldNotAddAddressClaim() throws Exception {
-        Profile profile = new Profile();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<String> claimsRequest = new ArrayList<>();
-        claimsRequest.add("address");
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+        AccessRequestScope ars = new AccessRequestScope();
+        Scope scope = new Scope();
+        scope.setName("address");
+        ars.setScope(scope);
+        accessRequestScopes.add(ars);
 
-        IdToken actual = subject.make(claimsRequest, EMAIL, true, profile);
+        IdToken actual = subject.make(accessRequestScopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));

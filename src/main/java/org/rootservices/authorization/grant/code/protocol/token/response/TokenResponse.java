@@ -15,9 +15,6 @@ public class TokenResponse {
     private TokenType tokenType;
     private Extension extension;
 
-    // Optional
-    private List<String> scopes = new ArrayList<>();
-
     public TokenResponse(){}
 
     public String getAccessToken() {
@@ -50,9 +47,5 @@ public class TokenResponse {
 
     public void setExtension(Extension extension) {
         this.extension = extension;
-    }
-
-    public TokenResponse(List<String> scopes) {
-        this.scopes = scopes;
     }
 }

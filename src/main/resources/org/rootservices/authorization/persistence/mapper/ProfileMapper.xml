@@ -6,7 +6,7 @@
 
     <resultMap id="profile" type="org.rootservices.authorization.persistence.entity.Profile">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+
         <result column="name" property="name" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="middle_name" property="middleName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="nick_name" property="nickName" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
@@ -23,6 +23,9 @@
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
+        <association property="resourceOwner"
+                     resultMap="org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper.resourceOwner"
+                     columnPrefix="ro_"/>
         <association property="addresses"
                      resultMap="org.rootservices.authorization.persistence.mapper.AddressMapper.address"
                      columnPrefix="address_"/>
@@ -55,7 +58,7 @@
         )
         values (
             #{profile.id},
-            #{profile.resourceOwnerId},
+            #{profile.resourceOwner.uuid},
             #{profile.name, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.middleName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.nickName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
@@ -75,7 +78,6 @@
     <select id="getById" resultMap="profile">
         select
             profile.id,
-            profile.resource_owner_id,
             profile.name,
             profile.middle_name,
             profile.nick_name,
@@ -90,8 +92,14 @@
             profile.phone_number,
             profile.phone_number_verified,
             profile.updated_at,
-            profile.created_at
+            profile.created_at,
+            ro.uuid as ro_uuid,
+            ro.email as ro_email,
+            ro.password as ro_password,
+            ro.email_verified as ro_email_verified,
+            ro.created_at as ro_created_at
         from resource_owner_profile as profile
+        join resource_owner ro on ro.uuid=profile.resource_owner_id
         where id = #{id}
     </select>
 
@@ -114,6 +122,11 @@
             profile.phone_number_verified,
             profile.updated_at,
             profile.created_at,
+            ro.uuid as ro_uuid,
+            ro.email as ro_email,
+            ro.password as ro_password,
+            ro.email_verified as ro_email_verified,
+            ro.created_at as ro_created_at,
             address.id as address_id,
             address.resource_owner_profile_id as address_resource_owner_profile_id,
             address.street_address as address_street_address,
@@ -135,9 +148,10 @@
             family_name.created_at as family_name_created_at,
             family_name.updated_at as family_name_updated_at
         from resource_owner_profile as profile
+        join resource_owner ro on ro.uuid=profile.resource_owner_id
         left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
         left join resource_owner_profile_given_name given_name on given_name.resource_owner_profile_id = profile.id
         left join resource_owner_profile_family_name family_name on family_name.resource_owner_profile_id = profile.id
-        where profile.resource_owner_id = #{resourceOwnerId}
+        where ro.uuid = #{resourceOwnerId}
     </select>
 </mapper>

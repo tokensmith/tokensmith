@@ -12,5 +12,4 @@ public interface ResourceOwnerRepository {
     ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException;
     ResourceOwner getByEmail(String email) throws RecordNotFoundException;
     void insert(ResourceOwner resourceOwner);
-    ResourceOwner getByAccessToken(byte[] accessToken) throws RecordNotFoundException;
 }

@@ -51,7 +51,7 @@ public class GrantAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         // parameters to pass into run method.
-        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
 
@@ -70,7 +70,7 @@ public class GrantAuthCodeImplTest {
 
         when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class), anyInt())).thenReturn("randomString");
 
-        String actual = subject.run(ro, clientUUID, redirectURI, scopeNames);
+        String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames);
 
         assertThat(actual).isEqualTo("randomString");
 
