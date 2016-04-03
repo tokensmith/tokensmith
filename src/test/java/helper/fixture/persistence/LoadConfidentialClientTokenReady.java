@@ -58,7 +58,7 @@ public class LoadConfidentialClientTokenReady {
             AccessRequestScope ars = new AccessRequestScope(
                     UUID.randomUUID(),
                     accessRequest.getUuid(),
-                    scope.getUuid()
+                    scope
             );
             accessRequestScopesRepository.insert(ars);
         }

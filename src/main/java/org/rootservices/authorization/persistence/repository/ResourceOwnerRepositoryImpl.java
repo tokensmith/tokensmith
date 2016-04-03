@@ -45,13 +45,4 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
     public void insert(ResourceOwner resourceOwner) {
         resourceOwnerMapper.insert(resourceOwner);
     }
-
-    @Override
-    public ResourceOwner getByAccessToken(byte[] accessToken) throws RecordNotFoundException {
-        ResourceOwner resourceOwner = resourceOwnerMapper.getByAccessToken(accessToken);
-        if (resourceOwner != null) {
-            return resourceOwner;
-        }
-        throw new RecordNotFoundException("Resource Owner:");
-    }
 }

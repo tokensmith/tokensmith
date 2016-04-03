@@ -28,7 +28,7 @@
         select
             client.uuid,
             client.response_type,
-            client.redirect_URI,
+            client.redirect_uri,
             client.created_at,
             scope.uuid as scope_uuid,
             scope.name as scope_name,

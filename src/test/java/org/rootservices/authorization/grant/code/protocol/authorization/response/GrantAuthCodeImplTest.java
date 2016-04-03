@@ -1,5 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.authorization.response;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -50,7 +51,7 @@ public class GrantAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         // parameters to pass into run method.
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
 
@@ -69,7 +70,7 @@ public class GrantAuthCodeImplTest {
 
         when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class), anyInt())).thenReturn("randomString");
 
-        String actual = subject.run(resourceOwnerUUID, clientUUID, redirectURI, scopeNames);
+        String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames);
 
         assertThat(actual).isEqualTo("randomString");
 
@@ -84,7 +85,7 @@ public class GrantAuthCodeImplTest {
         // check that access request scope assigned correct values.
         assertThat(ARSCaptor.getValue().getUuid()).isNotNull();
         assertThat(ARSCaptor.getValue().getAccessRequestUUID()).isEqualTo(ARCaptor.getValue().getUuid());
-        assertThat(ARSCaptor.getValue().getScopeUUID()).isEqualTo(scope.getUuid());
+        assertThat(ARSCaptor.getValue().getScope().getUuid()).isEqualTo(scope.getUuid());
 
     }
 }

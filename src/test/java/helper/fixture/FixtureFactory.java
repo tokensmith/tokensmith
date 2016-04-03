@@ -79,6 +79,7 @@ public class FixtureFactory {
     public static String makeRandomEmail() {
         return "test-" + UUID.randomUUID().toString() + "@rootservices.org";
     }
+
     public static ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
         ro.setUuid(UUID.randomUUID());
@@ -89,6 +90,60 @@ public class FixtureFactory {
         ro.setPassword(hashedPassword.getBytes());
 
         return ro;
+    }
+
+    public static Profile makeProfile(ResourceOwner resourceOwner) throws URISyntaxException {
+        Profile profile = new Profile();
+
+        profile.setId(UUID.randomUUID());
+        profile.setResourceOwner(resourceOwner);
+        profile.setName(Optional.of("Obi-Wan Kenobi"));
+        profile.setMiddleName(Optional.empty());
+        profile.setNickName(Optional.of("Ben"));
+        profile.setPreferredUserName(Optional.of("Ben Kenobi"));
+        profile.setProfile(Optional.of(new URI("http://starwars.wikia.com/wiki/Obi-Wan_Kenobi")));
+        profile.setPicture(Optional.of(new URI("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039")));
+        profile.setWebsite(Optional.of(new URI("http://starwars.wikia.com")));
+        profile.setGender(Optional.of(Gender.MALE));
+        profile.setBirthDate(Optional.empty());
+        profile.setZoneInfo(Optional.empty());
+        profile.setLocale(Optional.empty());
+        profile.setPhoneNumber(Optional.empty());
+        profile.setPhoneNumberVerified(false);
+
+        return profile;
+    }
+
+    public static Address makeAddress(UUID profileId) {
+        Address address = new Address();
+        address.setId(UUID.randomUUID());
+        address.setProfileId(profileId);
+        address.setStreetAddress("123 Jedi High Council Rd.");
+        address.setStreetAddress2(Optional.empty());
+        address.setLocality("Coruscant");
+        address.setPostalCode("12345");
+        address.setRegion("Coruscant");
+        address.setCountry("Old Republic");
+
+        return address;
+    }
+
+    public static GivenName makeGivenName(UUID profileId){
+        GivenName givenName = new GivenName();
+        givenName.setId(UUID.randomUUID());
+        givenName.setResourceOwnerProfileId(profileId);
+        givenName.setName("Obi-Wan");
+
+        return givenName;
+    }
+
+    public static FamilyName makeFamilyName(UUID profileId){
+        FamilyName familyName = new FamilyName();
+        familyName.setId(UUID.randomUUID());
+        familyName.setResourceOwnerProfileId(profileId);
+        familyName.setName("Kenobi");
+
+        return familyName;
     }
 
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
@@ -105,10 +160,10 @@ public class FixtureFactory {
         return authCode;
     }
 
-    public static AccessRequest makeAccessRequest(UUID resourceOwnerUUID, UUID clientUUID) throws URISyntaxException {
+    public static AccessRequest makeAccessRequest(UUID resourceOwnerId, UUID clientUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
         accessRequest.setUuid(UUID.randomUUID());
-        accessRequest.setResourceOwnerUUID(resourceOwnerUUID);
+        accessRequest.setResourceOwnerUUID(resourceOwnerId);
         accessRequest.setClientUUID(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
 

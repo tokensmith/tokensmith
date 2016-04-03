@@ -11,13 +11,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by tommackenzie on 9/25/14.
@@ -53,44 +54,33 @@ public class ResourceOwnerMapperTest {
     @Test
     public void getByUUID() {
         ResourceOwner expectedUser = insertResourceOwner();
-        ResourceOwner actualUser = subject.getByUUID(expectedUser.getUuid());
+        ResourceOwner actual = subject.getByUUID(expectedUser.getUuid());
 
-        assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
-        assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
-        assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
-        assertThat(actualUser.getCreatedAt()).isNotNull();
-        assertThat(actualUser.getCreatedAt()).isInstanceOf(OffsetDateTime.class);
+        assertThat(actual.getUuid(), is(expectedUser.getUuid()));
+        assertThat(actual.getEmail(), is(expectedUser.getEmail()));
+        assertThat(actual.getPassword(), is(expectedUser.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 
     @Test
     public void getByUUIDAuthUserNotFound() {
+        ResourceOwner actual = subject.getByUUID(UUID.randomUUID());
 
-        ResourceOwner actualUser = subject.getByUUID(UUID.randomUUID());
-
-        assertThat(actualUser).isEqualTo(null);
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void getByEmail() {
 
         ResourceOwner expectedUser = insertResourceOwner();
-        ResourceOwner actualUser = subject.getByEmail(expectedUser.getEmail());
+        ResourceOwner actual = subject.getByEmail(expectedUser.getEmail());
 
-        assertThat(actualUser.getUuid()).isEqualTo(expectedUser.getUuid());
-        assertThat(actualUser.getEmail()).isEqualTo(expectedUser.getEmail());
-        assertThat(actualUser.getPassword()).isEqualTo(expectedUser.getPassword());
-        assertThat(actualUser.getCreatedAt()).isNotNull();
-        assertThat(actualUser.getCreatedAt()).isInstanceOf(OffsetDateTime.class);
-    }
 
-    @Test
-    public void getByAccessToken() throws DuplicateRecordException, URISyntaxException {
-        Token token = loadOpenIdConfidentialClientAll.run();
-        ResourceOwner actual = subject.getByAccessToken(token.getToken());
-
-        assertThat(actual).isNotNull();
-        assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getEmail()).isNotNull();
-        assertThat(actual.getCreatedAt()).isNotNull();
+        assertThat(actual.getUuid(), is(expectedUser.getUuid()));
+        assertThat(actual.getEmail(), is(expectedUser.getEmail()));
+        assertThat(actual.getPassword(), is(expectedUser.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 }
