@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AuthCodeMapper">
 
     <resultMap id="authCode" type="org.rootservices.authorization.persistence.entity.AuthCode">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="code" property="code" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="revoked" property="revoked" javaType="Boolean"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -32,17 +32,22 @@
             auth_code.expires_at,
             auth_code.created_at,
             auth_code.revoked,
-            access_request.uuid as ar_uuid,
-            access_request.redirect_uri as ar_redirect_uri,
-            access_request.created_at as ar_created_at,
-            scope.uuid as ar_scope_uuid,
-            scope.name as ar_scope_name,
-            scope.created_at as ar_scope_created_at
+
+            ar.uuid as ar_uuid,
+            ar.redirect_uri as ar_redirect_uri,
+            ar.created_at as ar_created_at,
+
+            ars.uuid as ar_ars_uuid,
+
+            scope.uuid as ar_ars_scope_uuid,
+            scope.name as ar_ars_scope_name,
+            scope.created_at as ar_ars_scope_created_at
+
         from auth_code
-        join access_request on access_request.uuid = auth_code.access_request_uuid
-        left join access_request_scopes on access_request_scopes.access_request_uuid = access_request.uuid
-        left join scope on scope.uuid = access_request_scopes.scope_uuid
-        where access_request.client_uuid = #{clientUUID}
+        join access_request ar on ar.uuid = auth_code.access_request_uuid
+        left join access_request_scopes ars on ars.access_request_uuid = ar.uuid
+        left join scope on scope.uuid = ars.scope_uuid
+        where ar.client_uuid = #{clientUUID}
         and auth_code.code = decode(#{code}, 'escape')
         and auth_code.expires_at > current_timestamp
         and auth_code.revoked = FALSE

@@ -35,7 +35,7 @@ public class LoginResourceOwnerImpl implements LoginResourceOwner {
     }
 
     @Override
-    public UUID run(String userName, String plainTextPassword) throws UnauthorizedException {
+    public ResourceOwner run(String userName, String plainTextPassword) throws UnauthorizedException {
 
         ResourceOwner resourceOwner = null;
         try {
@@ -50,6 +50,6 @@ public class LoginResourceOwnerImpl implements LoginResourceOwner {
             plainTextPassword, resourceOwner.getPassword()
         );
 
-        return resourceOwner.getUuid();
+        return resourceOwner;
     }
 }

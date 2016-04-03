@@ -9,11 +9,11 @@ import java.util.Optional;
 
 /**
  * Created by tommackenzie on 10/20/15.
- *
+ * http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
  */
 public class IdToken extends Claims {
 
-    // begin standard claims - http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+    // begin standard claims
     @JsonProperty(value="name")
     private Optional<String> fullName;
 
@@ -32,11 +32,9 @@ public class IdToken extends Claims {
     @JsonProperty(value="preferred_username")
     private Optional<String> preferredUsername;
 
-    // not in db
     @JsonProperty(value="profile")
     private Optional<URI> profile;
 
-    // not in db
     @JsonProperty(value="picture")
     private Optional<URI> picture;
 

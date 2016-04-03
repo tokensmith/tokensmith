@@ -5,34 +5,26 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper">
 
     <resultMap id="resourceOwner" type="org.rootservices.authorization.persistence.entity.ResourceOwner">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
     <insert id="insert" >
-        insert into resource_owner (uuid, email, password) values (#{authUser.uuid}, #{authUser.email}, #{authUser.password})
+        insert into resource_owner (uuid, email, password) values (#{resourceOwner.uuid}, #{resourceOwner.email}, #{resourceOwner.password})
     </insert>
 
     <select id="getByUUID" resultMap="resourceOwner">
-        select uuid, email, password, created_at
+        select uuid, email, password, email_verified, created_at
         from resource_owner
         where uuid = #{uuid}
     </select>
 
     <select id="getByEmail" resultMap="resourceOwner">
-        select uuid, email, password, created_at
+        select uuid, email, password, email_verified, created_at
         from resource_owner
         where email = #{email}
-    </select>
-
-    <select id="getByAccessToken" resultMap="resourceOwner">
-        select ro.uuid, ro.email, ro.password, ro.created_at
-        from resource_owner ro
-        join access_request on access_request.resource_owner_uuid = ro.uuid
-        join auth_code on auth_code.access_request_uuid = access_request.uuid
-        join token on token.auth_code_uuid = auth_code.uuid
-        where token.token = #{accessToken}
     </select>
 </mapper>

@@ -1,5 +1,9 @@
 package org.rootservices.authorization.grant.code.protocol.token.response;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Created by tommackenzie on 6/3/15.
  *

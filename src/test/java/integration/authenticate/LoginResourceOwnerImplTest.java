@@ -36,17 +36,17 @@ public class LoginResourceOwnerImplTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
-        UUID actual = subject.run(
+        ResourceOwner actual = subject.run(
             ro.getEmail(), "password"
         );
 
-        assertThat(actual).isEqualTo(ro.getUuid());
+        assertThat(actual.getUuid()).isEqualTo(ro.getUuid());
     }
 
     @Test
     public void resourceOwnerNotFound() {
 
-        UUID actual = null;
+        ResourceOwner actual = null;
         try {
             actual = subject.run(
                 "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
@@ -64,7 +64,7 @@ public class LoginResourceOwnerImplTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
-        UUID actual = null;
+        ResourceOwner actual = null;
         try {
             actual = subject.run(
                  ro.getEmail(), "wrong-password"

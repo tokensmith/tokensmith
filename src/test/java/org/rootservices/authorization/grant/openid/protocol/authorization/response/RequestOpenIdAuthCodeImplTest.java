@@ -13,6 +13,7 @@ import org.rootservices.authorization.grant.code.protocol.authorization.response
 import org.rootservices.authorization.grant.code.protocol.authorization.response.builder.AuthResponseBuilder;
 import org.rootservices.authorization.grant.openid.protocol.authorization.request.ValidateOpenIdParams;
 import org.rootservices.authorization.grant.openid.protocol.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
@@ -91,7 +92,7 @@ public class RequestOpenIdAuthCodeImplTest {
         OpenIdAuthRequest authRequest = makeOpenIdAuthRequest(input);
 
         // response from mockLoginResourceOwner.
-        UUID resourceOwnerUUID = UUID.randomUUID();
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
         // response from mockGrantAuthCode.
         String randomString = "randomString";
@@ -113,10 +114,10 @@ public class RequestOpenIdAuthCodeImplTest {
         when(mockLoginResourceOwner.run(
                         input.getUserName(),
                         input.getPlainTextPassword())
-        ).thenReturn(resourceOwnerUUID);
+        ).thenReturn(resourceOwner);
 
         when(mockGrantAuthCode.run(
-                        resourceOwnerUUID,
+                        resourceOwner.getUuid(),
                         authRequest.getClientId(),
                         Optional.of(authRequest.getRedirectURI()),
                         authRequest.getScopes())

@@ -16,10 +16,7 @@ import org.rootservices.authorization.grant.code.protocol.token.response.TokenTy
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.GrantTypeInvalidException;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
-import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
@@ -95,7 +92,7 @@ public class RequestTokenImpl implements RequestToken {
         tokenResponse.setTokenType(TokenType.BEARER);
 
         Extension extension = Extension.NONE;
-        if (isOpenId(authCode.getAccessRequest().getScopes())) {
+        if (isOpenId(authCode.getAccessRequest().getAccessRequestScopes())) {
             extension = Extension.IDENTITY;
         }
         tokenResponse.setExtension(extension);
@@ -110,7 +107,7 @@ public class RequestTokenImpl implements RequestToken {
      * @return
      * @throws BadRequestException
      */
-    private TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
+    protected TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
 
         TokenRequest tokenRequest = null;
         try {
@@ -131,7 +128,7 @@ public class RequestTokenImpl implements RequestToken {
         return tokenRequest;
     }
 
-    private AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
+    protected AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
         AuthCode authCode;
         try {
             authCode = authCodeRepository.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, hashedCode);
@@ -149,7 +146,7 @@ public class RequestTokenImpl implements RequestToken {
         return authCode;
     }
 
-    private Boolean doRedirectUrisMatch(Optional<URI> redirectUriA, Optional<URI> redirectUriB) {
+    protected Boolean doRedirectUrisMatch(Optional<URI> redirectUriA, Optional<URI> redirectUriB) {
         Boolean matches = true;
         if ( redirectUriA.isPresent() && ! redirectUriB.isPresent()) {
             matches = false;
@@ -161,7 +158,7 @@ public class RequestTokenImpl implements RequestToken {
         return matches;
     }
 
-    private Token grantToken(UUID authCodeUUID, String plainTextToken) throws CompromisedCodeException {
+    protected Token grantToken(UUID authCodeUUID, String plainTextToken) throws CompromisedCodeException {
         Token token = makeToken.run(authCodeUUID, plainTextToken);
 
         try {
@@ -177,9 +174,9 @@ public class RequestTokenImpl implements RequestToken {
         return token;
     }
 
-    private Boolean isOpenId(List<Scope> scopes) {
-        for(Scope scope: scopes) {
-            if (scope.getName().equalsIgnoreCase("openid")) {
+    protected Boolean isOpenId(List<AccessRequestScope> accessRequestScopes) {
+        for(AccessRequestScope ars: accessRequestScopes) {
+            if (ars.getScope().getName().equalsIgnoreCase("openid")) {
                 return true;
             }
         }

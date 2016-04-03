@@ -109,9 +109,10 @@ public class AuthCodeMapperTest {
         assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
 
         // scopes
-        assertThat(ar.getScopes()).isNotNull();
-        assertThat(ar.getScopes().size()).isEqualTo(1);
-        assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(ar.getAccessRequestScopes()).isNotNull();
+        assertThat(ar.getAccessRequestScopes().size()).isEqualTo(1);
+        assertThat(ar.getAccessRequestScopes().get(0).getScope()).isNotNull();
+        assertThat(ar.getAccessRequestScopes().get(0).getScope().getName()).isEqualTo("profile");
         assertThat(ar.getRedirectURI().isPresent()).isTrue();
         assertThat(ar.getRedirectURI().get().toString()).isEqualTo(FixtureFactory.SECURE_REDIRECT_URI);
     }
@@ -131,9 +132,10 @@ public class AuthCodeMapperTest {
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar).isNotNull();
         assertThat(ar.getUuid()).isEqualTo(expected.getAccessRequest().getUuid());
-        assertThat(ar.getScopes()).isNotNull();
-        assertThat(ar.getScopes().size()).isEqualTo(1);
-        assertThat(ar.getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(ar.getAccessRequestScopes()).isNotNull();
+        assertThat(ar.getAccessRequestScopes().size()).isEqualTo(1);
+        assertThat(ar.getAccessRequestScopes().get(0).getScope()).isNotNull();
+        assertThat(ar.getAccessRequestScopes().get(0).getScope().getName()).isEqualTo("profile");
         assertThat(ar.getRedirectURI().isPresent()).isFalse();
     }
 

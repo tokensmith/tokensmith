@@ -15,8 +15,9 @@ public class AccessRequest {
     private UUID resourceOwnerUUID;
     private UUID clientUUID;
     private Optional<URI> redirectURI;
+    private List<AccessRequestScope> accessRequestScopes;
     private OffsetDateTime createdAt;
-    private List<Scope> scopes;
+
 
     public AccessRequest() {}
 
@@ -59,19 +60,20 @@ public class AccessRequest {
         this.redirectURI = redirectURI;
     }
 
+
+    public List<AccessRequestScope> getAccessRequestScopes() {
+        return accessRequestScopes;
+    }
+
+    public void setAccessRequestScopes(List<AccessRequestScope> accessRequestScopes) {
+        this.accessRequestScopes = accessRequestScopes;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public List<Scope> getScopes() {
-        return scopes;
-    }
-
-    public void setScopes(List<Scope> scopes) {
-        this.scopes = scopes;
     }
 }
