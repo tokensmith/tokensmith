@@ -35,8 +35,8 @@ public class AuthCodeRepositoryImpl implements AuthCodeRepository {
     }
 
     @Override
-    public AuthCode getByClientUUIDAndAuthCodeAndNotRevoked(UUID clientUUID, String code) throws RecordNotFoundException {
-        AuthCode authCode = authCodeMapper.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code);
+    public AuthCode getByClientIdAndAuthCode(UUID clientUUID, String code) throws RecordNotFoundException {
+        AuthCode authCode = authCodeMapper.getByClientIdAndAuthCode(clientUUID, code);
 
         if (authCode == null) {
             throw new RecordNotFoundException("AuthCode record was not found.");

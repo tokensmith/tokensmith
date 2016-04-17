@@ -20,6 +20,7 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
+import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
@@ -45,9 +46,10 @@ public class RequestTokenImpl implements RequestToken {
     private RandomString randomString;
     private MakeToken makeToken;
     private TokenRepository tokenRepository;
+    private AuthCodeTokenRepository authCodeTokenRepository;
 
     @Autowired
-    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository) {
+    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.jsonToTokenRequest = jsonToTokenRequest;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
@@ -56,6 +58,7 @@ public class RequestTokenImpl implements RequestToken {
         this.randomString = randomString;
         this.makeToken = makeToken;
         this.tokenRepository = tokenRepository;
+        this.authCodeTokenRepository = authCodeTokenRepository;
     }
 
     /**
@@ -131,7 +134,7 @@ public class RequestTokenImpl implements RequestToken {
     protected AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
         AuthCode authCode;
         try {
-            authCode = authCodeRepository.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, hashedCode);
+            authCode = authCodeRepository.getByClientIdAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
             throw new AuthorizationCodeNotFound(
                     "Access Request was not found", "invalid_grant", e, ErrorCode.AUTH_CODE_NOT_FOUND.getCode()
@@ -163,6 +166,14 @@ public class RequestTokenImpl implements RequestToken {
 
         try {
             tokenRepository.insert(token);
+
+            AuthCodeToken authCodeToken = new AuthCodeToken();
+            authCodeToken.setId(UUID.randomUUID());
+            authCodeToken.setTokenId(token.getUuid());
+            authCodeToken.setAuthCodeId(authCodeUUID);
+
+            authCodeTokenRepository.insert(authCodeToken);
+
         } catch (DuplicateRecordException e) {
             tokenRepository.revoke(authCodeUUID);
 
