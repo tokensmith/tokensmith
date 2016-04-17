@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -31,15 +32,15 @@ public class TokenMapperTest {
 
     @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
-
     @Autowired
     private RandomString randomString;
-
+    @Autowired
+    private AuthCodeTokenRepository authCodeTokenRepository;
     @Autowired
     private TokenMapper subject;
 
     @Test
-    public void insert() throws URISyntaxException, DuplicateRecordException {
+    public void insert() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
         Token token = FixtureFactory.makeToken(authCode.getUuid());
@@ -47,7 +48,7 @@ public class TokenMapperTest {
     }
 
     @Test (expected = DuplicateKeyException.class)
-    public void insertExpectDuplicateAuthorizationCode() throws URISyntaxException, DuplicateRecordException {
+    public void insertExpectDuplicateAuthorizationCode() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -61,16 +62,27 @@ public class TokenMapperTest {
     }
 
     @Test
-    public void revokeExpectRevokeIsTrue() throws DuplicateRecordException, URISyntaxException {
+    public void revokeShouldRevoke() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
-        subject.insert(token);
+        Token tokenToRevoke = FixtureFactory.makeToken(authCode.getUuid());
+        subject.insert(tokenToRevoke);
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setTokenId(tokenToRevoke.getUuid());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+
+        authCodeTokenRepository.insert(authCodeToken);
 
         subject.revoke(authCode.getUuid());
 
-        Token revokedToken = subject.getByAuthCodeUUID(authCode.getUuid());
+        Token revokedToken = subject.getByAuthCodeId(authCode.getUuid());
         assertTrue(revokedToken.isRevoked());
+
+        /**
+         * TODO: make sure it only revokes a token connected to the auth code id.
+         */
     }
 }

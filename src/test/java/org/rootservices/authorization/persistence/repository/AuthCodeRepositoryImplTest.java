@@ -48,23 +48,23 @@ public class AuthCodeRepositoryImplTest {
     }
 
     @Test
-    public void getByClientUUIDAndAuthCodeAndNotRevoked() throws RecordNotFoundException {
+    public void getByClientIdAndAuthCodeShouldBeOk() throws RecordNotFoundException {
         UUID clientUUID = UUID.randomUUID();
         String code = "authorization-code";
         AuthCode expected = new AuthCode();
-        when(mockMapper.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code)).thenReturn(expected);
+        when(mockMapper.getByClientIdAndAuthCode(clientUUID, code)).thenReturn(expected);
 
-        AuthCode actual = subject.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(clientUUID, code);
         assertThat(actual).isEqualTo(expected);
     }
 
 
     @Test(expected = RecordNotFoundException.class)
-    public void getByClientUUIDAndAuthCodeAndNotRevokedRecordNotFound() throws RecordNotFoundException {
+    public void getByClientIdAndAuthCodeShouldThrowRecordNotFound() throws RecordNotFoundException {
         UUID clientUUID = UUID.randomUUID();
         String code = "authorization-code";
-        when(mockMapper.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code)).thenReturn(null);
+        when(mockMapper.getByClientIdAndAuthCode(clientUUID, code)).thenReturn(null);
 
-        subject.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code);
+        subject.getByClientIdAndAuthCode(clientUUID, code);
     }
 }

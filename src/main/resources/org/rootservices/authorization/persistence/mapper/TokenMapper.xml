@@ -13,7 +13,7 @@
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
-    <select id="getByAuthCodeUUID" resultMap="token">
+    <select id="getByAuthCodeId" resultMap="token">
         select
             token.uuid,
             token.auth_code_uuid,
@@ -21,7 +21,7 @@
             token.expires_at,
             token.created_at
         from token
-        where token.auth_code_uuid = #{authCodeUUID}
+        where token.auth_code_uuid = #{authCodeId}
     </select>
 
     <insert id="insert" >
@@ -37,7 +37,10 @@
     <update id="revoke">
         update token
         set revoked = true
-        where token.auth_code_uuid = #{authCodeUUID}
+        from auth_code_token, auth_code
+        where auth_code_token.token_id = token.uuid
+        and auth_code.uuid = auth_code_token.auth_code_id
+        and auth_code.uuid = #{authCodeId}
     </update>
 
 </mapper>
