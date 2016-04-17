@@ -1,0 +1,1 @@
+alter table auth_code_token add constraint auth_code_id_unique unique (auth_code_id);
