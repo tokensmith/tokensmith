@@ -9,8 +9,14 @@
         <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
+        <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+        <collection property="tokenScopes"
+                    resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
+                    columnPrefix="ts_"
+                    javaType="ArrayList"/>
     </resultMap>
 
     <select id="getByAuthCodeId" resultMap="token">
@@ -18,6 +24,7 @@
             token.uuid,
             token.auth_code_uuid,
             token.revoked,
+            token.grant_type,
             token.expires_at,
             token.created_at
         from token
@@ -25,11 +32,12 @@
     </select>
 
     <insert id="insert" >
-        insert into token (uuid, auth_code_uuid, token, expires_at)
+        insert into token (uuid, auth_code_uuid, token, grant_type, expires_at)
         values (
             #{token.uuid},
             #{token.authCodeUUID},
             #{token.token},
+            #{token.grantType},
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
