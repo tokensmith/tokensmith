@@ -27,17 +27,4 @@ public class AccessRequestRepositoryImpl implements AccessRequestRepository {
     public void insert(AccessRequest accessRequest) {
         accessRequestMapper.insert(accessRequest);
     }
-
-    @Override
-    public AccessRequest getByAccessToken(String accessToken) throws RecordNotFoundException {
-        AccessRequest accessRequest = accessRequestMapper.getByAccessToken(accessToken.getBytes());
-
-        if (accessRequest == null) {
-            throw new RecordNotFoundException("Could not find access request");
-        }
-        return accessRequest;
-
-    }
-
-
 }

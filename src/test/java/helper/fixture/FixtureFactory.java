@@ -57,11 +57,17 @@ public class FixtureFactory {
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
 
+        Scope scope = makeScope();
+        scopes.add(scope);
+        return scopes;
+    }
+
+    public static Scope makeScope() {
         Scope scope = new Scope();
         scope.setUuid(UUID.randomUUID());
         scope.setName("profile");
-        scopes.add(scope);
-        return scopes;
+
+        return scope;
     }
 
     public static List<Scope> makeOpenIdScopes() {
@@ -167,12 +173,11 @@ public class FixtureFactory {
         return accessRequest;
     }
 
-    public static Token makeToken(UUID authCodeUUID) {
+    public static Token makeToken() {
         RandomString randomString = new RandomStringImpl();
 
         Token token = new Token();
         token.setUuid(UUID.randomUUID());
-        token.setAuthCodeUUID(authCodeUUID);
         token.setToken(randomString.run().getBytes());
         token.setExpiresAt(OffsetDateTime.now());
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
@@ -183,7 +188,7 @@ public class FixtureFactory {
     public static ResourceOwnerToken makeResourceOwnerToken() {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setResourceOwner(makeResourceOwner());
-        resourceOwnerToken.setToken(makeToken(UUID.randomUUID()));
+        resourceOwnerToken.setToken(makeToken());
         return resourceOwnerToken;
     }
 

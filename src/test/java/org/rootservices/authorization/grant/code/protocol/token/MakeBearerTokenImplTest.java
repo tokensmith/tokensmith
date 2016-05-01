@@ -31,14 +31,13 @@ public class MakeBearerTokenImplTest {
 
     @Test
     public void testRun() throws Exception {
-        UUID authCodeUUID = UUID.randomUUID();
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        Token actual = subject.run(authCodeUUID, plainTextToken);
+        Token actual = subject.run(plainTextToken);
         assertThat(actual.getUuid()).isNotNull();
-        assertThat(actual.getAuthCodeUUID()).isEqualTo(authCodeUUID);
+
         assertThat(actual.getToken()).isNotNull();
         assertThat(actual.getToken()).isEqualTo(hashedToken.getBytes());
         assertThat(actual.getExpiresAt()).isNotNull();

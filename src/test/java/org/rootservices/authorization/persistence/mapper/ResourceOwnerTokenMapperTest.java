@@ -27,11 +27,11 @@ import static org.junit.Assert.*;
 public class ResourceOwnerTokenMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
-    @Autowired
-    private RandomString randomString;
+    ResourceOwnerMapper resourceOwnerMapper;
     @Autowired
     private TokenMapper tokenMapper;
+    @Autowired
+    private ScopeMapper scopeMapper;
     @Autowired
     private TokenScopeMapper tokenScopeMapper;
     @Autowired
@@ -40,12 +40,12 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenMapper.insert(token);
 
-        Scope scope = authCode.getAccessRequest().getAccessRequestScopes().get(0).getScope();
+        Scope scope = FixtureFactory.makeScope();
+        scopeMapper.insert(scope);
+
         TokenScope tokenScope = new TokenScope();
         tokenScope.setId(UUID.randomUUID());
         tokenScope.setTokenId(token.getUuid());
@@ -53,10 +53,13 @@ public class ResourceOwnerTokenMapperTest {
         tokenScopeMapper.insert(tokenScope);
         // end prepare db for test
 
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(resourceOwner);
+
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         ResourceOwner ro = new ResourceOwner();
-        ro.setUuid(authCode.getAccessRequest().getResourceOwnerUUID());
+        ro.setUuid(resourceOwner.getUuid());
         resourceOwnerToken.setResourceOwner(ro);
         resourceOwnerToken.setToken(token);
 
@@ -71,22 +74,25 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void getByAccessTokenShouldBeOk() throws Exception {
         // begin prepare db for test
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenMapper.insert(token);
 
-        Scope scope = authCode.getAccessRequest().getAccessRequestScopes().get(0).getScope();
+        Scope scope = FixtureFactory.makeScope();
+        scopeMapper.insert(scope);
+
         TokenScope tokenScope = new TokenScope();
         tokenScope.setId(UUID.randomUUID());
         tokenScope.setTokenId(token.getUuid());
         tokenScope.setScope(scope);
         tokenScopeMapper.insert(tokenScope);
 
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(resourceOwner);
+
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         ResourceOwner ro = new ResourceOwner();
-        ro.setUuid(authCode.getAccessRequest().getResourceOwnerUUID());
+        ro.setUuid(resourceOwner.getUuid());
         resourceOwnerToken.setResourceOwner(ro);
         resourceOwnerToken.setToken(token);
         subject.insert(resourceOwnerToken);

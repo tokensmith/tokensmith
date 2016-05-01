@@ -166,7 +166,7 @@ public class RequestTokenImpl implements RequestToken {
     }
 
     protected Token grantToken(UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
-        Token token = makeToken.run(authCodeId, plainTextToken);
+        Token token = makeToken.run(plainTextToken);
 
         try {
             tokenRepository.insert(token);

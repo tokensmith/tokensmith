@@ -26,11 +26,10 @@ public class MakeBearerTokenImpl implements MakeToken {
     }
 
     @Override
-    public Token run(UUID authCodeUUID, String plainTextToken) {
+    public Token run(String plainTextToken) {
 
         Token token = new Token();
         token.setUuid(UUID.randomUUID());
-        token.setAuthCodeUUID(authCodeUUID);
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);
