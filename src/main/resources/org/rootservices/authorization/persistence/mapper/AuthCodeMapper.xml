@@ -37,8 +37,11 @@
             auth_code.revoked,
 
             ar.uuid as ar_uuid,
+            ar.resource_owner_uuid as ar_resource_owner_uuid,
             ar.redirect_uri as ar_redirect_uri,
             ar.created_at as ar_created_at,
+
+
 
             ars.uuid as ar_ars_uuid,
 
@@ -53,6 +56,7 @@
 
         from auth_code
         join access_request ar on ar.uuid = auth_code.access_request_uuid
+        join resource_owner ro on ro.uuid = ar.resource_owner_uuid
         left join access_request_scopes ars on ars.access_request_uuid = ar.uuid
         left join scope on scope.uuid = ars.scope_uuid
         left join auth_code_token on auth_code_token.auth_code_id = auth_code.uuid
