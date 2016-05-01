@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
@@ -99,5 +101,26 @@ public class AuthCodeTokenMapperTest {
 
         subject.insert(authCodeToken);
         subject.insert(authCodeToken);
+    }
+
+    @Test
+    public void getByTokenIdShouldBeOk() throws Exception{
+        AuthCode authCode = insertAuthCodeForTest();
+        Token token = insertTokenForTest(authCode.getUuid());
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setTokenId(token.getUuid());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+
+        subject.insert(authCodeToken);
+
+        AuthCodeToken actual = subject.getByTokenId(token.getUuid());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAuthCodeId(), is(authCode.getUuid()));
+        assertThat(actual.getTokenId(), is(token.getUuid()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }
 }

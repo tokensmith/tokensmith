@@ -37,7 +37,6 @@ public class ResourceOwnerTokenMapperTest {
     @Autowired
     private ResourceOwnerTokenMapper subject;
 
-
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
@@ -52,7 +51,7 @@ public class ResourceOwnerTokenMapperTest {
         tokenScope.setTokenId(token.getUuid());
         tokenScope.setScope(scope);
         tokenScopeMapper.insert(tokenScope);
-        // end preprate db for test
+        // end prepare db for test
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
@@ -64,6 +63,35 @@ public class ResourceOwnerTokenMapperTest {
         subject.insert(resourceOwnerToken);
 
         // make sure it was inserted.
+        ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
+        assertThat(actual, is(notNullValue()));
+    }
+
+
+    @Test
+    public void getByAccessTokenShouldBeOk() throws Exception {
+        // begin prepare db for test
+        String plainTextAuthCode = randomString.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        tokenMapper.insert(token);
+
+        Scope scope = authCode.getAccessRequest().getAccessRequestScopes().get(0).getScope();
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getUuid());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        ResourceOwner ro = new ResourceOwner();
+        ro.setUuid(authCode.getAccessRequest().getResourceOwnerUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        subject.insert(resourceOwnerToken);
+        // end prepare db for test
+
         ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
 
         assertThat(actual, is(notNullValue()));
@@ -77,11 +105,12 @@ public class ResourceOwnerTokenMapperTest {
         assertThat(actual.getToken(), is(notNullValue()));
         assertThat(actual.getToken().getUuid(), is(token.getUuid()));
         assertThat(actual.getToken().isRevoked(), is(false));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
         assertThat(actual.getToken().getExpiresAt(), is(notNullValue()));
 
-        // TODO: need to inspect token scopes are present and accurate.
         assertThat(actual.getToken().getTokenScopes().size(), is(1));
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getName(), is("profile"));
 
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));

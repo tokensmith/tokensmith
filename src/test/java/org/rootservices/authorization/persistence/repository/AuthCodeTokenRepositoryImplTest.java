@@ -6,12 +6,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.AuthCodeToken;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.AuthCodeTokenMapper;
 
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by tommackenzie on 4/16/16.
@@ -44,5 +46,25 @@ public class AuthCodeTokenRepositoryImplTest {
         doThrow(org.springframework.dao.DuplicateKeyException.class).when(mockAuthCodeTokenMapper).insert(authCodeToken);
 
         subject.insert(authCodeToken);
+    }
+
+    @Test
+    public void getByTokenIdShouldBeOk() throws Exception{
+        UUID tokenId = UUID.randomUUID();
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+
+        when(mockAuthCodeTokenMapper.getByTokenId(tokenId)).thenReturn(authCodeToken);
+
+        AuthCodeToken actual = subject.getByTokenId(tokenId);
+        assertThat(actual, is(authCodeToken));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByTokenIdShouldThrowRecordNotFound() throws Exception {
+        UUID tokenId = UUID.randomUUID();
+
+        when(mockAuthCodeTokenMapper.getByTokenId(tokenId)).thenReturn(null);
+
+        subject.getByTokenId(tokenId);
     }
 }

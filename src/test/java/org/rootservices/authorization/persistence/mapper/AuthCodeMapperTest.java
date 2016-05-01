@@ -113,6 +113,7 @@ public class AuthCodeMapperTest {
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar, notNullValue());
         assertThat(ar.getUuid(), is(expected.getAccessRequest().getUuid()));
+        assertThat(ar.getResourceOwnerUUID(), is(expected.getAccessRequest().getResourceOwnerUUID()));
 
         // scopes
         assertThat(ar.getAccessRequestScopes(), is(notNullValue()));

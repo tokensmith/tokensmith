@@ -34,13 +34,14 @@
 
         token.uuid as token_uuid,
         token.revoked as token_revoked,
+        token.grant_type as token_grant_type,
         token.expires_at as token_expires_at,
         token.created_at as token_created_at,
 
         token_scope.id as token_ts_id,
         token_scope.token_id as token_ts_token_id,
         token_scope.created_at as token_ts_created_at,
-        token_scope.updated_at as token_ts_updatd_at,
+        token_scope.updated_at as token_ts_updated_at,
 
         scope.uuid as token_ts_scope_uuid,
         scope.name as token_ts_scope_name,

@@ -12,15 +12,9 @@ import org.rootservices.authorization.grant.openid.protocol.token.exception.Prof
 import org.rootservices.authorization.grant.openid.protocol.token.factory.IdTokenFactory;
 import org.rootservices.authorization.grant.openid.protocol.token.response.entity.IdToken;
 import org.rootservices.authorization.grant.openid.protocol.token.translator.PrivateKeyTranslator;
-import org.rootservices.authorization.persistence.entity.AccessRequest;
-import org.rootservices.authorization.persistence.entity.Profile;
-import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
-import org.rootservices.authorization.persistence.repository.ProfileRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.jwt.builder.SecureJwtBuilder;
 import org.rootservices.jwt.config.AppFactory;
@@ -53,7 +47,7 @@ public class BuildIdentityTokenImplTest {
     @Mock
     private RsaPrivateKeyRepository mockRsaPrivateKeyRepository;
     @Mock
-    private AccessRequestRepository mockAccessRequestRepository;
+    private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
     private PrivateKeyTranslator mockPrivateKeyTranslator;
     @Mock
@@ -69,7 +63,7 @@ public class BuildIdentityTokenImplTest {
         subject = new BuildIdentityTokenImpl(
                 mockHashText,
                 mockRsaPrivateKeyRepository,
-                mockAccessRequestRepository,
+                mockResourceOwnerTokenRepository,
                 mockPrivateKeyTranslator,
                 mockJwtAppFactory,
                 mockProfileRepository,
@@ -82,9 +76,8 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
         SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
@@ -95,10 +88,10 @@ public class BuildIdentityTokenImplTest {
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -109,7 +102,7 @@ public class BuildIdentityTokenImplTest {
         when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
                 .thenReturn(mockSecureJwtBuilder);
 
-        when(mockIdTokenFactory.make(ar.getAccessRequestScopes(), profile))
+        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtBuilder.build(idToken))
@@ -133,7 +126,7 @@ public class BuildIdentityTokenImplTest {
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
 
         subject.build(accessToken);
@@ -144,16 +137,15 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -168,19 +160,19 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenThrow(ProfileNotFoundException.class);
 
         subject.build(accessToken);
@@ -192,18 +184,17 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -223,18 +214,17 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -254,9 +244,8 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
         SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
@@ -264,10 +253,10 @@ public class BuildIdentityTokenImplTest {
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -278,7 +267,7 @@ public class BuildIdentityTokenImplTest {
         when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
                 .thenReturn(mockSecureJwtBuilder);
 
-        when(mockIdTokenFactory.make(ar.getAccessRequestScopes(), profile))
+        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtBuilder.build(idToken))
@@ -292,9 +281,8 @@ public class BuildIdentityTokenImplTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwner.getUuid(), UUID.randomUUID());
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
         SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
@@ -304,10 +292,10 @@ public class BuildIdentityTokenImplTest {
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockAccessRequestRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(ar);
+        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+                .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(ar.getResourceOwnerUUID()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -318,7 +306,7 @@ public class BuildIdentityTokenImplTest {
         when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
                 .thenReturn(mockSecureJwtBuilder);
 
-        when(mockIdTokenFactory.make(ar.getAccessRequestScopes(), profile))
+        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtBuilder.build(idToken))

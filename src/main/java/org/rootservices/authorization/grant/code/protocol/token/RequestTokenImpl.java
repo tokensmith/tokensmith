@@ -19,9 +19,7 @@ import org.rootservices.authorization.grant.code.protocol.token.validator.except
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
-import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +45,11 @@ public class RequestTokenImpl implements RequestToken {
     private MakeToken makeToken;
     private TokenRepository tokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
+    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
+    private TokenScopeRepository tokenScopeRepository;
 
     @Autowired
-    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository) {
+    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, MakeToken makeToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.jsonToTokenRequest = jsonToTokenRequest;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
@@ -59,6 +59,8 @@ public class RequestTokenImpl implements RequestToken {
         this.makeToken = makeToken;
         this.tokenRepository = tokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
+        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
+        this.tokenScopeRepository = tokenScopeRepository;
     }
 
     /**
@@ -87,8 +89,10 @@ public class RequestTokenImpl implements RequestToken {
         AuthCode authCode = fetchAndVerifyAuthCode(clientUUID, hashedCode, tokenRequest.getRedirectUri());
 
         String plainTextToken = randomString.run();
-        Token token = grantToken(authCode.getUuid(), plainTextToken);
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerUUID();
+        List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
+        Token token = grantToken(authCode.getUuid(), resourceOwnerId, plainTextToken, accessRequestScopes);
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(plainTextToken);
         tokenResponse.setExpiresIn(makeToken.getSecondsToExpiration());
@@ -161,8 +165,8 @@ public class RequestTokenImpl implements RequestToken {
         return matches;
     }
 
-    protected Token grantToken(UUID authCodeUUID, String plainTextToken) throws CompromisedCodeException {
-        Token token = makeToken.run(authCodeUUID, plainTextToken);
+    protected Token grantToken(UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+        Token token = makeToken.run(authCodeId, plainTextToken);
 
         try {
             tokenRepository.insert(token);
@@ -170,12 +174,31 @@ public class RequestTokenImpl implements RequestToken {
             AuthCodeToken authCodeToken = new AuthCodeToken();
             authCodeToken.setId(UUID.randomUUID());
             authCodeToken.setTokenId(token.getUuid());
-            authCodeToken.setAuthCodeId(authCodeUUID);
+            authCodeToken.setAuthCodeId(authCodeId);
 
             authCodeTokenRepository.insert(authCodeToken);
 
+            ResourceOwner resourceOwner = new ResourceOwner();
+            resourceOwner.setUuid(resourceOwnerId);
+
+            ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+            resourceOwnerToken.setId(UUID.randomUUID());
+            resourceOwnerToken.setResourceOwner(resourceOwner);
+            resourceOwnerToken.setToken(token);
+
+            resourceOwnerTokenRepository.insert(resourceOwnerToken);
+
+            for(AccessRequestScope ars: accessRequestScopes) {
+                TokenScope ts = new TokenScope();
+                ts.setId(UUID.randomUUID());
+                ts.setTokenId(token.getUuid());
+                ts.setScope(ars.getScope());
+
+                tokenScopeRepository.insert(ts);
+            }
+
         } catch (DuplicateRecordException e) {
-            tokenRepository.revoke(authCodeUUID);
+            tokenRepository.revoke(authCodeId);
 
             throw new CompromisedCodeException(
                     ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),

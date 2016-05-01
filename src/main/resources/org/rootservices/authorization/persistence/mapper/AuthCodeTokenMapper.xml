@@ -20,4 +20,15 @@
         #{authCodeToken.tokenId}
         )
     </insert>
+
+    <select id="getByTokenId" resultMap="authCodeToken">
+        select
+            id,
+            auth_code_id,
+            token_id,
+            created_at,
+            updated_at
+        from auth_code_token
+        where token_id = #{tokenId}
+    </select>
 </mapper>

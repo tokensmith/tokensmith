@@ -180,6 +180,13 @@ public class FixtureFactory {
         return token;
     }
 
+    public static ResourceOwnerToken makeResourceOwnerToken() {
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setResourceOwner(makeResourceOwner());
+        resourceOwnerToken.setToken(makeToken(UUID.randomUUID()));
+        return resourceOwnerToken;
+    }
+
     public static AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {
         AuthCodeInput input = new AuthCodeInput();
         input.setUserName(makeRandomEmail());
