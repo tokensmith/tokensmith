@@ -41,32 +41,17 @@ public class TokenMapperTest {
 
     @Test
     public void insert() throws Exception {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         subject.insert(token);
-    }
-
-    @Test (expected = DuplicateKeyException.class)
-    public void insertExpectDuplicateAuthorizationCode() throws Exception {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        // first token.
-        Token token1 = FixtureFactory.makeToken(authCode.getUuid());
-        subject.insert(token1);
-
-        // second token.
-        Token token2 = FixtureFactory.makeToken(authCode.getUuid());
-        subject.insert(token2);
     }
 
     @Test
     public void revokeShouldRevoke() throws Exception {
+        // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token tokenToRevoke = FixtureFactory.makeToken(authCode.getUuid());
+        Token tokenToRevoke = FixtureFactory.makeToken();
         subject.insert(tokenToRevoke);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -75,6 +60,7 @@ public class TokenMapperTest {
         authCodeToken.setAuthCodeId(authCode.getUuid());
 
         authCodeTokenRepository.insert(authCodeToken);
+        // end prepare db for test.
 
         subject.revoke(authCode.getUuid());
 

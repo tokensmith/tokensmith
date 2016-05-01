@@ -33,6 +33,7 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.*;
@@ -650,10 +651,18 @@ public class RequestTokenImplTest {
     @Test
     public void runExpectCompromisedCodeException() throws DuplicateRecordException, URISyntaxException {
 
+        // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenRepository.insert(token);
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getUuid());
+        authCodeTokenRepository.insert(authCodeToken);
+        // end - insert a token that relates to the auth code.
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +

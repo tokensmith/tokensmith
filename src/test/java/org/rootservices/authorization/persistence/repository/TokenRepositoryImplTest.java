@@ -33,14 +33,14 @@ public class TokenRepositoryImplTest {
 
     @Test
     public void insert() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeToken(UUID.randomUUID());
+        Token token = FixtureFactory.makeToken();
         subject.insert(token);
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
     @Test(expected = DuplicateRecordException.class)
     public void insertDuplicateAuthCode() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeToken(UUID.randomUUID());
+        Token token = FixtureFactory.makeToken();
         doThrow(org.springframework.dao.DuplicateKeyException.class).when(mockTokenMapper).insert(token);
 
         subject.insert(token);
@@ -49,9 +49,9 @@ public class TokenRepositoryImplTest {
 
     @Test
     public void revoke() {
-        Token token = FixtureFactory.makeToken(UUID.randomUUID());
+        UUID authCodeId = UUID.randomUUID();
 
-        subject.revoke(token.getAuthCodeUUID());
-        verify(mockTokenMapper).revoke(token.getAuthCodeUUID());
+        subject.revoke(authCodeId);
+        verify(mockTokenMapper).revoke(authCodeId);
     }
 }

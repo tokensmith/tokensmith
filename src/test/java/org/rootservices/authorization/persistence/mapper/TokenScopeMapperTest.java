@@ -27,23 +27,21 @@ import static org.junit.Assert.*;
 public class TokenScopeMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
-    @Autowired
-    private RandomString randomString;
-    @Autowired
     private TokenMapper tokenMapper;
+    @Autowired
+    private ScopeMapper scopeMapper;
     @Autowired
     private TokenScopeMapper subject;
 
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenMapper.insert(token);
 
-        Scope scope = authCode.getAccessRequest().getAccessRequestScopes().get(0).getScope();
+        Scope scope = FixtureFactory.makeScope();
+        scopeMapper.insert(scope);
+
         // end prepare db for test.
 
         TokenScope tokenScope = new TokenScope();

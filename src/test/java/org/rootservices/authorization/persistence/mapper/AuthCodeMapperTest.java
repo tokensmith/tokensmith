@@ -168,7 +168,7 @@ public class AuthCodeMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenRepository.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
