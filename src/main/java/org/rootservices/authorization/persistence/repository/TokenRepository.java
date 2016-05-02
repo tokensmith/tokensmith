@@ -2,6 +2,7 @@ package org.rootservices.authorization.persistence.repository;
 
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.util.UUID;
 
@@ -10,5 +11,6 @@ import java.util.UUID;
  */
 public interface TokenRepository {
     void insert(Token token) throws DuplicateRecordException;
-    void revoke(UUID authCodeUUID);
+    void revokeByAuthCodeId(UUID authCodeId);
+    Token getByAuthCodeId(UUID authCodeId) throws RecordNotFoundException;
 }

@@ -33,6 +33,9 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
         List<String> datePatterns = new ArrayList<>();
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSSSX");
         datePatterns.add("yyyy-MM-dd H:m:s.SSSSX");
+        datePatterns.add("yyyy-MM-dd H:m:s.SSSX");
+        datePatterns.add("yyyy-MM-dd H:m:s.SSX");
+        datePatterns.add("yyyy-MM-dd H:m:s.SX");
 
         String columnValue = rs.getString(columnName);
         OffsetDateTime result = null;
