@@ -111,8 +111,8 @@ public class RequestTokenImpl implements RequestToken {
      * Makes a token request and validates the token request is accurate.
      *
      * @param payload
-     * @return
-     * @throws BadRequestException
+     * @return A object that represent a request for a token
+     * @throws BadRequestException A exception that contains information on why it was a bad request.
      */
     protected TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
 
@@ -198,7 +198,8 @@ public class RequestTokenImpl implements RequestToken {
             }
 
         } catch (DuplicateRecordException e) {
-            tokenRepository.revoke(authCodeId);
+            tokenRepository.revokeByAuthCodeId(authCodeId);
+            authCodeRepository.revokeById(authCodeId);
 
             throw new CompromisedCodeException(
                     ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),

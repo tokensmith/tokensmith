@@ -13,7 +13,9 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +57,7 @@ public class AuthCodeRepositoryImplTest {
         when(mockMapper.getByClientIdAndAuthCode(clientUUID, code)).thenReturn(expected);
 
         AuthCode actual = subject.getByClientIdAndAuthCode(clientUUID, code);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
 
@@ -66,5 +68,32 @@ public class AuthCodeRepositoryImplTest {
         when(mockMapper.getByClientIdAndAuthCode(clientUUID, code)).thenReturn(null);
 
         subject.getByClientIdAndAuthCode(clientUUID, code);
+    }
+
+    @Test
+    public void getByIdShouldBeOk() throws Exception {
+        UUID id = UUID.randomUUID();
+        AuthCode authCode = new AuthCode();
+
+        when(mockMapper.getById(id)).thenReturn(authCode);
+        AuthCode actual = subject.getById(id);
+
+        assertThat(actual, is(authCode));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByIdShouldThrowRecordNotFound() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        when(mockMapper.getById(id)).thenReturn(null);
+        subject.getById(id);
+    }
+
+    @Test
+    public void revokeByIdShouldBeOk() {
+        UUID id = UUID.randomUUID();
+
+        subject.revokeById(id);
+        verify(mockMapper, times(1)).revokeById(id);
     }
 }

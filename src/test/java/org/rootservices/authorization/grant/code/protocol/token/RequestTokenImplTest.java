@@ -18,6 +18,7 @@ import org.rootservices.authorization.grant.code.protocol.token.validator.except
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
@@ -59,6 +60,9 @@ public class RequestTokenImplTest {
 
     @Autowired
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
+
+    @Autowired
+    private AuthCodeRepository authCodeRepository;
 
     @Autowired
     private AuthCodeTokenRepository authCodeTokenRepository;
@@ -649,7 +653,7 @@ public class RequestTokenImplTest {
      * @throws URISyntaxException
      */
     @Test
-    public void runExpectCompromisedCodeException() throws DuplicateRecordException, URISyntaxException {
+    public void runExpectCompromisedCodeException() throws Exception {
 
         // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
@@ -696,5 +700,12 @@ public class RequestTokenImplTest {
         assertThat(exception.getError(), is("invalid_grant"));
         assertThat(exception.getDomainCause(), instanceOf(DuplicateRecordException.class));
 
+        // make sure the first token was revoked.
+        Token token1 = tokenRepository.getByAuthCodeId(authCode.getUuid());
+        assertThat(token1.isRevoked(), is(true));
+
+        // make sure the authorization code was revoked.
+        AuthCode authCode1 = authCodeRepository.getById(authCode.getUuid());
+        assertThat(authCode1.isRevoked(), is(true));
     }
 }

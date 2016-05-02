@@ -41,8 +41,6 @@
             ar.redirect_uri as ar_redirect_uri,
             ar.created_at as ar_created_at,
 
-
-
             ars.uuid as ar_ars_uuid,
 
             scope.uuid as ar_ars_scope_uuid,

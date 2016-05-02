@@ -21,6 +21,7 @@
     <select id="getByAuthCodeId" resultMap="token">
         select
             token.uuid,
+            token.token,
             token.revoked,
             token.grant_type,
             token.expires_at,
@@ -40,7 +41,7 @@
         )
     </insert>
 
-    <update id="revoke">
+    <update id="revokeByAuthCodeId">
         update token
         set revoked = true
         from auth_code_token, auth_code
