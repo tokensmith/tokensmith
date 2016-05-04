@@ -2,23 +2,21 @@ package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
-import helper.fixture.persistence.LoadClientWithScopes;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URISyntaxException;
+import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,46 +29,70 @@ public class TokenMapperTest {
 
     @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
-
     @Autowired
     private RandomString randomString;
-
+    @Autowired
+    private AuthCodeTokenRepository authCodeTokenRepository;
     @Autowired
     private TokenMapper subject;
 
     @Test
-    public void insert() throws URISyntaxException, DuplicateRecordException {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+    public void insert() throws Exception {
+        Token token = FixtureFactory.makeToken();
         subject.insert(token);
-    }
-
-    @Test (expected = DuplicateKeyException.class)
-    public void insertExpectDuplicateAuthorizationCode() throws URISyntaxException, DuplicateRecordException {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        // first token.
-        Token token1 = FixtureFactory.makeToken(authCode.getUuid());
-        subject.insert(token1);
-
-        // second token.
-        Token token2 = FixtureFactory.makeToken(authCode.getUuid());
-        subject.insert(token2);
     }
 
     @Test
-    public void revokeExpectRevokeIsTrue() throws DuplicateRecordException, URISyntaxException {
+    public void revokeByAuthCodeIdShouldBeOk() throws Exception {
+        // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token tokenToRevoke = FixtureFactory.makeToken();
+        subject.insert(tokenToRevoke);
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setTokenId(tokenToRevoke.getUuid());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+
+        authCodeTokenRepository.insert(authCodeToken);
+        // end prepare db for test.
+
+        subject.revokeByAuthCodeId(authCode.getUuid());
+
+        Token revokedToken = subject.getByAuthCodeId(authCode.getUuid());
+        assertTrue(revokedToken.isRevoked());
+
+        /**
+         * TODO: make sure it only revokes a token connected to the auth code id.
+         */
+    }
+
+    @Test
+    public void getByAuthCodeIdShouldBeOk() throws Exception {
+        // begin prepare db for test.
+        String plainTextAuthCode = randomString.run();
+        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+
+        Token token = FixtureFactory.makeToken();
         subject.insert(token);
 
-        subject.revoke(authCode.getUuid());
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getUuid());
+        authCodeTokenRepository.insert(authCodeToken);
+        // end prepare db for test.
 
-        Token revokedToken = subject.getByAuthCodeUUID(authCode.getUuid());
-        assertTrue(revokedToken.isRevoked());
+        Token actual = subject.getByAuthCodeId(authCode.getUuid());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getUuid(), is(token.getUuid()));
+        assertThat(actual.getToken(), is(token.getToken()));
+        assertThat(actual.isRevoked(), is(false));
+        assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));
     }
 }

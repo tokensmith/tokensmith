@@ -27,22 +27,4 @@
         )
     </insert>
 
-    <select id="getByAccessToken" resultMap="accessRequest">
-        select
-            ar.uuid,
-            ar.resource_owner_uuid,
-            ar.redirect_uri,
-            ar.created_at,
-            ars.uuid as ars_uuid,
-            ars.created_at as ars_created_at,
-            ars_scope.uuid as ars_scope_uuid,
-            ars_scope.name as ars_scope_name,
-            ars_scope.created_at as ars_scope_created_at
-        from access_request as ar
-        join access_request_scopes ars on ars.access_request_uuid = ar.uuid
-        join scope ars_scope on ars_scope.uuid = ars.scope_uuid
-        join auth_code on auth_code.access_request_uuid = ar.uuid
-        join token on token.auth_code_uuid = auth_code.uuid
-        where token.token = #{accessToken}
-    </select>
 </mapper>

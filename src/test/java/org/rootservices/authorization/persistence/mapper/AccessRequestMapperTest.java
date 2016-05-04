@@ -56,25 +56,4 @@ public class AccessRequestMapperTest {
 
         subject.insert(accessRequest);
     }
-
-    @Test
-    public void getByAccessToken() throws DuplicateRecordException, URISyntaxException {
-        Token token = loadOpenIdConfidentialClientAll.run();
-        AccessRequest actual = subject.getByAccessToken(token.getToken());
-
-        assertThat(actual.getUuid(), is(notNullValue()));
-        assertThat(actual.getRedirectURI().isPresent(), is(true));
-        assertThat(actual.getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getResourceOwnerUUID(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes().size(), is(1));
-        assertThat(actual.getAccessRequestScopes().get(0).getUuid(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes().get(0).getCreatedAt(), is(notNullValue()));
-
-        assertThat(actual.getAccessRequestScopes().get(0).getScope(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes().get(0).getScope().getUuid(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes().get(0).getScope().getName(), is(notNullValue()));
-        assertThat(actual.getAccessRequestScopes().get(0).getScope().getName(), is("openid"));
-        assertThat(actual.getAccessRequestScopes().get(0).getScope().getCreatedAt(), is(notNullValue()));
-    }
 }

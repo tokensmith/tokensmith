@@ -1,0 +1,1 @@
+alter table token drop auth_code_uuid;

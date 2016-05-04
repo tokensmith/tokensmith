@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.entity;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -11,6 +12,7 @@ public class AuthCode {
     private byte[] code;
     private Boolean revoked;
     private AccessRequest accessRequest;
+    private Token token;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
@@ -62,6 +64,14 @@ public class AuthCode {
 
     public void setAccessRequest(AccessRequest accessRequest) {
         this.accessRequest = accessRequest;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     public OffsetDateTime getExpiresAt() {

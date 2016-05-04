@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,6 +53,7 @@ public class LoadConfidentialClientTokenReady {
         }
 
         accessRequestRepository.insert(accessRequest);
+        accessRequest.setAccessRequestScopes(new ArrayList<>());
 
         // make access request scopes match client.
         for (Scope scope: client.getScopes()) {
@@ -61,6 +63,7 @@ public class LoadConfidentialClientTokenReady {
                     scope
             );
             accessRequestScopesRepository.insert(ars);
+            accessRequest.getAccessRequestScopes().add(ars);
         }
 
         AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked, plainTextAuthCode);

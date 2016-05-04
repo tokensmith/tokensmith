@@ -10,9 +10,11 @@ import org.rootservices.authorization.grant.openid.protocol.token.translator.Pri
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
+import org.rootservices.authorization.persistence.entity.ResourceOwnerToken;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.AccessRequestRepository;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
+import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.jwt.builder.SecureJwtBuilder;
@@ -38,17 +40,17 @@ import java.util.Optional;
 public class BuildIdentityTokenImpl implements BuildIdentityToken {
     private HashTextStaticSalt hashText;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
-    private AccessRequestRepository accessRequestRepository;
+    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private PrivateKeyTranslator privateKeyTranslator;
     private AppFactory jwtAppFactory;
     private ProfileRepository profileRepository;
     private IdTokenFactory idTokenFactory;
 
     @Autowired
-    public BuildIdentityTokenImpl(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, AccessRequestRepository accessRequestRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
+    public BuildIdentityTokenImpl(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
-        this.accessRequestRepository = accessRequestRepository;
+        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.privateKeyTranslator = privateKeyTranslator;
         this.jwtAppFactory = jwtAppFactory;
         this.profileRepository = profileRepository;
@@ -60,9 +62,9 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
 
         String hashedAccessToken = hashText.run(accessToken);
 
-        AccessRequest accessRequest = null;
+        ResourceOwnerToken resourceOwnerToken = null;
         try {
-             accessRequest = accessRequestRepository.getByAccessToken(hashedAccessToken);
+            resourceOwnerToken = resourceOwnerTokenRepository.getByAccessToken(hashedAccessToken);
         } catch (RecordNotFoundException e) {
             throw new AccessRequestNotFoundException("Could not find resource owner", e);
         }
@@ -76,7 +78,7 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
 
         Profile profile = null;
         try {
-            profile = profileRepository.getByResourceOwnerId(accessRequest.getResourceOwnerUUID());
+            profile = profileRepository.getByResourceOwnerId(resourceOwnerToken.getResourceOwner().getUuid());
         } catch (RecordNotFoundException e) {
             throw new ProfileNotFoundException("Profile was not found", e);
         }
@@ -92,7 +94,8 @@ public class BuildIdentityTokenImpl implements BuildIdentityToken {
             throw new IdTokenException("key is invalid", e);
         }
 
-        IdToken idToken = idTokenFactory.make(accessRequest.getAccessRequestScopes(), profile);
+
+        IdToken idToken = idTokenFactory.make(resourceOwnerToken.getToken().getTokenScopes(), profile);
 
         JsonWebToken jsonWebToken = null;
         try {

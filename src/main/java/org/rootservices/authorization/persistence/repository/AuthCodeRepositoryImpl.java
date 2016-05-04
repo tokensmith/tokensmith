@@ -15,12 +15,12 @@ import java.util.UUID;
  */
 @Component
 public class AuthCodeRepositoryImpl implements AuthCodeRepository {
+    private static String DUPLICATE_RECORD_MSG = "Could not insert auth_code record.";
+    private static String RECORD_NOT_FOUND_MSG = "AuthCode record was not found.";
 
-    @Autowired
     private AuthCodeMapper authCodeMapper;
 
-    public AuthCodeRepositoryImpl() {}
-
+    @Autowired
     public AuthCodeRepositoryImpl(AuthCodeMapper authCodeMapper) {
         this.authCodeMapper = authCodeMapper;
     }
@@ -30,20 +30,35 @@ public class AuthCodeRepositoryImpl implements AuthCodeRepository {
         try {
             authCodeMapper.insert(authCode);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateRecordException("Could not insert auth_code record.", e);
+            throw new DuplicateRecordException(DUPLICATE_RECORD_MSG, e);
         }
     }
 
     @Override
-    public AuthCode getByClientUUIDAndAuthCodeAndNotRevoked(UUID clientUUID, String code) throws RecordNotFoundException {
-        AuthCode authCode = authCodeMapper.getByClientUUIDAndAuthCodeAndNotRevoked(clientUUID, code);
+    public AuthCode getByClientIdAndAuthCode(UUID clientUUID, String code) throws RecordNotFoundException {
+        AuthCode authCode = authCodeMapper.getByClientIdAndAuthCode(clientUUID, code);
 
         if (authCode == null) {
-            throw new RecordNotFoundException("AuthCode record was not found.");
+            throw new RecordNotFoundException(RECORD_NOT_FOUND_MSG);
         }
 
         return authCode;
     }
 
+    @Override
+    public AuthCode getById(UUID id) throws RecordNotFoundException {
+        AuthCode authCode = authCodeMapper.getById(id);
+
+        if (authCode == null) {
+            throw new RecordNotFoundException(RECORD_NOT_FOUND_MSG);
+        }
+
+        return authCode;
+    }
+
+    @Override
+    public void revokeById(UUID id) {
+        authCodeMapper.revokeById(id);
+    }
 
 }
