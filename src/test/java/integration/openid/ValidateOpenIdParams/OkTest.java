@@ -23,7 +23,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void requiredParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -41,7 +41,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void optionalParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

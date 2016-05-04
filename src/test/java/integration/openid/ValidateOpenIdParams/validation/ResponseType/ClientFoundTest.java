@@ -33,7 +33,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void paramIsNull() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -55,7 +55,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void emptyList() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -77,7 +77,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -99,7 +99,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -123,7 +123,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void emptyValue() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -145,7 +145,7 @@ public class ClientFoundTest extends BaseTest {
      */
     @Test
     public void mismatch() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

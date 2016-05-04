@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithScopes;
+import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.Client;
@@ -38,7 +38,7 @@ public class ConfidentialClientMapperTest {
 
     @Test
     public void insert() throws URISyntaxException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
 
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
@@ -48,7 +48,7 @@ public class ConfidentialClientMapperTest {
 
     @Test
     public void getByClientUUID() throws URISyntaxException {
-        LoadClientWithScopes loadClientWithScopes = new LoadClientWithScopes(
+        LoadCodeClientWithScopes loadClientWithScopes = new LoadCodeClientWithScopes(
                 clientRepository, scopeRepository, clientScopesRepository
         );
         Client client = loadClientWithScopes.run();

@@ -39,7 +39,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.states.add("some-state");
@@ -53,7 +53,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.states.add("");

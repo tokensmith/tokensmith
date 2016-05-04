@@ -5,14 +5,11 @@ import helper.fixture.persistence.openid.LoadOpenIdConfidentialClientAll;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.net.URISyntaxException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -42,7 +39,7 @@ public class AccessRequestMapperTest {
     @Test
     public void insert() throws Exception {
         // prepare db for test.
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();

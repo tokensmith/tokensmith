@@ -36,7 +36,7 @@ public class ConfidentialClientRepositoryImplTest {
 
     @Test
     public void insert() throws URISyntaxException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         subject.insert(confidentialClient);
 
@@ -45,7 +45,7 @@ public class ConfidentialClientRepositoryImplTest {
 
     @Test
     public void getByClientUUID() throws URISyntaxException, RecordNotFoundException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         when(mockConfidentialClientMapper.getByClientUUID(confidentialClient.getClient().getUuid())).thenReturn(confidentialClient);
 

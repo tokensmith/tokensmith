@@ -36,7 +36,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void nullShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -57,7 +57,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void noItemsShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -77,7 +77,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void emptyValueShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -98,7 +98,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void duplicateShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -120,7 +120,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void invalidShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -140,7 +140,7 @@ public class RedirectUriTest extends BaseTest {
      * @throws StateException
      */
     public void notHttpsShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -161,7 +161,7 @@ public class RedirectUriTest extends BaseTest {
      */
     @Test
     public void mismatchesShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

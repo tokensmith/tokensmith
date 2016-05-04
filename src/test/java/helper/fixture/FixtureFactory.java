@@ -26,7 +26,18 @@ public class FixtureFactory {
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String REDIRECT_URI = "http://www.rootservices.org";
 
-    public static Client makeClientWithScopes() throws URISyntaxException {
+    public static Client makeTokenClientWithScopes() throws URISyntaxException {
+        UUID uuid = UUID.randomUUID();
+        ResponseType rt = ResponseType.TOKEN;
+        URI redirectUri = new URI(SECURE_REDIRECT_URI);
+
+        Client client = new Client(uuid, rt, redirectUri);
+        List<Scope> scopes = makeScopes();
+        client.setScopes(scopes);
+        return client;
+    }
+
+    public static Client makeCodeClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
         ResponseType rt = ResponseType.CODE;
         URI redirectUri = new URI(SECURE_REDIRECT_URI);
@@ -37,8 +48,8 @@ public class FixtureFactory {
         return client;
     }
 
-    public static Client makeClientWithOpenIdScopes() throws URISyntaxException {
-        Client client = makeClientWithScopes();
+    public static Client makeCodeClientWithOpenIdScopes() throws URISyntaxException {
+        Client client = makeCodeClientWithScopes();
         client.setScopes(makeOpenIdScopes());
         return client;
     }

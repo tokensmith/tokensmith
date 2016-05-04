@@ -37,7 +37,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("some-state");
@@ -52,7 +52,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("");

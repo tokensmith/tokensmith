@@ -7,7 +7,6 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,7 +46,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.scopes.add("invalid-scope");
@@ -59,7 +58,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
 
@@ -74,7 +73,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
 
