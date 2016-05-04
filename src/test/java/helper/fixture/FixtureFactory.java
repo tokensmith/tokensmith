@@ -2,10 +2,7 @@ package helper.fixture;
 
 import org.rootservices.authorization.grant.code.protocol.authorization.response.AuthCodeInput;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.security.HashTextRandomSalt;
-import org.rootservices.authorization.security.HashTextRandomSaltImpl;
-import org.rootservices.authorization.security.HashTextStaticSalt;
-import org.rootservices.authorization.security.HashTextStaticSaltImpl;
+import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
 import org.rootservices.jwt.entity.jwk.KeyType;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
@@ -60,11 +57,17 @@ public class FixtureFactory {
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
 
+        Scope scope = makeScope();
+        scopes.add(scope);
+        return scopes;
+    }
+
+    public static Scope makeScope() {
         Scope scope = new Scope();
         scope.setUuid(UUID.randomUUID());
         scope.setName("profile");
-        scopes.add(scope);
-        return scopes;
+
+        return scope;
     }
 
     public static List<Scope> makeOpenIdScopes() {
@@ -170,14 +173,23 @@ public class FixtureFactory {
         return accessRequest;
     }
 
-    public static Token makeToken(UUID authCodeUUID) {
+    public static Token makeToken() {
+        RandomString randomString = new RandomStringImpl();
+
         Token token = new Token();
         token.setUuid(UUID.randomUUID());
-        token.setAuthCodeUUID(authCodeUUID);
-        token.setToken("token".getBytes());
+        token.setToken(randomString.run().getBytes());
         token.setExpiresAt(OffsetDateTime.now());
+        token.setGrantType(GrantType.AUTHORIZATION_CODE);
 
         return token;
+    }
+
+    public static ResourceOwnerToken makeResourceOwnerToken() {
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setResourceOwner(makeResourceOwner());
+        resourceOwnerToken.setToken(makeToken());
+        return resourceOwnerToken;
     }
 
     public static AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {

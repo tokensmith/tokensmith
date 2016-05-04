@@ -1,7 +1,6 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.openid.LoadClientWithOpenIdScope;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +18,11 @@ import org.rootservices.authorization.grant.code.protocol.token.validator.except
 import org.rootservices.authorization.grant.code.protocol.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
+import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
+import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,9 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 
 /**
@@ -46,6 +54,18 @@ public class RequestTokenImplTest {
 
     @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady;
+
+    @Autowired
+    private HashTextStaticSalt hashText;
+
+    @Autowired
+    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
+
+    @Autowired
+    private AuthCodeRepository authCodeRepository;
+
+    @Autowired
+    private AuthCodeTokenRepository authCodeTokenRepository;
 
     @Autowired
     private TokenRepository tokenRepository;
@@ -75,12 +95,31 @@ public class RequestTokenImplTest {
         tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
         TokenResponse actual = subject.run(tokenInput);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getAccessToken()).isNotNull();
-        assertThat(actual.getExpiresIn()).isEqualTo(3600);
-        assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER);
-        assertThat(actual.getExtension()).isEqualTo(Extension.NONE);
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getExpiresIn(), is(3600));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExtension(), is(Extension.NONE));
 
+        // token should relate to a resource owner via, resource_owner_token
+        String hashedCode = hashText.run(actual.getAccessToken());
+        ResourceOwnerToken actualRot = resourceOwnerTokenRepository.getByAccessToken(hashedCode);
+
+        assertThat(actualRot.getResourceOwner(), is(notNullValue()));
+        assertThat(actualRot.getResourceOwner().getUuid(), is(authCode.getAccessRequest().getResourceOwnerUUID()));
+
+        assertThat(actualRot.getToken(), is(notNullValue()));
+        assertThat(actualRot.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+
+        // token should have scopes via, token_scope
+        assertThat(actualRot.getToken().getTokenScopes(), is(notNullValue()));
+        assertThat(actualRot.getToken().getTokenScopes().size(), is(1));
+        assertThat(actualRot.getToken().getTokenScopes().get(0).getScope().getName(), is("profile"));
+
+        // token should relate to authorization code, via auth_code_token
+        AuthCodeToken actualAct = authCodeTokenRepository.getByTokenId(actualRot.getToken().getUuid());
+        assertThat(actualAct.getAuthCodeId(), is(authCode.getUuid()));
+        assertThat(actualAct.getTokenId(), is(actualRot.getToken().getUuid()));
     }
 
     @Test
@@ -103,11 +142,11 @@ public class RequestTokenImplTest {
         tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
         TokenResponse actual = subject.run(tokenInput);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getAccessToken()).isNotNull();
-        assertThat(actual.getExpiresIn()).isEqualTo(3600);
-        assertThat(actual.getTokenType()).isEqualTo(TokenType.BEARER);
-        assertThat(actual.getExtension()).isEqualTo(Extension.IDENTITY);
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getExpiresIn(), is(3600));
+        assertThat(actual.getTokenType() , is(TokenType.BEARER));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
     }
 
@@ -145,10 +184,10 @@ public class RequestTokenImplTest {
         } catch (BadRequestException e) {
             fail("BadRequestException was thrown. Expected UnauthorizedException");
         }
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getMessage());
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
+        assertThat(expected.getMessage(), is(ErrorCode.PASSWORD_MISMATCH.getMessage()));
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -184,12 +223,12 @@ public class RequestTokenImplTest {
             fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
         }
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
-        assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("grant_type");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDescription()).isEqualTo("grant_type is a required field");
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
+        assertThat(((MissingKeyException) expected.getDomainCause()).getKey(), is(("grant_type")));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDescription(), is("grant_type is a required field"));
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -227,12 +266,12 @@ public class RequestTokenImplTest {
             fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
         }
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getCode());
-        assertThat(((InvalidValueException) expected.getDomainCause()).getKey()).isEqualTo("grant_type");
-        assertThat(expected.getError()).isEqualTo("unsupported_grant_type");
-        assertThat(expected.getDescription()).isEqualTo(grantType + " is not supported");
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.GRANT_TYPE_INVALID.getCode()));
+        assertThat(((InvalidValueException) expected.getDomainCause()).getKey(), is("grant_type"));
+        assertThat(expected.getError(), is("unsupported_grant_type"));
+        assertThat(expected.getDescription(), is(grantType + " is not supported"));
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -268,12 +307,12 @@ public class RequestTokenImplTest {
             fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
         }
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.MISSING_KEY.getCode());
-        assertThat(((MissingKeyException) expected.getDomainCause()).getKey()).isEqualTo("code");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDescription()).isEqualTo("code is a required field");
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
+        assertThat(((MissingKeyException) expected.getDomainCause()).getKey(), is("code"));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDescription(), is("code is a required field"));
+        assertThat(actual, is(nullValue()));
     }
     
     @Test
@@ -308,10 +347,10 @@ public class RequestTokenImplTest {
             fail("CompromisedCodeException was thrown. Expected AuthorizationCodeNotFound");
         }
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
-        assertThat(expected.getError()).isEqualTo("invalid_grant");
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
+        assertThat(expected.getError(), is("invalid_grant"));
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -347,10 +386,10 @@ public class RequestTokenImplTest {
             fail("CompromisedCodeException was thrown. Expected AuthorizationCodeNotFound");
         }
 
-        assertThat(expected).isNotNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.AUTH_CODE_NOT_FOUND.getCode());
-        assertThat(expected.getError()).isEqualTo("invalid_grant");
-        assertThat(actual).isNull();
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.AUTH_CODE_NOT_FOUND.getCode()));
+        assertThat(expected.getError(), is("invalid_grant"));
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -388,11 +427,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
-        assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
+        assertThat(expected.getDescription(), is("redirect_uri is invalid"));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDomainCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
@@ -430,11 +469,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
-        assertThat(expected.getDescription()).isEqualTo("redirect_uri is invalid");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDomainCause()).isInstanceOf(InvalidValueException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
+        assertThat(expected.getDescription(), is("redirect_uri is invalid"));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDomainCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
@@ -472,11 +511,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
-        assertThat(expected.getDescription()).isEqualTo("grant_type is repeated");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
+        assertThat(expected.getDescription(), is("grant_type is repeated"));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
     }
 
     @Test
@@ -514,11 +553,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
-        assertThat(expected.getDescription()).isEqualTo("code is repeated");
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
+        assertThat(expected.getDescription(), is("code is repeated"));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
     }
 
     @Test
@@ -556,11 +595,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDescription()).isEqualTo("redirect_uri is repeated");
-        assertThat(expected.getDomainCause()).isInstanceOf(DuplicateKeyException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDescription(), is("redirect_uri is repeated"));
+        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
     }
 
     @Test
@@ -599,11 +638,11 @@ public class RequestTokenImplTest {
             fail("BadRequestException expected");
         }
 
-        assertThat(actual).isNull();
-        assertThat(expected.getCode()).isEqualTo(ErrorCode.UNKNOWN_KEY.getCode());
-        assertThat(expected.getError()).isEqualTo("invalid_request");
-        assertThat(expected.getDescription()).isEqualTo("client_id is a unknown key");
-        assertThat(expected.getDomainCause()).isInstanceOf(UnknownKeyException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(expected.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
+        assertThat(expected.getError(), is("invalid_request"));
+        assertThat(expected.getDescription(), is("client_id is a unknown key"));
+        assertThat(expected.getDomainCause(), instanceOf(UnknownKeyException.class));
     }
 
     /**
@@ -614,12 +653,20 @@ public class RequestTokenImplTest {
      * @throws URISyntaxException
      */
     @Test
-    public void runExpectCompromisedCodeException() throws DuplicateRecordException, URISyntaxException {
+    public void runExpectCompromisedCodeException() throws Exception {
 
+        // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken(authCode.getUuid());
+        Token token = FixtureFactory.makeToken();
         tokenRepository.insert(token);
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getUuid());
+        authCodeTokenRepository.insert(authCodeToken);
+        // end - insert a token that relates to the auth code.
 
         StringReader sr = new StringReader(
                 "{\"grant_type\": \"authorization_code\", " +
@@ -647,11 +694,18 @@ public class RequestTokenImplTest {
             exception = e;
         }
 
-        assertThat(actual).isNull();
-        assertThat(exception).isNotNull();
-        assertThat(exception.getCode()).isEqualTo(ErrorCode.COMPROMISED_AUTH_CODE.getCode());
-        assertThat(exception.getError()).isEqualTo("invalid_grant");
-        assertThat(exception.getDomainCause()).isInstanceOf(DuplicateRecordException.class);
+        assertThat(actual, is(nullValue()));
+        assertThat(exception, is(notNullValue()));
+        assertThat(exception.getCode(), is(ErrorCode.COMPROMISED_AUTH_CODE.getCode()));
+        assertThat(exception.getError(), is("invalid_grant"));
+        assertThat(exception.getDomainCause(), instanceOf(DuplicateRecordException.class));
 
+        // make sure the first token was revoked.
+        Token token1 = tokenRepository.getByAuthCodeId(authCode.getUuid());
+        assertThat(token1.isRevoked(), is(true));
+
+        // make sure the authorization code was revoked.
+        AuthCode authCode1 = authCodeRepository.getById(authCode.getUuid());
+        assertThat(authCode1.isRevoked(), is(true));
     }
 }

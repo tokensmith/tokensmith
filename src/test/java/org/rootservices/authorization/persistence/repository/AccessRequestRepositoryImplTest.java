@@ -39,23 +39,4 @@ public class AccessRequestRepositoryImplTest {
         subject.insert(accessRequest);
         verify(mockAuthRequestMapper).insert(accessRequest);
     }
-
-    @Test
-    public void getByAccessTokenShouldReturnAccessRequest() throws URISyntaxException, RecordNotFoundException {
-        String accessToken = "accessToken";
-        AccessRequest ar = FixtureFactory.makeAccessRequest(UUID.randomUUID(), UUID.randomUUID());
-
-        when(mockAuthRequestMapper.getByAccessToken(accessToken.getBytes())).thenReturn(ar);
-
-        AccessRequest actual = subject.getByAccessToken(accessToken);
-        assertThat(actual, is(ar));
-    }
-
-    @Test(expected= RecordNotFoundException.class)
-    public void getByAccessTokenShouldThrowRecordNotFoundException() throws RecordNotFoundException {
-        String accessToken = "accessToken";
-        when(mockAuthRequestMapper.getByAccessToken(accessToken.getBytes())).thenReturn(null);
-
-        subject.getByAccessToken(accessToken);
-    }
 }

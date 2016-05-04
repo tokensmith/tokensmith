@@ -1,6 +1,7 @@
 package org.rootservices.authorization.grant.code.protocol.token;
 
 import org.rootservices.authorization.grant.code.protocol.token.response.TokenType;
+import org.rootservices.authorization.persistence.entity.GrantType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,15 @@ public class MakeBearerTokenImpl implements MakeToken {
     }
 
     @Override
-    public Token run(UUID authCodeUUID, String plainTextToken) {
+    public Token run(String plainTextToken) {
 
         Token token = new Token();
         token.setUuid(UUID.randomUUID());
-        token.setAuthCodeUUID(authCodeUUID);
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
+        token.setGrantType(GrantType.AUTHORIZATION_CODE);
 
         return token;
     }

@@ -18,7 +18,6 @@ public class AccessRequest {
     private List<AccessRequestScope> accessRequestScopes;
     private OffsetDateTime createdAt;
 
-
     public AccessRequest() {}
 
     public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI) {

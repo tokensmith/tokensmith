@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 public interface AccessRequestMapper {
     void insert(@Param("accessRequest") AccessRequest accessRequest);
-    AccessRequest getByAccessToken(@Param("accessToken") byte[] accessToken);
 }

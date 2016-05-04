@@ -6,6 +6,7 @@ import org.rootservices.authorization.grant.openid.protocol.token.translator.Add
 import org.rootservices.authorization.grant.openid.protocol.token.translator.ProfileToIdToken;
 import org.rootservices.authorization.persistence.entity.AccessRequestScope;
 import org.rootservices.authorization.persistence.entity.Profile;
+import org.rootservices.authorization.persistence.entity.TokenScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,19 +33,19 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
     }
 
     @Override
-    public IdToken make(List<AccessRequestScope> accessRequestScopes, Profile profile) {
+    public IdToken make(List<TokenScope> tokenScopes, Profile profile) {
         IdToken idToken = new IdToken();
 
 
-        if (hasScope(accessRequestScopes, PROFILE)) {
+        if (hasScope(tokenScopes, PROFILE)) {
             profileToIdToken.toProfileClaims(idToken, profile);
         }
 
-        if (hasScope(accessRequestScopes, EMAIL)) {
+        if (hasScope(tokenScopes, EMAIL)) {
             profileToIdToken.toEmailClaims(idToken, profile.getResourceOwner().getEmail(), profile.getResourceOwner().isEmailVerified());
         }
 
-        if (hasScope(accessRequestScopes, PHONE)) {
+        if (hasScope(tokenScopes, PHONE)) {
             profileToIdToken.toPhoneClaims(
                 idToken,
                 profile.getPhoneNumber(),
@@ -52,7 +53,7 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
             );
         }
 
-        if (hasScope(accessRequestScopes, ADDR) && profile.getAddresses().size() > 0) {
+        if (hasScope(tokenScopes, ADDR) && profile.getAddresses().size() > 0) {
             Address address = addrToAddrClaims.to(profile.getAddresses().get(0));
             idToken.setAddress(Optional.of(address));
         } else {
@@ -62,9 +63,9 @@ public class IdTokenFactoryImpl implements IdTokenFactory {
         return idToken;
     }
 
-    protected Boolean hasScope(List<AccessRequestScope> accessRequestScopes, String scope) {
-        for(AccessRequestScope ars: accessRequestScopes){
-            if (scope.equals(ars.getScope().getName())) {
+    protected Boolean hasScope(List<TokenScope> tokenScopes, String scope) {
+        for(TokenScope ts: tokenScopes){
+            if (scope.equals(ts.getScope().getName())) {
                 return true;
             }
         }

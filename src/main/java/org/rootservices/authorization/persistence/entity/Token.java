@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.entity;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -8,17 +9,18 @@ import java.util.UUID;
  */
 public class Token {
     private UUID uuid;
-    private UUID authCodeUUID;
     private byte[] token;
     private boolean revoked;
+    private GrantType grantType;
+    private List<TokenScope> tokenScopes;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
+
     public Token() {}
 
-    public Token(UUID uuid, UUID authCodeUUID, byte[] token, OffsetDateTime expiresAt) {
+    public Token(UUID uuid, byte[] token, OffsetDateTime expiresAt) {
         this.uuid = uuid;
-        this.authCodeUUID = authCodeUUID;
         this.token = token;
         this.expiresAt = expiresAt;
     }
@@ -29,14 +31,6 @@ public class Token {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public UUID getAuthCodeUUID() {
-        return authCodeUUID;
-    }
-
-    public void setAuthCodeUUID(UUID authCodeUUID) {
-        this.authCodeUUID = authCodeUUID;
     }
 
     public byte[] getToken() {
@@ -55,6 +49,22 @@ public class Token {
         this.revoked = revoked;
     }
 
+    public GrantType getGrantType() {
+        return grantType;
+    }
+
+    public void setGrantType(GrantType grantType) {
+        this.grantType = grantType;
+    }
+
+    public List<TokenScope> getTokenScopes() {
+        return tokenScopes;
+    }
+
+    public void setTokenScopes(List<TokenScope> tokenScopes) {
+        this.tokenScopes = tokenScopes;
+    }
+
     public OffsetDateTime getExpiresAt() {
         return expiresAt;
     }
@@ -65,5 +75,9 @@ public class Token {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

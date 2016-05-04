@@ -6,38 +6,48 @@
 
     <resultMap id="token" type="org.rootservices.authorization.persistence.entity.Token">
         <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
+        <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+        <collection property="tokenScopes"
+                    resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
+                    columnPrefix="ts_"
+                    javaType="ArrayList"/>
     </resultMap>
 
-    <select id="getByAuthCodeUUID" resultMap="token">
+    <select id="getByAuthCodeId" resultMap="token">
         select
             token.uuid,
-            token.auth_code_uuid,
+            token.token,
             token.revoked,
+            token.grant_type,
             token.expires_at,
             token.created_at
         from token
-        where token.auth_code_uuid = #{authCodeUUID}
+        join auth_code_token on auth_code_token.token_id = token.uuid
+        where auth_code_token.auth_code_id = #{authCodeId}
     </select>
 
     <insert id="insert" >
-        insert into token (uuid, auth_code_uuid, token, expires_at)
+        insert into token (uuid, token, grant_type, expires_at)
         values (
             #{token.uuid},
-            #{token.authCodeUUID},
             #{token.token},
+            #{token.grantType},
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
 
-    <update id="revoke">
+    <update id="revokeByAuthCodeId">
         update token
         set revoked = true
-        where token.auth_code_uuid = #{authCodeUUID}
+        from auth_code_token, auth_code
+        where auth_code_token.token_id = token.uuid
+        and auth_code.uuid = auth_code_token.auth_code_id
+        and auth_code.uuid = #{authCodeId}
     </update>
 
 </mapper>
