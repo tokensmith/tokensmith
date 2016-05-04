@@ -44,7 +44,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
     @Test
     public void shouldBeOk() throws URISyntaxException, RecordNotFoundException, InformClientException, InformResourceOwnerException {
-        Client client = FixtureFactory.makeClientWithOpenIdScopes();
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
@@ -87,7 +87,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
     @Test
     public void responseTypeMismatchShouldThrowInformClientException() throws RecordNotFoundException, URISyntaxException {
-        Client client = FixtureFactory.makeClientWithOpenIdScopes();
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
@@ -115,7 +115,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
     @Test
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
-        Client client = FixtureFactory.makeClientWithOpenIdScopes();
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
 
         URI requestRedirectUri = new URI("https://rootservices.org/mismatch");
 
@@ -141,7 +141,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
     @Test
     public void authRequestInvalidScopeShouldThrowInformClientException() throws URISyntaxException, RecordNotFoundException {
-        Client client = FixtureFactory.makeClientWithOpenIdScopes();
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());

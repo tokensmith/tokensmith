@@ -52,7 +52,7 @@ public class AuthCodeMapperTest {
     public void insert() throws Exception {
 
         // prepare db for test.
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
@@ -74,7 +74,7 @@ public class AuthCodeMapperTest {
     public void insertDuplicateExpectDuplicateKeyException() throws Exception {
 
         // prepare db for test.
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();

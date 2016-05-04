@@ -45,7 +45,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void paramIsNull() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.responseTypes = null;
@@ -58,7 +58,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void emptyList() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
 
@@ -71,7 +71,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void invalid() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.responseTypes.add("invalid-response-type");
@@ -84,7 +84,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void duplicate() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.responseTypes.add(ResponseType.CODE.toString());
@@ -98,7 +98,7 @@ public class RedirectMismatchTest extends BaseTest {
 
     @Test
     public void emptyValue() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.responseTypes.add("");
