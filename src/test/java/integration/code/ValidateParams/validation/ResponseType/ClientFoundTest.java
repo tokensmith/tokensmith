@@ -11,27 +11,37 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
 
+
 /**
- * Scenario: Response type fails validation And Client is found.
+ * Feature: response type fails validation and client is found.
  *
- * Given a client, c, exists in the db
- * And client ids has one item that is assigned to c's UUID
- * And response types is [method]
- * When the params are validated
- * Then raise a InformClientException exception, e
- * And expects e's error code to be [errorCode]
- * And expects e's redirect uri to be c's redirect uri
+ * Given a instance of ValidateParams, subject
+ * And a public client, c
+ * And c's response_type is, CODE
+ * And c's id is a randomly generated UUID
+ * And c's redirect uri is, https://rootservices.org
+ * And c's scopes are, profile
+ * And c is inserted into the database
  */
 public class ClientFoundTest extends BaseTest {
 
     /**
-     * Then expect e's cause to be [expectedDomainCause]
+     * Scenario 1: response type is null
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes is null
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_NULL
+     * And expect e's error message to be "invalid_request"
+     * And expect e's cause to be ResponseTypeException
+     * And expects e's redirect uri to be c's redirect uri
      */
     @Test
-    public void paramIsNull() throws URISyntaxException, StateException {
+    public void responseTypeIsNullShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -47,13 +57,22 @@ public class ClientFoundTest extends BaseTest {
     }
 
     /**
-     * Then expect e's cause to be [expectedDomainCause]
+     * Scenario 2: response type is a empty list
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes is a empty list
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_EMPTY_LIST
+     * And expect e's error message to be "invalid_request"
+     * And expects e's redirect uri to be c's redirect uri
+     * And expect e's cause to be ResponseTypeException
      */
     @Test
-    public void emptyList() throws URISyntaxException, StateException {
+    public void emptyListShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -68,13 +87,22 @@ public class ClientFoundTest extends BaseTest {
     }
 
     /**
-     * Then expect e's cause to be [expectedDomainCause]
+     * Scenario 3: response type is invalid
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes has one item, "invalid-response-type"
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_DATA_TYPE
+     * And expect e's error message to be "unsupported_response_type"
+     * And expects e's redirect uri to be c's redirect uri
+     * And expect e's cause to be ResponseTypeException
      */
     @Test
-    public void invalid() throws URISyntaxException, StateException {
+    public void responseTypeIsInvalidShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -89,13 +117,22 @@ public class ClientFoundTest extends BaseTest {
     }
 
     /**
-     * Then expect e's cause to be [expectedDomainCause]
+     * Scenario 4: response type has two items
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes has two items, [CODE, CODE]
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_MORE_THAN_ONE_ITEM
+     * And expect e's error message to be "invalid_request"
+     * And expects e's redirect uri to be c's redirect uri
+     * And expect e's cause to be ResponseTypeException
      */
     @Test
-    public void duplicate() throws URISyntaxException, StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -112,13 +149,22 @@ public class ClientFoundTest extends BaseTest {
     }
 
     /**
-     * Then expect e's cause to be [expectedDomainCause]
+     * Scenario 5: response type has one item, ""
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes has one item, ""
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_EMPTY_VALUE
+     * And expect e's error message to be "invalid_request"
+     * And expects e's redirect uri to be c's redirect uri
+     * And expect e's cause to be ResponseTypeException
      */
     @Test
-    public void emptyValue() throws URISyntaxException, StateException {
+    public void responseTypeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -133,13 +179,22 @@ public class ClientFoundTest extends BaseTest {
     }
 
     /**
-     * Then expect e's cause to be null
+     * Scenario 6: response type does not match client's response type
      *
-     * @throws URISyntaxException
-     * @throws StateException
+     * When subject.run is executed
+     * And clientIds has one item that is c's id.
+     * And responseTypes has one item, TOKEN
+     * And redirectUris is a empty list
+     * And scopes is a empty list
+     * And states is a empty list
+     * Then raise a InformClientException exception, e
+     * And expects e's error code to be RESPONSE_TYPE_MISMATCH
+     * And expect e's error message to be "unauthorized_client"
+     * And expects e's redirect uri to be c's redirect uri
+     * And expect e's cause to be null
      */
     @Test
-    public void mismatch() throws URISyntaxException, StateException {
+    public void responseTypesDontMatchShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
