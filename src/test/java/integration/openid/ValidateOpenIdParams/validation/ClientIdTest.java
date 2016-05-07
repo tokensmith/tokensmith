@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ClientIdTest extends BaseTest {
 
     @Test
-    public void clientIdIsNullShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
+    public void clientIdIsNullShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds = null;
         ClientIdException expectedDomainCause = new ClientIdException();
@@ -26,7 +26,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void clientIdIsEmptyListShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
+    public void clientIdIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         int errorCode = ErrorCode.CLIENT_ID_EMPTY_LIST.getCode();
@@ -35,7 +35,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void clientIdIsInvalidShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
+    public void clientIdIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add("invalid");
@@ -45,7 +45,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void clientIdsHasTwoItemsShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
+    public void clientIdsHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add(UUID.randomUUID().toString());
@@ -56,7 +56,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void clientIdIsBlankStringShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
+    public void clientIdIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add("");

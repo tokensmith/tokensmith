@@ -28,7 +28,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -41,7 +41,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -54,7 +54,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -67,7 +67,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -81,7 +81,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());

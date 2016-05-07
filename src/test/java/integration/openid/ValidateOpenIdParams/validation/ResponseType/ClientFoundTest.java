@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 public class ClientFoundTest extends BaseTest {
 
     @Test
-    public void responseTypeIsNullShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeIsNullShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -31,7 +31,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeIsEmptyListShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -47,7 +47,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeIsInvalidShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -63,7 +63,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -81,7 +81,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -97,7 +97,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypesDontMatchShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypesDontMatchShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();

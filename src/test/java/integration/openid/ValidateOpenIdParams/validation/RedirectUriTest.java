@@ -16,7 +16,7 @@ public class RedirectUriTest extends BaseTest {
 
 
     @Test
-    public void redirectUrisIsNullShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUrisIsNullShouldThrowInformResourceOwner() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -31,7 +31,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -45,7 +45,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUrisIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUrisIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -60,7 +60,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -76,7 +76,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -90,7 +90,7 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
     }
 
-    public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -105,7 +105,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
