@@ -23,7 +23,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void stateHasTwoItemsShouldThrowInformClientException() throws URISyntaxException {
+    public void stateHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
@@ -38,7 +38,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void stateIsBlankStringShouldThrowInformClientException() throws URISyntaxException {
+    public void stateIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);

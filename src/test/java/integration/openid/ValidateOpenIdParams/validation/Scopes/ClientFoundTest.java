@@ -24,7 +24,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsInvalidShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
@@ -37,7 +37,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopesHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
@@ -53,7 +53,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);

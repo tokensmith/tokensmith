@@ -25,7 +25,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws StateException {
+    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes = null;
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
@@ -35,7 +35,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws StateException {
+    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
@@ -44,7 +44,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws StateException {
+    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add("invalid-response-type");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
@@ -54,7 +54,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add(ResponseType.CODE.toString());
         p.responseTypes.add(ResponseType.CODE.toString());
@@ -65,7 +65,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws StateException {
+    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add("");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();

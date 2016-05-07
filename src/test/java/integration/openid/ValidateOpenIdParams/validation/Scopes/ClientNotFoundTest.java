@@ -27,7 +27,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("invalid-scope");
@@ -39,7 +39,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("profile");
         p.scopes.add("profile");
@@ -51,7 +51,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("");
 

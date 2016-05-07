@@ -29,7 +29,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -41,7 +41,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
@@ -56,7 +56,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
