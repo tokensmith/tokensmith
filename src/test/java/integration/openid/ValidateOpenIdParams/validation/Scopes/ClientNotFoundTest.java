@@ -4,12 +4,9 @@ import helper.ValidateParamsAttributes;
 import integration.openid.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 

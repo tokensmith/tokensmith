@@ -2,10 +2,10 @@ package integration.code.ValidateParams;
 
 import helper.ValidateParamsAttributes;
 import org.junit.Test;
-import org.rootservices.authorization.grant.code.exception.InformClientException;
-import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 
 import java.net.URISyntaxException;
