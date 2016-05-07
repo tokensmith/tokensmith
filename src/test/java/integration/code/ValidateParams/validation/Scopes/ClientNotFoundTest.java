@@ -11,18 +11,7 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-/**
- * Scenario: Scopes fails validation And Client is not found.
- *
- * Given client ids has one item that is assigned to a random UUID
- * And response types has one item that is assigned to CODE
- * And scopes is [method]
- * And there is not a client record in the db for that UUID
- * When the params are validated
- * Then raise a InformResourceOwner exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode].
- */
+
 public class ClientNotFoundTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes() {
@@ -34,7 +23,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void invalid() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("invalid-scope");
@@ -46,7 +35,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("profile");
         p.scopes.add("profile");
@@ -58,7 +47,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.scopes.add("");
 

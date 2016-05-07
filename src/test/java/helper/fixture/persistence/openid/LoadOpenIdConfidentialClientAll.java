@@ -1,7 +1,6 @@
 package helper.fixture.persistence.openid;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.Token;

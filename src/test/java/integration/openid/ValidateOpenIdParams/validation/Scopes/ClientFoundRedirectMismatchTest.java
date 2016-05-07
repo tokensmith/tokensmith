@@ -4,22 +4,24 @@ import helper.ValidateParamsAttributes;
 import integration.openid.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
 
-public class ClientNotFoundTest extends BaseTest {
+public class ClientFoundRedirectMismatchTest extends BaseTest {
 
-    private static String REDIRECT_URI = "https://rootservices.org";
+    public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsAttributes makeValidateParamsAttributes() {
+    public ValidateParamsAttributes makeValidateParamsAttributes(UUID clientId) {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(UUID.randomUUID().toString());
+
+        p.clientIds.add(clientId.toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add(ResponseType.CODE.toString());
 
@@ -28,36 +30,43 @@ public class ClientNotFoundTest extends BaseTest {
 
     @Test
     public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.scopes.add("invalid-scope");
 
-        Exception expectedDomainCause = new RecordNotFoundException();
-        int expectedErrorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
+        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerExceptionNoCause(p, expectedErrorCode);
     }
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
+        Client c = loadClientWithOpenIdScope.run();
+
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+
         p.scopes.add("profile");
         p.scopes.add("profile");
 
-        Exception expectedDomainCause = new RecordNotFoundException();
-        int expectedErrorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
+        Exception expectedDomainCause = new ScopesException();
+        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
     @Test
     public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
+        Client c = loadClientWithOpenIdScope.run();
+
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+
         p.scopes.add("");
 
-        Exception expectedDomainCause = new RecordNotFoundException();
-        int expectedErrorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
+        Exception expectedDomainCause = new ScopesException();
+        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
+
 }

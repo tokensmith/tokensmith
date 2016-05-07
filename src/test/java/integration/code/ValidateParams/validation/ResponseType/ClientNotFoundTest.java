@@ -10,17 +10,7 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 
 import java.util.UUID;
 
-/**
- * Scenario: Response type fails validation And Client is not found.
- *
- * Given client ids has one item that is assigned to a random UUID
- * And there is not a client record in the db for that UUID
- * And response types has one item that is [method]
- * When the params are validated
- * Then raise a InformResourceOwner exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode].
- */
+
 public class ClientNotFoundTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes() {
@@ -31,7 +21,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void paramIsNull() throws StateException {
+    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes = null;
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
@@ -41,7 +31,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyList() throws StateException {
+    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
@@ -50,7 +40,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void invalid() throws StateException {
+    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add("invalid-response-type");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
@@ -60,7 +50,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add(ResponseType.CODE.toString());
         p.responseTypes.add(ResponseType.CODE.toString());
@@ -71,7 +61,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws StateException {
+    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.responseTypes.add("");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();

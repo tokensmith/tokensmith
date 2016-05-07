@@ -1,8 +1,7 @@
 package integration.authenticate;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithScopes;
-import org.junit.Before;
+import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
@@ -11,10 +10,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
 import org.rootservices.authorization.persistence.repository.ConfidentialClientRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,7 +31,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class LoginConfidentialClientImplTest {
 
     @Autowired
-    private LoadClientWithScopes loadClientWithScopes;
+    private LoadCodeClientWithScopes loadCodeClientWithScopes;
     @Autowired
     private ConfidentialClientRepository confidentialClientRepository;
 
@@ -44,7 +40,7 @@ public class LoginConfidentialClientImplTest {
 
 
     public ConfidentialClient prepareDatabaseForTest() throws URISyntaxException {
-        Client client = loadClientWithScopes.run();
+        Client client = loadCodeClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
         return confidentialClient;

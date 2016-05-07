@@ -40,7 +40,7 @@ public class CompareClientToAuthRequestImplTest {
 
     @Test
     public void run() throws InformResourceOwnerException, InformClientException, RecordNotFoundException, URISyntaxException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
@@ -146,7 +146,7 @@ public class CompareClientToAuthRequestImplTest {
 
     @Test
     public void runInvalidScope() throws URISyntaxException, RecordNotFoundException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());

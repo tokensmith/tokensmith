@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -48,7 +47,7 @@ public class AuthCodeTokenMapperTest {
     private AuthCodeTokenMapper subject;
 
     public AuthCode insertAuthCodeForTest() throws Exception {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
