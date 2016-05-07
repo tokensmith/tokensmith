@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.code.authorization.token;
+package org.rootservices.authorization.oauth2.grant.code.authorization.token.factory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.code.authorization.response;
+package org.rootservices.authorization.oauth2.grant.code.authorization.response.builder;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
