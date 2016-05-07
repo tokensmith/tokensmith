@@ -8,28 +8,21 @@ import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 5/16/15.
- *
- * sets up database with a client that has scopes.
- *
- * Client        ClientScopes            Scope
- * +uuid   --->  +client_uuid     /--->  +uuid
- *               +scope_uuid  ---/
+ * Created by tommackenzie on 5/4/16.
  */
-@Component
-public class LoadClientWithScopes {
+public abstract class LoadClientWithScopes {
 
-    private ClientRepository clientRepository;
-    private ScopeRepository scopeRepository;
-    private ClientScopesRepository clientScopesRepository;
+    protected ClientRepository clientRepository;
+    protected ScopeRepository scopeRepository;
+    protected ClientScopesRepository clientScopesRepository;
 
-    @Autowired
+    public LoadClientWithScopes() {}
+
     public LoadClientWithScopes(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
         this.clientRepository = clientRepository;
         this.scopeRepository = scopeRepository;
@@ -50,7 +43,5 @@ public class LoadClientWithScopes {
         return client;
     }
 
-    protected Client makeClientWithScopes() throws URISyntaxException {
-        return FixtureFactory.makeClientWithScopes();
-    }
+    abstract protected Client makeClientWithScopes() throws URISyntaxException;
 }

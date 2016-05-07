@@ -9,18 +9,7 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 
 import java.util.UUID;
 
-/**
- * Scenario: State fails validation And Client is not found.
- *
- * Given client ids has one item that is assigned to a random UUID
- * And there is not a client record in the db for that UUID
- * And response types has one item assigned to CODE
- * And states has one item that is [method]
- * When the params are validated
- * Then raise a InformResourceOwner exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode].
- */
+
 public class ClientNotFoundTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes() {
@@ -32,7 +21,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() {
+    public void stateHasTwoItemsShouldThrowInformResourceOwnerException() {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.states.add("some-state");
         p.states.add("some-state");
@@ -44,7 +33,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() {
+    public void stateIsBlankStringShouldThrowInformResourceOwnerException() {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
         p.states.add("");
 

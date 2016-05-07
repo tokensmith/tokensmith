@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 @Component
 public class LoadConfidentialClientTokenReady {
-    private LoadClientWithScopes loadClientWithScopes;
+    private LoadCodeClientWithScopes loadCodeClientWithScopes;
     private ConfidentialClientRepository confidentialClientRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
     private AuthCodeRepository authCodeRepository;
@@ -28,8 +28,8 @@ public class LoadConfidentialClientTokenReady {
     private AccessRequestScopesRepository accessRequestScopesRepository;
 
     @Autowired
-    public LoadConfidentialClientTokenReady(LoadClientWithScopes loadClientWithScopes, ConfidentialClientRepository confidentialClientRepository, ResourceOwnerRepository resourceOwnerRepository, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
-        this.loadClientWithScopes = loadClientWithScopes;
+    public LoadConfidentialClientTokenReady(LoadCodeClientWithScopes loadCodeClientWithScopes, ConfidentialClientRepository confidentialClientRepository, ResourceOwnerRepository resourceOwnerRepository, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
+        this.loadCodeClientWithScopes = loadCodeClientWithScopes;
         this.confidentialClientRepository = confidentialClientRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.authCodeRepository = authCodeRepository;
@@ -38,7 +38,7 @@ public class LoadConfidentialClientTokenReady {
     }
 
     public AuthCode run(boolean redirectUriIsPresent, boolean isRevoked, String plainTextAuthCode) throws URISyntaxException, DuplicateRecordException {
-        Client client = loadClientWithScopes.run();
+        Client client = loadCodeClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         confidentialClientRepository.insert(confidentialClient);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
@@ -74,7 +74,7 @@ public class LoadConfidentialClientTokenReady {
         return authCode;
     }
 
-    public void setLoadClientWithScopes(LoadClientWithScopes loadClientWithScopes) {
-        this.loadClientWithScopes = loadClientWithScopes;
+    public void setLoadCodeClientWithScopes(LoadCodeClientWithScopes loadCodeClientWithScopes) {
+        this.loadCodeClientWithScopes = loadCodeClientWithScopes;
     }
 }

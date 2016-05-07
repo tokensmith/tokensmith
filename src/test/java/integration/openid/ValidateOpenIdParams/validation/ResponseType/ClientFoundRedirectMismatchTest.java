@@ -11,43 +11,27 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
-/**
- * Scenario: Response type fails validation And Client is found And redirects don't match.
- *
- * Given a client, c, exists in the db
- * And c's redirect uri is https://rootservices.org
- * And client ids has one item that is assigned to c's UUID
- * And redirect uris has one item that is assigned to https://rootservices.org/continue
- * And response types has one item that is [method]
- * When the params are validated
- * Then raise a InformResourceOwner exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode]
- */
-public class RedirectMismatchTest extends BaseTest {
+
+public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsAttributes makeValidateParamsAttributes(Client client) {
+    public ValidateParamsAttributes makeValidateParamsAttributes(UUID clientId) {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
 
-        p.clientIds.add(client.getUuid().toString());
-        try {
-            URI redirectUri = new URI("https://rootservices.org/continue");
-            p.redirectUris.add(redirectUri.toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        p.clientIds.add(clientId.toString());
+        p.redirectUris.add(REDIRECT_URI);
 
         return p;
     }
 
     @Test
-    public void paramIsNull() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes = null;
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -57,10 +41,10 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void emptyList() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
@@ -70,10 +54,10 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void invalid() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add("invalid-response-type");
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -83,10 +67,10 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add(ResponseType.CODE.toString());
         p.responseTypes.add(ResponseType.CODE.toString());
 
@@ -97,10 +81,10 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add("");
 
         Exception expectedDomainCause = new ResponseTypeException();

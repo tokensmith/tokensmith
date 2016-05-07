@@ -1,7 +1,6 @@
-package helper.fixture.persistence.openid;
+package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
@@ -12,17 +11,23 @@ import org.springframework.stereotype.Component;
 import java.net.URISyntaxException;
 
 /**
- * Created by tommackenzie on 1/21/16.
+ * Created by tommackenzie on 5/16/15.
+ *
+ * sets up database with a client that has scopes and the response type, code.
+ *
+ * Client        ClientScopes            Scope
+ * +uuid   --->  +client_uuid     /--->  +uuid
+ *               +scope_uuid  ---/
  */
 @Component
-public class LoadClientWithOpenIdScope extends LoadCodeClientWithScopes {
+public class LoadCodeClientWithScopes extends LoadClientWithScopes {
 
     @Autowired
-    public LoadClientWithOpenIdScope(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
+    public LoadCodeClientWithScopes(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
         super(clientRepository, scopeRepository, clientScopesRepository);
     }
 
     protected Client makeClientWithScopes() throws URISyntaxException {
-        return FixtureFactory.makeCodeClientWithOpenIdScopes();
+        return FixtureFactory.makeCodeClientWithScopes();
     }
 }

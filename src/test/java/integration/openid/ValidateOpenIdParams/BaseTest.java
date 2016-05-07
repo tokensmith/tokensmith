@@ -1,11 +1,10 @@
 package integration.openid.ValidateOpenIdParams;
 
 import helper.ValidateParamsAttributes;
-import helper.fixture.persistence.LoadOpenIdClientWithScopes;
+import helper.fixture.persistence.openid.LoadClientWithOpenIdScope;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.grant.code.exception.InformClientException;
 import org.rootservices.authorization.grant.code.exception.InformResourceOwnerException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateParams;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.grant.openid.protocol.authorization.request.ValidateOpenIdParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ import static org.fest.assertions.api.Assertions.fail;
 public abstract class BaseTest {
 
     @Autowired
-    protected LoadOpenIdClientWithScopes loadClientWithScopes;
+    protected LoadClientWithOpenIdScope loadClientWithOpenIdScope;
     @Autowired
     protected ValidateOpenIdParams subject;
 

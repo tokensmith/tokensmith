@@ -1,7 +1,6 @@
-package helper.fixture.persistence.openid;
+package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
@@ -12,17 +11,18 @@ import org.springframework.stereotype.Component;
 import java.net.URISyntaxException;
 
 /**
- * Created by tommackenzie on 1/21/16.
+ * Created by tommackenzie on 5/4/16.
  */
 @Component
-public class LoadClientWithOpenIdScope extends LoadCodeClientWithScopes {
+public class LoadTokenClientWithScopes extends LoadClientWithScopes {
 
     @Autowired
-    public LoadClientWithOpenIdScope(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
+    public LoadTokenClientWithScopes(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
         super(clientRepository, scopeRepository, clientScopesRepository);
     }
 
+    @Override
     protected Client makeClientWithScopes() throws URISyntaxException {
-        return FixtureFactory.makeCodeClientWithOpenIdScopes();
+        return FixtureFactory.makeTokenClientWithScopes();
     }
 }

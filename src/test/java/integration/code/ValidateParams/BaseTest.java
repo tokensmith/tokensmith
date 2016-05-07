@@ -2,6 +2,7 @@ package integration.code.ValidateParams;
 
 import helper.ValidateParamsAttributes;
 import helper.fixture.persistence.LoadClientWithScopes;
+import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.grant.code.protocol.authorization.request.ValidateParams;
@@ -42,7 +43,7 @@ public abstract class BaseTest {
 
     @Before
     public void setUp() {
-        loadClientWithScopes = new LoadClientWithScopes(clientRepository, scopeRepository, clientScopesRepository);
+        loadClientWithScopes = new LoadCodeClientWithScopes(clientRepository, scopeRepository, clientScopesRepository);
     }
 
     public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {

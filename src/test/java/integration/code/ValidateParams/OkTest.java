@@ -13,13 +13,11 @@ import java.net.URISyntaxException;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
-/**
- * Created by tommackenzie on 3/1/15.
- */
+
 public class OkTest extends BaseTest {
 
     @Test
-    public void requiredParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -36,7 +34,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void optionalParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();

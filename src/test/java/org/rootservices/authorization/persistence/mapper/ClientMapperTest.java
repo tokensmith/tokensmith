@@ -1,18 +1,15 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadClientWithScopes;
-import org.junit.Before;
+import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
@@ -27,19 +24,19 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class ClientMapperTest {
 
     @Autowired
-    private LoadClientWithScopes loadClientWithScopes;
+    private LoadCodeClientWithScopes loadCodeClientWithScopes;
     @Autowired
     private ClientMapper subject;
 
     @Test
     public void insert() throws URISyntaxException {
-        Client client = FixtureFactory.makeClientWithScopes();
+        Client client = FixtureFactory.makeCodeClientWithScopes();
         subject.insert(client);
     }
 
     @Test
     public void getByUUID() throws URISyntaxException {
-        Client expectedClient = loadClientWithScopes.run();
+        Client expectedClient = loadCodeClientWithScopes.run();
 
         Client actualClient = subject.getByUUID(expectedClient.getUuid());
 

@@ -10,22 +10,8 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
 
-/**
- * /**
- * Scenario: States fails validation And Client is found And redirects don't match.
- *
- * Given a client, c, exists in the db
- * And c's redirect uri is https://rootservices.org
- * And client ids has one item that is assigned to c's UUID
- * And redirect uris has one item that is assigned to https://rootservices.org/continue
- * And response types has one item that is CODE
- * And states is [method]
- * When the params are validated
- * Then raise a InformResourceOwner exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode]
- */
-public class RedirectMismatchTest extends BaseTest {
+
+public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes() {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -36,7 +22,7 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws URISyntaxException {
+    public void stateHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
@@ -51,7 +37,7 @@ public class RedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws URISyntaxException {
+    public void stateIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();

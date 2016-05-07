@@ -10,20 +10,7 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
 
-/**
- * Scenario: State fails validation And Client is found.
- *
- * Given a client, c, exists in the db
- * And client ids has one item that is assigned to c's UUID
- * And redirect uris has one item that is assigned to c's redirect uri
- * And response types has one item that is assigned CODE
- * And states is [method]
- * When the params are validated
- * Then raise a InformClientException exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode]
- * And expects e's redirect uri to be c's redirect uri
- */
+
 public class ClientFoundTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes(Client c) {
@@ -36,8 +23,8 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+    public void stateHasTwoItemsShouldThrowInformClientException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("some-state");
@@ -51,8 +38,8 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws URISyntaxException {
-        Client c = loadClientWithScopes.run();
+    public void stateIsBlankStringShouldThrowInformClientException() throws Exception {
+        Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("");

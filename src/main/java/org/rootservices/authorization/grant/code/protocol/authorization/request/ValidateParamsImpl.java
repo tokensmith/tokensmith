@@ -11,6 +11,10 @@ import java.util.List;
 
 /**
  * Created by tommackenzie on 2/24/15.
+ *
+ * This will be used for the response types:
+ * - code
+ * - token
  */
 @Component
 public class ValidateParamsImpl implements ValidateParams {
