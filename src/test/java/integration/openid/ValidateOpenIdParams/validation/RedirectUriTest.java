@@ -12,30 +12,11 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 import java.net.URISyntaxException;
 
 
-/**
- * Scenario: Redirect URIs fails validation And Client is found.
- *
- * Given a client, c, exists in the db
- * And c's response type is CODE
- * And c's redirect uri is https://rootservices.org
- * And client ids has one item that is assigned to c's UUID
- * And response types has one item that is CODE
- * And redirect uris has one item that is assigned [x]
- * When the params are validated
- * Then raise a InformClientException exception, e
- * And expects e's error code to be [errorCode]
- * And expects e's redirect uri to be c's redirect uri
- */
 public class RedirectUriTest extends BaseTest {
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
+
     @Test
-    public void nullShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUrisIsNullShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -49,14 +30,8 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
     @Test
-    public void noItemsShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -69,14 +44,8 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
     @Test
-    public void emptyValueShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUrisIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -90,14 +59,8 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
     @Test
-    public void duplicateShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -112,14 +75,8 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
     @Test
-    public void invalidShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -133,13 +90,7 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be [expectedDomainCause]
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
-    public void notHttpsShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -153,14 +104,8 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
     }
 
-    /**
-     * Then expect e's cause to be null
-     *
-     * @throws URISyntaxException
-     * @throws StateException
-     */
     @Test
-    public void mismatchesShouldThrowInformResourceOwner() throws URISyntaxException, StateException {
+    public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
