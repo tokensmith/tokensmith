@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ClientIdTest extends BaseTest {
 
     @Test
-    public void paramIsNull() throws InformClientException, StateException {
+    public void clientIdIsNullShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds = null;
         ClientIdException expectedDomainCause = new ClientIdException();
@@ -26,7 +26,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void emptyList() throws InformClientException, StateException {
+    public void clientIdIsEmptyListShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         int errorCode = ErrorCode.CLIENT_ID_EMPTY_LIST.getCode();
@@ -35,7 +35,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void invalid() throws InformClientException, StateException {
+    public void clientIdIsInvalidShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add("invalid");
@@ -45,7 +45,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws InformClientException, StateException {
+    public void clientIdsHasTwoItemsShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add(UUID.randomUUID().toString());
@@ -56,7 +56,7 @@ public class ClientIdTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws InformClientException, StateException {
+    public void clientIdIsBlankStringShouldThrowInformResourceOwnerException() throws InformClientException, StateException {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         ClientIdException expectedDomainCause = new ClientIdException();
         p.clientIds.add("");

@@ -14,9 +14,8 @@ import java.net.URISyntaxException;
 
 public class RedirectUriTest extends BaseTest {
 
-
     @Test
-    public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();

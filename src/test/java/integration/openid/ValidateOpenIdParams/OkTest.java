@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 public class OkTest extends BaseTest {
 
     @Test
-    public void requiredParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -40,7 +40,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void optionalParams() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadClientWithOpenIdScope.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
