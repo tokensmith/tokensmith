@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.code.authorization.builder.optional;
+package org.rootservices.authorization.oauth2.grant.code.authorization.request.builder.optional;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Before;

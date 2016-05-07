@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.code.authorization.builder.required;
+package org.rootservices.authorization.oauth2.grant.code.authorization.request.builder.required;
 
 import org.junit.Before;
 import org.junit.Test;
