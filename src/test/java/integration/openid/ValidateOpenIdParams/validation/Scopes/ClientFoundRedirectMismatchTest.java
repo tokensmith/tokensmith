@@ -4,13 +4,10 @@ import helper.ValidateParamsAttributes;
 import integration.openid.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.ScopesException;
-import org.rootservices.authorization.grant.code.protocol.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 
