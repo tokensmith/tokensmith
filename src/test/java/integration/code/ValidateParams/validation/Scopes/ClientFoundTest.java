@@ -10,23 +10,11 @@ import org.rootservices.authorization.persistence.entity.Client;
 
 import java.net.URISyntaxException;
 
-/**
- * Scenario: Scopes fails validation And Client is found.
- *
- * Given a client, c, exists in the db
- * And client ids has one item that is assigned to c's UUID
- * And response types has one item that is assigned CODE
- * And scopes is [method]
- * When the params are validated
- * Then raise a InformClientException exception, e
- * And expect e's cause to be [expectedDomainCause]
- * And expects e's error code to be [errorCode]
- * And expects e's redirect uri to be c's redirect uri
- */
+
 public class ClientFoundTest extends BaseTest {
 
     @Test
-    public void invalid() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -42,7 +30,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void duplicate() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
@@ -60,7 +48,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void emptyValue() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
         Client c = loadClientWithScopes.run();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
