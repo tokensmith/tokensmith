@@ -7,6 +7,6 @@ import org.rootservices.authorization.oauth2.grant.code.authorization.request.en
 /**
  * Created by tommackenzie on 11/19/14.
  */
-public interface CompareClientToAuthRequest {
+public interface CompareConfidentialClientToAuthRequest {
     boolean run(AuthRequest authRequest) throws InformResourceOwnerException, InformClientException;
 }
