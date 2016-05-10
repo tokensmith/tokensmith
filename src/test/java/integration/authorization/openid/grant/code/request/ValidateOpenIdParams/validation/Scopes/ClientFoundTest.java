@@ -22,7 +22,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopeIsInvalidShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.scopes.add("invalid-scope");
@@ -35,7 +35,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
 
@@ -51,7 +51,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopeIsBlankStringShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
 

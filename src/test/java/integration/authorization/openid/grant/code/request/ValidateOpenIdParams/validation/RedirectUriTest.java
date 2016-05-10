@@ -14,7 +14,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUrisIsNullShouldThrowInformResourceOwner() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -29,7 +29,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -43,7 +43,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUrisIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -58,7 +58,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -74,7 +74,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -88,7 +88,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -103,7 +103,7 @@ public class RedirectUriTest extends BaseTest {
 
     @Test
     public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

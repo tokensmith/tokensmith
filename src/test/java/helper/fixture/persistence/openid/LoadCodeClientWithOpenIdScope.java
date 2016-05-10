@@ -1,6 +1,7 @@
 package helper.fixture.persistence.openid;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -15,10 +16,10 @@ import java.net.URISyntaxException;
  * Created by tommackenzie on 1/21/16.
  */
 @Component
-public class LoadClientWithOpenIdScope extends LoadCodeClientWithScopes {
+public class LoadCodeClientWithOpenIdScope extends LoadCodeClientWithScopes {
 
     @Autowired
-    public LoadClientWithOpenIdScope(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
+    public LoadCodeClientWithOpenIdScope(ClientRepository clientRepository, ScopeRepository scopeRepository, ClientScopesRepository clientScopesRepository) {
         super(clientRepository, scopeRepository, clientScopesRepository);
     }
 
