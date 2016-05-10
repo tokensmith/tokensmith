@@ -13,21 +13,21 @@ import java.util.List;
  * Created by tommackenzie on 10/10/15.
  */
 @Component
-public class ValidateOpenIdParamsmpl implements ValidateOpenIdParams {
+public class ValidateOpenIdParamsImpl implements ValidateOpenIdParams {
 
     private OpenIdAuthRequestBuilder openIdAuthRequestBuilder;
-    private CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest;
+    private CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdParamsmpl(OpenIdAuthRequestBuilder openIdAuthRequestBuilder, CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest) {
+    public ValidateOpenIdParamsImpl(OpenIdAuthRequestBuilder openIdAuthRequestBuilder, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
         this.openIdAuthRequestBuilder = openIdAuthRequestBuilder;
-        this.compareClientToOpenIdAuthRequest = compareClientToOpenIdAuthRequest;
+        this.compareConfidentialClientToOpenIdAuthRequest = compareConfidentialClientToOpenIdAuthRequest;
     }
 
     @Override
     public OpenIdAuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
         OpenIdAuthRequest openIdAuthRequest = openIdAuthRequestBuilder.build(clientIds, responseTypes, redirectUris, scopes, states);
-        compareClientToOpenIdAuthRequest.run(openIdAuthRequest);
+        compareConfidentialClientToOpenIdAuthRequest.run(openIdAuthRequest);
 
         return openIdAuthRequest;
     }
