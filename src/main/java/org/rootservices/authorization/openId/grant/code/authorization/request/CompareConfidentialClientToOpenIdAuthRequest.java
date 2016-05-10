@@ -7,6 +7,6 @@ import org.rootservices.authorization.openId.grant.code.authorization.request.en
 /**
  * Created by tommackenzie on 9/30/15.
  */
-public interface CompareClientToOpenIdAuthRequest {
+public interface CompareConfidentialClientToOpenIdAuthRequest {
     boolean run(OpenIdAuthRequest authRequest) throws InformResourceOwnerException, InformClientException;
 }
