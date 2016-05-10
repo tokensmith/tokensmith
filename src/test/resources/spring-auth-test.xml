@@ -39,7 +39,7 @@
 
     <bean name = "loadConfidentialClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfidentialClientTokenReady">
         <property name="loadCodeClientWithScopes">
-            <bean class="helper.fixture.persistence.openid.LoadClientWithOpenIdScope" />
+            <bean class="helper.fixture.persistence.openid.LoadCodeClientWithOpenIdScope" />
         </property>
     </bean>
 

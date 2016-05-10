@@ -24,7 +24,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void stateHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.states.add("some-state");
@@ -38,7 +38,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void stateIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.states.add("");

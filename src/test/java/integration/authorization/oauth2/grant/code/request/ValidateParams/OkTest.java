@@ -7,6 +7,7 @@ import org.rootservices.authorization.oauth2.grant.code.authorization.request.ex
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 
 import java.net.URISyntaxException;
 
@@ -18,7 +19,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -35,7 +36,7 @@ public class OkTest extends BaseTest {
 
     @Test
     public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

@@ -22,7 +22,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void stateHasTwoItemsShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("some-state");
@@ -37,7 +37,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void stateIsBlankStringShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c);
         p.states.add("");

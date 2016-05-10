@@ -26,7 +26,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes = null;
@@ -39,7 +39,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
 
@@ -52,7 +52,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add("invalid-response-type");
@@ -65,7 +65,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add(ResponseType.CODE.toString());
@@ -79,7 +79,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.responseTypes.add("");

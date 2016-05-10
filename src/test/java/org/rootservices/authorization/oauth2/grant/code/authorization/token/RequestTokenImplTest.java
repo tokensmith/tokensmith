@@ -123,7 +123,7 @@ public class RequestTokenImplTest {
 
     @Test
     @Transactional
-    public void shouldBeOpendIdExtension() throws Exception {
+    public void shouldBeOpenIdExtension() throws Exception {
         String plainTextAuthCode = randomString.run();
 
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);

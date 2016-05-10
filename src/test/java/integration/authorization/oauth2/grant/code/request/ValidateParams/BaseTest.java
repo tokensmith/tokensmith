@@ -3,12 +3,15 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 import helper.ValidateParamsAttributes;
 import helper.fixture.persistence.LoadClientWithScopes;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
+import helper.fixture.persistence.LoadCodeConfidentialClientWithScopes;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
@@ -18,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -31,19 +35,14 @@ import static org.fest.assertions.api.Assertions.fail;
 public abstract class BaseTest {
 
     @Autowired
-    protected ClientRepository clientRepository;
-    @Autowired
-    private ScopeRepository scopeRepository;
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
-    protected LoadClientWithScopes loadClientWithScopes;
+    private LoadCodeConfidentialClientWithScopes loadCodeConfidentialClientWithScopes;
 
     @Autowired
     protected ValidateParams subject;
 
-    @Before
-    public void setUp() {
-        loadClientWithScopes = new LoadCodeClientWithScopes(clientRepository, scopeRepository, clientScopesRepository);
+    public Client loadConfidentialClient() throws URISyntaxException {
+        ConfidentialClient cc = loadCodeConfidentialClientWithScopes.run();
+        return cc.getClient();
     }
 
     public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {

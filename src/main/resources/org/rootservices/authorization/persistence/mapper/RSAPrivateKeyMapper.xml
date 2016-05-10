@@ -23,6 +23,36 @@
     <insert id="insert">
         insert into rsa_private_key
         (
+            uuid,
+            use,
+            modulus,
+            public_exponent,
+            private_exponent,
+            prime_p,
+            prime_q,
+            prime_exponent_p,
+            prime_exponent_q,
+            crt_coefficient,
+            active
+        )
+        values (
+            #{rsaPrivateKey.uuid},
+            #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.privateExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeExponentP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeExponentQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.crtCoefficient, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.active}
+        )
+    </insert>
+
+    <insert id="insertWithDateTimeValues">
+        insert into rsa_private_key
+        (
         uuid,
         use,
         modulus,
@@ -33,7 +63,9 @@
         prime_exponent_p,
         prime_exponent_q,
         crt_coefficient,
-        active
+        active,
+        created_at,
+        updated_at
         )
         values (
         #{rsaPrivateKey.uuid},
@@ -46,17 +78,49 @@
         #{rsaPrivateKey.primeExponentP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
         #{rsaPrivateKey.primeExponentQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
         #{rsaPrivateKey.crtCoefficient, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.active}
+        #{rsaPrivateKey.active},
+        #{rsaPrivateKey.createdAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler},
+        #{rsaPrivateKey.updatedAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
 
     <select id="getMostRecentAndActiveForSigning" resultMap="rsaPrivateKey">
-        select uuid, use, modulus, public_exponent, private_exponent,
-        prime_p, prime_q, prime_exponent_p, prime_exponent_q, crt_coefficient,
-        active, updated_at, created_at
+        select
+            uuid,
+            use,
+            modulus,
+            public_exponent,
+            private_exponent,
+            prime_p,
+            prime_q,
+            prime_exponent_p,
+            prime_exponent_q,
+            crt_coefficient,
+            active,
+            updated_at,
+            created_at
         from rsa_private_key
         where active=true and use='SIGNATURE'
         order by created_at desc
         limit 1
+    </select>
+
+    <select id="getById" resultMap="rsaPrivateKey">
+        select
+        uuid,
+        use,
+        modulus,
+        public_exponent,
+        private_exponent,
+        prime_p,
+        prime_q,
+        prime_exponent_p,
+        prime_exponent_q,
+        crt_coefficient,
+        active,
+        updated_at,
+        created_at
+        from rsa_private_key
+        where uuid = #{id}
     </select>
 </mapper>
