@@ -23,13 +23,13 @@ public class ValidateParamsImpl implements ValidateParams {
     private AuthRequestBuilder authRequestBuilder;
 
     @Autowired
-    private CompareClientToAuthRequest compareClientToAuthRequest;
+    private CompareConfidentialClientToAuthRequest compareConfidentialClientToAuthRequest;
 
     @Override
     public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = authRequestBuilder.makeAuthRequest(clientIds, responseTypes, redirectUris, scopes, states);
-        compareClientToAuthRequest.run(authRequest);
+        compareConfidentialClientToAuthRequest.run(authRequest);
 
         return authRequest;
     }

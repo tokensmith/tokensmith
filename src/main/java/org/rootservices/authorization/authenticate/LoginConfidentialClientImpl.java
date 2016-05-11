@@ -29,7 +29,7 @@ public class LoginConfidentialClientImpl implements LoginConfidentialClient {
     public ConfidentialClient run(UUID clientUUID, String plainTextPassword) throws UnauthorizedException {
         ConfidentialClient confidentialClient = null;
         try {
-            confidentialClient = confidentialClientRepository.getByClientUUID(clientUUID);
+            confidentialClient = confidentialClientRepository.getByClientId(clientUUID);
         } catch (RecordNotFoundException e) {
             throw new UnauthorizedException(
                     ErrorCode.CLIENT_NOT_FOUND.getMessage(),

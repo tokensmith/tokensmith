@@ -28,15 +28,26 @@ public class RSAPrivateKeyMapperTest {
     public void insert() {
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
         subject.insert(rsaPrivateKey);
+
+        RSAPrivateKey actual = subject.getById(rsaPrivateKey.getUuid());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }
 
     @Test
     public void getMostRecentAndActiveForSigningShouldFindRecord() {
         RSAPrivateKey rsaPrivateKeyA = FixtureFactory.makeRSAPrivateKey();
         subject.insert(rsaPrivateKeyA);
+        rsaPrivateKeyA = subject.getById(rsaPrivateKeyA.getUuid());
 
         RSAPrivateKey rsaPrivateKeyB = FixtureFactory.makeRSAPrivateKey();
-        subject.insert(rsaPrivateKeyB);
+
+        // make sure B is the latest.
+        rsaPrivateKeyB.setCreatedAt(rsaPrivateKeyA.getCreatedAt().plusSeconds(1));
+        rsaPrivateKeyB.setUpdatedAt(rsaPrivateKeyA.getUpdatedAt().plusSeconds(1));
+        subject.insertWithDateTimeValues(rsaPrivateKeyB);
 
         RSAPrivateKey actual = subject.getMostRecentAndActiveForSigning();
 

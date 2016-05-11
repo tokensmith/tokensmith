@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.code.authorization.request.buider;
 
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.*;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.GetClientRedirect;
+import org.rootservices.authorization.oauth2.grant.code.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.optional.RedirectUriBuilder;
@@ -42,11 +42,11 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
     private StateBuilder stateBuilder;
 
     @Autowired
-    private GetClientRedirect getClientRedirect;
+    private GetClientRedirectUri getClientRedirect;
 
     public AuthRequestBuilderImpl() {}
 
-    public AuthRequestBuilderImpl(ClientIdBuilder clientIdBuilder, ResponseTypeBuilder responseTypeBuilder, RedirectUriBuilder redirectUriBuilder, ScopesBuilder scopesBuilder, StateBuilder stateBuilder, GetClientRedirect getClientRedirect) {
+    public AuthRequestBuilderImpl(ClientIdBuilder clientIdBuilder, ResponseTypeBuilder responseTypeBuilder, RedirectUriBuilder redirectUriBuilder, ScopesBuilder scopesBuilder, StateBuilder stateBuilder, GetClientRedirectUri getClientRedirect) {
         this.clientIdBuilder = clientIdBuilder;
         this.responseTypeBuilder = responseTypeBuilder;
         this.redirectUriBuilder = redirectUriBuilder;
@@ -79,8 +79,8 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
             cleanedScopes = scopesBuilder.makeScopes(scopes);
             cleanedStates = stateBuilder.makeState(states);
         } catch (ResponseTypeException |ScopesException| StateException e) {
-            URI clientRedirectURI = getClientRedirect.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectURI, e);
+            URI clientRedirectUri = getClientRedirect.run(clientId, redirectUri, e);
+            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectUri, e);
         }
 
         authRequest.setResponseType(responseType);
