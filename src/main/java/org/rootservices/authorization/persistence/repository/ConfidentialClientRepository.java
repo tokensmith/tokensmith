@@ -10,5 +10,5 @@ import java.util.UUID;
  */
 public interface ConfidentialClientRepository {
     void insert(ConfidentialClient confidentialClient);
-    ConfidentialClient getByClientUUID(UUID clientUUID) throws RecordNotFoundException;
+    ConfidentialClient getByClientId(UUID clientID) throws RecordNotFoundException;
 }

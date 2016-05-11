@@ -8,13 +8,12 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientToOpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientToOpenIdAuthRequestImpl;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
+import org.rootservices.authorization.persistence.repository.ConfidentialClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,21 +29,22 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 9/30/15.
  */
-public class CompareClientToOpenIdAuthRequestImplTest {
+public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
     @Mock
-    private ClientRepository mockClientRepository;
+    private ConfidentialClientRepository mockConfidentialClientRepository;
 
-    private CompareClientToOpenIdAuthRequest subject;
+    private CompareConfidentialClientToOpenIdAuthRequest subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new CompareClientToOpenIdAuthRequestImpl(mockClientRepository);
+        subject = new CompareConfidentialClientToOpenIdAuthRequestImpl(mockConfidentialClientRepository);
     }
 
     @Test
     public void shouldBeOk() throws URISyntaxException, RecordNotFoundException, InformClientException, InformResourceOwnerException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
@@ -54,7 +54,9 @@ public class CompareClientToOpenIdAuthRequestImplTest {
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
 
-        when(mockClientRepository.getByUUID(openIdAuthRequest.getClientId())).thenReturn(client);
+        when(mockConfidentialClientRepository.getByClientId(
+                openIdAuthRequest.getClientId())
+        ).thenReturn(confidentialClient);
 
         boolean isValid = subject.run(openIdAuthRequest);
         assertThat(isValid).isTrue();
@@ -71,9 +73,9 @@ public class CompareClientToOpenIdAuthRequestImplTest {
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
 
-        when(mockClientRepository.getByUUID(openIdAuthRequest.getClientId())).thenThrow(
-                RecordNotFoundException.class
-        );
+        when(mockConfidentialClientRepository.getByClientId(
+                openIdAuthRequest.getClientId())
+        ).thenThrow(RecordNotFoundException.class);
 
         try {
             subject.run(openIdAuthRequest);
@@ -88,6 +90,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
     @Test
     public void responseTypeMismatchShouldThrowInformClientException() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
@@ -99,7 +102,9 @@ public class CompareClientToOpenIdAuthRequestImplTest {
 
         client.setResponseType(ResponseType.TOKEN);
 
-        when(mockClientRepository.getByUUID(openIdAuthRequest.getClientId())).thenReturn(client);
+        when(mockConfidentialClientRepository.getByClientId(
+                openIdAuthRequest.getClientId())
+        ).thenReturn(confidentialClient);
 
         try {
             subject.run(openIdAuthRequest);
@@ -116,6 +121,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
     @Test
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         URI requestRedirectUri = new URI("https://rootservices.org/mismatch");
 
@@ -127,7 +133,9 @@ public class CompareClientToOpenIdAuthRequestImplTest {
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
 
-        when(mockClientRepository.getByUUID(openIdAuthRequest.getClientId())).thenReturn(client);
+        when(mockConfidentialClientRepository.getByClientId(
+                openIdAuthRequest.getClientId())
+        ).thenReturn(confidentialClient);
 
         try {
             subject.run(openIdAuthRequest);
@@ -142,6 +150,7 @@ public class CompareClientToOpenIdAuthRequestImplTest {
     @Test
     public void authRequestInvalidScopeShouldThrowInformClientException() throws URISyntaxException, RecordNotFoundException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
@@ -151,7 +160,9 @@ public class CompareClientToOpenIdAuthRequestImplTest {
         scopes.add("invalid-scope");
         openIdAuthRequest.setScopes(scopes);
 
-        when(mockClientRepository.getByUUID(openIdAuthRequest.getClientId())).thenReturn(client);
+        when(mockConfidentialClientRepository.getByClientId(
+                openIdAuthRequest.getClientId())
+        ).thenReturn(confidentialClient);
 
         try {
             subject.run(openIdAuthRequest);

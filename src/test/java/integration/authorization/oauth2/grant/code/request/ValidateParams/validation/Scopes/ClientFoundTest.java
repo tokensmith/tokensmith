@@ -7,6 +7,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 
 import java.net.URISyntaxException;
 
@@ -15,7 +16,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopeIsInvalidShouldThrowInformClientException() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -31,7 +32,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -49,7 +50,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void scopeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

@@ -13,7 +13,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypeIsNullShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -29,7 +29,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -45,7 +45,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypeIsInvalidShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -61,7 +61,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -79,7 +79,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -95,7 +95,7 @@ public class ClientFoundTest extends BaseTest {
 
     @Test
     public void responseTypesDontMatchShouldThrowInformClientException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());

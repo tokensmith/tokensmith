@@ -1,12 +1,15 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams;
 
 import helper.ValidateParamsAttributes;
-import helper.fixture.persistence.openid.LoadClientWithOpenIdScope;
+import helper.fixture.persistence.openid.LoadCodeClientWithOpenIdScope;
+import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdScope;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
+import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,9 +29,14 @@ import static org.fest.assertions.api.Assertions.fail;
 public abstract class BaseTest {
 
     @Autowired
-    protected LoadClientWithOpenIdScope loadClientWithOpenIdScope;
+    private LoadCodeConfidentialClientWithOpenIdScope loadCodeConfidentialClientWithOpenIdScope;
     @Autowired
     protected ValidateOpenIdParams subject;
+
+    public Client loadConfidentialClient() throws Exception {
+        ConfidentialClient cc = loadCodeConfidentialClientWithOpenIdScope.run();
+        return cc.getClient();
+    }
 
     public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {
 

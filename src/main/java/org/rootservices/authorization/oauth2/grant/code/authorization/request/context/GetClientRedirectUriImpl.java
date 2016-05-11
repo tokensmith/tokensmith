@@ -1,11 +1,11 @@
-package org.rootservices.authorization.oauth2.grant.code.authorization.request;
+package org.rootservices.authorization.oauth2.grant.code.authorization.request.context;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
+import org.rootservices.authorization.persistence.repository.ConfidentialClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,36 +15,32 @@ import java.util.UUID;
 
 /**
  * Created by tommackenzie on 2/18/15.
- *
- * TODO: rename this class, its doesn not describe what it does.
  */
 @Component
-public class GetClientRedirectImpl implements GetClientRedirect {
+public class GetClientRedirectUriImpl implements GetClientRedirectUri {
+
+    private ConfidentialClientRepository confidentialClientRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
-
-    public GetClientRedirectImpl() {}
-
-    public GetClientRedirectImpl(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
+    public GetClientRedirectUriImpl(ConfidentialClientRepository confidentialClientRepository) {
+        this.confidentialClientRepository = confidentialClientRepository;
     }
 
     @Override
     public URI run(UUID clientId, Optional<URI> redirectURI, Throwable rootCause) throws InformClientException, InformResourceOwnerException {
 
-        Client client;
+        ConfidentialClient confidentialClient;
         try {
-            client = clientRepository.getByUUID(clientId);
+            confidentialClient = confidentialClientRepository.getByClientId(clientId);
         } catch (RecordNotFoundException e) {
             throw new InformResourceOwnerException("", e, ErrorCode.CLIENT_NOT_FOUND.getCode());
         }
 
-        if ( redirectMismatch(redirectURI, client.getRedirectURI())) {
+        if ( redirectMismatch(redirectURI, confidentialClient.getClient().getRedirectURI())) {
             throw new InformResourceOwnerException("", rootCause, ErrorCode.REDIRECT_URI_MISMATCH.getCode());
         }
 
-        return client.getRedirectURI();
+        return confidentialClient.getClient().getRedirectURI();
     }
 
     /*

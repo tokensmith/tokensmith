@@ -49,7 +49,7 @@ public class ConfidentialClientRepositoryImplTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         when(mockConfidentialClientMapper.getByClientUUID(confidentialClient.getClient().getUuid())).thenReturn(confidentialClient);
 
-        ConfidentialClient actual = subject.getByClientUUID(confidentialClient.getClient().getUuid());
+        ConfidentialClient actual = subject.getByClientId(confidentialClient.getClient().getUuid());
         assertThat(actual).isEqualTo(confidentialClient);
     }
 
@@ -58,6 +58,6 @@ public class ConfidentialClientRepositoryImplTest {
         UUID clientUUID = UUID.randomUUID();
         when(mockConfidentialClientMapper.getByClientUUID(clientUUID)).thenReturn(null);
 
-        subject.getByClientUUID(clientUUID);
+        subject.getByClientId(clientUUID);
     }
 }

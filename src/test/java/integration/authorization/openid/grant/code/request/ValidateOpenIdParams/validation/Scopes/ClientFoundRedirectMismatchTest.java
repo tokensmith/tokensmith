@@ -27,7 +27,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
         p.scopes.add("invalid-scope");
@@ -39,7 +39,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
 
@@ -54,7 +54,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithOpenIdScope.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
 

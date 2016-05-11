@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.ScopesException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 
@@ -15,7 +16,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -31,7 +32,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
@@ -49,7 +50,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     @Test
     public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClientWithScopes.run();
+        Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
