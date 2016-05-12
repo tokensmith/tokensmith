@@ -1,6 +1,6 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request.builder.required;
 
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.RedirectUriException;
 
 import java.net.URI;
 import java.util.List;

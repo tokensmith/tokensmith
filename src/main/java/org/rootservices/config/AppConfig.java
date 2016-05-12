@@ -71,4 +71,5 @@ public class AppConfig {
     public AppFactory appFactory() {
         return new AppFactory();
     }
+
 }

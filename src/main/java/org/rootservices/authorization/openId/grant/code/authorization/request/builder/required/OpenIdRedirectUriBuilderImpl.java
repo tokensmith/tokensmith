@@ -2,12 +2,12 @@ package org.rootservices.authorization.openId.grant.code.authorization.request.b
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.RedirectUriException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.RequiredParam;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.EmptyValueError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.NoItemsError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.RequiredParam;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.NoItemsError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.ParamIsNullError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,15 +1,15 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request.builder;
 
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.*;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientRedirectUri;
 import org.rootservices.authorization.openId.grant.code.authorization.request.builder.required.OpenIdRedirectUriBuilder;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.*;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.optional.ScopesBuilder;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.optional.StateBuilder;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.required.ClientIdBuilder;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.required.ResponseTypeBuilder;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.optional.ScopesBuilder;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.optional.StateBuilder;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ClientIdBuilder;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ResponseTypeBuilder;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
