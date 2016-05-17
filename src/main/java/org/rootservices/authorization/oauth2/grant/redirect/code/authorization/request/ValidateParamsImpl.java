@@ -22,12 +22,16 @@ import java.util.List;
 @Component
 public class ValidateParamsImpl implements ValidateParams {
 
-    @Autowired
     private AuthRequestBuilder authRequestBuilder;
 
-    @Autowired
     @Resource(name = "compareConfidentialClientToAuthRequestImpl")
     private CompareClientToAuthRequest compareClientToAuthRequest;
+
+    @Autowired
+    public ValidateParamsImpl(AuthRequestBuilder authRequestBuilder, CompareClientToAuthRequest compareClientToAuthRequest) {
+        this.authRequestBuilder = authRequestBuilder;
+        this.compareClientToAuthRequest = compareClientToAuthRequest;
+    }
 
     @Override
     public AuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {

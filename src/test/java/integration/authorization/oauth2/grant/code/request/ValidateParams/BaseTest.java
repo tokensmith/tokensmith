@@ -1,20 +1,14 @@
 package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
 import helper.ValidateParamsAttributes;
-import helper.fixture.persistence.LoadClientWithScopes;
-import helper.fixture.persistence.LoadCodeClientWithScopes;
 import helper.fixture.persistence.LoadCodeConfidentialClientWithScopes;
-import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
-import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.persistence.repository.ClientScopesRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

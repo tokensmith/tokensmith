@@ -6,12 +6,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.RedirectUriException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.RequiredParam;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.EmptyValueError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.MoreThanOneItemError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.NoItemsError;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.validator.exception.ParamIsNullError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.RequiredParam;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.EmptyValueError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.MoreThanOneItemError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.NoItemsError;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.validator.exception.ParamIsNullError;
 
 import java.net.URI;
 import java.util.ArrayList;
