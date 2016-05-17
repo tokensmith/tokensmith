@@ -44,7 +44,6 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
     private StateBuilder stateBuilder;
 
     @Autowired
-    @Resource(name = "getConfidentialClientRedirectUriImpl")
     private GetClientRedirectUri getClientRedirect;
 
     public AuthRequestBuilderImpl() {}

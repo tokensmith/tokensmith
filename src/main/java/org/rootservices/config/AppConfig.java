@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.jwt.config.AppFactory;
-import org.rootservices.jwt.translator.PemToRSAKeyPair;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -71,5 +68,4 @@ public class AppConfig {
     public AppFactory appFactory() {
         return new AppFactory();
     }
-
 }

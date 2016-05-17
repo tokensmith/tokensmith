@@ -1,0 +1,151 @@
+package org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request;
+
+import helper.fixture.FixtureFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ResponseType;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.ClientRepository;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
+/**
+ * Created by tommackenzie on 5/16/16.
+ */
+public class CompareClientToAuthRequestTokenResponseTypeTest {
+    @Mock
+    private ClientRepository mockClientRepository;
+
+    private CompareClientToAuthRequest subject;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        subject = new CompareClientToAuthRequestTokenResponseType(mockClientRepository);
+    }
+
+    public AuthRequest makeAuthRequestFromClient(Client client) {
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setClientId(client.getUuid());
+        authRequest.setResponseType(client.getResponseType());
+        authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        authRequest.setScopes(scopes);
+
+        return authRequest;
+    }
+
+    @Test
+    public void shouldBeOk() throws URISyntaxException, RecordNotFoundException, InformClientException, InformResourceOwnerException {
+        Client client = FixtureFactory.makeCodeClientWithScopes();
+
+        AuthRequest authRequest = makeAuthRequestFromClient(client);
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+
+        boolean isValid = subject.run(authRequest);
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    public void runClientNotFoundShouldThrowInformResourceOwnerException() throws RecordNotFoundException {
+        UUID uuid = UUID.randomUUID();
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setClientId(uuid);
+
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
+
+        try {
+            subject.run(authRequest);
+            fail("Expected InformResourceOwnerException");
+        } catch (InformResourceOwnerException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_NOT_FOUND.getCode());
+        } catch (InformClientException e) {
+            fail("Expected InformResourceOwnerException");
+        }
+    }
+
+    @Test
+    public void responseTypeMismatchShouldThrowInformClientException() throws RecordNotFoundException, URISyntaxException {
+        Client client = FixtureFactory.makeCodeClientWithScopes();
+
+        AuthRequest authRequest = makeAuthRequestFromClient(client);
+        client.setResponseType(ResponseType.TOKEN);
+
+        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+
+        try {
+            subject.run(authRequest);
+            fail("Expected InformClientException");
+        } catch (InformResourceOwnerException e) {
+            fail("Expected InformClientException");
+        } catch (InformClientException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode());
+            assertTrue(e.getError().equals("unauthorized_client"));
+            assertTrue(e.getRedirectURI().equals(client.getRedirectURI()));
+        }
+    }
+
+    @Test
+    public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
+        Client client = FixtureFactory.makeCodeClientWithScopes();
+
+        Optional<URI> requestRedirectUri = Optional.of(new URI("https://rootservices.org/mismatch"));
+        AuthRequest authRequest = makeAuthRequestFromClient(client);
+        authRequest.setRedirectURI(requestRedirectUri);
+
+        when(mockClientRepository.getByUUID(
+                authRequest.getClientId())).thenReturn(client);
+
+        try {
+            subject.run(authRequest);
+            fail("Expected InformResourceOwnerException");
+        } catch (InformResourceOwnerException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+        } catch (InformClientException e) {
+            fail("Expected InformResourceOwnerException");
+        }
+    }
+
+    @Test
+    public void authRequestInvalidScopeShouldThrowInformClientException() throws URISyntaxException, RecordNotFoundException {
+        Client client = FixtureFactory.makeCodeClientWithScopes();
+
+        AuthRequest authRequest = makeAuthRequestFromClient(client);
+        authRequest.getScopes().add("invalid-scope");
+
+        when(mockClientRepository.getByUUID(
+                authRequest.getClientId())
+        ).thenReturn(client);
+
+        try {
+            subject.run(authRequest);
+            fail("Expected InformClientException");
+        } catch (InformResourceOwnerException e) {
+            fail("Expected InformClientException");
+        } catch (InformClientException e) {
+            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_NOT_SUPPORTED.getCode());
+            assertTrue(e.getError().equals("invalid_scope"));
+            assertTrue(e.getRedirectURI().equals(client.getRedirectURI()));
+        }
+    }
+
+}
