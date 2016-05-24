@@ -15,15 +15,14 @@ import java.util.UUID;
  * Created by tommackenzie on 11/19/14.
  */
 @Component
-@Primary
-public class CompareConfidentialClientToAuthRequestImpl extends CompareClientToAuthRequest {
+public class CompareConfidentialClientToAuthRequest extends CompareClientToAuthRequest {
 
     @Autowired
     private ConfidentialClientRepository confidentialClientRepository;
 
-    public CompareConfidentialClientToAuthRequestImpl() {}
+    public CompareConfidentialClientToAuthRequest() {}
 
-    public CompareConfidentialClientToAuthRequestImpl(ConfidentialClientRepository confidentialClientRepository) {
+    public CompareConfidentialClientToAuthRequest(ConfidentialClientRepository confidentialClientRepository) {
         this.confidentialClientRepository = confidentialClientRepository;
     }
 

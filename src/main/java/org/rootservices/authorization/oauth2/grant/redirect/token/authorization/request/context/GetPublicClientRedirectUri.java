@@ -13,14 +13,15 @@ import java.util.UUID;
  * Created by tommackenzie on 5/16/16.
  */
 @Component
-public class GetClientRedirectUriTokenResponseType extends GetClientRedirectUri {
-    private ClientRepository clientRepository;
-
-    public GetClientRedirectUriTokenResponseType() {
-    }
+public class GetPublicClientRedirectUri extends GetClientRedirectUri {
 
     @Autowired
-    public GetClientRedirectUriTokenResponseType(ClientRepository clientRepository) {
+    private ClientRepository clientRepository;
+
+    public GetPublicClientRedirectUri() {
+    }
+
+    public GetPublicClientRedirectUri(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 

@@ -14,21 +14,19 @@ import java.util.List;
 
 /**
  * Created by tommackenzie on 2/24/15.
- *
- * This will be used for the response types:
- * - code
- * - token
  */
 @Component
-public class ValidateParamsImpl implements ValidateParams {
-
-    private AuthRequestBuilder authRequestBuilder;
-
-    @Resource(name = "compareConfidentialClientToAuthRequestImpl")
-    private CompareClientToAuthRequest compareClientToAuthRequest;
+public class ValidateParamsCodeResponseType implements ValidateParams {
 
     @Autowired
-    public ValidateParamsImpl(AuthRequestBuilder authRequestBuilder, CompareClientToAuthRequest compareClientToAuthRequest) {
+    private AuthRequestBuilder authRequestBuilder;
+    @Autowired
+    private CompareClientToAuthRequest compareClientToAuthRequest;
+
+    public ValidateParamsCodeResponseType() {
+    }
+
+    public ValidateParamsCodeResponseType(AuthRequestBuilder authRequestBuilder, CompareClientToAuthRequest compareClientToAuthRequest) {
         this.authRequestBuilder = authRequestBuilder;
         this.compareClientToAuthRequest = compareClientToAuthRequest;
     }

@@ -39,7 +39,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new CompareClientToAuthRequestTokenResponseType(mockClientRepository);
+        subject = new ComparePublicClientToAuthRequest(mockClientRepository);
     }
 
     public AuthRequest makeAuthRequestFromClient(Client client) {
