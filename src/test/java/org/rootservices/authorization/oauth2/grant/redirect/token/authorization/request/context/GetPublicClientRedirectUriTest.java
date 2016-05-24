@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 5/16/16.
  */
-public class GetClientRedirectUriTokenResponseTypeTest {
+public class GetPublicClientRedirectUriTest {
     @Mock
     private ClientRepository mockClientRepository;
 
@@ -36,7 +36,7 @@ public class GetClientRedirectUriTokenResponseTypeTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new GetClientRedirectUriTokenResponseType(mockClientRepository);
+        subject = new GetPublicClientRedirectUri(mockClientRepository);
     }
 
     @Test

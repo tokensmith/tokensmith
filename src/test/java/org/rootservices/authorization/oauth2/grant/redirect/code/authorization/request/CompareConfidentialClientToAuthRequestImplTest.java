@@ -37,7 +37,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new CompareConfidentialClientToAuthRequestImpl(mockConfidentialClientRepository);
+        subject = new CompareConfidentialClientToAuthRequest(mockConfidentialClientRepository);
     }
 
     @Test

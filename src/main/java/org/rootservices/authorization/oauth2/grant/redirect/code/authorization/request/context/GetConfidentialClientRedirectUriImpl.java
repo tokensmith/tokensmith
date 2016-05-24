@@ -15,16 +15,17 @@ import java.util.UUID;
  * Created by tommackenzie on 2/18/15.
  */
 @Component
-@Primary
 public class GetConfidentialClientRedirectUriImpl extends GetClientRedirectUri {
 
+    @Autowired
     private ConfidentialClientRepository confidentialClientRepository;
 
-    @Autowired
+    public GetConfidentialClientRedirectUriImpl() {
+    }
+
     public GetConfidentialClientRedirectUriImpl(ConfidentialClientRepository confidentialClientRepository) {
         this.confidentialClientRepository = confidentialClientRepository;
     }
-
 
     @Override
     public Client getClient(UUID clientId) throws RecordNotFoundException {

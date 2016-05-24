@@ -1,5 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.redirect.authorization.request;
 
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;

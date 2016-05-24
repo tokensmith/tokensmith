@@ -15,28 +15,6 @@
     <context:component-scan base-package="org.rootservices"/>
     <context:component-scan base-package="helper"/>
 
-    <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="#{systemEnvironment['AUTH_DB_DRIVER']}" />
-        <property name="url" value="#{systemEnvironment['AUTH_DB_URL']}"/>
-        <property name="username" value="#{systemEnvironment['AUTH_DB_USER']}"/>
-        <property name="password" value="#{systemEnvironment['AUTH_DB_PASSWORD']}"/>
-        <property name="validationQuery" value="SELECT 1"/>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="typeAliasesPackage" value="org.rootservices.authorization.persistence.entity"/>
-        <property name="configLocation" value="classpath:mybatis-config.xml"/>
-    </bean>
-
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="org.rootservices.authorization.persistence.mapper"/>
-    </bean>
-
     <bean name = "loadConfidentialClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfidentialClientTokenReady">
         <property name="loadCodeClientWithScopes">
             <bean class="helper.fixture.persistence.openid.LoadCodeClientWithOpenIdScope" />
@@ -46,5 +24,6 @@
     <beans>
         <context:annotation-config/>
         <bean class="org.rootservices.config.AppConfig"/>
+        <bean class="org.rootservices.config.PersistenceConfig"/>
     </beans>
 </beans>

@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.builder;
+package org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider;
 
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.*;
@@ -25,25 +25,13 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 2/1/15.
  */
-@Component
 public class AuthRequestBuilderImpl implements AuthRequestBuilder {
 
-    @Autowired
     private ClientIdBuilder clientIdBuilder;
-
-    @Autowired
     private ResponseTypeBuilder responseTypeBuilder;
-
-    @Autowired
     private RedirectUriBuilder redirectUriBuilder;
-
-    @Autowired
     private ScopesBuilder scopesBuilder;
-
-    @Autowired
     private StateBuilder stateBuilder;
-
-    @Autowired
     private GetClientRedirectUri getClientRedirect;
 
     public AuthRequestBuilderImpl() {}
@@ -53,8 +41,8 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
         this.responseTypeBuilder = responseTypeBuilder;
         this.redirectUriBuilder = redirectUriBuilder;
         this.scopesBuilder = scopesBuilder;
-        this.getClientRedirect = getClientRedirect;
         this.stateBuilder = stateBuilder;
+        this.getClientRedirect = getClientRedirect;
     }
 
     @Override

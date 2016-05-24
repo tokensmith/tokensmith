@@ -13,14 +13,14 @@ import java.util.UUID;
  * Created by tommackenzie on 5/16/16.
  */
 @Component
-public class CompareClientToAuthRequestTokenResponseType extends CompareClientToAuthRequest {
+public class ComparePublicClientToAuthRequest extends CompareClientToAuthRequest {
+    @Autowired
     private ClientRepository clientRepository;
 
-    public CompareClientToAuthRequestTokenResponseType() {
+    public ComparePublicClientToAuthRequest() {
     }
 
-    @Autowired
-    public CompareClientToAuthRequestTokenResponseType(ClientRepository clientRepository) {
+    public ComparePublicClientToAuthRequest(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
