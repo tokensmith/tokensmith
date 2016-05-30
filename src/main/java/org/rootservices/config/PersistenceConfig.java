@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -46,8 +47,7 @@ public class PersistenceConfig {
     public SqlSessionFactory sqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
 
-        URL configLocation = ResourceLoader.class.getClassLoader().getResource("mybatis-config.xml");
-        Resource configResource = new FileSystemResource(configLocation.getPath());
+        Resource configResource = new ClassPathResource("mybatis-config.xml");
 
         sqlSessionFactory.setDataSource(dataSource());
         sqlSessionFactory.setTypeAliasesPackage("org.rootservices.authorization.persistence.entity");

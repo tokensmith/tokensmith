@@ -23,6 +23,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.security.KeyFactory;
@@ -33,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by tommackenzie on 7/4/15.
  */
 @Configuration
+@ComponentScan("org.rootservices.authorization")
 public class AppConfig {
     private static String ALGORITHM = "RSA";
 

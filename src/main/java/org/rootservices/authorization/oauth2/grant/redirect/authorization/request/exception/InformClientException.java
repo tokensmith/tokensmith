@@ -26,7 +26,6 @@ public class InformClientException extends BaseInformException {
 
     public InformClientException(String message, int code, URI redirectURI) {
         super(message, code);
-        this.error = error;
         this.redirectURI = redirectURI;
     }
 

@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ClientIdBuilderImpl implements ClientIdBuilder {
 
     @Autowired
-    RequiredParam requiredParam;
+    private RequiredParam requiredParam;
 
     public ClientIdBuilderImpl() {}
 
