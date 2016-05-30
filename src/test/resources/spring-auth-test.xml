@@ -12,7 +12,6 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="org.rootservices"/>
     <context:component-scan base-package="helper"/>
 
     <bean name = "loadConfidentialClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfidentialClientTokenReady">
