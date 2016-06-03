@@ -46,6 +46,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
             throw new InformClientException(
                     "Response Type requested doesn't match client's response type",
                     "unauthorized_client",
+                    ErrorCode.RESPONSE_TYPE_MISMATCH.getDescription(),
                     ErrorCode.RESPONSE_TYPE_MISMATCH.getCode(),
                     confidentialClient.getClient().getRedirectURI()
             );
@@ -55,6 +56,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
             throw new InformClientException(
                     "Scope is not supported for this client.",
                     "invalid_scope",
+                    ErrorCode.SCOPES_NOT_SUPPORTED.getDescription(),
                     ErrorCode.SCOPES_NOT_SUPPORTED.getCode(),
                     confidentialClient.getClient().getRedirectURI()
             );

@@ -204,7 +204,7 @@ public class RequestTokenImpl implements RequestToken {
             authCodeRepository.revokeById(authCodeId);
 
             throw new CompromisedCodeException(
-                    ErrorCode.COMPROMISED_AUTH_CODE.getMessage(),
+                    ErrorCode.COMPROMISED_AUTH_CODE.getDescription(),
                     "invalid_grant", e, ErrorCode.COMPROMISED_AUTH_CODE.getCode()
             );
         }

@@ -71,7 +71,7 @@ public class JsonToTokenRequestImplTest {
         assertThat(expected.getKey()).isEqualTo("grant_type");
         assertThat(expected.getDomainCause()).isInstanceOf(JsonParseException.class);
         assertThat(expected.getCode()).isEqualTo(ErrorCode.DUPLICATE_KEY.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.DUPLICATE_KEY.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.DUPLICATE_KEY.getDescription());
         assertThat(actual).isNull();
     }
 
@@ -133,7 +133,7 @@ public class JsonToTokenRequestImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getDomainCause()).isInstanceOf(IOException.class);
         assertThat(expected.getCode()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getDescription());
         assertThat(actual).isNull();
     }
 
@@ -162,7 +162,7 @@ public class JsonToTokenRequestImplTest {
         assertThat(expected).isNotNull();
         assertThat(expected.getDomainCause()).isInstanceOf(IOException.class);
         assertThat(expected.getCode()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.INVALID_PAYLOAD.getDescription());
         assertThat(actual).isNull();
     }
 
@@ -223,7 +223,7 @@ public class JsonToTokenRequestImplTest {
         assertThat(actual).isNull();
         assertThat(expected).isNotNull();
         assertThat(expected.getCode()).isEqualTo(ErrorCode.UNKNOWN_KEY.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.UNKNOWN_KEY.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.UNKNOWN_KEY.getDescription());
         assertThat(expected.getKey()).isEqualTo("client_id");
     }
 

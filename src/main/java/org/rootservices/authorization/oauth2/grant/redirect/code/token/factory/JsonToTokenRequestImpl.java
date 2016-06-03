@@ -46,20 +46,20 @@ public class JsonToTokenRequestImpl implements JsonToTokenRequest {
             Optional<String> duplicateKey = getJsonParseExceptionDuplicateKey(e);
             if (duplicateKey.isPresent()) {
                 throw new DuplicateKeyException(
-                    ErrorCode.DUPLICATE_KEY.getMessage(), e, ErrorCode.DUPLICATE_KEY.getCode(), duplicateKey.get()
+                    ErrorCode.DUPLICATE_KEY.getDescription(), e, ErrorCode.DUPLICATE_KEY.getCode(), duplicateKey.get()
                 );
             }
 
             throw new InvalidPayloadException(
-                    ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
+                    ErrorCode.INVALID_PAYLOAD.getDescription(), e, ErrorCode.INVALID_PAYLOAD.getCode()
             );
         } catch (UnrecognizedPropertyException e) {
             throw new UnknownKeyException(
-                    ErrorCode.UNKNOWN_KEY.getMessage(), e.getPropertyName(), e, ErrorCode.UNKNOWN_KEY.getCode()
+                    ErrorCode.UNKNOWN_KEY.getDescription(), e.getPropertyName(), e, ErrorCode.UNKNOWN_KEY.getCode()
             );
         } catch (IOException e) {
             throw new InvalidPayloadException(
-                    ErrorCode.INVALID_PAYLOAD.getMessage(), e, ErrorCode.INVALID_PAYLOAD.getCode()
+                    ErrorCode.INVALID_PAYLOAD.getDescription(), e, ErrorCode.INVALID_PAYLOAD.getCode()
             );
         }
 

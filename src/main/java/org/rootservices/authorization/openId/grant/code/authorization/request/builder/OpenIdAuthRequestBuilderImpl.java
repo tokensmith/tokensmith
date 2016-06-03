@@ -67,7 +67,7 @@ public class OpenIdAuthRequestBuilderImpl implements OpenIdAuthRequestBuilder{
             cleanedStates = stateBuilder.makeState(states);
         } catch (ResponseTypeException |ScopesException | StateException e) {
             compareClientRedirectUri.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getCode(), redirectUri, e);
+            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, e);
         }
 
         openIdAuthRequest.setResponseType(responseType);
