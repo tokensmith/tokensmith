@@ -94,7 +94,7 @@ public class IsTokenRequestValidImplTest {
         assertThat(expected.getKey()).isEqualTo("grant_type");
         assertThat(expected.getValue()).isEqualTo("invalid");
         assertThat(expected.getCode()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.GRANT_TYPE_INVALID.getDescription());
         assertThat(actual).isNull();
     }
 
@@ -137,7 +137,7 @@ public class IsTokenRequestValidImplTest {
         assertThat(expected.getKey()).isEqualTo("redirect_uri");
         assertThat(expected.getValue()).isEqualTo("http://www.rootservices.org/continue");
         assertThat(expected.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getCode());
-        assertThat(expected.getMessage()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getMessage());
+        assertThat(expected.getMessage()).isEqualTo(ErrorCode.REDIRECT_URI_INVALID.getDescription());
         assertThat(actual).isNull();
     }
 }

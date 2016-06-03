@@ -186,7 +186,7 @@ public class RequestTokenImplTest {
         }
         assertThat(expected, is(notNullValue()));
         assertThat(expected.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
-        assertThat(expected.getMessage(), is(ErrorCode.PASSWORD_MISMATCH.getMessage()));
+        assertThat(expected.getMessage(), is(ErrorCode.PASSWORD_MISMATCH.getDescription()));
         assertThat(actual, is(nullValue()));
     }
 

@@ -70,7 +70,7 @@ public class AuthRequestBuilderImpl implements AuthRequestBuilder {
             cleanedStates = stateBuilder.makeState(states);
         } catch (ResponseTypeException |ScopesException | StateException e) {
             URI clientRedirectUri = getClientRedirect.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getCode(), clientRedirectUri, e);
+            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), clientRedirectUri, e);
         }
 
         authRequest.setResponseType(responseType);

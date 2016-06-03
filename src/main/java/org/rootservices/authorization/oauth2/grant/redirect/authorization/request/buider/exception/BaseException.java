@@ -9,6 +9,7 @@ public abstract class BaseException extends Exception {
 
     private int code;
     private String error;
+    private String description;
     private Throwable domainCause;
 
     public BaseException() {}
@@ -18,21 +19,23 @@ public abstract class BaseException extends Exception {
     }
 
     public BaseException(ErrorCode errorCode) {
-        super(errorCode.getMessage().toString());
+        super(errorCode.getDescription().toString());
         this.code = errorCode.getCode();
         this.error="invalid_request";
     }
 
     public BaseException(ErrorCode errorCode, Throwable domainCause) {
-        super(errorCode.getMessage().toString());
+        super(errorCode.getDescription().toString());
         this.code = errorCode.getCode();
+        this.description = errorCode.getDescription();
         this.domainCause = domainCause;
         this.error="invalid_request";
     }
 
     public BaseException(ErrorCode errorCode, String error, Throwable domainCause) {
-        super(errorCode.getMessage().toString());
+        super(errorCode.getDescription().toString());
         this.code = errorCode.getCode();
+        this.description = errorCode.getDescription();
         this.domainCause = domainCause;
         this.error=error;
     }
@@ -49,4 +52,7 @@ public abstract class BaseException extends Exception {
         return error;
     }
 
+    public String getDescription() {
+        return description;
+    }
 }
