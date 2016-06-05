@@ -16,8 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.fail;
+
 
 /**
  * Created by tommackenzie on 5/20/16.
@@ -48,8 +52,8 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_RESOURCE_OWNER);
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause().getClass().isInstance(expectedDomainCause)).isTrue();
-            assertThat(e.getCode()).isEqualTo(expectedErrorCode);
+            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
         }
@@ -61,38 +65,40 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_RESOURCE_OWNER);
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause()).isNull();
-            assertThat(e.getCode()).isEqualTo(expectedErrorCode);
+            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
         }
     }
 
-    public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, URI expectedRedirect) {
+    public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_CLIENT);
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause().getClass().isInstance(expectedDomainCause)).isTrue();
-            assertThat(e.getCode()).isEqualTo(expectedErrorCode);
-            assertThat(e.getError()).isEqualTo(expectedError);
-            assertThat(e.getRedirectURI().equals(expectedRedirect)).isTrue();
+            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCode(), is(expectedErrorCode));
+            assertThat(e.getError(), is(expectedError));
+            assertThat(e.getDescription(), is(expectedDescription));
+            assertThat(e.getRedirectURI(), is(expectedRedirect));
         } catch (InformResourceOwnerException e) {
             fail(EXPECTED_INFORM_CLIENT);
         }
     }
 
-    public void runExpectInformClientExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode, String expectedError, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
 
         try {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_CLIENT);
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause()).isNull();
-            assertThat(e.getCode()).isEqualTo(expectedErrorCode);
-            assertThat(e.getError()).isEqualTo(expectedError);
-            assertThat(e.getRedirectURI().equals(expectedRedirect)).isTrue();
+            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCode(), is(expectedErrorCode));
+            assertThat(e.getError(), is(expectedError));
+            assertThat(e.getDescription(), is(expectedDescription));
+            assertThat(e.getRedirectURI(), is(expectedRedirect));
         } catch (InformResourceOwnerException e) {
             fail(EXPECTED_INFORM_CLIENT);
         }
