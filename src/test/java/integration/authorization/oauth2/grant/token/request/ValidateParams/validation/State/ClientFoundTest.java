@@ -31,9 +31,10 @@ public class ClientFoundTest extends BaseTest {
 
         Exception expectedDomainCause = new StateException();
         int expectedErrorCode = ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode();
+        String expectedDescription = ErrorCode.STATE_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, c.getRedirectURI());
+        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -46,9 +47,10 @@ public class ClientFoundTest extends BaseTest {
 
         Exception expectedDomainCause = new StateException();
         int expectedErrorCode = ErrorCode.STATE_EMPTY_VALUE.getCode();
+        String expectedDescription = ErrorCode.STATE_EMPTY_VALUE.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, c.getRedirectURI());
+        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
 
     }
 }
