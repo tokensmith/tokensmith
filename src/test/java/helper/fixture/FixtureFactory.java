@@ -1,6 +1,6 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.code.authorization.response.AuthCodeInput;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthCodeInput;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;

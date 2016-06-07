@@ -1,8 +1,8 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.Scope;
@@ -46,6 +46,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
             throw new InformClientException(
                     "Response Type requested doesn't match client's response type",
                     "unauthorized_client",
+                    ErrorCode.RESPONSE_TYPE_MISMATCH.getDescription(),
                     ErrorCode.RESPONSE_TYPE_MISMATCH.getCode(),
                     confidentialClient.getClient().getRedirectURI()
             );
@@ -55,6 +56,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
             throw new InformClientException(
                     "Scope is not supported for this client.",
                     "invalid_scope",
+                    ErrorCode.SCOPES_NOT_SUPPORTED.getDescription(),
                     ErrorCode.SCOPES_NOT_SUPPORTED.getCode(),
                     confidentialClient.getClient().getRedirectURI()
             );

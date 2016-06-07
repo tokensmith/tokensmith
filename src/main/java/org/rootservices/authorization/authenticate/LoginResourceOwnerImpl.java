@@ -8,8 +8,6 @@ import org.rootservices.authorization.persistence.repository.ResourceOwnerReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 /**
  * Created by tommackenzie on 4/12/15.
  *
@@ -42,7 +40,7 @@ public class LoginResourceOwnerImpl implements LoginResourceOwner {
             resourceOwner = resourceOwnerRepository.getByEmail(userName);
         } catch (RecordNotFoundException e) {
             throw new UnauthorizedException(
-                ErrorCode.RESOURCE_OWNER_NOT_FOUND.getMessage(),
+                ErrorCode.RESOURCE_OWNER_NOT_FOUND.getDescription(),
                 e, ErrorCode.RESOURCE_OWNER_NOT_FOUND.getCode());
         }
 
