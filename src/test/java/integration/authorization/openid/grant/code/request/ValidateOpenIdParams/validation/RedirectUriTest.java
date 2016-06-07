@@ -4,7 +4,7 @@ import helper.ValidateParamsAttributes;
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.RedirectUriException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.RedirectUriException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 

@@ -28,7 +28,7 @@ public class MatchPasswordsImpl implements MatchPasswords {
             hashedPassword = new String(bytesHashedPassword, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new UnauthorizedException(
-                    ErrorCode.UNSUPPORTED_ENCODING.getMessage(),
+                    ErrorCode.UNSUPPORTED_ENCODING.getDescription(),
                     e, ErrorCode.UNSUPPORTED_ENCODING.getCode());
         }
 
@@ -38,7 +38,7 @@ public class MatchPasswordsImpl implements MatchPasswords {
 
         if ( !passwordsMatch ) {
             throw new UnauthorizedException(
-                    ErrorCode.PASSWORD_MISMATCH.getMessage(),
+                    ErrorCode.PASSWORD_MISMATCH.getDescription(),
                     ErrorCode.PASSWORD_MISMATCH.getCode());
         }
         return true;

@@ -2,12 +2,11 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
 import helper.ValidateParamsAttributes;
 import org.junit.Test;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.buider.exception.StateException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 
 import java.net.URISyntaxException;
 
@@ -25,7 +24,7 @@ public class OkTest extends BaseTest {
         p.clientIds.add(c.getUuid().toString());
         p.responseTypes.add(c.getResponseType().toString());
 
-        AuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
         assertThat(actual.getClientId()).isEqualTo(c.getUuid());
         assertThat(actual.getResponseType()).isEqualTo(c.getResponseType());
@@ -45,7 +44,7 @@ public class OkTest extends BaseTest {
         p.scopes.add("profile");
         p.states.add("some-state");
 
-        AuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
         assertThat(actual.getClientId()).isEqualTo(c.getUuid());
         assertThat(actual.getResponseType()).isEqualTo(c.getResponseType());

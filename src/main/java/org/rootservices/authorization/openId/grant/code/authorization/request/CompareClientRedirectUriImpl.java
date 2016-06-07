@@ -1,8 +1,8 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.code.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;

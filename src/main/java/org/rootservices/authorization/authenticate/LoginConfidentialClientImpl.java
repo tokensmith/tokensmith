@@ -32,7 +32,7 @@ public class LoginConfidentialClientImpl implements LoginConfidentialClient {
             confidentialClient = confidentialClientRepository.getByClientId(clientUUID);
         } catch (RecordNotFoundException e) {
             throw new UnauthorizedException(
-                    ErrorCode.CLIENT_NOT_FOUND.getMessage(),
+                    ErrorCode.CLIENT_NOT_FOUND.getDescription(),
                     e, ErrorCode.CLIENT_NOT_FOUND.getCode());
         }
 
@@ -42,7 +42,7 @@ public class LoginConfidentialClientImpl implements LoginConfidentialClient {
 
         if (!passwordsMatch) {
             throw new UnauthorizedException(
-                    ErrorCode.PASSWORD_MISMATCH.getMessage(),
+                    ErrorCode.PASSWORD_MISMATCH.getDescription(),
                     ErrorCode.PASSWORD_MISMATCH.getCode()
             );
         }
