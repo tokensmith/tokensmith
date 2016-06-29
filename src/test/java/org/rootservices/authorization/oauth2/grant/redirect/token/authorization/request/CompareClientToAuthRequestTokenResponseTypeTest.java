@@ -59,7 +59,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         Client client = FixtureFactory.makeCodeClientWithScopes();
 
         AuthRequest authRequest = makeAuthRequestFromClient(client);
-        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+        when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
         boolean isValid = subject.run(authRequest);
         assertThat(isValid).isTrue();
@@ -71,7 +71,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
 
-        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
+        when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 
         try {
             subject.run(authRequest);
@@ -90,7 +90,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         AuthRequest authRequest = makeAuthRequestFromClient(client);
         client.setResponseType(ResponseType.TOKEN);
 
-        when(mockClientRepository.getByUUID(authRequest.getClientId())).thenReturn(client);
+        when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
         try {
             subject.run(authRequest);
@@ -112,7 +112,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         AuthRequest authRequest = makeAuthRequestFromClient(client);
         authRequest.setRedirectURI(requestRedirectUri);
 
-        when(mockClientRepository.getByUUID(
+        when(mockClientRepository.getById(
                 authRequest.getClientId())).thenReturn(client);
 
         try {
@@ -132,7 +132,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         AuthRequest authRequest = makeAuthRequestFromClient(client);
         authRequest.getScopes().add("invalid-scope");
 
-        when(mockClientRepository.getByUUID(
+        when(mockClientRepository.getById(
                 authRequest.getClientId())
         ).thenReturn(client);
 

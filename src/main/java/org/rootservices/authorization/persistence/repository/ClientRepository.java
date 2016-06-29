@@ -9,6 +9,6 @@ import java.util.UUID;
  * Created by tommackenzie on 11/16/14.
  */
 public interface ClientRepository {
-    public Client getByUUID(UUID uuid) throws RecordNotFoundException;
-    public void insert(Client client);
+    Client getById(UUID id) throws RecordNotFoundException;
+    void insert(Client client);
 }

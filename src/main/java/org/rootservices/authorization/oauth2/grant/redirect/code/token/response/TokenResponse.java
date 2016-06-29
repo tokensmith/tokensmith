@@ -7,7 +7,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token.response
  */
 public class TokenResponse {
     private String accessToken;
-    private Integer expiresIn;
+    private Long expiresIn;
     private TokenType tokenType;
     private Extension extension;
 
@@ -21,11 +21,11 @@ public class TokenResponse {
         this.accessToken = accessToken;
     }
 
-    public Integer getExpiresIn() {
+    public Long getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(Integer expiresIn) {
+    public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
     }
 

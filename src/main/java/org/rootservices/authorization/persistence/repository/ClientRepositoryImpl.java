@@ -27,7 +27,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    public Client getByUUID(UUID uuid) throws RecordNotFoundException {
+    public Client getById(UUID uuid) throws RecordNotFoundException {
         Client client = clientMapper.getByUUID(uuid);
         if (client != null) {
             return client;

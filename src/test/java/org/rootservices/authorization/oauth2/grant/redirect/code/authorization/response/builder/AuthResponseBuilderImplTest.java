@@ -61,7 +61,7 @@ public class AuthResponseBuilderImplTest {
         Optional<String> state = Optional.of("csrf");
         Optional<URI> redirectUri = Optional.empty();
 
-        when(clientRepository.getByUUID(clientUUID)).thenThrow(RecordNotFoundException.class);
+        when(clientRepository.getById(clientUUID)).thenThrow(RecordNotFoundException.class);
 
         AuthResponse actual = null;
         try {
