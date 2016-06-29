@@ -8,6 +8,6 @@ import org.rootservices.authorization.persistence.entity.Token;
  */
 public interface MakeToken {
     Token run(String plainTextToken);
-    Integer getSecondsToExpiration();
+    Long getSecondsToExpiration();
     TokenType getTokenType();
 }

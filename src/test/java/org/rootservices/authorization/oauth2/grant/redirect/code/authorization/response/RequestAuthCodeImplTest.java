@@ -10,6 +10,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthResponseBuilder;
@@ -60,7 +61,7 @@ public class RequestAuthCodeImplTest {
         );
     }
 
-    public AuthRequest makeAuthRequest(AuthCodeInput input) throws URISyntaxException {
+    public AuthRequest makeAuthRequest(GrantInput input) throws URISyntaxException {
 
         Optional<URI> redirectUri = Optional.empty();
         if (input.getRedirectUris() != null && input.getRedirectUris().get(0) != null ) {
@@ -90,7 +91,7 @@ public class RequestAuthCodeImplTest {
         String scope = "profile";
 
         // parameter to pass into method in test
-        AuthCodeInput input = FixtureFactory.makeAuthCodeInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
 
         // response from mockValidateParams.
         AuthRequest authRequest = makeAuthRequest(input);
@@ -149,7 +150,7 @@ public class RequestAuthCodeImplTest {
         String scope = "profile";
 
         // parameters to method in test
-        AuthCodeInput input = FixtureFactory.makeAuthCodeInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
 
         // response from mockValidateParams
         AuthRequest authRequest = makeAuthRequest(input);
