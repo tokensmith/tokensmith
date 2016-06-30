@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilder;
@@ -14,13 +15,21 @@ import org.rootservices.authorization.oauth2.grant.redirect.authorization.reques
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ResponseTypeBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ResponseTypeBuilderImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.context.GetClientRedirectUri;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilderImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUriImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ValidateParamsTokenResponseType;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.context.GetPublicClientRedirectUri;
+import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.response.RequestAccessToken;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -174,6 +183,16 @@ public class AppConfig {
                 authRequestBuilder(),
                 compareClientToAuthRequest()
         );
+    }
+
+    @Bean
+    public RequestAuthCode requestAuthCode() {
+        return new RequestAuthCodeImpl();
+    }
+
+    @Bean
+    public RequestAccessToken requestAccessToken() {
+        return new RequestAccessToken();
     }
 
 }

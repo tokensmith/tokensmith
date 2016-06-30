@@ -29,14 +29,22 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestAccessToken {
+    @Autowired
     private LoginResourceOwner loginResourceOwner;
+    @Autowired
     private ValidateParams validateParamsTokenResponseType;
+    @Autowired
     private ScopeRepository scopeRepository;
+    @Autowired
     private RandomString randomString;
+    @Autowired
     private GrantToken grantToken;
+    @Autowired
     private ClientRepository clientRepository;
 
-    @Autowired
+    public RequestAccessToken() {
+    }
+
     public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsTokenResponseType, ScopeRepository scopeRepository, RandomString randomString, GrantToken grantToken, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateParamsTokenResponseType = validateParamsTokenResponseType;
