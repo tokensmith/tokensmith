@@ -23,7 +23,7 @@ import java.util.Optional;
  * extending RequestAuthCodeImpl is ok until the optional
  * parameters are implemented in openid.
  */
-@Component("requestOpenIdAuthCodeImpl")
+@Component("requestOpenIdAuthCode")
 public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
 
     private ValidateOpenIdParams validateOpenIdParams;
