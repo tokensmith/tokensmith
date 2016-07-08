@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by tommackenzie on 5/12/15.
@@ -53,6 +53,26 @@ public class ScopeRepositoryImplTest {
         List<Scope> actual = subject.findByName(names);
 
         verify(mockScopeMapper, times(1)).findByName(names);
-        assertThat(actual).isEqualTo(scopes);
+        assertThat(actual, is(scopes));
+    }
+
+    @Test
+    public void findByNameWhenInputIsNullShouldReturnEmptyList() throws Exception {
+        List<String> names = null;
+
+        List<Scope> actual = subject.findByName(names);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(0));
+    }
+
+    @Test
+    public void findByNameWhenInputIsEmptyListShouldReturnEmptyList() throws Exception {
+        List<String> names = new ArrayList<>();
+
+        List<Scope> actual = subject.findByName(names);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(0));
     }
 }

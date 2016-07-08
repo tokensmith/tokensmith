@@ -5,6 +5,7 @@ import org.rootservices.authorization.persistence.mapper.ScopeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,10 @@ public class ScopeRepositoryImpl implements ScopeRepository {
 
     @Override
     public List<Scope> findByName(List<String> names) {
-        return scopeMapper.findByName(names);
+        List<Scope> scopes = new ArrayList<>();
+        if (names != null && names.size() > 0) {
+            scopes = scopeMapper.findByName(names);
+        }
+        return scopes;
     }
 }
