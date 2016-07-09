@@ -33,7 +33,7 @@ public class CompareClientRedirectUriImpl implements CompareClientRedirectUri {
 
         Client client;
         try {
-            client = clientRepository.getByUUID(clientId);
+            client = clientRepository.getById(clientId);
         } catch (RecordNotFoundException e) {
             throw new InformResourceOwnerException("", e, ErrorCode.CLIENT_NOT_FOUND.getCode());
         }
