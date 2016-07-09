@@ -27,6 +27,6 @@ public class GetPublicClientRedirectUri extends GetClientRedirectUri {
 
     @Override
     public Client getClient(UUID clientId) throws RecordNotFoundException {
-        return clientRepository.getByUUID(clientId);
+        return clientRepository.getById(clientId);
     }
 }

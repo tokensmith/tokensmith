@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthCodeInput;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
@@ -55,7 +55,7 @@ public class RequestOpenIdAuthCodeImplTest {
         );
     }
 
-    public OpenIdAuthRequest makeOpenIdAuthRequest(AuthCodeInput input) throws URISyntaxException {
+    public OpenIdAuthRequest makeOpenIdAuthRequest(GrantInput input) throws URISyntaxException {
 
         UUID clientId = UUID.fromString(input.getClientIds().get(0));
         ResponseType responseType = ResponseType.valueOf(input.getResponseTypes().get(0));
@@ -84,7 +84,7 @@ public class RequestOpenIdAuthCodeImplTest {
         String scope = "profile";
 
         // parameter to pass into method in test
-        AuthCodeInput input = FixtureFactory.makeAuthCodeInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
         List<String> redirectUris = new ArrayList();
         redirectUris.add(FixtureFactory.SECURE_REDIRECT_URI);
         input.setRedirectUris(redirectUris);

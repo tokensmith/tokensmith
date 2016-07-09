@@ -97,7 +97,7 @@ public class RequestTokenImplTest {
         TokenResponse actual = subject.run(tokenInput);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
-        assertThat(actual.getExpiresIn(), is(3600));
+        assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.NONE));
 
@@ -144,7 +144,7 @@ public class RequestTokenImplTest {
         TokenResponse actual = subject.run(tokenInput);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
-        assertThat(actual.getExpiresIn(), is(3600));
+        assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType() , is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 

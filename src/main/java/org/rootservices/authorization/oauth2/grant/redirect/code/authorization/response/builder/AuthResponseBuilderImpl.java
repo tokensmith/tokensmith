@@ -48,7 +48,7 @@ public class AuthResponseBuilderImpl implements AuthResponseBuilder {
     private URI getRedirectUriFromPersistence(UUID clientUUID) throws InformResourceOwnerException {
         Client client = null;
         try {
-            client = clientRepository.getByUUID(clientUUID);
+            client = clientRepository.getById(clientUUID);
         } catch (RecordNotFoundException e) {
             throw new InformResourceOwnerException(
                 "Could not make Authorization Response. Client was not found.",

@@ -45,7 +45,7 @@ public class CompareClientRedirectUriTest {
         client.setUuid(clientId);
         client.setRedirectURI(redirectURI);
 
-        when(mockClientRepository.getByUUID(clientId)).thenReturn(client);
+        when(mockClientRepository.getById(clientId)).thenReturn(client);
 
         boolean actual = subject.run(clientId, redirectURI, rootCause);
         assertThat(actual, is(true));
@@ -57,7 +57,7 @@ public class CompareClientRedirectUriTest {
         URI redirectURI = new URI("https://rootservices.org");
         ResponseTypeException rootCause = new ResponseTypeException("");
 
-        when(mockClientRepository.getByUUID(clientId)).thenThrow(RecordNotFoundException.class);
+        when(mockClientRepository.getById(clientId)).thenThrow(RecordNotFoundException.class);
 
         try {
             subject.run(clientId, redirectURI, rootCause);
@@ -80,7 +80,7 @@ public class CompareClientRedirectUriTest {
         client.setUuid(clientId);
         client.setRedirectURI(new URI("https://rootservices.org/continue"));
 
-        when(mockClientRepository.getByUUID(clientId)).thenReturn(client);
+        when(mockClientRepository.getById(clientId)).thenReturn(client);
 
         try {
             subject.run(clientId, redirectURI, rootCause);

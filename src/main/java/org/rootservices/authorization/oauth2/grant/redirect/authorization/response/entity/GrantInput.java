@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response;
+package org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import java.util.List;
  * Created by tommackenzie on 4/25/15.
  *
  * A Value object that represents the inputs the
- * resource owner specifies when they request a Access Code
+ * resource owner specifies when they request Authorization.
  *
  * TODO: should this be renamed to represent its a request object?
  */
-public class AuthCodeInput {
+public class GrantInput {
     private String userName;
     private String plainTextPassword;
     private List<String> clientIds;

@@ -4,7 +4,7 @@ import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthCodeInput;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * extending RequestAuthCodeImpl is ok until the optional
  * parameters are implemented in openid.
  */
-@Component("requestOpenIdAuthCodeImpl")
+@Component("requestOpenIdAuthCode")
 public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
 
     private ValidateOpenIdParams validateOpenIdParams;
@@ -39,7 +39,7 @@ public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
     }
 
     @Override
-    public AuthResponse run(AuthCodeInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+    public AuthResponse run(GrantInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
         OpenIdAuthRequest authRequest = validateOpenIdParams.run(
                 input.getClientIds(),
                 input.getResponseTypes(),

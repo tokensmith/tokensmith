@@ -1,6 +1,6 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthCodeInput;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
@@ -26,6 +26,9 @@ public class FixtureFactory {
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String REDIRECT_URI = "http://www.rootservices.org";
 
+    public static URI makeSecureRedirectUri() throws URISyntaxException {
+        return new URI(REDIRECT_URI);
+    }
     public static Client makeTokenClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
         ResponseType rt = ResponseType.TOKEN;
@@ -203,8 +206,8 @@ public class FixtureFactory {
         return resourceOwnerToken;
     }
 
-    public static AuthCodeInput makeAuthCodeInput(UUID clientId, ResponseType rt, String scope) {
-        AuthCodeInput input = new AuthCodeInput();
+    public static GrantInput makeGrantInput(UUID clientId, ResponseType rt, String scope) {
+        GrantInput input = new GrantInput();
         input.setUserName(makeRandomEmail());
         input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
 
@@ -219,6 +222,29 @@ public class FixtureFactory {
         List<String> scopes = new ArrayList<>();
         scopes.add(scope.toString());
         input.setScopes(scopes);
+
+        return input;
+    }
+
+    public static GrantInput makeEmptyGrantInput() {
+        GrantInput input = new GrantInput();
+        input.setUserName(makeRandomEmail());
+        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
+
+        List<String> clientIds = new ArrayList<>();
+        input.setClientIds(clientIds);
+
+        List<String> redirectUris = new ArrayList<>();
+        input.setRedirectUris(redirectUris);
+
+        List<String> responseTypes = new ArrayList<>();
+        input.setResponseTypes(responseTypes);
+
+        List<String> scopes = new ArrayList<>();
+        input.setScopes(scopes);
+
+        List<String> states = new ArrayList<>();
+        input.setStates(states);
 
         return input;
     }

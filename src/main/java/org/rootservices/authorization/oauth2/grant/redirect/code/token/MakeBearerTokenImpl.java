@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 public class MakeBearerTokenImpl implements MakeToken {
 
-    private static final Integer SECONDS_TO_EXPIRATION = 3600;
+    private static final Long SECONDS_TO_EXPIRATION = 3600L;
     private static final TokenType TOKEN_TYPE = TokenType.BEARER;
     private HashTextStaticSalt hashText;
 
@@ -40,7 +40,7 @@ public class MakeBearerTokenImpl implements MakeToken {
     }
 
     @Override
-    public Integer getSecondsToExpiration() {
+    public Long getSecondsToExpiration() {
         return SECONDS_TO_EXPIRATION;
     }
 
