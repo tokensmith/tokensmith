@@ -11,9 +11,9 @@ import org.rootservices.authorization.oauth2.grant.redirect.authorization.reques
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthResponseBuilder;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
@@ -46,7 +46,7 @@ public class RequestAuthCodeImplTest {
     @Mock
     private GrantAuthCode mockGrantAuthCode;
     @Mock
-    private AuthResponseBuilder mockAuthResponseBuilder;
+    private AuthResponseFactory mockAuthResponseFactory;
 
     private RequestAuthCode subject;
 
@@ -57,7 +57,7 @@ public class RequestAuthCodeImplTest {
                 mockValidateParams,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
-                mockAuthResponseBuilder
+                mockAuthResponseFactory
         );
     }
 
@@ -129,7 +129,7 @@ public class RequestAuthCodeImplTest {
                         authRequest.getScopes())
         ).thenReturn(randomString);
 
-        when(mockAuthResponseBuilder.run(
+        when(mockAuthResponseFactory.makeAuthResponse(
                 authRequest.getClientId(),
                 randomString,
                 authRequest.getState(),

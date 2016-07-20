@@ -5,7 +5,7 @@ import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdSco
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
