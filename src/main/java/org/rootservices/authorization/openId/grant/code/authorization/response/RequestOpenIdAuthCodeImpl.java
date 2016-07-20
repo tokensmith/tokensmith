@@ -8,8 +8,8 @@ import org.rootservices.authorization.oauth2.grant.redirect.authorization.respon
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthResponseBuilder;
 import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +31,11 @@ public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
     public RequestOpenIdAuthCodeImpl() {}
 
     @Autowired
-    public RequestOpenIdAuthCodeImpl(ValidateOpenIdParams validateOpenIdParams, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseBuilder authResponseBuilder) {
+    public RequestOpenIdAuthCodeImpl(ValidateOpenIdParams validateOpenIdParams, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
         this.validateOpenIdParams = validateOpenIdParams;
         this.loginResourceOwner = loginResourceOwner;
         this.grantAuthCode = grantAuthCode;
-        this.authResponseBuilder = authResponseBuilder;
+        this.authResponseFactory = authResponseFactory;
     }
 
     @Override

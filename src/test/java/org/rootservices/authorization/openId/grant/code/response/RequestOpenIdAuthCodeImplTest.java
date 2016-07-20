@@ -10,7 +10,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.authorization.respon
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthResponseBuilder;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.code.authorization.response.RequestOpenIdAuthCodeImpl;
@@ -40,7 +40,7 @@ public class RequestOpenIdAuthCodeImplTest {
     @Mock
     private GrantAuthCode mockGrantAuthCode;
     @Mock
-    private AuthResponseBuilder mockAuthResponseBuilder;
+    private AuthResponseFactory mockAuthResponseFactory;
 
     private RequestAuthCode subject;
 
@@ -51,7 +51,7 @@ public class RequestOpenIdAuthCodeImplTest {
                 mockValidateOpenIdParams,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
-                mockAuthResponseBuilder
+                mockAuthResponseFactory
         );
     }
 
@@ -124,7 +124,7 @@ public class RequestOpenIdAuthCodeImplTest {
                         authRequest.getScopes())
         ).thenReturn(randomString);
 
-        when(mockAuthResponseBuilder.run(
+        when(mockAuthResponseFactory.makeAuthResponse(
                 authRequest.getClientId(),
                 randomString,
                 authRequest.getState(),
