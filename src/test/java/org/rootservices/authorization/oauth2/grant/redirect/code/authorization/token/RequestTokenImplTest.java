@@ -646,7 +646,7 @@ public class RequestTokenImplTest {
     }
 
     /**
-     * Cannot run in a transaction because the transaction fails when the
+     * Cannot makeAuthCode in a transaction because the transaction fails when the
      * unique key constraint is observed.
      *
      * @throws DuplicateRecordException

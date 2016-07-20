@@ -6,9 +6,9 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthResponseBuilder;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,15 +33,15 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
     @Autowired
     protected GrantAuthCode grantAuthCode;
     @Autowired
-    protected AuthResponseBuilder authResponseBuilder;
+    protected AuthResponseFactory authResponseFactory;
 
     public RequestAuthCodeImpl() {}
 
-    public RequestAuthCodeImpl(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseBuilder authResponseBuilder) {
+    public RequestAuthCodeImpl(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
         this.validateParamsCodeResponseType = validateParamsCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.grantAuthCode = grantAuthCode;
-        this.authResponseBuilder = authResponseBuilder;
+        this.authResponseFactory = authResponseFactory;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
                 scopes
         );
 
-        return authResponseBuilder.run(
+        return authResponseFactory.makeAuthResponse(
                 clientId,
                 authorizationCode,
                 state,

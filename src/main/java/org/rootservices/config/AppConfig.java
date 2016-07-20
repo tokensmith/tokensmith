@@ -5,27 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.optional.*;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ClientIdBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ClientIdBuilderImpl;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ResponseTypeBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.required.ResponseTypeBuilderImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.optional.*;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ClientIdFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ResponseTypeFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.context.GetClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.buider.AuthRequestBuilderImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.AuthRequestFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUriImpl;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ValidateParamsTokenResponseType;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.context.GetPublicClientRedirectUri;
@@ -97,28 +88,28 @@ public class AppConfig {
     }
 
     @Bean
-    public ClientIdBuilder clientIdBuilder() {
-        return new ClientIdBuilderImpl();
+    public ClientIdFactory clientIdFactory() {
+        return new ClientIdFactory();
     }
 
     @Bean
-    public ResponseTypeBuilder responseTypeBuilder() {
-        return new ResponseTypeBuilderImpl();
+    public ResponseTypeFactory responseTypeFactory() {
+        return new ResponseTypeFactory();
     }
 
     @Bean
-    public RedirectUriBuilder redirectUriBuilder() {
-        return new RedirectUriBuilderImpl();
+    public RedirectUriFactory redirectUriFactory() {
+        return new RedirectUriFactory();
     }
 
     @Bean
-    public ScopesBuilder scopesBuilder() {
-        return new ScopesBuilderImpl();
+    public ScopesFactory scopesFactory() {
+        return new ScopesFactory();
     }
 
     @Bean
-    public StateBuilder stateBuilder() {
-        return new StateBuilderImpl();
+    public StateFactory stateFactory() {
+        return new StateFactory();
     }
 
     // TOKEN Response Type
@@ -128,13 +119,13 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthRequestBuilder authRequestBuilderTokenResponseType() {
-        AuthRequestBuilderImpl authRequestBuilder = new AuthRequestBuilderImpl(
-                clientIdBuilder(),
-                responseTypeBuilder(),
-                redirectUriBuilder(),
-                scopesBuilder(),
-                stateBuilder(),
+    public AuthRequestFactory authRequestFactoryTokenResponseType() {
+        AuthRequestFactory authRequestBuilder = new AuthRequestFactory(
+                clientIdFactory(),
+                responseTypeFactory(),
+                redirectUriFactory(),
+                scopesFactory(),
+                stateFactory(),
                 getPublicClientRedirectUri()
         );
 
@@ -149,7 +140,7 @@ public class AppConfig {
     @Bean
     public ValidateParams validateParamsTokenResponseType() {
         return new ValidateParamsTokenResponseType(
-                authRequestBuilderTokenResponseType(),
+                authRequestFactoryTokenResponseType(),
                 comparePublicClientToAuthRequest()
         );
     }
@@ -161,13 +152,13 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthRequestBuilder authRequestBuilder() {
-        return new AuthRequestBuilderImpl(
-                clientIdBuilder(),
-                responseTypeBuilder(),
-                redirectUriBuilder(),
-                scopesBuilder(),
-                stateBuilder(),
+    public AuthRequestFactory authRequestFactory() {
+        return new AuthRequestFactory(
+                clientIdFactory(),
+                responseTypeFactory(),
+                redirectUriFactory(),
+                scopesFactory(),
+                stateFactory(),
                 getConfidentialClientRedirectUri()
         );
     }
@@ -180,7 +171,7 @@ public class AppConfig {
     @Bean
     public ValidateParams validateParamsCodeResponseType() {
         return new ValidateParamsCodeResponseType(
-                authRequestBuilder(),
+                authRequestFactory(),
                 compareClientToAuthRequest()
         );
     }

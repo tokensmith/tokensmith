@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response;
 
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.builder.AuthCodeBuilder;
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
@@ -19,20 +19,20 @@ public class InsertAuthCodeWithRetryImpl implements InsertAuthCodeWithRetry {
     private static final int MAX_RETRY_ATTEMPTS = 3;
 
     private RandomString randomString;
-    private AuthCodeBuilder authCodeBuilder;
+    private AuthCodeFactory authCodeFactory;
     private AuthCodeRepository authCodeRepository;
 
     @Autowired
-    public InsertAuthCodeWithRetryImpl(RandomString randomString, AuthCodeBuilder authCodeBuilder, AuthCodeRepository authCodeRepository) {
+    public InsertAuthCodeWithRetryImpl(RandomString randomString, AuthCodeFactory authCodeFactory, AuthCodeRepository authCodeRepository) {
         this.randomString = randomString;
-        this.authCodeBuilder = authCodeBuilder;
+        this.authCodeFactory = authCodeFactory;
         this.authCodeRepository = authCodeRepository;
     }
 
     @Override
     public String run(AccessRequest accessRequest, int attemptNumber) throws AuthCodeInsertException {
         String authorizationCode = randomString.run();
-        AuthCode authCode = authCodeBuilder.run(
+        AuthCode authCode = authCodeFactory.makeAuthCode(
                 accessRequest,
                 authorizationCode,
                 SECONDS_TO_EXPIRATION
