@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;

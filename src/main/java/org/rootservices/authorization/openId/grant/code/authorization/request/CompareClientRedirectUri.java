@@ -1,7 +1,7 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 
 import java.net.URI;
 import java.util.UUID;
