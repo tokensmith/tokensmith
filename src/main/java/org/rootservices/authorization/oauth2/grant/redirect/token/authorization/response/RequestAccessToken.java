@@ -3,11 +3,11 @@ package org.rootservices.authorization.oauth2.grant.redirect.token.authorization
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.response.dto.TokenGrantAccessToken;
 import org.rootservices.authorization.persistence.entity.*;

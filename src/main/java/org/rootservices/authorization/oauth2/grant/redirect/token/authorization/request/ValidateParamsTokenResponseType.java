@@ -1,11 +1,11 @@
 package org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.AuthRequestFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

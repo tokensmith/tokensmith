@@ -1,12 +1,12 @@
 package org.rootservices.authorization.openId.grant.code.authorization.request.factory;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.*;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.optional.ScopesFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.optional.StateFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ResponseTypeFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.*;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.ScopesFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.StateFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientRedirectUri;
 import org.rootservices.authorization.openId.grant.code.authorization.request.factory.required.OpenIdRedirectUriFactory;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;

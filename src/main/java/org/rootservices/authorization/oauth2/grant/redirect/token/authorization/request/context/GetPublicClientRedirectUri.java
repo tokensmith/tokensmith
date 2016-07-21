@@ -1,6 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.context;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.context.GetClientRedirectUri;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;

@@ -3,9 +3,9 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 import helper.ValidateParamsAttributes;
 import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdScope;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
