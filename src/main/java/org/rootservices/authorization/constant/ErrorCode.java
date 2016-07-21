@@ -51,12 +51,18 @@ public enum ErrorCode {
     REDIRECT_URI_INVALID (33, "redirect_uri is invalid"),
     GRANT_TYPE_INVALID (34, "grant type is invalid"),
     UNKNOWN_KEY (35, "a key is unrecognized"),
-    COMPROMISED_AUTH_CODE (36, "authorization code has already been used");
+    COMPROMISED_AUTH_CODE (36, "authorization code has already been used"),
+
+    // open id token/implicit
+    NONCE_EMPTY_VALUE (6, "nonce is blank or missing"),
+    NONCE_MORE_THAN_ONE_ITEM (7, "nonce has more than one value."),
+    NONCE_EMPTY_LIST (8, "nonce is blank or missing"),
+    NONCE_NULL (9, "nonce is null");
 
     private int code;
     private final String description;
 
-    private ErrorCode(int code, String description) {
+    ErrorCode(int code, String description) {
         this.code = code;
         this.description = description;
     }
