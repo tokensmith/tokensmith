@@ -4,7 +4,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.ScopesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.StateFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientRedirectUri;
@@ -27,16 +27,16 @@ public class OpenIdAuthRequestFactory {
 
     private ClientIdFactory clientIdFactory;
     private OpenIdRedirectUriFactory openIdRedirectUriFactory;
-    private ResponseTypeFactory responseTypeFactory;
+    private ResponseTypesFactory responseTypesFactory;
     private ScopesFactory scopesFactory;
     private StateFactory stateFactory;
     private CompareClientRedirectUri compareClientRedirectUri;
 
     @Autowired
-    public OpenIdAuthRequestFactory(ClientIdFactory clientIdFactory, OpenIdRedirectUriFactory openIdRedirectUriFactory, ResponseTypeFactory responseTypeFactory, ScopesFactory scopesFactory, StateFactory stateFactory, CompareClientRedirectUri compareClientRedirectUri) {
+    public OpenIdAuthRequestFactory(ClientIdFactory clientIdFactory, OpenIdRedirectUriFactory openIdRedirectUriFactory, ResponseTypesFactory responseTypesFactory, ScopesFactory scopesFactory, StateFactory stateFactory, CompareClientRedirectUri compareClientRedirectUri) {
         this.clientIdFactory = clientIdFactory;
         this.openIdRedirectUriFactory = openIdRedirectUriFactory;
-        this.responseTypeFactory = responseTypeFactory;
+        this.responseTypesFactory = responseTypesFactory;
         this.scopesFactory = scopesFactory;
         this.stateFactory = stateFactory;
         this.compareClientRedirectUri = compareClientRedirectUri;
@@ -57,11 +57,11 @@ public class OpenIdAuthRequestFactory {
         openIdAuthRequest.setClientId(clientId);
         openIdAuthRequest.setRedirectURI(redirectUri);
 
-        ResponseType responseType;
+        List<String> cleanedResponseType;
         List<String> cleanedScopes;
         Optional<String> cleanedStates;
         try {
-            responseType = responseTypeFactory.makeResponseType(responseTypes);
+            cleanedResponseType = responseTypesFactory.makeResponseTypes(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
             cleanedStates = stateFactory.makeState(states);
         } catch (ResponseTypeException |ScopesException | StateException e) {
@@ -69,7 +69,7 @@ public class OpenIdAuthRequestFactory {
             throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, e);
         }
 
-        openIdAuthRequest.setResponseType(responseType);
+        openIdAuthRequest.setResponseTypes(cleanedResponseType);
         openIdAuthRequest.setScopes(cleanedScopes);
         openIdAuthRequest.setState(cleanedStates);
         return openIdAuthRequest;

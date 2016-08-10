@@ -48,7 +48,13 @@ public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
-        openIdAuthRequest.setResponseType(client.getResponseType());
+
+        List<String> requestResponseTypes = new ArrayList<>();
+        for(ResponseType rt: client.getResponseTypes()) {
+            requestResponseTypes.add(rt.getName());
+        }
+        openIdAuthRequest.setResponseTypes(requestResponseTypes);
+
         openIdAuthRequest.setRedirectURI(client.getRedirectURI());
         List<String> scopes = new ArrayList<>();
         scopes.add("openid");
@@ -68,7 +74,11 @@ public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(uuid);
-        openIdAuthRequest.setResponseType(ResponseType.CODE);
+
+        List<String> requestedResponseTypes = new ArrayList<>();
+        requestedResponseTypes.add("CODE");
+        openIdAuthRequest.setResponseTypes(requestedResponseTypes);
+
         List<String> scopes = new ArrayList<>();
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
@@ -94,13 +104,15 @@ public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
-        openIdAuthRequest.setResponseType(ResponseType.CODE);
+
+        List<String> requestedResponseTypes = new ArrayList<>();
+        requestedResponseTypes.add("TOKEN");
+        openIdAuthRequest.setResponseTypes(requestedResponseTypes);
+
         openIdAuthRequest.setRedirectURI(client.getRedirectURI());
         List<String> scopes = new ArrayList<>();
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
-
-        client.setResponseType(ResponseType.TOKEN);
 
         when(mockConfidentialClientRepository.getByClientId(
                 openIdAuthRequest.getClientId())
@@ -127,7 +139,11 @@ public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
-        openIdAuthRequest.setResponseType(ResponseType.CODE);
+
+        List<String> requestedResponseTypes = new ArrayList<>();
+        requestedResponseTypes.add("CODE");
+        openIdAuthRequest.setResponseTypes(requestedResponseTypes);
+
         openIdAuthRequest.setRedirectURI(requestRedirectUri);
         List<String> scopes = new ArrayList<>();
         scopes.add("openid");
@@ -154,7 +170,13 @@ public class CompareConfidentialClientToOpenIdAuthRequestImplTest {
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getUuid());
-        openIdAuthRequest.setResponseType(client.getResponseType());
+
+        List<String> requestResponseTypes = new ArrayList<>();
+        for(ResponseType rt: client.getResponseTypes()) {
+            requestResponseTypes.add(rt.getName());
+        }
+        openIdAuthRequest.setResponseTypes(requestResponseTypes);
+
         openIdAuthRequest.setRedirectURI(client.getRedirectURI());
         List<String> scopes = new ArrayList<>();
         scopes.add("invalid-scope");

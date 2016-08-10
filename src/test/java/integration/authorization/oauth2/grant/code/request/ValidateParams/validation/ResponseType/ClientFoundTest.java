@@ -70,8 +70,8 @@ public class ClientFoundTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
 
-        p.responseTypes.add(ResponseType.CODE.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
+        p.responseTypes.add("CODE");
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode();
@@ -103,7 +103,7 @@ public class ClientFoundTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.TOKEN.toString());
+        p.responseTypes.add("TOKEN");
 
         int expectedErrorCode = ErrorCode.RESPONSE_TYPE_MISMATCH.getCode();
         String expectedDescription = ErrorCode.RESPONSE_TYPE_MISMATCH.getDescription();

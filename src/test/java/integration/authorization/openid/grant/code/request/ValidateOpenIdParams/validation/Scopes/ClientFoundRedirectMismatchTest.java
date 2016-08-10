@@ -20,7 +20,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
         p.clientIds.add(clientId.toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         return p;
     }

@@ -5,6 +5,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
@@ -34,7 +35,7 @@ public abstract class CompareClientToAuthRequest {
             );
         }
 
-        if ( client.getResponseType() != authRequest.getResponseType() ) {
+        if ( ! hasResponseTypes(authRequest.getResponseTypes(), client.getResponseTypes()) ) {
             throw new InformClientException(
                     "Response Type requested doesn't match client's response type",
                     "unauthorized_client",
@@ -54,6 +55,17 @@ public abstract class CompareClientToAuthRequest {
             );
         }
         return true;
+    }
+
+    private boolean hasResponseTypes(List<String> requestedResponseTypes, List<ResponseType> clientResponseTypes) {
+        boolean hasScopes = true;
+        for(String responseType: requestedResponseTypes) {
+            if (! clientResponseTypes.stream().filter(o -> o.getName().equals(responseType)).findFirst().isPresent()) {
+                hasScopes = false;
+                break;
+            }
+        }
+        return hasScopes;
     }
 
     private boolean hasScopes(List<String> requestedScopes, List<Scope> clientScopes) {

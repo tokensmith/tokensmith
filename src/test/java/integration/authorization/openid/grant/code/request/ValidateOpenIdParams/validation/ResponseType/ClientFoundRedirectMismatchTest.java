@@ -68,8 +68,8 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
-        p.responseTypes.add(ResponseType.CODE.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
+        p.responseTypes.add("CODE");
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();

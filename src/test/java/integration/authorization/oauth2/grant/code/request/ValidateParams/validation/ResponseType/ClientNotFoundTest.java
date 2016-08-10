@@ -51,8 +51,8 @@ public class ClientNotFoundTest extends BaseTest {
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
         ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.responseTypes.add(ResponseType.CODE.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
+        p.responseTypes.add("CODE");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 

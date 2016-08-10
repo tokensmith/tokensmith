@@ -75,7 +75,7 @@ public class RequestAuthCodeImplTest {
 
         AuthRequest authRequest = new AuthRequest(
                 UUID.fromString(input.getClientIds().get(0)),
-                ResponseType.valueOf(input.getResponseTypes().get(0)),
+                input.getResponseTypes(),
                 redirectUri,
                 input.getScopes(),
                 state
@@ -87,11 +87,10 @@ public class RequestAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         UUID clientId = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
         String scope = "profile";
 
         // parameter to pass into method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
 
         // response from mockValidateParams.
         AuthRequest authRequest = makeAuthRequest(input);
@@ -146,11 +145,10 @@ public class RequestAuthCodeImplTest {
     @Test
     public void failsLoginShouldThrowUnauthorizedException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
         UUID clientId = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
         String scope = "profile";
 
         // parameters to method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
 
         // response from mockValidateParams
         AuthRequest authRequest = makeAuthRequest(input);

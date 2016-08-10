@@ -11,58 +11,64 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.MoreThanOneItemError;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.NoItemsError;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.ParamIsNullError;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 2/1/15.
  */
-public class ResponseTypeFactoryTest {
+public class ResponseTypesFactoryTest {
 
     @Mock
     private RequiredParam mockRequiredParam;
 
-    private ResponseTypeFactory subject;
+    private ResponseTypesFactory subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new ResponseTypeFactory(mockRequiredParam);
+        subject = new ResponseTypesFactory(mockRequiredParam);
     }
 
     @Test
     public void testMakeResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError, ResponseTypeException{
-        ResponseType expected = ResponseType.CODE;
+        String expected = "CODE";
 
         List<String> items = new ArrayList<>();
-        items.add(expected.toString());
+        items.add(expected);
 
         when(mockRequiredParam.run(items)).thenReturn(true);
 
-        ResponseType actual = subject.makeResponseType(items);
-        assertThat(actual).isEqualTo(expected);
+        List<String> actual = subject.makeResponseTypes(items);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(0), is(expected));
     }
 
     @Test
     public void testMakeResponseTypeUnknownResponseType() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
         List<String> items = new ArrayList<>();
-        items.add("Unknown Response Type");
+        items.add("Unknown-Response-Type");
 
         when(mockRequiredParam.run(items)).thenReturn(true);
 
         try {
-            subject.makeResponseType(items);
+            subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause() instanceof IllegalArgumentException).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode());
-            assertThat(e.getError()).isEqualTo("unsupported_response_type");
+            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode()));
+            assertThat(e.getError(), is("unsupported_response_type"));
         }
     }
 
@@ -73,30 +79,30 @@ public class ResponseTypeFactoryTest {
 
         when(mockRequiredParam.run(items)).thenThrow(EmptyValueError.class);
         try {
-            subject.makeResponseType(items);
+            subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getCode());
-            assertThat(e.getError()).isEqualTo("invalid_request");
+            assertThat(e.getDomainCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getCode()));
+            assertThat(e.getError(), is("invalid_request"));
         }
     }
 
     @Test
     public void testMakeResponseTypeMoreThanOneItemError() throws NoItemsError, ParamIsNullError, MoreThanOneItemError, EmptyValueError {
         List<String> items = new ArrayList<>();
-        items.add(ResponseType.CODE.toString());
-        items.add(ResponseType.CODE.toString());
+        items.add("CODE");
+        items.add("CODE");
 
         when(mockRequiredParam.run(items)).thenThrow(MoreThanOneItemError.class);
 
         try {
-            subject.makeResponseType(items);
+            subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode());
-            assertThat(e.getError()).isEqualTo("invalid_request");
+            assertThat(e.getDomainCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode()));
+            assertThat(e.getError(), is("invalid_request"));
         }
     }
 
@@ -107,12 +113,12 @@ public class ResponseTypeFactoryTest {
         when(mockRequiredParam.run(items)).thenThrow(NoItemsError.class);
 
         try {
-            subject.makeResponseType(items);
+            subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode());
-            assertThat(e.getError()).isEqualTo("invalid_request");
+            assertThat(e.getDomainCause(), instanceOf(NoItemsError.class));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode()));
+            assertThat(e.getError(), is("invalid_request"));
         }
     }
 
@@ -122,12 +128,12 @@ public class ResponseTypeFactoryTest {
 
         when(mockRequiredParam.run(items)).thenThrow(ParamIsNullError.class);
         try {
-            subject.makeResponseType(items);
+            subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_NULL.getCode());
-            assertThat(e.getError()).isEqualTo("invalid_request");
+            assertThat(e.getDomainCause(), instanceOf(ParamIsNullError.class));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_NULL.getCode()));
+            assertThat(e.getError(), is("invalid_request"));
         }
     }
 }

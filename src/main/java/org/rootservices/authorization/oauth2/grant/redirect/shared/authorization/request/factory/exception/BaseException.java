@@ -32,6 +32,13 @@ public abstract class BaseException extends Exception {
         this.error="invalid_request";
     }
 
+    public BaseException(ErrorCode errorCode, String error) {
+        super(errorCode.getDescription());
+        this.code = errorCode.getCode();
+        this.description = errorCode.getDescription();
+        this.error = error;
+    }
+
     public BaseException(ErrorCode errorCode, String error, Throwable domainCause) {
         super(errorCode.getDescription().toString());
         this.code = errorCode.getCode();
