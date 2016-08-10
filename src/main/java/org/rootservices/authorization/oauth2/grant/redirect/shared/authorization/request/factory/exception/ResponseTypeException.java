@@ -20,4 +20,8 @@ public class ResponseTypeException extends BaseException {
     public ResponseTypeException(ErrorCode errorCode, String error, Throwable domainCause) {
         super(errorCode, error, domainCause);
     }
+
+    public ResponseTypeException(ErrorCode errorCode, String error) {
+        super(errorCode, error);
+    }
 }

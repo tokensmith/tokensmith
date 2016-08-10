@@ -39,9 +39,8 @@ public class AccessRequestScopesMapperTest {
     public AccessRequest persistAccessReqeust() throws URISyntaxException {
         // create client to be used as the fk constraint.
         UUID clientUUID = UUID.randomUUID();
-        ResponseType responseType = ResponseType.CODE;
         URI redirectURI = new URI("https://rootservices.org");
-        Client client = new Client(clientUUID, responseType, redirectURI);
+        Client client = new Client(clientUUID, redirectURI);
         clientRepository.insert(client);
 
         // create resource owner to be used as fk constraint

@@ -58,7 +58,6 @@ public class RequestOpenIdAuthCodeImplTest {
     public OpenIdAuthRequest makeOpenIdAuthRequest(GrantInput input) throws URISyntaxException {
 
         UUID clientId = UUID.fromString(input.getClientIds().get(0));
-        ResponseType responseType = ResponseType.valueOf(input.getResponseTypes().get(0));
         URI redirectUri = new URI(input.getRedirectUris().get(0));
 
         Optional<String> state = Optional.empty();
@@ -68,7 +67,7 @@ public class RequestOpenIdAuthCodeImplTest {
 
         OpenIdAuthRequest authRequest = new OpenIdAuthRequest(
                 clientId,
-                responseType,
+                input.getResponseTypes(),
                 redirectUri,
                 input.getScopes(),
                 state
@@ -80,11 +79,10 @@ public class RequestOpenIdAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         UUID clientId = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
         String scope = "profile";
 
         // parameter to pass into method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
         List<String> redirectUris = new ArrayList();
         redirectUris.add(FixtureFactory.SECURE_REDIRECT_URI);
         input.setRedirectUris(redirectUris);

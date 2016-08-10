@@ -2,6 +2,7 @@ package integration.authorization.authenticate;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
@@ -19,7 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 
 /**
@@ -38,7 +43,6 @@ public class LoginConfidentialClientImplTest {
     @Autowired
     private LoginConfidentialClient subject;
 
-
     public ConfidentialClient prepareDatabaseForTest() throws URISyntaxException {
         Client client = loadCodeClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
@@ -52,25 +56,31 @@ public class LoginConfidentialClientImplTest {
         ConfidentialClient actual = subject.run(expected.getClient().getUuid(), "password");
 
         // confidential client
-        assertThat(actual).isNotNull();
-        assertThat(actual.getUuid()).isEqualTo(expected.getUuid());
-        assertThat(actual.getPassword()).isNotNull();
-        assertThat(actual.getCreatedAt()).isNotNull();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getUuid(), is(expected.getUuid()));
+        assertThat(actual.getPassword(), is(notNullValue()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         // client
-        assertThat(actual.getClient()).isNotNull();
-        assertThat(actual.getClient().getUuid()).isEqualTo(expected.getClient().getUuid());
-        assertThat(actual.getClient().getRedirectURI()).isEqualTo(expected.getClient().getRedirectURI());
-        assertThat(actual.getClient().getResponseType()).isEqualTo(expected.getClient().getResponseType());
-        assertThat(actual.getClient().getCreatedAt()).isNotNull();
+        assertThat(actual.getClient(), is(notNullValue()));
+        assertThat(actual.getClient().getUuid(), is(expected.getClient().getUuid()));
+        assertThat(actual.getClient().getRedirectURI(), is(expected.getClient().getRedirectURI()));
+
+        // response types
+        assertThat(actual.getClient().getResponseTypes(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().size(), is(1));
+        assertThat(actual.getClient().getResponseTypes().get(0).getId(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().get(0).getName(), is("CODE"));
+        assertThat(actual.getClient().getResponseTypes().get(0).getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().get(0).getUpdatedAt(), is(notNullValue()));
+
+        assertThat(actual.getClient().getCreatedAt(), is(notNullValue()));
 
         // scopes
-        assertThat(actual.getClient().getScopes()).isNotNull();
-        assertThat(actual.getClient().getScopes().size()).isEqualTo(1);
-        assertThat(actual.getClient().getScopes().get(0).getUuid()).isEqualTo(
-                expected.getClient().getScopes().get(0).getUuid()
-        );
-        assertThat(actual.getClient().getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(actual.getClient().getScopes(), is(notNullValue()));
+        assertThat(actual.getClient().getScopes().size(), is(1));
+        assertThat(actual.getClient().getScopes().get(0).getUuid(), is(expected.getClient().getScopes().get(0).getUuid()));
+        assertThat(actual.getClient().getScopes().get(0).getName(), is("profile"));
     }
 
     @Test
@@ -81,10 +91,10 @@ public class LoginConfidentialClientImplTest {
         try {
             actual = subject.run(UUID.randomUUID(), "password");
         } catch (UnauthorizedException e) {
-            assertThat(e.getDomainCause()).isInstanceOf(RecordNotFoundException.class);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_NOT_FOUND.getCode());
+            assertThat(e.getDomainCause(), instanceOf(RecordNotFoundException.class));
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
         }
-        assertThat(actual).isNull();
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -95,8 +105,8 @@ public class LoginConfidentialClientImplTest {
         try {
             actual = subject.run(expected.getClient().getUuid(), "passwordThatDoesNotMatch");
         } catch (UnauthorizedException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getCode());
+            assertThat(e.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
         }
-        assertThat(actual).isNull();
+        assertThat(actual, is(nullValue()));
     }
 }

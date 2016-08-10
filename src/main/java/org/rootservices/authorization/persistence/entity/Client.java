@@ -11,16 +11,21 @@ import java.util.UUID;
  */
 public class Client {
     private UUID uuid;
-    private ResponseType responseType;
+    private List<ResponseType> responseTypes;
     private URI redirectURI;
     private List<Scope> scopes;
     private OffsetDateTime createdAt;
 
     public Client() {};
 
-    public Client(UUID uuid, ResponseType responseType, URI redirectURI) {
+    public Client(UUID uuid, URI redirectURI) {
         this.uuid = uuid;
-        this.responseType = responseType;
+        this.redirectURI = redirectURI;
+    }
+
+    public Client(UUID uuid, List<ResponseType> responseTypes, URI redirectURI) {
+        this.uuid = uuid;
+        this.responseTypes = responseTypes;
         this.redirectURI = redirectURI;
     }
 
@@ -32,12 +37,12 @@ public class Client {
         this.uuid = uuid;
     }
 
-    public ResponseType getResponseType() {
-        return responseType;
+    public List<ResponseType> getResponseTypes() {
+        return responseTypes;
     }
 
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
+    public void setResponseTypes(List<ResponseType> responseTypes) {
+        this.responseTypes = responseTypes;
     }
 
     public URI getRedirectURI() {

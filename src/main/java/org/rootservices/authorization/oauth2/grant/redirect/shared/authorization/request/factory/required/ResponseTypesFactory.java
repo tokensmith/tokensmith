@@ -2,6 +2,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.shared.authorizatio
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.RequiredParam;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.EmptyValueError;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.MoreThanOneItemError;
@@ -11,27 +12,32 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by tommackenzie on 1/31/15.
  */
 @Component
-public class ResponseTypeFactory {
+public class ResponseTypesFactory {
 
     @Autowired
     RequiredParam requiredParam;
 
-    public ResponseTypeFactory() {}
+    private static List<String> SUPPORTED_RESPONSE_TYPES = Stream.of("CODE", "TOKEN", "ID_TOKEN").collect(Collectors.toList());
 
-    public ResponseTypeFactory(RequiredParam requiredParam) {
+    public ResponseTypesFactory() {}
+
+    public ResponseTypesFactory(RequiredParam requiredParam) {
         this.requiredParam = requiredParam;
     }
 
-    public ResponseType makeResponseType(List<String> responseTypes) throws ResponseTypeException {
+    public List<String> makeResponseTypes(List<String> items) throws ResponseTypeException {
 
         try {
-            requiredParam.run(responseTypes);
+            requiredParam.run(items);
         } catch (EmptyValueError e) {
             throw new ResponseTypeException(ErrorCode.RESPONSE_TYPE_EMPTY_VALUE, "invalid_request", e);
         } catch (MoreThanOneItemError e) {
@@ -42,13 +48,19 @@ public class ResponseTypeFactory {
             throw new ResponseTypeException(ErrorCode.RESPONSE_TYPE_NULL, "invalid_request", e);
         }
 
-        ResponseType rt;
-        try {
-            rt = ResponseType.valueOf(responseTypes.get(0).toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseTypeException(ErrorCode.RESPONSE_TYPE_DATA_TYPE, "unsupported_response_type", e);
-        }
+        List<String> responseTypes = StringToList(items);
+        return responseTypes;
+    }
 
-        return rt;
+    private List<String> StringToList(List<String> items) throws ResponseTypeException {
+        List<String> scopes = new ArrayList<>();
+        for(String item: items.get(0).split(" ")) {
+            if(SUPPORTED_RESPONSE_TYPES.contains(item.toUpperCase())) {
+                scopes.add(item.toUpperCase());
+            } else {
+                throw new ResponseTypeException(ErrorCode.RESPONSE_TYPE_DATA_TYPE, "unsupported_response_type");
+            }
+        }
+        return scopes;
     }
 }

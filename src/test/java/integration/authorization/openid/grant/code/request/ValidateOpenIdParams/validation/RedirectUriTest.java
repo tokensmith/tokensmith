@@ -11,14 +11,13 @@ import org.rootservices.authorization.persistence.entity.ResponseType;
 
 public class RedirectUriTest extends BaseTest {
 
-
     @Test
     public void redirectUrisIsNullShouldThrowInformResourceOwner() throws Exception {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris = null;
 
         Exception expectedDomainCause = new RedirectUriException();
@@ -33,7 +32,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         Exception expectedDomainCause = new RedirectUriException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_EMPTY_LIST.getCode();
@@ -47,7 +46,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add("");
 
         Exception expectedDomainCause = new RedirectUriException();
@@ -62,7 +61,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add(c.getRedirectURI().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
 
@@ -78,7 +77,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add("invalid-uri");
 
         Exception expectedDomainCause = new RedirectUriException();
@@ -92,7 +91,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add("http://rootservices.org");
 
         Exception expectedDomainCause = new RedirectUriException();
@@ -107,7 +106,7 @@ public class RedirectUriTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add("https://rootservices.org/continue");
 
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();

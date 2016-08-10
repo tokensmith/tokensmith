@@ -18,7 +18,7 @@ public class ClientNotFoundTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(UUID.randomUUID().toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         return p;
     }

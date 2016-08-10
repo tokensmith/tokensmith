@@ -12,16 +12,16 @@ import java.util.UUID;
  */
 public class AuthRequest {
     private UUID clientId;
-    private ResponseType responseType;
+    private List<String> responseTypes;
     private Optional<URI> redirectURI;
     private List<String> scopes;
     private Optional<String> state;
 
     public AuthRequest() {}
 
-    public AuthRequest(UUID clientId, ResponseType responseType, Optional<URI> redirectURI, List<String> scopes, Optional<String> state) {
+    public AuthRequest(UUID clientId, List<String> responseTypes, Optional<URI> redirectURI, List<String> scopes, Optional<String> state) {
         this.clientId = clientId;
-        this.responseType = responseType;
+        this.responseTypes = responseTypes;
         this.redirectURI = redirectURI;
         this.scopes = scopes;
         this.state = state;
@@ -35,12 +35,12 @@ public class AuthRequest {
         this.clientId = clientId;
     }
 
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
+    public List<String> getResponseTypes() {
+        return responseTypes;
     }
 
-    public ResponseType getResponseType() {
-        return responseType;
+    public void setResponseTypes(List<String> responseTypes) {
+        this.responseTypes = responseTypes;
     }
 
     public Optional<URI> getRedirectURI() {

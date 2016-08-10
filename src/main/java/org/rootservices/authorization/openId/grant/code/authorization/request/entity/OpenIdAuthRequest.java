@@ -12,16 +12,16 @@ import java.util.UUID;
  */
 public class OpenIdAuthRequest {
     private UUID clientId;
-    private ResponseType responseType;
+    private List<String> responseTypes;
     private URI redirectURI;
     private List<String> scopes;
     private Optional<String> state;
 
     public OpenIdAuthRequest() {}
 
-    public OpenIdAuthRequest(UUID clientId, ResponseType responseType, URI redirectURI, List<String> scopes, Optional<String> state) {
+    public OpenIdAuthRequest(UUID clientId, List<String> responseTypes, URI redirectURI, List<String> scopes, Optional<String> state) {
         this.clientId = clientId;
-        this.responseType = responseType;
+        this.responseTypes = responseTypes;
         this.redirectURI = redirectURI;
         this.scopes = scopes;
         this.state = state;
@@ -35,12 +35,12 @@ public class OpenIdAuthRequest {
         this.clientId = clientId;
     }
 
-    public ResponseType getResponseType() {
-        return responseType;
+    public List<String> getResponseTypes() {
+        return responseTypes;
     }
 
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
+    public void setResponseTypes(List<String> responseTypes) {
+        this.responseTypes = responseTypes;
     }
 
     public URI getRedirectURI() {

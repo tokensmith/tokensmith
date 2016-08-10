@@ -5,6 +5,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
+import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ConfidentialClientRepository;
@@ -42,7 +43,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
             );
         }
 
-        if ( confidentialClient.getClient().getResponseType() != authRequest.getResponseType() ) {
+        if ( ! hasResponseTypes(authRequest.getResponseTypes(), confidentialClient.getClient().getResponseTypes())) {
             throw new InformClientException(
                     "Response Type requested doesn't match client's response type",
                     "unauthorized_client",
@@ -63,6 +64,17 @@ public class CompareConfidentialClientToOpenIdAuthRequestImpl implements Compare
         }
 
         return true;
+    }
+
+    private boolean hasResponseTypes(List<String> requestedResponseTypes, List<ResponseType> clientResponseTypes) {
+        boolean hasScopes = true;
+        for(String responseType: requestedResponseTypes) {
+            if (! clientResponseTypes.stream().filter(o -> o.getName().equals(responseType)).findFirst().isPresent()) {
+                hasScopes = false;
+                break;
+            }
+        }
+        return hasScopes;
     }
 
     private boolean hasScopes(List<String> requestedScopes, List<Scope> clientScopes) {

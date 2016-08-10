@@ -9,7 +9,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
@@ -93,8 +93,8 @@ public class AppConfig {
     }
 
     @Bean
-    public ResponseTypeFactory responseTypeFactory() {
-        return new ResponseTypeFactory();
+    public ResponseTypesFactory responseTypeFactory() {
+        return new ResponseTypesFactory();
     }
 
     @Bean

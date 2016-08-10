@@ -45,7 +45,13 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
     public AuthRequest makeAuthRequestFromClient(Client client) {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(client.getResponseType());
+
+        List<String> responseTypes = new ArrayList<>();
+        for(ResponseType responseType: client.getResponseTypes()) {
+            responseTypes.add(responseType.getName());
+        }
+        authRequest.setResponseTypes(responseTypes);
+
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -88,7 +94,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         Client client = FixtureFactory.makeCodeClientWithScopes();
 
         AuthRequest authRequest = makeAuthRequestFromClient(client);
-        client.setResponseType(ResponseType.TOKEN);
+        client.getResponseTypes().get(0).setName("TOKEN");
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 

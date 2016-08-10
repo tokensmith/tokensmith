@@ -9,7 +9,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.ScopesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.StateFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypeFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.code.authorization.request.CompareClientRedirectUri;
@@ -41,7 +41,7 @@ public class OpenIdAuthRequestFactoryTest {
     @Mock
     private OpenIdRedirectUriFactory mockOpenIdRedirectUriFactory;
     @Mock
-    private ResponseTypeFactory mockResponseTypeFactory;
+    private ResponseTypesFactory mockResponseTypesFactory;
     @Mock
     private ScopesFactory mockScopesFactory;
     @Mock
@@ -56,7 +56,7 @@ public class OpenIdAuthRequestFactoryTest {
         subject = new OpenIdAuthRequestFactory(
                 mockClientIdFactory,
                 mockOpenIdRedirectUriFactory,
-                mockResponseTypeFactory,
+                mockResponseTypesFactory,
                 mockScopesFactory,
                 mockStateFactory,
                 mockCompareClientRedirectUri
@@ -67,8 +67,10 @@ public class OpenIdAuthRequestFactoryTest {
         return new URI("https://rootservices.org");
     }
 
-    public ResponseType makeResponseType() {
-        return ResponseType.CODE;
+    public List<String> makeResponseTypes() {
+        List<String> responseTypes = new ArrayList<>();
+        responseTypes.add("CODE");
+        return responseTypes;
     }
 
     public List<String> makeScopes() {
@@ -107,7 +109,7 @@ public class OpenIdAuthRequestFactoryTest {
     public void shouldBeOK() throws URISyntaxException, ClientIdException, RedirectUriException, ResponseTypeException, ScopesException, StateException, InformClientException, InformResourceOwnerException {
         UUID expectedUuid = UUID.randomUUID();
         URI expectedRedirectUri = makeRedirectUri();
-        ResponseType expectedResponseType = makeResponseType();
+        List<String> expectedResponseType = makeResponseTypes();
         Optional<String> expectedStates = makeStates();
 
         List<String> clientIds = buildList(expectedUuid);
@@ -118,7 +120,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         when(mockClientIdFactory.makeClientId(clientIds)).thenReturn(expectedUuid);
         when(mockOpenIdRedirectUriFactory.makeRedirectUri(redirectUris)).thenReturn(expectedRedirectUri);
-        when(mockResponseTypeFactory.makeResponseType(responseTypes)).thenReturn(expectedResponseType);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenReturn(expectedResponseType);
         when(mockScopesFactory.makeScopes(scopes)).thenReturn(scopes);
         when(mockStateFactory.makeState(states)).thenReturn(expectedStates);
 
@@ -128,7 +130,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         assertThat(actual.getClientId(), is(expectedUuid));
         assertThat(actual.getRedirectURI(), is(expectedRedirectUri));
-        assertThat(actual.getResponseType(), is(expectedResponseType));
+        assertThat(actual.getResponseTypes(), is(expectedResponseType));
         assertThat(actual.getScopes(), is(scopes));
         assertThat(actual.getState(), is(expectedStates));
     }
@@ -136,7 +138,7 @@ public class OpenIdAuthRequestFactoryTest {
     @Test
     public void invalidClientIdShouldThrowInformResourceOwnerException() throws ClientIdException, URISyntaxException {
         URI expectedRedirectUri = makeRedirectUri();
-        ResponseType expectedResponseType = makeResponseType();
+        List<String> expectedResponseType = makeResponseTypes();
         Optional<String> expectedStates = makeStates();
 
         List<String> clientIds = new ArrayList<>();
@@ -163,7 +165,7 @@ public class OpenIdAuthRequestFactoryTest {
     @Test
     public void invalidRedirectUriShouldThrowInformResourceOwnerException() throws ClientIdException, URISyntaxException, RedirectUriException {
         UUID expectedUuid = UUID.randomUUID();
-        ResponseType expectedResponseType = makeResponseType();
+        List<String> expectedResponseType = makeResponseTypes();
         Optional<String> expectedStates = makeStates();
 
         List<String> clientIds = buildList(expectedUuid);
@@ -206,7 +208,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         NoItemsError cause = new NoItemsError("");
         ResponseTypeException exception = new ResponseTypeException(ErrorCode.RESPONSE_TYPE_EMPTY_LIST, cause);
-        when(mockResponseTypeFactory.makeResponseType(responseTypes)).thenThrow(exception);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenThrow(exception);
 
         try {
             subject.make(clientIds, responseTypes, redirectUris, scopes, states);
@@ -224,7 +226,7 @@ public class OpenIdAuthRequestFactoryTest {
     public void invalidScopesShouldThrowInformClientException() throws URISyntaxException, ClientIdException, RedirectUriException, ResponseTypeException, ScopesException {
         UUID expectedUuid = UUID.randomUUID();
         URI expectedRedirectUri = makeRedirectUri();
-        ResponseType expectedResponseType = makeResponseType();
+        List<String> expectedResponseType = makeResponseTypes();
         Optional<String> expectedStates = makeStates();
 
         List<String> clientIds = buildList(expectedUuid);
@@ -235,7 +237,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         when(mockClientIdFactory.makeClientId(clientIds)).thenReturn(expectedUuid);
         when(mockOpenIdRedirectUriFactory.makeRedirectUri(redirectUris)).thenReturn(expectedRedirectUri);
-        when(mockResponseTypeFactory.makeResponseType(responseTypes)).thenReturn(expectedResponseType);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenReturn(expectedResponseType);
 
         EmptyValueError cause = new EmptyValueError("");
         ScopesException exception = new ScopesException(ErrorCode.SCOPES_EMPTY_VALUE, "invalid_scope", cause);
@@ -257,7 +259,7 @@ public class OpenIdAuthRequestFactoryTest {
     public void invalidStatesShouldThrowInformClientException() throws URISyntaxException, ClientIdException, RedirectUriException, ResponseTypeException, ScopesException, StateException {
         UUID expectedUuid = UUID.randomUUID();
         URI expectedRedirectUri = makeRedirectUri();
-        ResponseType expectedResponseType = makeResponseType();
+        List<String> expectedResponseType = makeResponseTypes();
         Optional<String> expectedStates = makeEmptyStates();
 
         List<String> clientIds = buildList(expectedUuid);
@@ -268,7 +270,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         when(mockClientIdFactory.makeClientId(clientIds)).thenReturn(expectedUuid);
         when(mockOpenIdRedirectUriFactory.makeRedirectUri(redirectUris)).thenReturn(expectedRedirectUri);
-        when(mockResponseTypeFactory.makeResponseType(responseTypes)).thenReturn(expectedResponseType);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenReturn(expectedResponseType);
         when(mockScopesFactory.makeScopes(scopes)).thenReturn(scopes);
 
         EmptyValueError cause = new EmptyValueError("");
@@ -305,7 +307,7 @@ public class OpenIdAuthRequestFactoryTest {
 
         NoItemsError cause = new NoItemsError("");
         ResponseTypeException exception = new ResponseTypeException(ErrorCode.RESPONSE_TYPE_EMPTY_LIST, cause);
-        when(mockResponseTypeFactory.makeResponseType(responseTypes)).thenThrow(exception);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenThrow(exception);
 
         when(mockCompareClientRedirectUri.run(expectedUuid, expectedRedirectUri, exception)).thenThrow(InformResourceOwnerException.class);
 

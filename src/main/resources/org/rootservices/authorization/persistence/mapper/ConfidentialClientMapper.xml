@@ -33,11 +33,17 @@
             client.created_at as client_created_at,
             scope.uuid as client_scope_uuid,
             scope.name as client_scope_name,
-            scope.created_at as client_scope_created_at
+            scope.created_at as client_scope_created_at,
+            response_type.id as client_response_type_id,
+            response_type.name as client_response_type_name,
+            response_type.created_at as client_response_type_created_at,
+            response_type.updated_at as client_response_type_updated_at
         from confidential_client
         join client on client.uuid = confidential_client.client_uuid
         join client_scopes on client_scopes.client_uuid = client.uuid
         join scope on scope.uuid = client_scopes.scope_uuid
+        join client_response_type on client_response_type.client_id = client.uuid
+        join response_type on response_type.id = client_response_type.response_type_id
         where client.uuid = #{clientUUID}
     </select>
 </mapper>

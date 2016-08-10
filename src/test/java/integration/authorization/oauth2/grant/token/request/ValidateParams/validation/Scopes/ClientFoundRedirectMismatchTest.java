@@ -20,7 +20,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         p.scopes.add("invalid-scope");
 
@@ -36,7 +36,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         p.scopes.add("profile");
         p.scopes.add("profile");
@@ -54,7 +54,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         p.scopes.add("");
 

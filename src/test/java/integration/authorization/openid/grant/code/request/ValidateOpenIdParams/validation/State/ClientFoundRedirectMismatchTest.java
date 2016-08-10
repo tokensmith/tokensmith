@@ -16,7 +16,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public ValidateParamsAttributes makeValidateParamsAttributes(UUID uuid) {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(uuid.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
         p.redirectUris.add("https://rootservices.org/continue");
 
         return p;

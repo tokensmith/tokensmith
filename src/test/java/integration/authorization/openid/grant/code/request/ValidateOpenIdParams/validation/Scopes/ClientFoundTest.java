@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ResponseType;
 
 
 public class ClientFoundTest extends BaseTest {
@@ -15,7 +16,11 @@ public class ClientFoundTest extends BaseTest {
 
         p.clientIds.add(client.getUuid().toString());
         p.redirectUris.add(client.getRedirectURI().toString());
-        p.responseTypes.add(client.getResponseType().toString());
+
+        for(ResponseType responseType: client.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
+
 
         return p;
     }

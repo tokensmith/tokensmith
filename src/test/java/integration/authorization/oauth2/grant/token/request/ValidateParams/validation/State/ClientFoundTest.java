@@ -15,7 +15,7 @@ public class ClientFoundTest extends BaseTest {
 
     public ValidateParamsAttributes makeValidateParamsAttributes() {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
 
         return p;
     }

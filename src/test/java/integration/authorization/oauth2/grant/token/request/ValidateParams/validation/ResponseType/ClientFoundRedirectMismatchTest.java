@@ -69,8 +69,8 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
         p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add(ResponseType.CODE.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
+        p.responseTypes.add("CODE");
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
