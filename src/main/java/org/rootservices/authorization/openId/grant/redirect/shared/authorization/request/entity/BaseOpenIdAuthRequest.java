@@ -6,24 +6,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 9/30/15.
+ * Created by tommackenzie on 8/12/16.
  */
-public class OpenIdAuthRequest {
-    private UUID clientId;
-    private List<String> responseTypes;
-    private URI redirectURI;
-    private List<String> scopes;
-    private Optional<String> state;
-
-    public OpenIdAuthRequest() {}
-
-    public OpenIdAuthRequest(UUID clientId, List<String> responseTypes, URI redirectURI, List<String> scopes, Optional<String> state) {
-        this.clientId = clientId;
-        this.responseTypes = responseTypes;
-        this.redirectURI = redirectURI;
-        this.scopes = scopes;
-        this.state = state;
-    }
+public class BaseOpenIdAuthRequest {
+    protected UUID clientId;
+    protected List<String> responseTypes;
+    protected URI redirectURI;
+    protected List<String> scopes;
+    protected Optional<String> state;
 
     public UUID getClientId() {
         return clientId;

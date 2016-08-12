@@ -13,8 +13,9 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.factory.OpenIdCodeAuthRequestFactory;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.factory.required.OpenIdRedirectUriFactory;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.EmptyValueError;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.validator.exception.NoItemsError;
 
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 10/2/15.
  */
-public class OpenIdAuthRequestFactoryTest {
+public class OpenIdCodeAuthRequestFactoryTest {
 
     @Mock
     private ClientIdFactory mockClientIdFactory;
@@ -47,12 +48,12 @@ public class OpenIdAuthRequestFactoryTest {
     private StateFactory mockStateFactory;
     @Mock
     private GetOpenIdConfidentialClientRedirectUri mockGetOpenIdConfidentialClientRedirectUri;
-    private OpenIdAuthRequestFactory subject;
+    private OpenIdCodeAuthRequestFactory subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new OpenIdAuthRequestFactory(
+        subject = new OpenIdCodeAuthRequestFactory(
                 mockClientIdFactory,
                 mockOpenIdRedirectUriFactory,
                 mockResponseTypesFactory,
