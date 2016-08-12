@@ -11,11 +11,10 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
-import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
-import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.code.authorization.response.RequestOpenIdAuthCodeImpl;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdParams;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCodeImpl;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
