@@ -1,20 +1,22 @@
-package integration.authorization.openid.grant.code.request.ValidateOpenIdParams;
+package integration.authorization.openid.grant.token.request.ValidateOpenIdParams;
 
-import helper.ValidateParamsAttributes;
-import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdScope;
+import helper.ValidateParamsWithNonce;
+import helper.fixture.persistence.openid.LoadTokenClientWithOpenIdScope;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.ValidateOpenIdIdTokenResponseType;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
+import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -32,19 +34,60 @@ import static org.junit.Assert.fail;
 public abstract class BaseTest {
 
     @Autowired
-    private LoadCodeConfidentialClientWithOpenIdScope loadCodeConfidentialClientWithOpenIdScope;
+    private LoadTokenClientWithOpenIdScope loadTokenClientWithOpenIdScope;
     @Autowired
-    protected ValidateOpenIdCodeResponseType subject;
+    protected ValidateOpenIdIdTokenResponseType subject;
 
-    public Client loadConfidentialClient() throws Exception {
-        ConfidentialClient cc = loadCodeConfidentialClientWithOpenIdScope.run();
-        return cc.getClient();
+    public Client loadClient() throws Exception {
+        // TODO: this may also need the response type, id_token.
+        Client c = loadTokenClientWithOpenIdScope.run();
+        return c;
     }
 
-    public void runExpectInformResourceOwnerException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode) {
+    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client client) {
+        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
+        p.clientIds.add(client.getUuid().toString());
+
+        for(ResponseType responseType: client.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
+
+        p.redirectUris.add(client.getRedirectURI().toString());
+        p.scopes.add(client.getScopes().get(0).getName());
+        p.states.add("some-state");
+        p.nonces.add("some-nonce");
+
+        return p;
+    }
+
+    public ValidateParamsWithNonce makeValidateParamsWithNonceRequiredOnly(Client client) {
+        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
+
+        p.clientIds.add(client.getUuid().toString());
+        p.redirectUris.add(client.getRedirectURI().toString());
+        for(ResponseType responseType: client.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
+        p.nonces.add("some-nonce");
+
+        return p;
+    }
+
+    public ValidateParamsWithNonce makeValidateParamsWithNonce() {
+        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
+
+        p.clientIds.add(UUID.randomUUID().toString());
+        p.redirectUris.add("https://rootservices.org");
+        p.nonces.add("some-nonce");
+
+        return p;
+
+    }
+
+    public void runExpectInformResourceOwnerException(ValidateParamsWithNonce p, Exception expectedDomainCause, int expectedErrorCode) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
@@ -54,10 +97,10 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformResourceOwnerExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode) {
+    public void runExpectInformResourceOwnerExceptionNoCause(ValidateParamsWithNonce p, int expectedErrorCode) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getDomainCause(), is(nullValue()));
@@ -67,10 +110,10 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
+    public void runExpectInformClientException(ValidateParamsWithNonce p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
             assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
@@ -82,10 +125,10 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionNoCause(ValidateParamsWithNonce p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
             assertThat(e.getDomainCause(), is(nullValue()));

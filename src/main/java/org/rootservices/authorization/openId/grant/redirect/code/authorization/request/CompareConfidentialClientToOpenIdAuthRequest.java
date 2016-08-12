@@ -22,9 +22,12 @@ import java.util.UUID;
  */
 @Component
 public class CompareConfidentialClientToOpenIdAuthRequest extends CompareClientToOpenIdAuthRequest {
+    @Autowired
     private ConfidentialClientRepository confidentialClientRepository;
 
-    @Autowired
+    public CompareConfidentialClientToOpenIdAuthRequest() {
+    }
+
     public CompareConfidentialClientToOpenIdAuthRequest(ConfidentialClientRepository confidentialClientRepository) {
         this.confidentialClientRepository = confidentialClientRepository;
     }

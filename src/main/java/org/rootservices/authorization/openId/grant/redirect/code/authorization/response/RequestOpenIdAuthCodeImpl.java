@@ -10,7 +10,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdParams;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,13 +26,13 @@ import java.util.Optional;
 @Component("requestOpenIdAuthCode")
 public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
 
-    private ValidateOpenIdParams validateOpenIdParams;
+    private ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType;
 
     public RequestOpenIdAuthCodeImpl() {}
 
     @Autowired
-    public RequestOpenIdAuthCodeImpl(ValidateOpenIdParams validateOpenIdParams, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
-        this.validateOpenIdParams = validateOpenIdParams;
+    public RequestOpenIdAuthCodeImpl(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
+        this.validateOpenIdCodeResponseType = validateOpenIdCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.grantAuthCode = grantAuthCode;
         this.authResponseFactory = authResponseFactory;
@@ -40,7 +40,7 @@ public class RequestOpenIdAuthCodeImpl extends RequestAuthCodeImpl {
 
     @Override
     public AuthResponse run(GrantInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
-        OpenIdAuthRequest authRequest = validateOpenIdParams.run(
+        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(
                 input.getClientIds(),
                 input.getResponseTypes(),
                 input.getRedirectUris(),

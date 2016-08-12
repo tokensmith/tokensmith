@@ -1,4 +1,4 @@
-package org.rootservices.authorization.openId.grant.redirect.code.authorization.request;
+package org.rootservices.authorization.openId.grant.redirect.token.authorization.request.context;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -13,6 +13,7 @@ import org.rootservices.authorization.openId.grant.redirect.code.authorization.r
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ConfidentialClientRepository;
 
 import java.net.URI;
@@ -20,31 +21,29 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by tommackenzie on 10/8/15.
+ * Created by tommackenzie on 8/12/16.
  */
-public class GetOpenIdConfidentialClientRedirectUriTest {
+public class GetOpenIdPublicClientRedirectUriTest {
     @Mock
-    private ConfidentialClientRepository mockConfidentialClientRepository;
-    private GetOpenIdConfidentialClientRedirectUri subject;
+    private ClientRepository mockClientRepository;
+    private GetOpenIdPublicClientRedirectUri subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new GetOpenIdConfidentialClientRedirectUri(mockConfidentialClientRepository);
+        subject = new GetOpenIdPublicClientRedirectUri(mockClientRepository);
     }
 
     @Test
     public void clientFoundRedirectMatchesShouldBeOK() throws URISyntaxException, RecordNotFoundException, InformClientException, InformResourceOwnerException {
 
-        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
-        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
+        Client client = FixtureFactory.makeTokenClientWithOpenIdScopes();
 
-        when(mockConfidentialClientRepository.getByClientId(client.getUuid())).thenReturn(confidentialClient);
+        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
 
         ResponseTypeException rootCause = new ResponseTypeException("");
 
@@ -58,7 +57,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
         URI redirectURI = new URI("https://rootservices.org");
         ResponseTypeException rootCause = new ResponseTypeException("");
 
-        when(mockConfidentialClientRepository.getByClientId(clientId)).thenThrow(RecordNotFoundException.class);
+        when(mockClientRepository.getById(clientId)).thenThrow(RecordNotFoundException.class);
 
         try {
             subject.run(clientId, redirectURI, rootCause);
@@ -77,10 +76,9 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
         URI redirectURI = new URI("https://rootservices.org/mismatch");
         ResponseTypeException rootCause = new ResponseTypeException("");
 
-        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
-        ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
+        Client client = FixtureFactory.makeTokenClientWithOpenIdScopes();
 
-        when(mockConfidentialClientRepository.getByClientId(client.getUuid())).thenReturn(confidentialClient);
+        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
 
         try {
             subject.run(client.getUuid(), redirectURI, rootCause);
@@ -92,4 +90,5 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }
+
 }
