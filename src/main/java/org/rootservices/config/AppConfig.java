@@ -21,6 +21,17 @@ import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ValidateParamsTokenResponseType;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.response.RequestAccessToken;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.CompareConfidentialClientToOpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.context.GetOpenIdClientRedirectUri;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.factory.OpenIdAuthRequestFactory;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.factory.required.OpenIdRedirectUriFactory;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.ValidateOpenIdIdTokenResponseType;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.context.GetOpenIdPublicClientRedirectUri;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.ComparePublicClientToOpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.OpenIdTokenAuthRequestFactory;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.required.NonceFactory;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -93,7 +104,7 @@ public class AppConfig {
     }
 
     @Bean
-    public ResponseTypesFactory responseTypeFactory() {
+    public ResponseTypesFactory responseTypesFactory() {
         return new ResponseTypesFactory();
     }
 
@@ -122,7 +133,7 @@ public class AppConfig {
     public AuthRequestFactory authRequestFactoryTokenResponseType() {
         AuthRequestFactory authRequestBuilder = new AuthRequestFactory(
                 clientIdFactory(),
-                responseTypeFactory(),
+                responseTypesFactory(),
                 redirectUriFactory(),
                 scopesFactory(),
                 stateFactory(),
@@ -155,7 +166,7 @@ public class AppConfig {
     public AuthRequestFactory authRequestFactory() {
         return new AuthRequestFactory(
                 clientIdFactory(),
-                responseTypeFactory(),
+                responseTypesFactory(),
                 redirectUriFactory(),
                 scopesFactory(),
                 stateFactory(),
@@ -173,6 +184,86 @@ public class AppConfig {
         return new ValidateParamsCodeResponseType(
                 authRequestFactory(),
                 compareClientToAuthRequest()
+        );
+    }
+
+    // OpenId Scope and Code Response Type
+    @Bean
+    public GetOpenIdClientRedirectUri getOpenIdConfidentialClientRedirectUri() {
+        return new GetOpenIdConfidentialClientRedirectUri();
+    }
+
+    @Bean
+    public OpenIdRedirectUriFactory openIdRedirectUriFactory() {
+        return new OpenIdRedirectUriFactory();
+    }
+
+    @Bean
+    public OpenIdAuthRequestFactory openIdAuthRequestFactory() {
+        return new OpenIdAuthRequestFactory(
+                clientIdFactory(),
+                openIdRedirectUriFactory(),
+                responseTypesFactory(),
+                scopesFactory(),
+                stateFactory(),
+                getOpenIdConfidentialClientRedirectUri()
+        );
+    }
+
+    @Bean
+    public CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest() {
+        return new CompareConfidentialClientToOpenIdAuthRequest();
+    }
+
+    @Bean
+    public ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType() {
+        return new ValidateOpenIdCodeResponseType(
+                openIdAuthRequestFactory(),
+                compareConfidentialClientToOpenIdAuthRequest()
+        );
+    }
+
+    // OpenId Scope and Token Response Type
+    @Bean
+    public NonceFactory nonceFactory() {
+        return new NonceFactory();
+    }
+
+    @Bean
+    public GetOpenIdClientRedirectUri getOpenIdPublicClientRedirectUri() {
+        return new GetOpenIdPublicClientRedirectUri();
+    }
+
+    @Bean
+    public OpenIdAuthRequestFactory openIdAuthRequestFactoryCodeResponseType() {
+        return new OpenIdAuthRequestFactory(
+                clientIdFactory(),
+                openIdRedirectUriFactory(),
+                responseTypesFactory(),
+                scopesFactory(),
+                stateFactory(),
+                getOpenIdPublicClientRedirectUri()
+        );
+    }
+
+    @Bean
+    public OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory() {
+        return new OpenIdTokenAuthRequestFactory(
+                openIdAuthRequestFactoryCodeResponseType(),
+                nonceFactory()
+        );
+    }
+
+    @Bean
+    public ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest() {
+        return new ComparePublicClientToOpenIdAuthRequest();
+    }
+
+    @Bean
+    public ValidateOpenIdIdTokenResponseType validateOpenIdIdTokenResponseType() {
+        return new ValidateOpenIdIdTokenResponseType(
+                openIdTokenAuthRequestFactory(),
+                comparePublicClientToOpenIdAuthRequest()
         );
     }
 

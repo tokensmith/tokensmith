@@ -11,7 +11,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdParams;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCodeImpl;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class RequestOpenIdAuthCodeImplTest {
 
     @Mock
-    private ValidateOpenIdParams mockValidateOpenIdParams;
+    private ValidateOpenIdCodeResponseType mockValidateOpenIdCodeResponseType;
     @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
@@ -47,7 +47,7 @@ public class RequestOpenIdAuthCodeImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new RequestOpenIdAuthCodeImpl(
-                mockValidateOpenIdParams,
+                mockValidateOpenIdCodeResponseType,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
                 mockAuthResponseFactory
@@ -101,7 +101,7 @@ public class RequestOpenIdAuthCodeImplTest {
         expectedAuthResponse.setState(authRequest.getState());
         expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
 
-        when(mockValidateOpenIdParams.run(
+        when(mockValidateOpenIdCodeResponseType.run(
                 input.getClientIds(),
                 input.getResponseTypes(),
                 input.getRedirectUris(),

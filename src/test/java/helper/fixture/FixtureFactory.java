@@ -29,6 +29,7 @@ public class FixtureFactory {
     public static URI makeSecureRedirectUri() throws URISyntaxException {
         return new URI(REDIRECT_URI);
     }
+
     public static Client makeTokenClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
         ResponseType rt = makeResponseType();
@@ -76,6 +77,12 @@ public class FixtureFactory {
         confidentialClient.setPassword(password.getBytes());
 
         return confidentialClient;
+    }
+
+    public static Client makeTokenClientWithOpenIdScopes() throws URISyntaxException {
+        Client client = makeTokenClientWithScopes();
+        client.setScopes(makeOpenIdScopes());
+        return client;
     }
 
     public static List<Scope> makeScopes() {
