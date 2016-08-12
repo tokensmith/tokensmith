@@ -1,9 +1,11 @@
 package org.rootservices.authorization.openId.grant.redirect.token.authorization.request.entity;
 
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
 
-
-public class OpenIdTokenAuthRequest extends OpenIdAuthRequest {
+/**
+ * Created by tommackenzie on 8/12/16.
+ */
+public class OpenIdTokenAuthRequest extends BaseOpenIdAuthRequest {
     private String nonce;
 
     public String getNonce() {

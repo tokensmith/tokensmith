@@ -1,4 +1,4 @@
-package org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory;
+package org.rootservices.authorization.openId.grant.redirect.token.authorization.request;
 
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.CompareClientToOpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;

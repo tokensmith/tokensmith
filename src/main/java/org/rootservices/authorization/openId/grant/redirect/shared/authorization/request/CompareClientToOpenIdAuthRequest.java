@@ -3,12 +3,11 @@ package org.rootservices.authorization.openId.grant.redirect.shared.authorizatio
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +17,7 @@ import java.util.UUID;
  */
 public abstract class CompareClientToOpenIdAuthRequest {
 
-    public boolean run(OpenIdAuthRequest authRequest) throws InformResourceOwnerException, InformClientException {
+    public boolean run(BaseOpenIdAuthRequest authRequest) throws InformResourceOwnerException, InformClientException {
 
         Client client;
         try {

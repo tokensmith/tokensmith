@@ -1,11 +1,10 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams;
 
-import helper.ValidateParamsAttributes;
 import helper.ValidateParamsWithNonce;
 import org.junit.Test;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.entity.OpenIdTokenAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -23,7 +22,7 @@ public class OkTest extends BaseTest {
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonceRequiredOnly(c);
 
-        OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+        OpenIdTokenAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
 
         assertThat(actual.getClientId(), is(c.getUuid()));
         assertThat(actual.getResponseTypes().size(), is(1));
@@ -39,7 +38,7 @@ public class OkTest extends BaseTest {
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
 
-        OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+        OpenIdTokenAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
 
         assertThat(actual.getClientId(), is(c.getUuid()));
         assertThat(actual.getResponseTypes().size(), is(1));

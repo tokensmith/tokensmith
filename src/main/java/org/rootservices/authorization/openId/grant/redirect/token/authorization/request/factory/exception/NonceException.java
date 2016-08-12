@@ -6,6 +6,9 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
  * Created by tommackenzie on 7/21/16.
  */
 public class NonceException extends BaseException {
+
+    public NonceException() {}
+
     public NonceException(ErrorCode errorCode, Throwable domainCause) {
         super(errorCode, domainCause);
     }

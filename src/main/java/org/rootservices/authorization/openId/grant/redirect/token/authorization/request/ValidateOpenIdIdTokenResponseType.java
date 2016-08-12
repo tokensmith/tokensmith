@@ -2,9 +2,9 @@ package org.rootservices.authorization.openId.grant.redirect.token.authorization
 
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.ComparePublicClientToOpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.OpenIdTokenAuthRequestFactory;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.entity.OpenIdTokenAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.OpenIdTokenAuthRequestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
