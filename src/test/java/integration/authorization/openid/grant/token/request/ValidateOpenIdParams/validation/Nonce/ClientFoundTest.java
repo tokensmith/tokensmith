@@ -5,103 +5,72 @@ import integration.authorization.openid.grant.token.request.ValidateOpenIdParams
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.exception.NonceException;
 import org.rootservices.authorization.persistence.entity.Client;
 
 
 public class ClientFoundTest extends BaseTest {
 
     @Test
-    public void responseTypeIsNullShouldThrowInformClientException() throws Exception {
+    public void noncesIsNullShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes = null;
+        p.nonces = null;
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_NULL.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_NULL.getDescription();
+        Exception expectedDomainCause = new NonceException();
+        int expectedErrorCode = ErrorCode.NONCE_NULL.getCode();
+        String expectedDescription = ErrorCode.NONCE_NULL.getDescription();
         String expectedError = "invalid_request";
 
         runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformClientException() throws Exception {
+    public void noncesIsEmptyListShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
+        p.nonces.clear();
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getDescription();
-        String expectedError = "invalid_request";
-
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
-
-    }
-
-    @Test
-    public void responseTypeIsInvalidShouldThrowInformClientException() throws Exception {
-        Client c = loadClient();
-
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("invalid-response-type");
-
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_DATA_TYPE.getDescription();
-        String expectedError = "unsupported_response_type";
-
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
-    }
-
-    @Test
-    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws Exception {
-        Client c = loadClient();
-
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("TOKEN");
-        p.responseTypes.add("TOKEN");
-
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getDescription();
+        Exception expectedDomainCause = new NonceException();
+        int expectedErrorCode = ErrorCode.NONCE_EMPTY_LIST.getCode();
+        String expectedDescription = ErrorCode.NONCE_EMPTY_LIST.getDescription();
         String expectedError = "invalid_request";
 
         runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformClientException() throws Exception {
+    public void noncesHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("");
+        p.nonces.clear();
+        p.nonces.add("some-nonce");
+        p.nonces.add("some-nonce");
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getDescription();
+        Exception expectedDomainCause = new NonceException();
+        int expectedErrorCode = ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getCode();
+        String expectedDescription = ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
         runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
-    public void responseTypesDontMatchShouldThrowInformClientException() throws Exception {
+    public void noncesIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("CODE");
+        p.nonces.clear();
+        p.nonces.add("");
 
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_MISMATCH.getCode();
-        String expectedDescription = ErrorCode.RESPONSE_TYPE_MISMATCH.getDescription();
-        String expectedError = "unauthorized_client";
+        Exception expectedDomainCause = new NonceException();
+        int expectedErrorCode = ErrorCode.NONCE_EMPTY_VALUE.getCode();
+        String expectedDescription = ErrorCode.NONCE_EMPTY_VALUE.getDescription();
+        String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionNoCause(p, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 }

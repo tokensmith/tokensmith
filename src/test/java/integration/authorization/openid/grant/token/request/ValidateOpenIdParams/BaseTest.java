@@ -78,6 +78,7 @@ public abstract class BaseTest {
 
         p.clientIds.add(UUID.randomUUID().toString());
         p.redirectUris.add("https://rootservices.org");
+        p.responseTypes.add("TOKEN");
         p.nonces.add("some-nonce");
 
         return p;
