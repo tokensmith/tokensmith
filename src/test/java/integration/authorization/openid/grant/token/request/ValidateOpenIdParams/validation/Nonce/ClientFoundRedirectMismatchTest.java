@@ -4,7 +4,7 @@ import helper.ValidateParamsWithNonce;
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.exception.NonceException;
 import org.rootservices.authorization.persistence.entity.Client;
 
 
@@ -14,8 +14,9 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public ValidateParamsWithNonce makeValidateParamsWithNonce(Client c) {
         ValidateParamsWithNonce p = super.makeValidateParamsWithNonce(c);
-        p.nonces.clear();
+        p.redirectUris.clear();
         p.redirectUris.add(REDIRECT_URI);
+        p.nonces.clear();
 
         return p;
     }
@@ -27,19 +28,19 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
         p.nonces = null;
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception expectedDomainCause = new NonceException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception expectedDomainCause = new NonceException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
@@ -47,42 +48,27 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("invalid-response-type");
+        p.nonces.add("some-nonce");
+        p.nonces.add("some-nonce");
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception expectedDomainCause = new NonceException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.add("TOKEN");
-        p.responseTypes.add("TOKEN");
+        p.nonces.add("");
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
-
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
-    }
-
-    @Test
-    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        Client c = loadClient();
-
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.responseTypes.clear();
-        p.responseTypes.add("");
-
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception expectedDomainCause = new NonceException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
         runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);

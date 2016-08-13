@@ -10,18 +10,9 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 public class ClientNotFoundTest extends BaseTest {
 
     @Test
-    public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesIsNullShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes = null;
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
-        int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
-
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
-    }
-
-    @Test
-    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
+        p.nonces = null;
 
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
@@ -30,9 +21,10 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("invalid-response-type");
+        p.nonces.clear();
+
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
@@ -40,10 +32,12 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
+    public void noncesHasTwoItemsShouldThrowInformResourceException() throws Exception {
         ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("TOKEN");
-        p.responseTypes.add("TOKEN");
+        p.nonces.clear();
+        p.nonces.add("some-nonce");
+        p.nonces.add("some-nonce");
+
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
@@ -51,9 +45,11 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
+    public void noncesIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("");
+        p.nonces.clear();
+        p.nonces.add("");
+
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
