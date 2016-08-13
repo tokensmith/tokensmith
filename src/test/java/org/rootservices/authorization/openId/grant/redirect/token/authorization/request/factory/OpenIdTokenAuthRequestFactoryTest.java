@@ -19,6 +19,7 @@ import org.rootservices.authorization.openId.grant.redirect.code.authorization.r
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.factory.required.OpenIdRedirectUriFactory;
 import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.context.GetOpenIdPublicClientRedirectUri;
 import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.entity.OpenIdTokenAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.exception.NonceException;
 import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.required.NonceFactory;
 
 import java.net.URI;
@@ -237,6 +238,8 @@ public class OpenIdTokenAuthRequestFactoryTest {
             assertThat(e.getCode(), is(exception.getCode()));
             assertThat(e.getDomainCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
+            assertThat(e.getDescription(), is(exception.getDescription()));
+            assertThat(e.getError(), is(exception.getError()));
         }
     }
 
@@ -272,6 +275,8 @@ public class OpenIdTokenAuthRequestFactoryTest {
             assertThat(e.getCode(), is(exception.getCode()));
             assertThat(e.getDomainCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
+            assertThat(e.getDescription(), is(exception.getDescription()));
+            assertThat(e.getError(), is(exception.getError()));
         }
     }
 
@@ -309,6 +314,46 @@ public class OpenIdTokenAuthRequestFactoryTest {
             assertThat(e.getCode(), is(exception.getCode()));
             assertThat(e.getDomainCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
+            assertThat(e.getDescription(), is(exception.getDescription()));
+            assertThat(e.getError(), is(exception.getError()));
+        }
+    }
+
+    @Test
+    public void invalidNoncesShouldThrowInformClientException() throws Exception{
+        UUID expectedUuid = UUID.randomUUID();
+        URI expectedRedirectUri = makeRedirectUri();
+        List<String> expectedResponseType = makeResponseTypes();
+        Optional<String> expectedStates = makeStates();
+
+        List<String> clientIds = buildList(expectedUuid);
+        List<String> redirectUris = buildList(expectedRedirectUri);
+        List<String> responseTypes = buildList(expectedResponseType);
+        List<String> scopes = makeScopes();
+        List<String> states = buildListFromOptional(expectedStates);
+        List<String> nonces = new ArrayList<>();
+
+        when(mockClientIdFactory.makeClientId(clientIds)).thenReturn(expectedUuid);
+        when(mockOpenIdRedirectUriFactory.makeRedirectUri(redirectUris)).thenReturn(expectedRedirectUri);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenReturn(expectedResponseType);
+        when(mockScopesFactory.makeScopes(scopes)).thenReturn(scopes);
+        when(mockStateFactory.makeState(states)).thenReturn(expectedStates);
+
+        NoItemsError cause = new NoItemsError("");
+        NonceException exception = new NonceException(ErrorCode.NONCE_EMPTY_LIST, cause);
+        when(mockNonceFactory.makeNonce(nonces)).thenThrow(exception);
+
+        try {
+            subject.make(clientIds, responseTypes, redirectUris, scopes, states, nonces);
+            fail("Expected InformClientException");
+        } catch (InformResourceOwnerException e) {
+            fail("Expected InformClientException");
+        } catch (InformClientException e) {
+            assertThat(e.getCode(), is(exception.getCode()));
+            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getRedirectURI(), is(expectedRedirectUri));
+            assertThat(e.getDescription(), is(exception.getDescription()));
+            assertThat(e.getError(), is(exception.getError()));
         }
     }
 
@@ -338,5 +383,32 @@ public class OpenIdTokenAuthRequestFactoryTest {
         subject.make(clientIds, responseTypes, redirectUris, scopes, states, nonces);
     }
 
-    // TODO: need tests for nonces
+    @Test(expected=InformResourceOwnerException.class)
+    public void invalidNonceRedirectUriMismatchShouldThrowInformResourceOwnerException() throws Exception {
+        UUID expectedUuid = UUID.randomUUID();
+        URI expectedRedirectUri = makeRedirectUri();
+        List<String> expectedResponseType = makeResponseTypes();
+        Optional<String> expectedStates = makeStates();
+
+        List<String> clientIds = buildList(expectedUuid);
+        List<String> redirectUris = buildList(expectedRedirectUri);
+        List<String> responseTypes = buildList(expectedResponseType);
+        List<String> scopes = makeScopes();
+        List<String> states = buildListFromOptional(expectedStates);
+        List<String> nonces = new ArrayList<>();
+
+        when(mockClientIdFactory.makeClientId(clientIds)).thenReturn(expectedUuid);
+        when(mockOpenIdRedirectUriFactory.makeRedirectUri(redirectUris)).thenReturn(expectedRedirectUri);
+        when(mockResponseTypesFactory.makeResponseTypes(responseTypes)).thenReturn(expectedResponseType);
+        when(mockScopesFactory.makeScopes(scopes)).thenReturn(scopes);
+        when(mockStateFactory.makeState(states)).thenReturn(expectedStates);
+
+        NoItemsError cause = new NoItemsError("");
+        NonceException exception = new NonceException(ErrorCode.NONCE_EMPTY_LIST, cause);
+        when(mockNonceFactory.makeNonce(nonces)).thenThrow(exception);
+
+        when(mockGetOpenIdPublicClientRedirectUri.run(expectedUuid, expectedRedirectUri, exception)).thenThrow(InformResourceOwnerException.class);
+
+        subject.make(clientIds, responseTypes, redirectUris, scopes, states, nonces);
+    }
 }
