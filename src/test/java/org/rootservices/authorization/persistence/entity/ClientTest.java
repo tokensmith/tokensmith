@@ -1,10 +1,12 @@
 package org.rootservices.authorization.persistence.entity;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -31,10 +33,10 @@ public class ClientTest {
 
     @Test
     public void responseType() {
-        ResponseType rt = ResponseType.CODE;
-        subject.setResponseType(rt);
+        List<ResponseType> rts = FixtureFactory.makeResponseTypes();
+        subject.setResponseTypes(rts);
 
-        assertThat(subject.getResponseType()).isEqualTo(rt);
+        assertThat(subject.getResponseTypes()).isEqualTo(rts);
     }
 
     @Test

@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -45,7 +45,13 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
     public AuthRequest makeAuthRequestFromClient(Client client) {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(client.getResponseType());
+
+        List<String> responseTypes = new ArrayList<>();
+        for(ResponseType responseType: client.getResponseTypes()) {
+            responseTypes.add(responseType.getName());
+        }
+        authRequest.setResponseTypes(responseTypes);
+
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -88,7 +94,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
         Client client = FixtureFactory.makeCodeClientWithScopes();
 
         AuthRequest authRequest = makeAuthRequestFromClient(client);
-        client.setResponseType(ResponseType.TOKEN);
+        client.getResponseTypes().get(0).setName("TOKEN");
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 

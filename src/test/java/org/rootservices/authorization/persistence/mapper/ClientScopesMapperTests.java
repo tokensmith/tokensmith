@@ -38,7 +38,6 @@ public class ClientScopesMapperTests {
     private UUID insertClient() throws URISyntaxException {
         Client client = new Client(
                 UUID.randomUUID(),
-                ResponseType.CODE,
                 new URI("https://rootservices.org/continue")
         );
         clientRepository.insert(client);

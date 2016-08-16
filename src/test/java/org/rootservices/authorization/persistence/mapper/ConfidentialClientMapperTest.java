@@ -16,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 
 /**
  * Created by tommackenzie on 5/24/15.
@@ -29,9 +32,7 @@ public class ConfidentialClientMapperTest {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
-    private ScopeRepository scopeRepository;
-    @Autowired
-    private ClientScopesRepository clientScopesRepository;
+    private LoadCodeClientWithScopes loadCodeClientWithScopes;
 
     @Autowired
     private ConfidentialClientMapper subject;
@@ -48,34 +49,38 @@ public class ConfidentialClientMapperTest {
 
     @Test
     public void getByClientUUID() throws URISyntaxException {
-        LoadCodeClientWithScopes loadClientWithScopes = new LoadCodeClientWithScopes(
-                clientRepository, scopeRepository, clientScopesRepository
-        );
-        Client client = loadClientWithScopes.run();
+
+        // left off here!
+        Client client = loadCodeClientWithScopes.run();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         subject.insert(confidentialClient);
 
         ConfidentialClient actual = subject.getByClientUUID(client.getUuid());
 
         // confidential client
-        assertThat(actual).isNotNull();
-        assertThat(actual.getUuid()).isEqualTo(confidentialClient.getUuid());
-        assertThat(actual.getPassword()).isNotNull();
-        assertThat(actual.getCreatedAt()).isNotNull();
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getUuid(), is(confidentialClient.getUuid()));
+        assertThat(actual.getPassword(), is(notNullValue()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         // client
-        assertThat(actual.getClient()).isNotNull();
-        assertThat(actual.getClient().getUuid()).isEqualTo(client.getUuid());
-        assertThat(actual.getClient().getRedirectURI()).isEqualTo(client.getRedirectURI());
-        assertThat(actual.getClient().getResponseType()).isEqualTo(client.getResponseType());
-        assertThat(actual.getClient().getCreatedAt()).isNotNull();
+        assertThat(actual.getClient(), is(notNullValue()));
+        assertThat(actual.getClient().getUuid(), is(client.getUuid()));
+        assertThat(actual.getClient().getRedirectURI(), is(client.getRedirectURI()));
+
+        assertThat(actual.getClient().getResponseTypes(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().size(), is(1));
+        assertThat(actual.getClient().getResponseTypes().get(0).getId(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().get(0).getName(), is("CODE"));
+        assertThat(actual.getClient().getResponseTypes().get(0).getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getClient().getResponseTypes().get(0).getUpdatedAt(), is(notNullValue()));
+
+        assertThat(actual.getClient().getCreatedAt(), is(notNullValue()));
 
         // scopes
-        assertThat(actual.getClient().getScopes()).isNotNull();
-        assertThat(actual.getClient().getScopes().size()).isEqualTo(1);
-        assertThat(actual.getClient().getScopes().get(0).getUuid()).isEqualTo(
-                client.getScopes().get(0).getUuid()
-        );
-        assertThat(actual.getClient().getScopes().get(0).getName()).isEqualTo("profile");
+        assertThat(actual.getClient().getScopes(), is(notNullValue()));
+        assertThat(actual.getClient().getScopes().size(), is(1));
+        assertThat(actual.getClient().getScopes().get(0).getUuid(), is(client.getScopes().get(0).getUuid()));
+        assertThat(actual.getClient().getScopes().get(0).getName(), is("profile"));
     }
 }

@@ -6,16 +6,15 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
-import org.rootservices.authorization.openId.grant.code.authorization.request.ValidateOpenIdParams;
-import org.rootservices.authorization.openId.grant.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.code.authorization.response.RequestOpenIdAuthCodeImpl;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCodeImpl;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class RequestOpenIdAuthCodeImplTest {
 
     @Mock
-    private ValidateOpenIdParams mockValidateOpenIdParams;
+    private ValidateOpenIdCodeResponseType mockValidateOpenIdCodeResponseType;
     @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
@@ -48,7 +47,7 @@ public class RequestOpenIdAuthCodeImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new RequestOpenIdAuthCodeImpl(
-                mockValidateOpenIdParams,
+                mockValidateOpenIdCodeResponseType,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
                 mockAuthResponseFactory
@@ -58,7 +57,6 @@ public class RequestOpenIdAuthCodeImplTest {
     public OpenIdAuthRequest makeOpenIdAuthRequest(GrantInput input) throws URISyntaxException {
 
         UUID clientId = UUID.fromString(input.getClientIds().get(0));
-        ResponseType responseType = ResponseType.valueOf(input.getResponseTypes().get(0));
         URI redirectUri = new URI(input.getRedirectUris().get(0));
 
         Optional<String> state = Optional.empty();
@@ -68,7 +66,7 @@ public class RequestOpenIdAuthCodeImplTest {
 
         OpenIdAuthRequest authRequest = new OpenIdAuthRequest(
                 clientId,
-                responseType,
+                input.getResponseTypes(),
                 redirectUri,
                 input.getScopes(),
                 state
@@ -80,11 +78,10 @@ public class RequestOpenIdAuthCodeImplTest {
     @Test
     public void testRun() throws Exception {
         UUID clientId = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
         String scope = "profile";
 
         // parameter to pass into method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, rt, scope);
+        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
         List<String> redirectUris = new ArrayList();
         redirectUris.add(FixtureFactory.SECURE_REDIRECT_URI);
         input.setRedirectUris(redirectUris);
@@ -104,7 +101,7 @@ public class RequestOpenIdAuthCodeImplTest {
         expectedAuthResponse.setState(authRequest.getState());
         expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
 
-        when(mockValidateOpenIdParams.run(
+        when(mockValidateOpenIdCodeResponseType.run(
                 input.getClientIds(),
                 input.getResponseTypes(),
                 input.getRedirectUris(),
