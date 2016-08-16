@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -47,7 +47,13 @@ public class CompareConfidentialClientToAuthRequestImplTest {
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(client.getResponseType());
+
+        List<String> resonseTypes = new ArrayList<>();
+        for(ResponseType rt: client.getResponseTypes()) {
+            resonseTypes.add(rt.getName());
+        }
+        authRequest.setResponseTypes(resonseTypes);
+
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -67,7 +73,11 @@ public class CompareConfidentialClientToAuthRequestImplTest {
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(uuid);
-        authRequest.setResponseType(ResponseType.CODE);
+
+        List<String> responseTypes = new ArrayList<>();
+        responseTypes.add("CODE");
+        authRequest.setResponseTypes(responseTypes);
+
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
         authRequest.setScopes(scopes);
@@ -89,12 +99,16 @@ public class CompareConfidentialClientToAuthRequestImplTest {
     @Test
     public void runUnAuthorizedResponseType() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
-        client.setResponseType(ResponseType.TOKEN);
+
+        client.getResponseTypes().get(0).setName("TOKEN");
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(ResponseType.CODE);
+
+        authRequest.setResponseTypes(new ArrayList<>());
+        authRequest.getResponseTypes().add("CODE");
+
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -125,7 +139,10 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(ResponseType.CODE);
+
+        authRequest.setResponseTypes(new ArrayList<>());
+        authRequest.getResponseTypes().add("CODE");
+
         authRequest.setRedirectURI(expectedRedirectURI);
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -152,7 +169,12 @@ public class CompareConfidentialClientToAuthRequestImplTest {
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getUuid());
-        authRequest.setResponseType(client.getResponseType());
+
+        authRequest.setResponseTypes(new ArrayList<>());
+        for(ResponseType responseType: client.getResponseTypes()) {
+            authRequest.getResponseTypes().add(responseType.getName());
+        }
+
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
         List<String> scopes = new ArrayList<>();
         scopes.add("unsupported-scope");

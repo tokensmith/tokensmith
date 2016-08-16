@@ -4,9 +4,10 @@ import helper.ValidateParamsAttributes;
 import integration.authorization.oauth2.grant.token.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.ScopesException;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
 
@@ -19,7 +20,9 @@ public class ClientFoundTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(c.getResponseType().toString());
+        for(ResponseType responseType: c.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
 
         p.scopes.add("invalid-scope");
 
@@ -36,7 +39,9 @@ public class ClientFoundTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(c.getResponseType().toString());
+        for(ResponseType responseType: c.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
 
         p.scopes.add("profile");
         p.scopes.add("profile");
@@ -55,7 +60,9 @@ public class ClientFoundTest extends BaseTest {
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
         p.clientIds.add(c.getUuid().toString());
-        p.responseTypes.add(c.getResponseType().toString());
+        for(ResponseType responseType: c.getResponseTypes()) {
+            p.responseTypes.add(responseType.getName());
+        }
 
         p.scopes.add("");
 

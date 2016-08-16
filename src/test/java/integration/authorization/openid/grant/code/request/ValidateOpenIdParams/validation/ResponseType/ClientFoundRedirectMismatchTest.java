@@ -4,7 +4,7 @@ import helper.ValidateParamsAttributes;
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
@@ -68,8 +68,8 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
-        p.responseTypes.add(ResponseType.CODE.toString());
-        p.responseTypes.add(ResponseType.CODE.toString());
+        p.responseTypes.add("CODE");
+        p.responseTypes.add("CODE");
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();

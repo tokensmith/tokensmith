@@ -34,9 +34,8 @@ public class ClientRepositoryImplTest {
 
     public Client clientBuilder() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
         URI redirectUri = new URI("https://rootservices.org");
-        Client client = new Client(uuid, rt, redirectUri);
+        Client client = new Client(uuid, redirectUri);
         return client;
     }
 

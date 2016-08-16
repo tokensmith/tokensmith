@@ -5,16 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.optional.*;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.required.ResponseTypeFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.context.GetClientRedirectUri;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.factory.AuthRequestFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUriImpl;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request.ComparePublicClientToAuthRequest;
@@ -93,8 +93,8 @@ public class AppConfig {
     }
 
     @Bean
-    public ResponseTypeFactory responseTypeFactory() {
-        return new ResponseTypeFactory();
+    public ResponseTypesFactory responseTypesFactory() {
+        return new ResponseTypesFactory();
     }
 
     @Bean
@@ -122,7 +122,7 @@ public class AppConfig {
     public AuthRequestFactory authRequestFactoryTokenResponseType() {
         AuthRequestFactory authRequestBuilder = new AuthRequestFactory(
                 clientIdFactory(),
-                responseTypeFactory(),
+                responseTypesFactory(),
                 redirectUriFactory(),
                 scopesFactory(),
                 stateFactory(),
@@ -148,14 +148,14 @@ public class AppConfig {
     // CODE Response Type. Rename these!
     @Bean
     public GetClientRedirectUri getConfidentialClientRedirectUri() {
-        return new GetConfidentialClientRedirectUriImpl();
+        return new GetConfidentialClientRedirectUri();
     }
 
     @Bean
     public AuthRequestFactory authRequestFactory() {
         return new AuthRequestFactory(
                 clientIdFactory(),
-                responseTypeFactory(),
+                responseTypesFactory(),
                 redirectUriFactory(),
                 scopesFactory(),
                 stateFactory(),

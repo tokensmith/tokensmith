@@ -1,6 +1,6 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
@@ -29,12 +29,17 @@ public class FixtureFactory {
     public static URI makeSecureRedirectUri() throws URISyntaxException {
         return new URI(REDIRECT_URI);
     }
+
     public static Client makeTokenClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.TOKEN;
+        ResponseType rt = makeResponseType();
+        rt.setName("TOKEN");
+
+        List<ResponseType> responseTypes = new ArrayList<>();
+        responseTypes.add(rt);
         URI redirectUri = new URI(SECURE_REDIRECT_URI);
 
-        Client client = new Client(uuid, rt, redirectUri);
+        Client client = new Client(uuid, responseTypes, redirectUri);
         List<Scope> scopes = makeScopes();
         client.setScopes(scopes);
         return client;
@@ -42,10 +47,16 @@ public class FixtureFactory {
 
     public static Client makeCodeClientWithScopes() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
-        ResponseType rt = ResponseType.CODE;
+
+        ResponseType rt = makeResponseType();
+        rt.setName("CODE");
+
+        List<ResponseType> responseTypes = new ArrayList<>();
+        responseTypes.add(rt);
+
         URI redirectUri = new URI(SECURE_REDIRECT_URI);
 
-        Client client = new Client(uuid, rt, redirectUri);
+        Client client = new Client(uuid, responseTypes, redirectUri);
         List<Scope> scopes = makeScopes();
         client.setScopes(scopes);
         return client;
@@ -68,6 +79,12 @@ public class FixtureFactory {
         return confidentialClient;
     }
 
+    public static Client makeTokenClientWithOpenIdScopes() throws URISyntaxException {
+        Client client = makeTokenClientWithScopes();
+        client.setScopes(makeOpenIdScopes());
+        return client;
+    }
+
     public static List<Scope> makeScopes() {
         List<Scope> scopes = new ArrayList<>();
 
@@ -84,6 +101,17 @@ public class FixtureFactory {
         return scope;
     }
 
+    public static List<ResponseType> makeResponseTypes() {
+        List<ResponseType> responseTypes = new ArrayList<>();
+        responseTypes.add(makeResponseType());
+        return responseTypes;
+    }
+
+    public static ResponseType makeResponseType() {
+        ResponseType rt = new ResponseType();
+        rt.setId(UUID.randomUUID());
+        return rt;
+    }
     public static List<Scope> makeOpenIdScopes() {
         List<Scope> scopes = new ArrayList<>();
         Scope scope = new Scope();
@@ -206,7 +234,7 @@ public class FixtureFactory {
         return resourceOwnerToken;
     }
 
-    public static GrantInput makeGrantInput(UUID clientId, ResponseType rt, String scope) {
+    public static GrantInput makeGrantInput(UUID clientId, String responseType, String scope) {
         GrantInput input = new GrantInput();
         input.setUserName(makeRandomEmail());
         input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
@@ -216,7 +244,7 @@ public class FixtureFactory {
         input.setClientIds(clientIds);
 
         List<String> responseTypes = new ArrayList<>();
-        responseTypes.add(rt.toString());
+        responseTypes.add(responseType);
         input.setResponseTypes(responseTypes);
 
         List<String> scopes = new ArrayList<>();

@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;

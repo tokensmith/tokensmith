@@ -1,6 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.redirect.token.authorization.request;
 
-import org.rootservices.authorization.oauth2.grant.redirect.authorization.request.CompareClientToAuthRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;

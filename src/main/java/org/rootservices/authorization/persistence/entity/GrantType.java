@@ -6,4 +6,5 @@ package org.rootservices.authorization.persistence.entity;
 public enum GrantType {
     AUTHORIZATION_CODE,
     TOKEN
+    // TOOD: pt-125976777 should this also contain other response types such as id_token?
 }
