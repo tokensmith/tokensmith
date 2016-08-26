@@ -28,7 +28,6 @@
             confidential_client.password,
             confidential_client.created_at,
             client.uuid as client_uuid,
-            client.response_type as client_response_type,
             client.redirect_URI as client_redirect_URI,
             client.created_at as client_created_at,
             scope.uuid as client_scope_uuid,
