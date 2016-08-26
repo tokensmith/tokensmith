@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
-import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.ValidateOpenIdIdTokenResponseType;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdTokenResponseType;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
