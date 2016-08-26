@@ -4,7 +4,7 @@ import helper.ValidateParamsWithNonce;
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.openId.grant.redirect.token.authorization.request.factory.exception.NonceException;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.factory.exception.NonceException;
 import org.rootservices.authorization.persistence.entity.Client;
 
 
