@@ -38,19 +38,19 @@ public class RequestAccessToken {
     @Autowired
     private RandomString randomString;
     @Autowired
-    private GrantToken grantToken;
+    private IssueTokenImplicitGrant issueTokenImplicitGrant;
     @Autowired
     private ClientRepository clientRepository;
 
     public RequestAccessToken() {
     }
 
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsTokenResponseType, ScopeRepository scopeRepository, RandomString randomString, GrantToken grantToken, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsTokenResponseType, ScopeRepository scopeRepository, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateParamsTokenResponseType = validateParamsTokenResponseType;
         this.scopeRepository = scopeRepository;
         this.randomString = randomString;
-        this.grantToken = grantToken;
+        this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.clientRepository = clientRepository;
     }
 
@@ -68,7 +68,7 @@ public class RequestAccessToken {
         String accessToken = randomString.run();
 
         List<Scope> scopesForToken = scopeRepository.findByName(authRequest.getScopes());
-        Token token = grantToken.grant(resourceOwner, scopesForToken, accessToken);
+        Token token = issueTokenImplicitGrant.run(resourceOwner, scopesForToken, accessToken);
 
         URI redirectUri;
         if (authRequest.getRedirectURI().isPresent()) {
@@ -76,7 +76,7 @@ public class RequestAccessToken {
         } else {
             redirectUri = fetchClientRedirectURI(authRequest.getClientId());
         }
-        return translate(redirectUri, accessToken, grantToken.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
+        return translate(redirectUri, accessToken, issueTokenImplicitGrant.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
     }
 
     private URI fetchClientRedirectURI(UUID clientId) throws InformResourceOwnerException {
