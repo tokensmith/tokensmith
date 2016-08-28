@@ -24,8 +24,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 6/24/16.
  */
-public class GrantTokenTest {
-    private GrantToken subject;
+public class IssueTokenImplicitGrantTest {
+    private IssueTokenImplicitGrant subject;
     @Mock
     private MakeToken mockMakeToken;
     @Mock
@@ -38,7 +38,7 @@ public class GrantTokenTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new GrantToken(mockMakeToken, mockTokenRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockMakeToken, mockTokenRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class GrantTokenTest {
 
         when(mockMakeToken.run(plainTextAccessToken)).thenReturn(token);
 
-        Token actualToken = subject.grant(resourceOwner, scopes, plainTextAccessToken);
+        Token actualToken = subject.run(resourceOwner, scopes, plainTextAccessToken);
 
         assertThat(actualToken, is(notNullValue()));
         assertThat(actualToken, is(token));
