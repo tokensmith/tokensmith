@@ -309,4 +309,29 @@ public class FixtureFactory {
                 new BigInteger("8")
         );
     }
+
+    public static List<AccessRequestScope> makeAccessRequestScopes() {
+        List<AccessRequestScope> accessRequestScopes = new ArrayList<>();
+
+        Scope openId = makeScope();
+        openId.setName("openid");
+        AccessRequestScope arsOpenId = makeAccessRequestScope();
+        arsOpenId.setScope(openId);
+        accessRequestScopes.add(arsOpenId);
+
+        Scope profile = makeScope();
+        AccessRequestScope arsProfile = makeAccessRequestScope();
+        arsOpenId.setScope(profile);
+        accessRequestScopes.add(arsProfile);
+
+        return accessRequestScopes;
+    }
+
+    public static AccessRequestScope makeAccessRequestScope() {
+        AccessRequestScope accessRequestScope = new AccessRequestScope();
+        accessRequestScope.setUuid(UUID.randomUUID());
+        accessRequestScope.setCreatedAt(OffsetDateTime.now());
+
+        return accessRequestScope;
+    }
 }
