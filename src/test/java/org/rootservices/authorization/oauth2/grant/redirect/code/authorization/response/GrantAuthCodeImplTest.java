@@ -62,7 +62,7 @@ public class GrantAuthCodeImplTest {
         Scope scope = new Scope(UUID.randomUUID(), "profile");
         scopes.add(scope);
 
-        when(mockScopeRepository.findByName(scopeNames)).thenReturn(scopes);
+        when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
 
         ArgumentCaptor<AccessRequest> ARCaptor = ArgumentCaptor.forClass(AccessRequest.class);
         ArgumentCaptor<AccessRequestScope> ARSCaptor = ArgumentCaptor.forClass(AccessRequestScope.class);
