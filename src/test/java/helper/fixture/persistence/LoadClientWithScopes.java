@@ -7,6 +7,8 @@ import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,14 +36,24 @@ public abstract class LoadClientWithScopes {
         Client client = makeClientWithScopes();
         clientRepository.insert(client);
 
+        List<Scope> scopesForClient = new ArrayList<>();
         for (Scope scope: client.getScopes()) {
-            scopeRepository.insert(scope);
+            Scope scopeForClient;
+            try {
+                scopeForClient = scopeRepository.findByName(scope.getName());
+            } catch (RecordNotFoundException e) {
+                continue;
+            }
+            scopesForClient.add(scopeForClient);
+
             ClientScope clientScope = new ClientScope(
-                    UUID.randomUUID(), client.getUuid(), scope.getUuid()
+                    UUID.randomUUID(), client.getUuid(), scopeForClient.getUuid()
             );
             clientScopesRepository.insert(clientScope);
         }
+        client.setScopes(scopesForClient);
 
+        List<ResponseType> responseTypesForClient = new ArrayList<>();
         for(ResponseType responseType: client.getResponseTypes()) {
             ResponseType rt;
             try {
@@ -49,10 +61,12 @@ public abstract class LoadClientWithScopes {
             } catch (RecordNotFoundException e) {
                 continue;
             }
+            responseTypesForClient.add(rt);
 
             ClientResponseType clientResponseType = new ClientResponseType(UUID.randomUUID(), rt, client);
             clientResponseTypeRepository.insert(clientResponseType);
         }
+        client.setResponseTypes(responseTypesForClient);
 
         return client;
     }

@@ -67,7 +67,7 @@ public class RequestAccessToken {
 
         String accessToken = randomString.run();
 
-        List<Scope> scopesForToken = scopeRepository.findByName(authRequest.getScopes());
+        List<Scope> scopesForToken = scopeRepository.findByNames(authRequest.getScopes());
         Token token = grantToken.grant(resourceOwner, scopesForToken, accessToken);
 
         URI redirectUri;
