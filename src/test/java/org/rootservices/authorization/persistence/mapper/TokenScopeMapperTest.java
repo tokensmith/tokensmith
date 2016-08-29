@@ -40,6 +40,7 @@ public class TokenScopeMapperTest {
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
         scopeMapper.insert(scope);
 
         // end prepare db for test.

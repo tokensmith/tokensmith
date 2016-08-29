@@ -32,18 +32,31 @@ public class ScopeMapperTest {
     }
 
     @Test
-    public void findByName() {
+    public void findByNames() {
         String scopeName = "some-scope";
         Scope scope = new Scope(UUID.randomUUID(), scopeName);
         subject.insert(scope);
 
         List<String> names = new ArrayList<>();
         names.add(scopeName);
-        List<Scope> scopes = subject.findByName(names);
+        List<Scope> scopes = subject.findByNames(names);
 
         assertThat(scopes.size()).isEqualTo(1);
         assertThat(scopes.get(0).getUuid()).isNotNull();
         assertThat(scopes.get(0).getName()).isEqualTo(scopeName);
         assertThat(scopes.get(0).getCreatedAt()).isNotNull();
+    }
+
+    @Test
+    public void findByName() {
+        String scopeName = "some-scope";
+        Scope scope = new Scope(UUID.randomUUID(), scopeName);
+        subject.insert(scope);
+
+        Scope actual = subject.findByName(scopeName);
+
+        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getName()).isEqualTo(scopeName);
+        assertThat(actual.getCreatedAt()).isNotNull();
     }
 }

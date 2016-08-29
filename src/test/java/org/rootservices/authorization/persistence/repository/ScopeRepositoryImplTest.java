@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ScopeMapper;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ScopeRepositoryImplTest {
     }
 
     @Test
-    public void findByName() throws Exception {
+    public void findByNames() throws Exception {
         List<String> names = new ArrayList();
         names.add("profile");
 
@@ -48,31 +49,55 @@ public class ScopeRepositoryImplTest {
         List<Scope> scopes = new ArrayList<>();
         scopes.add(scope);
 
-        when(mockScopeMapper.findByName(names)).thenReturn(scopes);
+        when(mockScopeMapper.findByNames(names)).thenReturn(scopes);
 
-        List<Scope> actual = subject.findByName(names);
+        List<Scope> actual = subject.findByNames(names);
 
-        verify(mockScopeMapper, times(1)).findByName(names);
+        verify(mockScopeMapper, times(1)).findByNames(names);
         assertThat(actual, is(scopes));
     }
 
     @Test
-    public void findByNameWhenInputIsNullShouldReturnEmptyList() throws Exception {
+    public void findByNamesWhenInputIsNullShouldReturnEmptyList() throws Exception {
         List<String> names = null;
 
-        List<Scope> actual = subject.findByName(names);
+        List<Scope> actual = subject.findByNames(names);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(0));
     }
 
     @Test
-    public void findByNameWhenInputIsEmptyListShouldReturnEmptyList() throws Exception {
+    public void findByNamesWhenInputIsEmptyListShouldReturnEmptyList() throws Exception {
         List<String> names = new ArrayList<>();
 
-        List<Scope> actual = subject.findByName(names);
+        List<Scope> actual = subject.findByNames(names);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(0));
+    }
+
+    @Test
+    public void findByNameShouldBeOk() throws Exception {
+        String scopeName = "profile";
+
+        Scope scope = new Scope(UUID.randomUUID(), scopeName);
+
+
+        when(mockScopeMapper.findByName(scopeName)).thenReturn(scope);
+
+        Scope actual = subject.findByName(scopeName);
+
+        verify(mockScopeMapper, times(1)).findByName(scopeName);
+        assertThat(actual, is(scope));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void findByNameShouldThrowRecordNotFound() throws Exception {
+        String scopeName = "profile";
+
+        when(mockScopeMapper.findByName(scopeName)).thenReturn(null);
+
+        subject.findByName(scopeName);
     }
 }
