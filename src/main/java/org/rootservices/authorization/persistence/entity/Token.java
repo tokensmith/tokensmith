@@ -13,6 +13,7 @@ public class Token {
     private boolean revoked;
     private GrantType grantType;
     private List<TokenScope> tokenScopes;
+    private Long secondsToExpiration;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
@@ -71,6 +72,14 @@ public class Token {
 
     public void setExpiresAt(OffsetDateTime expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public Long getSecondsToExpiration() {
+        return secondsToExpiration;
+    }
+
+    public void setSecondsToExpiration(Long secondsToExpiration) {
+        this.secondsToExpiration = secondsToExpiration;
     }
 
     public OffsetDateTime getCreatedAt() {

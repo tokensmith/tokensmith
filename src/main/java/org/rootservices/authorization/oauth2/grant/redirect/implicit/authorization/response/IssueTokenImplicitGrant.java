@@ -16,28 +16,28 @@ import java.util.UUID;
  * Created by tommackenzie on 6/23/16.
  */
 @Component
-public class GrantToken {
+public class IssueTokenImplicitGrant {
     private MakeToken makeToken;
     private TokenRepository tokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
 
     @Autowired
-    public GrantToken(MakeToken makeToken, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
+    public IssueTokenImplicitGrant(MakeToken makeToken, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
         this.makeToken = makeToken;
         this.tokenRepository = tokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
     }
 
-    public Token grant(ResourceOwner resourceOwner, List<Scope> scopes, String plainTextAccessToken) {
+    public Token run(ResourceOwner resourceOwner, List<Scope> scopes, String plainTextAccessToken) {
         Token token = makeToken.run(plainTextAccessToken);
         token.setGrantType(GrantType.TOKEN);
 
         try {
             tokenRepository.insert(token);
         } catch (DuplicateRecordException e) {
-            // TODO - should this retry?
+            // TODO: handle this exception.
             e.printStackTrace();
         }
 
