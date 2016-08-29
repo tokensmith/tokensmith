@@ -15,13 +15,19 @@
         values (#{scope.uuid}, #{scope.name})
     </insert>
 
-    <select id="findByName" resultMap="scope">
+    <select id="findByNames" resultMap="scope">
         select scope.uuid, scope.name, scope.created_at
         from scope
         where name in
         <foreach item="item" index="names" collection="names" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </select>
+
+    <select id="findByName" resultMap="scope">
+        select scope.uuid, scope.name, scope.created_at
+        from scope
+        where name = #{name}
     </select>
 
 </mapper>

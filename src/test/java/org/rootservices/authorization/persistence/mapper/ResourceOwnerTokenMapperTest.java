@@ -44,6 +44,7 @@ public class ResourceOwnerTokenMapperTest {
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
         scopeMapper.insert(scope);
 
         TokenScope tokenScope = new TokenScope();
@@ -78,6 +79,7 @@ public class ResourceOwnerTokenMapperTest {
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
         scopeMapper.insert(scope);
 
         TokenScope tokenScope = new TokenScope();
@@ -116,7 +118,7 @@ public class ResourceOwnerTokenMapperTest {
         assertThat(actual.getToken().getExpiresAt(), is(notNullValue()));
 
         assertThat(actual.getToken().getTokenScopes().size(), is(1));
-        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getName(), is("profile"));
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getName(), is("address"));
 
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));

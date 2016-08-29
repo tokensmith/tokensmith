@@ -12,5 +12,6 @@ import java.util.List;
 @Repository
 public interface ScopeMapper {
     void insert(@Param("scope") Scope scope);
-    List<Scope> findByName(@Param("names") List<String> names);
+    List<Scope> findByNames(@Param("names") List<String> names);
+    Scope findByName(@Param("name") String name);
 }

@@ -85,7 +85,8 @@ public class RequestAccessTokenTest {
 
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockScopeRepository.findByName(authRequest.getScopes())).thenReturn(scopesToAddToToken);
+
+        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
@@ -132,9 +133,11 @@ public class RequestAccessTokenTest {
 
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockScopeRepository.findByName(authRequest.getScopes())).thenReturn(scopesToAddToToken);
+
+        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
+
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
         ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
@@ -181,9 +184,11 @@ public class RequestAccessTokenTest {
 
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockScopeRepository.findByName(authRequest.getScopes())).thenReturn(scopesToAddToToken);
+
+        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
+
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 
         try {

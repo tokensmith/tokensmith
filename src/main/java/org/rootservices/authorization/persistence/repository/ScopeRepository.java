@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.repository;
 
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.util.List;
 
@@ -9,5 +10,6 @@ import java.util.List;
  */
 public interface ScopeRepository {
     void insert(Scope scope);
-    List<Scope> findByName(List<String> names);
+    List<Scope> findByNames(List<String> names);
+    Scope findByName(String name) throws RecordNotFoundException;
 }

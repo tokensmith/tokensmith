@@ -63,7 +63,7 @@ public class AccessRequestScopesMapperTest {
     }
 
     public Scope persistScope() {
-        Scope scope = new Scope(UUID.randomUUID(), "profile");
+        Scope scope = new Scope(UUID.randomUUID(), "address");
         scopeRepository.insert(scope);
         return scope;
     }
