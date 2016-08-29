@@ -12,7 +12,9 @@ import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 /**
@@ -37,20 +39,21 @@ public class MakeBearerTokenImplTest {
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
         Token actual = subject.run(plainTextToken);
-        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getUuid(), is(notNullValue()));
 
-        assertThat(actual.getToken()).isNotNull();
-        assertThat(actual.getToken()).isEqualTo(hashedToken.getBytes());
-        assertThat(actual.getExpiresAt()).isNotNull();
+        assertThat(actual.getToken(), is(notNullValue()));
+        assertThat(actual.getToken(), is(hashedToken.getBytes()));
+        assertThat(actual.getExpiresAt(), is(notNullValue()));
+        assertThat(actual.getSecondsToExpiration(), is(subject.getSecondsToExpiration()));
     }
 
     @Test
-    public void getTokenType() {
-        assertThat(subject.getTokenType()).isEqualTo(TokenType.BEARER);
+    public void getTokenTypeShouldBeBearer() {
+        assertThat(subject.getTokenType(), is(TokenType.BEARER));
     }
 
     @Test
-    public void getSecondsToExpiration() {
-        assertThat(subject.getSecondsToExpiration()).isEqualTo(3600);
+    public void getSecondsToExpirationShouldBeOk() {
+        assertThat(subject.getSecondsToExpiration(), is(3600L));
     }
 }

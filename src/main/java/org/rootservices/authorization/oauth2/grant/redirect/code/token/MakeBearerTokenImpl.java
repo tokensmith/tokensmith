@@ -34,6 +34,7 @@ public class MakeBearerTokenImpl implements MakeToken {
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
+        token.setSecondsToExpiration(SECONDS_TO_EXPIRATION);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
 
         return token;
