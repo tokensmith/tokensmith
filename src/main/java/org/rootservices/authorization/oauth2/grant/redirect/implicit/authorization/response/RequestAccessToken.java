@@ -3,7 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.dto.ImplicitGrantAccessToken;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitGrantAccessToken;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -32,7 +32,7 @@ public class RequestAccessToken {
     @Autowired
     private LoginResourceOwner loginResourceOwner;
     @Autowired
-    private ValidateParams validateParamsTokenResponseType;
+    private ValidateParams validateParamsImplicitGrant;
     @Autowired
     private ScopeRepository scopeRepository;
     @Autowired
@@ -45,9 +45,9 @@ public class RequestAccessToken {
     public RequestAccessToken() {
     }
 
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsTokenResponseType, ScopeRepository scopeRepository, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, ScopeRepository scopeRepository, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
-        this.validateParamsTokenResponseType = validateParamsTokenResponseType;
+        this.validateParamsImplicitGrant = validateParamsImplicitGrant;
         this.scopeRepository = scopeRepository;
         this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
@@ -56,7 +56,7 @@ public class RequestAccessToken {
 
     public ImplicitGrantAccessToken requestToken(GrantInput grantInput) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
 
-        AuthRequest authRequest = validateParamsTokenResponseType.run(
+        AuthRequest authRequest = validateParamsImplicitGrant.run(
                 grantInput.getClientIds(),
                 grantInput.getResponseTypes(),
                 grantInput.getRedirectUris(),
@@ -66,7 +66,6 @@ public class RequestAccessToken {
         ResourceOwner resourceOwner = loginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword());
 
         String accessToken = randomString.run();
-
 
         List<Scope> scopesForToken = scopeRepository.findByNames(authRequest.getScopes());
         Token token = issueTokenImplicitGrant.run(resourceOwner, scopesForToken, accessToken);
