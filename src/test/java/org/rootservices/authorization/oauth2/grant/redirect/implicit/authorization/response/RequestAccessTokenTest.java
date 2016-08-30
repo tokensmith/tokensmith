@@ -40,8 +40,6 @@ public class RequestAccessTokenTest {
     @Mock
     private ValidateParams mockValidateParamsTokenResponseType;
     @Mock
-    private ScopeRepository mockScopeRepository;
-    @Mock
     private RandomString mockRandomString;
     @Mock
     private IssueTokenImplicitGrant mockIssueTokenImplicitGrant;
@@ -51,7 +49,7 @@ public class RequestAccessTokenTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateParamsTokenResponseType, mockScopeRepository, mockRandomString, mockIssueTokenImplicitGrant, mockClientRepository);
+        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateParamsTokenResponseType, mockRandomString, mockIssueTokenImplicitGrant, mockClientRepository);
     }
 
     @Test
@@ -72,7 +70,6 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "accessToken";
-        List<Scope> scopesToAddToToken = FixtureFactory.makeScopes();
         Token token = FixtureFactory.makeToken();
 
         when(mockValidateParamsTokenResponseType.run(
@@ -86,8 +83,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, grantInput.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
@@ -134,8 +130,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, grantInput.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
@@ -185,8 +180,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, grantInput.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);

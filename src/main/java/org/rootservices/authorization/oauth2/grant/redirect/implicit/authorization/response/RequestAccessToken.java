@@ -34,8 +34,6 @@ public class RequestAccessToken {
     @Autowired
     private ValidateParams validateParamsImplicitGrant;
     @Autowired
-    private ScopeRepository scopeRepository;
-    @Autowired
     private RandomString randomString;
     @Autowired
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
@@ -45,10 +43,9 @@ public class RequestAccessToken {
     public RequestAccessToken() {
     }
 
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, ScopeRepository scopeRepository, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateParamsImplicitGrant = validateParamsImplicitGrant;
-        this.scopeRepository = scopeRepository;
         this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.clientRepository = clientRepository;
@@ -66,9 +63,7 @@ public class RequestAccessToken {
         ResourceOwner resourceOwner = loginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword());
 
         String accessToken = randomString.run();
-
-        List<Scope> scopesForToken = scopeRepository.findByNames(authRequest.getScopes());
-        Token token = issueTokenImplicitGrant.run(resourceOwner, scopesForToken, accessToken);
+        Token token = issueTokenImplicitGrant.run(resourceOwner, authRequest.getScopes(), accessToken);
 
         URI redirectUri;
         if (authRequest.getRedirectURI().isPresent()) {
