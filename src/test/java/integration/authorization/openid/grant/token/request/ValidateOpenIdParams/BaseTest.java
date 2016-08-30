@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdTokenResponseType;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public abstract class BaseTest {
     @Autowired
     private LoadTokenClientWithOpenIdScope loadTokenClientWithOpenIdScope;
     @Autowired
-    protected ValidateOpenIdIdTokenResponseType subject;
+    protected ValidateOpenIdIdImplicitGrant subject;
 
     public Client loadClient() throws Exception {
         // TODO: this may also need the response type, id_token.

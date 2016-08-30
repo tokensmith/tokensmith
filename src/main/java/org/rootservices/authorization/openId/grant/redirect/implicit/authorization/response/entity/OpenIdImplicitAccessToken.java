@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity;
 
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
+import org.rootservices.authorization.openId.identity.entity.IdToken;
 
 import java.net.URI;
 import java.util.Optional;
@@ -8,24 +9,16 @@ import java.util.Optional;
 /**
  * Created by tommackenzie on 6/23/16.
  */
-public class OpenIdImplicitGrantAccessToken {
+public class OpenIdImplicitAccessToken {
     private URI redirectUri;
-    private String accessToken;
-    private TokenType tokenType;
-    private Long expiresIn;
+    private Optional<String> accessToken;
+    private Optional<TokenType> tokenType;
+    private Optional<IdToken> idToken;
+    private Optional<Long> expiresIn;
     private Optional<String> scope;
     private Optional<String> state;
 
-    public OpenIdImplicitGrantAccessToken() {
-    }
-
-    public OpenIdImplicitGrantAccessToken(URI redirectUri, String accessToken, TokenType tokenType, Long expiresIn, Optional<String> scope, Optional<String> state) {
-        this.redirectUri = redirectUri;
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.expiresIn = expiresIn;
-        this.scope = scope;
-        this.state = state;
+    public OpenIdImplicitAccessToken() {
     }
 
     public URI getRedirectUri() {
@@ -36,27 +29,36 @@ public class OpenIdImplicitGrantAccessToken {
         this.redirectUri = redirectUri;
     }
 
-    public String getAccessToken() {
+
+    public Optional<String> getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(Optional<String> accessToken) {
         this.accessToken = accessToken;
     }
 
-    public TokenType getTokenType() {
+    public Optional<TokenType> getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(TokenType tokenType) {
+    public void setTokenType(Optional<TokenType> tokenType) {
         this.tokenType = tokenType;
     }
 
-    public Long getExpiresIn() {
+    public Optional<IdToken> getIdToken() {
+        return idToken;
+    }
+
+    public void setIdToken(Optional<IdToken> idToken) {
+        this.idToken = idToken;
+    }
+
+    public Optional<Long> getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(Long expiresIn) {
+    public void setExpiresIn(Optional<Long> expiresIn) {
         this.expiresIn = expiresIn;
     }
 

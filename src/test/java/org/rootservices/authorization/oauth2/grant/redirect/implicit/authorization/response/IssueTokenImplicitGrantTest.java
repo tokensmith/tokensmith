@@ -9,9 +9,11 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
+import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -31,6 +33,8 @@ public class IssueTokenImplicitGrantTest {
     @Mock
     private TokenRepository mockTokenRepository;
     @Mock
+    private ScopeRepository mockScopeRepository;
+    @Mock
     private TokenScopeRepository mockTokenScopeRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
@@ -38,14 +42,15 @@ public class IssueTokenImplicitGrantTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new IssueTokenImplicitGrant(mockMakeToken, mockTokenRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockMakeToken, mockTokenRepository, mockScopeRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
     }
 
     @Test
     public void grantShouldReturnToken() throws Exception{
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String plainTextAccessToken = "token";
-        List<Scope> scopes = FixtureFactory.makeScopes();
+        List<String> scopeNames = new ArrayList<>();
+        scopeNames.add("profile");
 
         Token token = FixtureFactory.makeToken();
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
@@ -53,7 +58,10 @@ public class IssueTokenImplicitGrantTest {
 
         when(mockMakeToken.run(plainTextAccessToken)).thenReturn(token);
 
-        Token actualToken = subject.run(resourceOwner, scopes, plainTextAccessToken);
+        List<Scope> scopes = FixtureFactory.makeScopes();
+        when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
+
+        Token actualToken = subject.run(resourceOwner, scopeNames, plainTextAccessToken);
 
         assertThat(actualToken, is(notNullValue()));
         assertThat(actualToken, is(token));
