@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.openId.identity.BuildIdentityToken;
-import org.rootservices.authorization.openId.identity.BuildIdentityTokenImpl;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
@@ -37,7 +35,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 2/19/16.
  */
-public class BuildIdentityTokenImplTest {
+public class BuildIdentityTokenTest {
 
     private BuildIdentityToken subject;
 
@@ -59,7 +57,7 @@ public class BuildIdentityTokenImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new BuildIdentityTokenImpl(
+        subject = new BuildIdentityToken(
                 mockHashText,
                 mockRsaPrivateKeyRepository,
                 mockResourceOwnerTokenRepository,
