@@ -15,17 +15,17 @@ import java.util.List;
  * Created by tommackenzie on 5/22/16.
  */
 @Component
-public class ValidateParamsTokenResponseType implements ValidateParams {
+public class ValidateParamsImplicitGrant implements ValidateParams {
 
     @Autowired
     private AuthRequestFactory authRequestFactoryTokenResponseType;
     @Autowired
     private CompareClientToAuthRequest comparePublicClientToAuthRequest;
 
-    public ValidateParamsTokenResponseType() {
+    public ValidateParamsImplicitGrant() {
     }
 
-    public ValidateParamsTokenResponseType(AuthRequestFactory authRequestFactoryTokenResponseType, CompareClientToAuthRequest comparePublicClientToAuthRequest) {
+    public ValidateParamsImplicitGrant(AuthRequestFactory authRequestFactoryTokenResponseType, CompareClientToAuthRequest comparePublicClientToAuthRequest) {
         this.authRequestFactoryTokenResponseType = authRequestFactoryTokenResponseType;
         this.comparePublicClientToAuthRequest = comparePublicClientToAuthRequest;
     }

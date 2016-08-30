@@ -12,13 +12,13 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsTokenResponseType;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.RequestAccessToken;
 import org.rootservices.jwt.config.AppFactory;
@@ -139,7 +139,7 @@ public class AppConfig {
 
     @Bean
     public ValidateParams validateParamsTokenResponseType() {
-        return new ValidateParamsTokenResponseType(
+        return new ValidateParamsImplicitGrant(
                 authRequestFactoryTokenResponseType(),
                 comparePublicClientToAuthRequest()
         );
@@ -170,7 +170,7 @@ public class AppConfig {
 
     @Bean
     public ValidateParams validateParamsCodeResponseType() {
-        return new ValidateParamsCodeResponseType(
+        return new ValidateParamsCodeGrant(
                 authRequestFactory(),
                 compareClientToAuthRequest()
         );
