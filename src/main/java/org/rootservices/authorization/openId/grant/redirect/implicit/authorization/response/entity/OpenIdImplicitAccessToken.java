@@ -11,10 +11,10 @@ import java.util.Optional;
  */
 public class OpenIdImplicitAccessToken {
     private URI redirectUri;
-    private Optional<String> accessToken;
-    private Optional<TokenType> tokenType;
-    private Optional<IdToken> idToken;
-    private Optional<Long> expiresIn;
+    private String accessToken;
+    private TokenType tokenType;
+    private IdToken idToken;
+    private Long expiresIn;
     private Optional<String> scope;
     private Optional<String> state;
 
@@ -29,36 +29,35 @@ public class OpenIdImplicitAccessToken {
         this.redirectUri = redirectUri;
     }
 
-
-    public Optional<String> getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(Optional<String> accessToken) {
+    public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public Optional<TokenType> getTokenType() {
+    public TokenType getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(Optional<TokenType> tokenType) {
+    public void setTokenType(TokenType tokenType) {
         this.tokenType = tokenType;
     }
 
-    public Optional<IdToken> getIdToken() {
+    public IdToken getIdToken() {
         return idToken;
     }
 
-    public void setIdToken(Optional<IdToken> idToken) {
+    public void setIdToken(IdToken idToken) {
         this.idToken = idToken;
     }
 
-    public Optional<Long> getExpiresIn() {
+    public Long getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(Optional<Long> expiresIn) {
+    public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
     }
 

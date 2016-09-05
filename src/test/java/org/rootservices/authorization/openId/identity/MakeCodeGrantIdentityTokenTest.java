@@ -9,19 +9,17 @@ import org.rootservices.authorization.openId.identity.exception.IdTokenException
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
-import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
+import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.HashTextStaticSalt;
-import org.rootservices.jwt.builder.SecureJwtBuilder;
+import org.rootservices.jwt.SecureJwtEncoder;
 import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
-import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.JWTSerializer;
 import org.rootservices.jwt.serializer.exception.JwtToJsonException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
@@ -35,9 +33,9 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 2/19/16.
  */
-public class BuildIdentityTokenTest {
+public class MakeCodeGrantIdentityTokenTest {
 
-    private BuildIdentityToken subject;
+    private MakeCodeGrantIdentityToken subject;
 
     @Mock
     private HashTextStaticSalt mockHashText;
@@ -57,7 +55,7 @@ public class BuildIdentityTokenTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new BuildIdentityToken(
+        subject = new MakeCodeGrantIdentityToken(
                 mockHashText,
                 mockRsaPrivateKeyRepository,
                 mockResourceOwnerTokenRepository,
@@ -69,7 +67,7 @@ public class BuildIdentityTokenTest {
     }
 
     @Test
-    public void buildShouldMakeJwt() throws Exception {
+    public void makeShouldReturnEncodedJwt() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -77,10 +75,8 @@ public class BuildIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
         IdToken idToken = new IdToken();
-        JsonWebToken jsonWebToken = new JsonWebToken();
-        JWTSerializer mockJwtSerializer = mock(JWTSerializer.class);
+        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
         String expected = "some-compact-jwt";
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
@@ -96,28 +92,23 @@ public class BuildIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
-                .thenReturn(mockSecureJwtBuilder);
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenReturn(mockSecureJwtEncoder);
 
         when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
                 .thenReturn(idToken);
 
-        when(mockSecureJwtBuilder.build(idToken))
-                .thenReturn(jsonWebToken);
+        when(mockSecureJwtEncoder.encode(idToken))
+                .thenReturn("some-compact-jwt");
 
-        when(mockJwtAppFactory.jwtSerializer()).thenReturn(mockJwtSerializer);
-
-        when(mockJwtSerializer.jwtToString(jsonWebToken))
-                .thenReturn(expected);
-
-        String actual = subject.build(accessToken);
+        String actual = subject.make(accessToken);
 
         assertThat(actual, is(expected));
 
     }
 
     @Test(expected = AccessRequestNotFoundException.class)
-    public void buildShouldThrowAccessRequestNotFoundException() throws Exception {
+    public void makeShouldThrowAccessRequestNotFoundException() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -126,11 +117,11 @@ public class BuildIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.build(accessToken);
+        subject.make(accessToken);
     }
 
     @Test(expected = KeyNotFoundException.class)
-    public void buildShouldThrowKeyNotFoundException() throws Exception {
+    public void makeShouldThrowKeyNotFoundException() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -148,12 +139,12 @@ public class BuildIdentityTokenTest {
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(KeyNotFoundException.class);
 
-        subject.build(accessToken);
+        subject.make(accessToken);
 
     }
 
     @Test(expected = ProfileNotFoundException.class)
-    public void buildShouldThrowProfileNotFoundException() throws Exception {
+    public void makeShouldThrowProfileNotFoundException() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -172,12 +163,12 @@ public class BuildIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
                 .thenThrow(ProfileNotFoundException.class);
 
-        subject.build(accessToken);
+        subject.make(accessToken);
 
     }
 
     @Test(expected = IdTokenException.class)
-    public void buildInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
+    public void makeInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -199,15 +190,15 @@ public class BuildIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.build(accessToken);
+        subject.make(accessToken);
 
     }
 
     @Test(expected = IdTokenException.class)
-    public void buildInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception{
+    public void makeInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception{
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -229,15 +220,14 @@ public class BuildIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.build(accessToken);
-
+        subject.make(accessToken);
     }
 
     @Test(expected = IdTokenException.class)
-    public void buildMakeJwtThrowsJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
+    public void makeWhenEncodeThrowsJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -245,9 +235,8 @@ public class BuildIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
         IdToken idToken = new IdToken();
-
+        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
@@ -261,59 +250,15 @@ public class BuildIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
-                .thenReturn(mockSecureJwtBuilder);
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenReturn(mockSecureJwtEncoder);
 
         when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
                 .thenReturn(idToken);
 
-        when(mockSecureJwtBuilder.build(idToken))
+        when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.build(accessToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void buildSerializeJwtThrowsJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
-        String accessToken = "accessToken";
-        String hashedAccessToken = "hashedAccessToken";
-
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        SecureJwtBuilder mockSecureJwtBuilder = mock(SecureJwtBuilder.class);
-        IdToken idToken = new IdToken();
-        JsonWebToken jsonWebToken = new JsonWebToken();
-        JWTSerializer mockJwtSerializer = mock(JWTSerializer.class);
-
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
-
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
-                .thenReturn(profile);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtBuilder(Algorithm.HS256, keyPair))
-                .thenReturn(mockSecureJwtBuilder);
-
-        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
-                .thenReturn(idToken);
-
-        when(mockSecureJwtBuilder.build(idToken))
-                .thenReturn(jsonWebToken);
-
-        when(mockJwtAppFactory.jwtSerializer()).thenReturn(mockJwtSerializer);
-
-        when(mockJwtSerializer.jwtToString(jsonWebToken))
-                .thenThrow(JwtToJsonException.class);
-
-        subject.build(accessToken);
+        subject.make(accessToken);
     }
 }

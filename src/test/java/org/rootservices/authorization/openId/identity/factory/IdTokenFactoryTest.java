@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 3/20/16.
  */
-public class IdTokenFactoryImplTest {
+public class IdTokenFactoryTest {
 
     @Mock
     private ProfileToIdToken mockProfileToIdToken;
@@ -38,7 +38,7 @@ public class IdTokenFactoryImplTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new IdTokenFactoryImpl(mockProfileToIdToken, mockAddrToAddrClaims);
+        subject = new IdTokenFactory(mockProfileToIdToken, mockAddrToAddrClaims);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class IdTokenFactoryImplTest {
     }
 
     @Test
-    public void makeWhenPhoneShouldOnlyAddhoneClaims() throws Exception {
+    public void makeWhenPhoneShouldOnlyAddPhoneClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
@@ -155,6 +155,37 @@ public class IdTokenFactoryImplTest {
         assertThat(actual.getAddress().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
+        verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
+    }
+
+    @Test
+    public void makeForAccessTokenAndNonceWhenProfileShouldOnlyAddProfileClaims() throws Exception{
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
+
+        List<TokenScope> tokenScopes = new ArrayList<>();
+        TokenScope ts = new TokenScope();
+        Scope scope = new Scope();
+        scope.setName("profile");
+        ts.setScope(scope);
+        tokenScopes.add(ts);
+
+        String accessTokenHash = "access-token-hash";
+        String nonce = "some-nonce";
+
+        IdToken actual = subject.make(accessTokenHash, nonce, tokenScopes, profile);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessTokenHash().isPresent(), is(true));
+        assertThat(actual.getAccessTokenHash().get(), is(accessTokenHash));
+
+        assertThat(actual.getNonce().isPresent(), is(true));
+        assertThat(actual.getNonce().get(), is(nonce));
+
+        assertThat(actual.getAddress().isPresent(), is(false));
+        verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
         verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));

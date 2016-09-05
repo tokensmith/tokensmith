@@ -216,7 +216,7 @@ public class FixtureFactory {
     }
 
     public static Token makeToken() {
-        RandomString randomString = new RandomStringImpl();
+        RandomString randomString = new RandomString();
 
         Token token = new Token();
         token.setUuid(UUID.randomUUID());

@@ -25,10 +25,13 @@ import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 /**
  * Created by tommackenzie on 7/4/15.
@@ -37,6 +40,7 @@ import java.security.NoSuchAlgorithmException;
 @ComponentScan("org.rootservices.authorization")
 public class AppConfig {
     private static String ALGORITHM = "RSA";
+    private static String SHA_256 = "SHA-256";
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -80,6 +84,23 @@ public class AppConfig {
             throw new ConfigException("Could not create KeyFactory. ", e);
         }
         return keyFactory;
+    }
+
+    @Bean
+    public Base64.Encoder urlEncoder() {
+        return Base64.getUrlEncoder();
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    public MessageDigest digestSha256() {
+        MessageDigest digest = null;
+        try {
+            digest =  MessageDigest.getInstance(SHA_256);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return digest;
     }
 
     @Bean
