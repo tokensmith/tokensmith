@@ -7,9 +7,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 
@@ -18,14 +16,15 @@ import java.util.List;
 /**
  * Created by tommackenzie on 8/30/16.
  */
-public class RequestOpenIdImplicitToken {
+public class RequestOpenIdImplicitTokenAndIdentity {
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
     private ScopeRepository scopeRepository;
     private RandomString randomString;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
 
-    public OpenIdImplicitAccessToken requestToken(String userName, String password, List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states, List<String> nonces) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+
+    public OpenIdImplicitAccessToken requestAccessTokenAndIdentity(String userName, String password, List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states, List<String> nonces) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
         validateOpenIdIdImplicitGrant.run(
                 clientIds, responseTypes, redirectUris, scopes, states, nonces
         );
@@ -34,10 +33,9 @@ public class RequestOpenIdImplicitToken {
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
         String accessToken = randomString.run();
+        Token token = issueTokenImplicitGrant.run(resourceOwner, scopes,  accessToken);
 
-        Token token = issueTokenImplicitGrant.run(
-                resourceOwner, scopes,  accessToken
-        );
+
         return null;
     }
 }

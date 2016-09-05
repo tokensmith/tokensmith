@@ -18,13 +18,13 @@ import static org.junit.Assert.*;
 /**
  * Created by tommackenzie on 3/17/16.
  */
-public class ProfileToIdTokenImplTest {
+public class ProfileToIdTokenTest {
 
     private ProfileToIdToken subject;
 
     @Before
     public void setUp() {
-        subject = new ProfileToIdTokenImpl();
+        subject = new ProfileToIdToken();
     }
 
     @Test

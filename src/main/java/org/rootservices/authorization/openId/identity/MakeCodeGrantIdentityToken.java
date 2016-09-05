@@ -4,8 +4,8 @@ import org.rootservices.authorization.openId.identity.exception.IdTokenException
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
-import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
+import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
@@ -15,12 +15,10 @@ import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
-import org.rootservices.jwt.builder.SecureJwtBuilder;
+import org.rootservices.jwt.SecureJwtEncoder;
 import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
-import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.JWTSerializer;
 import org.rootservices.jwt.serializer.exception.JwtToJsonException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
@@ -33,7 +31,7 @@ import org.springframework.stereotype.Component;
  * // add indexes.
  */
 @Component
-public class BuildIdentityToken {
+public class MakeCodeGrantIdentityToken {
     private HashTextStaticSalt hashText;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
@@ -43,7 +41,7 @@ public class BuildIdentityToken {
     private IdTokenFactory idTokenFactory;
 
     @Autowired
-    public BuildIdentityToken(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
+    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
@@ -53,7 +51,7 @@ public class BuildIdentityToken {
         this.idTokenFactory = idTokenFactory;
     }
 
-    public String build(String accessToken) throws AccessRequestNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
+    public String make(String accessToken) throws AccessRequestNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
 
         String hashedAccessToken = hashText.run(accessToken);
 
@@ -80,33 +78,24 @@ public class BuildIdentityToken {
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
 
-        SecureJwtBuilder secureJwtBuilder = null;
+        IdToken idToken = idTokenFactory.make(resourceOwnerToken.getToken().getTokenScopes(), profile);
+
+        SecureJwtEncoder secureJwtEncoder;
         try {
-            secureJwtBuilder = jwtAppFactory.secureJwtBuilder(Algorithm.HS256, rsaKeyPair);
+            secureJwtEncoder = jwtAppFactory.secureJwtEncoder(Algorithm.RS256, rsaKeyPair);
         } catch (InvalidAlgorithmException e) {
             throw new IdTokenException("Algorithm to sign with is invalid", e);
         } catch (InvalidJsonWebKeyException e) {
             throw new IdTokenException("key is invalid", e);
         }
 
-
-        IdToken idToken = idTokenFactory.make(resourceOwnerToken.getToken().getTokenScopes(), profile);
-
-        JsonWebToken jsonWebToken = null;
+        String encodedJwt = null;
         try {
-            jsonWebToken = secureJwtBuilder.build(idToken);
-        } catch (JwtToJsonException e) {
-            throw new IdTokenException("Could not build id token", e);
-        }
-
-        JWTSerializer jwtSerializer = jwtAppFactory.jwtSerializer();
-        String jwt = null;
-        try {
-            jwt = jwtSerializer.jwtToString(jsonWebToken);
+            encodedJwt = secureJwtEncoder.encode(idToken);
         } catch (JwtToJsonException e) {
             throw new IdTokenException("Could not serialize id token", e);
         }
 
-        return jwt;
+        return encodedJwt;
     }
 }

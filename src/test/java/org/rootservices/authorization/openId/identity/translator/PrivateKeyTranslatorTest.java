@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
 /**
  * Created by tommackenzie on 2/12/16.
  */
-public class PrivateKeyTranslatorImplTest {
+public class PrivateKeyTranslatorTest {
 
     private PrivateKeyTranslator subject;
 
     @Before
     public void setUp() {
-        subject = new PrivateKeyTranslatorImpl();
+        subject = new PrivateKeyTranslator();
     }
 
     @Test
