@@ -13,7 +13,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCodeImpl;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 
 import java.net.URI;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 10/27/15.
  */
-public class RequestOpenIdAuthCodeImplTest {
+public class RequestOpenIdAuthCodeTest {
 
     @Mock
     private ValidateOpenIdCodeResponseType mockValidateOpenIdCodeResponseType;
@@ -41,12 +41,12 @@ public class RequestOpenIdAuthCodeImplTest {
     @Mock
     private AuthResponseFactory mockAuthResponseFactory;
 
-    private RequestAuthCode subject;
+    private RequestOpenIdAuthCode subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestOpenIdAuthCodeImpl(
+        subject = new RequestOpenIdAuthCode(
                 mockValidateOpenIdCodeResponseType,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,
