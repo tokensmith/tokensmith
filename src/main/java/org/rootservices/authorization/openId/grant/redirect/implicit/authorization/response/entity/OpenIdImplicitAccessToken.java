@@ -12,9 +12,9 @@ import java.util.Optional;
 public class OpenIdImplicitAccessToken {
     private URI redirectUri;
     private String accessToken;
-    private TokenType tokenType;
-    private IdToken idToken;
+    private String idToken;
     private Long expiresIn;
+    private String nonce;
     private Optional<String> scope;
     private Optional<String> state;
 
@@ -37,19 +37,11 @@ public class OpenIdImplicitAccessToken {
         this.accessToken = accessToken;
     }
 
-    public TokenType getTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(TokenType tokenType) {
-        this.tokenType = tokenType;
-    }
-
-    public IdToken getIdToken() {
+    public String getIdToken() {
         return idToken;
     }
 
-    public void setIdToken(IdToken idToken) {
+    public void setIdToken(String idToken) {
         this.idToken = idToken;
     }
 
@@ -59,6 +51,14 @@ public class OpenIdImplicitAccessToken {
 
     public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
     public Optional<String> getScope() {

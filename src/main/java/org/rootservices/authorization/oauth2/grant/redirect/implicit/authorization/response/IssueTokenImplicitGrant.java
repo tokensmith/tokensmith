@@ -10,6 +10,7 @@ import org.rootservices.authorization.persistence.repository.TokenScopeRepositor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +46,7 @@ public class IssueTokenImplicitGrant {
         }
 
         List<Scope> scopes = scopeRepository.findByNames(scopeNames);
+        token.setTokenScopes(new ArrayList<>());
 
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
@@ -52,6 +54,8 @@ public class IssueTokenImplicitGrant {
             ts.setTokenId(token.getUuid());
             ts.setScope(scope);
             tokenScopeRepository.insert(ts);
+
+            token.getTokenScopes().add(ts);
         }
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
