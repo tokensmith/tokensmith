@@ -67,6 +67,11 @@ public class IssueTokenImplicitGrantTest {
         assertThat(actualToken, is(token));
         assertThat(actualToken.getGrantType(), is(GrantType.TOKEN));
 
+        assertThat(actualToken.getTokenScopes().size(), is(1));
+        assertThat(actualToken.getTokenScopes().get(0).getId(), is(notNullValue()));
+        assertThat(actualToken.getTokenScopes().get(0).getTokenId(), is(token.getUuid()));
+        assertThat(actualToken.getTokenScopes().get(0).getScope(), is(scopes.get(0)));
+
         verify(mockTokenRepository, times(1)).insert(token);
 
         verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());

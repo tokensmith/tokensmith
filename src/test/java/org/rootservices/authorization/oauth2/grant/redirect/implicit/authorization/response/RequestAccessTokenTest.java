@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitGrantAccessToken;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -16,7 +16,6 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 
 import java.util.List;
@@ -86,7 +85,7 @@ public class RequestAccessTokenTest {
         when(mockIssueTokenImplicitGrant.run(resourceOwner, grantInput.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
-        ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+        ImplicitAccessToken actual = subject.requestToken(grantInput);
         assertThat(actual, is(notNullValue()));
 
         assertThat(actual.getRedirectUri(), is(FixtureFactory.makeSecureRedirectUri()));
@@ -135,7 +134,7 @@ public class RequestAccessTokenTest {
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
-        ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+        ImplicitAccessToken actual = subject.requestToken(grantInput);
         assertThat(actual, is(notNullValue()));
 
         assertThat(actual.getRedirectUri(), is(client.getRedirectURI()));
@@ -186,7 +185,7 @@ public class RequestAccessTokenTest {
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 
         try {
-            ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+            ImplicitAccessToken actual = subject.requestToken(grantInput);
             fail("Expected to throw, InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             verify(mockClientRepository, times(1)).getById(authRequest.getClientId());

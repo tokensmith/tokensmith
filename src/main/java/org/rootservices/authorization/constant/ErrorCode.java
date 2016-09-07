@@ -54,10 +54,15 @@ public enum ErrorCode {
     COMPROMISED_AUTH_CODE (36, "authorization code has already been used"),
 
     // open id token/implicit
-    NONCE_EMPTY_VALUE (6, "nonce is blank or missing"),
-    NONCE_MORE_THAN_ONE_ITEM (7, "nonce has more than one value."),
-    NONCE_EMPTY_LIST (8, "nonce is blank or missing"),
-    NONCE_NULL (9, "nonce is null");
+    NONCE_EMPTY_VALUE (37, "nonce is blank or missing"),
+    NONCE_MORE_THAN_ONE_ITEM (38, "nonce has more than one value."),
+    NONCE_EMPTY_LIST (39, "nonce is blank or missing"),
+    NONCE_NULL (40, "nonce is null"),
+
+    // open id - issues creating identity.
+    PROFILE_NOT_FOUND (41, "resource owner doesn't have a profile"),
+    SIGN_KEY_NOT_FOUND (42, "no signing key was found"),
+    JWT_ENCODING_ERROR (43, "there was a problem encoding the jwt");
 
     private int code;
     private final String description;

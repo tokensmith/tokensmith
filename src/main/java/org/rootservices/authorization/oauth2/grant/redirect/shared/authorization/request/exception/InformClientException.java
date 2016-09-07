@@ -3,15 +3,25 @@ package org.rootservices.authorization.oauth2.grant.redirect.shared.authorizatio
 import org.rootservices.authorization.exception.BaseInformException;
 
 import java.net.URI;
+import java.util.Optional;
 
 /**
  * Created by tommackenzie on 11/21/14.
  */
 public class InformClientException extends BaseInformException {
 
-    private URI redirectURI;
     private String error;
     private String description;
+    private URI redirectURI;
+    private Optional<String> state;
+
+    public InformClientException(String message, String error, String description, int code, URI redirectURI, Optional<String> state, Throwable domainCause) {
+        super(message, domainCause, code);
+        this.error = error;
+        this.description = description;
+        this.redirectURI = redirectURI;
+        this.state = state;
+    }
 
     public InformClientException(String message, String error, String description, int code, URI redirectURI, Throwable domainCause) {
         super(message, domainCause, code);
@@ -46,5 +56,13 @@ public class InformClientException extends BaseInformException {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Optional<String> getState() {
+        return state;
+    }
+
+    public void setState(Optional<String> state) {
+        this.state = state;
     }
 }
