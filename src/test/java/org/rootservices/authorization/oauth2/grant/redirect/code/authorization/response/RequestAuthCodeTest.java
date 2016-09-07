@@ -15,7 +15,6 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/20/15.
  */
-public class RequestAuthCodeImplTest {
+public class RequestAuthCodeTest {
 
     @Mock
     private ValidateParams mockValidateParams;
@@ -53,7 +52,7 @@ public class RequestAuthCodeImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestAuthCodeImpl(
+        subject = new RequestAuthCode(
                 mockValidateParams,
                 mockLoginResourceOwner,
                 mockGrantAuthCode,

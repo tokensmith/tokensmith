@@ -1,14 +1,16 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response;
+package org.rootservices.authorization.openId.grant.redirect.code.authorization.response;
 
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,47 +21,40 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 4/16/15.
- *
- * Section 4.1.2
+ * Created by tommackenzie on 10/25/15.
  */
-@Component("requestAuthCodeImpl")
-public class RequestAuthCodeImpl implements RequestAuthCode {
+@Component("requestOpenIdAuthCode")
+public class RequestOpenIdAuthCode {
 
-    @Autowired
-    private ValidateParams validateParamsCodeResponseType;
-    @Autowired
+    private ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType;
     protected LoginResourceOwner loginResourceOwner;
-    @Autowired
     protected GrantAuthCode grantAuthCode;
-    @Autowired
     protected AuthResponseFactory authResponseFactory;
 
-    public RequestAuthCodeImpl() {}
+    public RequestOpenIdAuthCode() {}
 
-    public RequestAuthCodeImpl(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
-        this.validateParamsCodeResponseType = validateParamsCodeResponseType;
+    @Autowired
+    public RequestOpenIdAuthCode(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
+        this.validateOpenIdCodeResponseType = validateOpenIdCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.grantAuthCode = grantAuthCode;
         this.authResponseFactory = authResponseFactory;
     }
 
-    @Override
     public AuthResponse run(GrantInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
-
-        AuthRequest authRequest = validateParamsCodeResponseType.run(
-            input.getClientIds(),
-            input.getResponseTypes(),
-            input.getRedirectUris(),
-            input.getScopes(),
-            input.getStates()
+        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(
+                input.getClientIds(),
+                input.getResponseTypes(),
+                input.getRedirectUris(),
+                input.getScopes(),
+                input.getStates()
         );
 
         return makeAuthResponse(
                 input.getUserName(),
                 input.getPlainTextPassword(),
                 authRequest.getClientId(),
-                authRequest.getRedirectURI(),
+                Optional.of(authRequest.getRedirectURI()),
                 authRequest.getScopes(),
                 authRequest.getState()
         );
@@ -83,4 +78,5 @@ public class RequestAuthCodeImpl implements RequestAuthCode {
                 redirectUri
         );
     }
+
 }
