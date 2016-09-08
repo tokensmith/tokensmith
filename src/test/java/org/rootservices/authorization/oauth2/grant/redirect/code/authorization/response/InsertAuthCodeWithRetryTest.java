@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by tommackenzie on 7/16/15.
  */
-public class InsertAuthCodeWithRetryImplTest {
+public class InsertAuthCodeWithRetryTest {
 
     private InsertAuthCodeWithRetry subject;
     @Mock
@@ -31,7 +31,7 @@ public class InsertAuthCodeWithRetryImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertAuthCodeWithRetryImpl(mockRandomString, mockAuthCodeFactory, mockAuthCodeRepository);
+        subject = new InsertAuthCodeWithRetry(mockRandomString, mockAuthCodeFactory, mockAuthCodeRepository);
     }
 
     @Test

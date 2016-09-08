@@ -4,13 +4,13 @@ import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.GrantAuthCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.IssueAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,25 +23,25 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 10/25/15.
  */
-@Component("requestOpenIdAuthCode")
+@Component
 public class RequestOpenIdAuthCode {
 
     private ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType;
     protected LoginResourceOwner loginResourceOwner;
-    protected GrantAuthCode grantAuthCode;
+    protected IssueAuthCode issueAuthCode;
     protected AuthResponseFactory authResponseFactory;
 
     public RequestOpenIdAuthCode() {}
 
     @Autowired
-    public RequestOpenIdAuthCode(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
+    public RequestOpenIdAuthCode(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory) {
         this.validateOpenIdCodeResponseType = validateOpenIdCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
-        this.grantAuthCode = grantAuthCode;
+        this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(GrantInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+    public AuthResponse run(OpenIdInputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
         OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(
                 input.getClientIds(),
                 input.getResponseTypes(),
@@ -64,7 +64,7 @@ public class RequestOpenIdAuthCode {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
-        String authorizationCode = grantAuthCode.run(
+        String authorizationCode = issueAuthCode.run(
                 resourceOwner.getUuid(),
                 clientId,
                 redirectUri,

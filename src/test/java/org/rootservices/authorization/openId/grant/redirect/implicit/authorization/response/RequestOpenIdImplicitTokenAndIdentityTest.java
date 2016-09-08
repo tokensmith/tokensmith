@@ -12,6 +12,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -24,6 +25,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -63,15 +65,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
     @Test
     public void requestShouldReturnToken() throws Exception {
-        String userName = "userName";
-        String password = "password";
-
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-        List<String> redirectUris = new ArrayList<>();
-        List<String> scopes = new ArrayList<>();
-        List<String> states = new ArrayList<>();
-        List<String> nonces = new ArrayList<>();
+        String responseType = "token id_token";
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
 
         OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
@@ -85,18 +80,18 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         String idToken = "encoded-jwt";
 
         when(mockValidateOpenIdIdImplicitGrant.run(
-                clientIds, responseTypes, redirectUris, scopes, states, nonces
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
         )).thenReturn(request);
-        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopes, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenReturn(idToken);
 
-        OpenIdImplicitAccessToken actual = subject.request(
-                userName, password, clientIds, responseTypes, redirectUris, scopes, states, nonces
-        );
+        OpenIdImplicitAccessToken actual = subject.request(input);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(accessToken));
@@ -109,15 +104,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
     @Test
     public void requestWhenProfileNotFoundShouldThrowInformClientException() throws Exception {
-        String userName = "userName";
-        String password = "password";
 
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-        List<String> redirectUris = new ArrayList<>();
-        List<String> scopes = new ArrayList<>();
-        List<String> states = new ArrayList<>();
-        List<String> nonces = new ArrayList<>();
+        String responseType = "token id_token";
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
+
 
         OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
@@ -132,20 +122,20 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ProfileNotFoundException pnfe = new ProfileNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
-                clientIds, responseTypes, redirectUris, scopes, states, nonces
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
         )).thenReturn(request);
-        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopes, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
         try {
-            subject.request(
-                    userName, password, clientIds, responseTypes, redirectUris, scopes, states, nonces
-            );
+            subject.request(input);
         } catch (InformClientException actual) {
             expected = actual;
         }
@@ -161,15 +151,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
     @Test
     public void requestWhenKeyNotFoundShouldThrowInformClientException() throws Exception {
-        String userName = "userName";
-        String password = "password";
 
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-        List<String> redirectUris = new ArrayList<>();
-        List<String> scopes = new ArrayList<>();
-        List<String> states = new ArrayList<>();
-        List<String> nonces = new ArrayList<>();
+
+        String responseType = "token id_token";
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
 
         OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
@@ -184,20 +169,20 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         KeyNotFoundException knfe = new KeyNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
-                clientIds, responseTypes, redirectUris, scopes, states, nonces
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
         )).thenReturn(request);
-        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopes, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(knfe);
 
         InformClientException expected = null;
         try {
-            subject.request(
-                    userName, password, clientIds, responseTypes, redirectUris, scopes, states, nonces
-            );
+            subject.request(input);
         } catch (InformClientException actual) {
             expected = actual;
         }
@@ -213,15 +198,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
     @Test
     public void requestWhenJwtEncodingErrorShouldThrowInformClientException() throws Exception {
-        String userName = "userName";
-        String password = "password";
-
-        List<String> clientIds = new ArrayList<>();
-        List<String> responseTypes = new ArrayList<>();
-        List<String> redirectUris = new ArrayList<>();
-        List<String> scopes = new ArrayList<>();
-        List<String> states = new ArrayList<>();
-        List<String> nonces = new ArrayList<>();
+        String responseType = "token id_token";
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
 
         OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
@@ -236,11 +214,13 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         IdTokenException ide = new IdTokenException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
-                clientIds, responseTypes, redirectUris, scopes, states, nonces
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
         )).thenReturn(request);
-        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopes, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(ide);
@@ -248,9 +228,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         InformClientException expected = null;
         try {
-            subject.request(
-                    userName, password, clientIds, responseTypes, redirectUris, scopes, states, nonces
-            );
+            subject.request(input);
         } catch (InformClientException actual) {
             expected = actual;
         }

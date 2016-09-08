@@ -1,19 +1,23 @@
-package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity;
+package org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity;
 
 import java.util.List;
 
 /**
- * Created by tommackenzie on 9/7/16.
+ * Created by tommackenzie on 4/25/15.
+ *
+ * A Value object that represents the inputs the
+ * resource owner specifies when they request authorization.
+ * Is used in both implicit and code grant types.
+ *
  */
 public class InputParams {
     private String userName;
-    private String password;
+    private String plainTextPassword;
     private List<String> clientIds;
     private List<String> responseTypes;
     private List<String> redirectUris;
     private List<String> scopes;
     private List<String> states;
-    private List<String> nonces;
 
     public String getUserName() {
         return userName;
@@ -23,12 +27,12 @@ public class InputParams {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPlainTextPassword() {
+        return plainTextPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPlainTextPassword(String plainTextPassword) {
+        this.plainTextPassword = plainTextPassword;
     }
 
     public List<String> getClientIds() {
@@ -69,13 +73,5 @@ public class InputParams {
 
     public void setStates(List<String> states) {
         this.states = states;
-    }
-
-    public List<String> getNonces() {
-        return nonces;
-    }
-
-    public void setNonces(List<String> nonces) {
-        this.nonces = nonces;
     }
 }

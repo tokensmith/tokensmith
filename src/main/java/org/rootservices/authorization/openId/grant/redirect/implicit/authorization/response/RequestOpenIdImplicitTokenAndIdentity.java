@@ -9,6 +9,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -46,15 +47,15 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
     }
 
-    public OpenIdImplicitAccessToken request(String userName, String password, List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states, List<String> nonces) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+    public OpenIdImplicitAccessToken request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
         OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(
-                clientIds, responseTypes, redirectUris, scopes, states, nonces
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
         );
 
-        ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
+        ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
 
         String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(resourceOwner, scopes,  accessToken);
+        Token token = issueTokenImplicitGrant.run(resourceOwner, input.getScopes(),  accessToken);
 
         String idToken = null;
         try {

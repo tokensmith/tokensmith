@@ -1,6 +1,7 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
@@ -234,8 +235,8 @@ public class FixtureFactory {
         return resourceOwnerToken;
     }
 
-    public static GrantInput makeGrantInput(UUID clientId, String responseType, String scope) {
-        GrantInput input = new GrantInput();
+    public static InputParams makeInputParams(UUID clientId, String responseType, String scope) {
+        InputParams input = new InputParams();
         input.setUserName(makeRandomEmail());
         input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
 
@@ -254,8 +255,40 @@ public class FixtureFactory {
         return input;
     }
 
-    public static GrantInput makeEmptyGrantInput() {
-        GrantInput input = new GrantInput();
+    public static OpenIdInputParams makeOpenIdInputParams(String responseType) {
+        OpenIdInputParams input = new OpenIdInputParams();
+        input.setUserName(makeRandomEmail());
+        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
+
+        List<String> clientIds = new ArrayList<>();
+        clientIds.add(UUID.randomUUID().toString());
+        input.setClientIds(clientIds);
+
+        List<String> redirectUris = new ArrayList();
+        redirectUris.add(SECURE_REDIRECT_URI);
+        input.setRedirectUris(redirectUris);
+
+        List<String> responseTypes = new ArrayList<>();
+        responseTypes.add(responseType);
+        input.setResponseTypes(responseTypes);
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("openid profile");
+        input.setScopes(scopes);
+
+        List<String> states = new ArrayList<>();
+        states.add("some-state");
+        input.setStates(states);
+
+        List<String> nonces = new ArrayList<>();
+        nonces.add("some-nonce");
+        input.setNonces(nonces);
+
+        return input;
+    }
+
+    public static InputParams makeEmptyGrantInput() {
+        InputParams input = new InputParams();
         input.setUserName(makeRandomEmail());
         input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
 
