@@ -8,7 +8,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -50,16 +50,16 @@ public class RequestAccessToken {
         this.clientRepository = clientRepository;
     }
 
-    public ImplicitAccessToken requestToken(GrantInput grantInput) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
+    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
 
         AuthRequest authRequest = validateParamsImplicitGrant.run(
-                grantInput.getClientIds(),
-                grantInput.getResponseTypes(),
-                grantInput.getRedirectUris(),
-                grantInput.getScopes(),
-                grantInput.getStates()
+                inputParams.getClientIds(),
+                inputParams.getResponseTypes(),
+                inputParams.getRedirectUris(),
+                inputParams.getScopes(),
+                inputParams.getStates()
         );
-        ResourceOwner resourceOwner = loginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword());
+        ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
 
         String accessToken = randomString.run();
         Token token = issueTokenImplicitGrant.run(resourceOwner, authRequest.getScopes(), accessToken);

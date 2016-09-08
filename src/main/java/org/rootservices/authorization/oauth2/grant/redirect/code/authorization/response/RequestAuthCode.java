@@ -5,7 +5,7 @@ import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
@@ -23,7 +23,7 @@ import java.util.UUID;
  *
  * Section 4.1.2
  */
-@Component("requestAuthCode")
+@Component
 public class RequestAuthCode {
 
     @Autowired
@@ -31,20 +31,20 @@ public class RequestAuthCode {
     @Autowired
     protected LoginResourceOwner loginResourceOwner;
     @Autowired
-    protected GrantAuthCode grantAuthCode;
+    protected IssueAuthCode issueAuthCode;
     @Autowired
     protected AuthResponseFactory authResponseFactory;
 
     public RequestAuthCode() {}
 
-    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, GrantAuthCode grantAuthCode, AuthResponseFactory authResponseFactory) {
+    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory) {
         this.validateParamsCodeResponseType = validateParamsCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
-        this.grantAuthCode = grantAuthCode;
+        this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(GrantInput input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+    public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
 
         AuthRequest authRequest = validateParamsCodeResponseType.run(
             input.getClientIds(),
@@ -68,7 +68,7 @@ public class RequestAuthCode {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
-        String authorizationCode = grantAuthCode.run(
+        String authorizationCode = issueAuthCode.run(
                 resourceOwner.getUuid(),
                 clientId,
                 redirectUri,

@@ -1,16 +1,11 @@
-package org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity;
+package org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity;
 
 import java.util.List;
 
 /**
- * Created by tommackenzie on 4/25/15.
- *
- * A Value object that represents the inputs the
- * resource owner specifies when they request Authorization.
- *
- * TODO: should this be renamed to represent its a request object?
+ * Created by tommackenzie on 9/7/16.
  */
-public class GrantInput {
+public class OpenIdInputParams {
     private String userName;
     private String plainTextPassword;
     private List<String> clientIds;
@@ -18,6 +13,7 @@ public class GrantInput {
     private List<String> redirectUris;
     private List<String> scopes;
     private List<String> states;
+    private List<String> nonces;
 
     public String getUserName() {
         return userName;
@@ -73,5 +69,13 @@ public class GrantInput {
 
     public void setStates(List<String> states) {
         this.states = states;
+    }
+
+    public List<String> getNonces() {
+        return nonces;
+    }
+
+    public void setNonces(List<String> nonces) {
+        this.nonces = nonces;
     }
 }
