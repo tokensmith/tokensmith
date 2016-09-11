@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
@@ -72,6 +73,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
         request.setNonce("nonce");
         request.setState(Optional.of("state"));
+        request.setScopes(new ArrayList<>());
+        request.getScopes().add("openid");
+        request.getScopes().add("profile");
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -86,7 +90,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenReturn(idToken);
@@ -98,8 +102,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
         assertThat(actual.getIdToken(), is(idToken));
         assertThat(actual.getRedirectUri(), is(request.getRedirectURI()));
-        assertThat(actual.getNonce(), is(request.getNonce()));
-        assertThat(actual.getState(), is(request.getState()));
+        assertThat(actual.getState(), is(Optional.of("state")));
+        assertThat(actual.getScope(), is(Optional.empty()));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
     }
 
     @Test
@@ -113,6 +118,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
         request.setNonce("nonce");
         request.setState(Optional.of("state"));
+        request.setScopes(new ArrayList<>());
+        request.getScopes().add("openid");
+        request.getScopes().add("profile");
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -128,7 +136,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(pnfe);
@@ -160,6 +168,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
         request.setNonce("nonce");
         request.setState(Optional.of("state"));
+        request.setScopes(new ArrayList<>());
+        request.getScopes().add("openid");
+        request.getScopes().add("profile");
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -175,7 +186,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(knfe);
@@ -205,6 +216,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
         request.setNonce("nonce");
         request.setState(Optional.of("state"));
+        request.setScopes(new ArrayList<>());
+        request.getScopes().add("openid");
+        request.getScopes().add("profile");
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -220,7 +234,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, input.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.make(
                 accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
         ).thenThrow(ide);

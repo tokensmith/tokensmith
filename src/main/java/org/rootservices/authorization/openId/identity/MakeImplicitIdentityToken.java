@@ -8,6 +8,7 @@ import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
+import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.entity.TokenScope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
