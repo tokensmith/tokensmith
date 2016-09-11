@@ -27,7 +27,7 @@ import java.util.UUID;
 public class RequestAuthCode {
 
     @Autowired
-    private ValidateParams validateParamsCodeResponseType;
+    private ValidateParams validateParamsCodeGrant;
     @Autowired
     protected LoginResourceOwner loginResourceOwner;
     @Autowired
@@ -38,7 +38,7 @@ public class RequestAuthCode {
     public RequestAuthCode() {}
 
     public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory) {
-        this.validateParamsCodeResponseType = validateParamsCodeResponseType;
+        this.validateParamsCodeGrant = validateParamsCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
@@ -46,7 +46,7 @@ public class RequestAuthCode {
 
     public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
 
-        AuthRequest authRequest = validateParamsCodeResponseType.run(
+        AuthRequest authRequest = validateParamsCodeGrant.run(
             input.getClientIds(),
             input.getResponseTypes(),
             input.getRedirectUris(),

@@ -3,6 +3,7 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -55,7 +56,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
 
         String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(resourceOwner, input.getScopes(),  accessToken);
+        Token token = issueTokenImplicitGrant.run(resourceOwner, request.getScopes(),  accessToken);
 
         String idToken = null;
         try {
@@ -81,8 +82,9 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         response.setExpiresIn(token.getSecondsToExpiration());
         response.setIdToken(idToken);
         response.setRedirectUri(request.getRedirectURI());
-        response.setNonce(request.getNonce());
         response.setState(request.getState());
+        response.setScope(Optional.empty());
+        response.setTokenType(TokenType.BEARER);
 
         return response;
     }
