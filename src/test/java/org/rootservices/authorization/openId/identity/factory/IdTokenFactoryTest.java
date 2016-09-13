@@ -46,15 +46,10 @@ public class IdTokenFactoryTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("profile");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
 
-
-        IdToken actual = subject.make(tokenScopes, profile);
+        IdToken actual = subject.make(scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -69,14 +64,10 @@ public class IdTokenFactoryTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("email");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
 
-        IdToken actual = subject.make(tokenScopes, profile);
+        IdToken actual = subject.make(scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -91,14 +82,10 @@ public class IdTokenFactoryTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("phone");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("phone");
 
-        IdToken actual = subject.make(tokenScopes, profile);
+        IdToken actual = subject.make(scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -115,17 +102,13 @@ public class IdTokenFactoryTest {
         Address address = FixtureFactory.makeAddress(profile.getId());
         profile.getAddresses().add(address);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("address");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("address");
 
         org.rootservices.authorization.openId.identity.entity.Address addressClaim = new org.rootservices.authorization.openId.identity.entity.Address();
         when(mockAddrToAddrClaims.to(profile.getAddresses().get(0))).thenReturn(addressClaim);
 
-        IdToken actual = subject.make(tokenScopes, profile);
+        IdToken actual = subject.make(scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(true));
@@ -142,14 +125,10 @@ public class IdTokenFactoryTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("address");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("address");
 
-        IdToken actual = subject.make(tokenScopes, profile);
+        IdToken actual = subject.make(scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -165,17 +144,13 @@ public class IdTokenFactoryTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
-        TokenScope ts = new TokenScope();
-        Scope scope = new Scope();
-        scope.setName("profile");
-        ts.setScope(scope);
-        tokenScopes.add(ts);
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
 
         String accessTokenHash = "access-token-hash";
         String nonce = "some-nonce";
 
-        IdToken actual = subject.make(accessTokenHash, nonce, tokenScopes, profile);
+        IdToken actual = subject.make(accessTokenHash, nonce, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(true));

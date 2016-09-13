@@ -9,8 +9,16 @@ import org.rootservices.authorization.openId.grant.redirect.implicit.authorizati
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
+import org.rootservices.authorization.openId.identity.entity.IdToken;
+import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
+import org.rootservices.jwt.SecureJwtEncoder;
+import org.rootservices.jwt.entity.jwk.RSAKeyPair;
+import org.rootservices.jwt.entity.jwt.header.Algorithm;
+import org.rootservices.jwt.serializer.exception.JwtToJsonException;
+import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
+import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +46,8 @@ public class RequestOpenIdIdentity {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
 
+
+        // build the response object.
         return null;
     }
 }

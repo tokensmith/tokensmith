@@ -224,6 +224,24 @@ public class FixtureFactory {
         token.setToken(randomString.run().getBytes());
         token.setExpiresAt(OffsetDateTime.now());
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
+        token.setTokenScopes(new ArrayList<>());
+
+        TokenScope ts1 = new TokenScope();
+        ts1.setId(UUID.randomUUID());
+        Scope profile = new Scope();
+        profile.setUuid(UUID.randomUUID());
+        profile.setName("profile");
+        ts1.setScope(profile);
+
+        TokenScope ts2 = new TokenScope();
+        ts2.setId(UUID.randomUUID());
+        Scope openid = new Scope();
+        openid.setUuid(UUID.randomUUID());
+        openid.setName("openid");
+        ts2.setScope(openid);
+
+        token.getTokenScopes().add(ts1);
+        token.getTokenScopes().add(ts2);
 
         return token;
     }
