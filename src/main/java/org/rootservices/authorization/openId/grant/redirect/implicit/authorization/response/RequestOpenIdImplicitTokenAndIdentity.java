@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/30/16.
@@ -58,13 +59,14 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         String accessToken = randomString.run();
         Token token = issueTokenImplicitGrant.run(resourceOwner, request.getScopes(),  accessToken);
 
+        List<String> scopesForIdToken = token.getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         String idToken = null;
         try {
-            idToken = makeImplicitIdentityToken.make(
-                    accessToken,
-                    request.getNonce(),
-                    resourceOwner.getUuid(),
-                    token.getTokenScopes()
+            idToken = makeImplicitIdentityToken.makeForAccessToken(
+                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken
             );
         } catch (ProfileNotFoundException e) {
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;

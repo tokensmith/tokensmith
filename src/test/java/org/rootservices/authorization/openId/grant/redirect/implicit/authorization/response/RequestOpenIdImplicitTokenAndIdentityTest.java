@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -81,6 +82,11 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         String accessToken = "access-token";
         Token token = FixtureFactory.makeToken();
         token.setSecondsToExpiration(3600L);
+
+        List<String> scopesForIdToken = token.getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         String idToken = "encoded-jwt";
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -91,8 +97,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
-        when(mockMakeImplicitIdentityToken.make(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
+        when(mockMakeImplicitIdentityToken.makeForAccessToken(
+                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
         ).thenReturn(idToken);
 
         OpenIdImplicitAccessToken actual = subject.request(input);
@@ -127,6 +133,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         Token token = FixtureFactory.makeToken();
         token.setSecondsToExpiration(3600L);
 
+        List<String> scopesForIdToken = token.getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         ProfileNotFoundException pnfe = new ProfileNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -137,8 +147,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
-        when(mockMakeImplicitIdentityToken.make(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
+        when(mockMakeImplicitIdentityToken.makeForAccessToken(
+                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -177,6 +187,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         Token token = FixtureFactory.makeToken();
         token.setSecondsToExpiration(3600L);
 
+        List<String> scopesForIdToken = token.getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         KeyNotFoundException knfe = new KeyNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -187,8 +201,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
-        when(mockMakeImplicitIdentityToken.make(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
+        when(mockMakeImplicitIdentityToken.makeForAccessToken(
+                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -225,6 +239,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         Token token = FixtureFactory.makeToken();
         token.setSecondsToExpiration(3600L);
 
+        List<String> scopesForIdToken = token.getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         IdTokenException ide = new IdTokenException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -235,8 +253,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
-        when(mockMakeImplicitIdentityToken.make(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), token.getTokenScopes())
+        when(mockMakeImplicitIdentityToken.makeForAccessToken(
+                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
         ).thenThrow(ide);
 
 

@@ -48,7 +48,20 @@ public class MakeImplicitIdentityToken {
         this.jwtAppFactory = jwtAppFactory;
     }
 
-    public String make(String plainTextAccessToken, String nonce, UUID resourceOwnerId, List<TokenScope> tokenScopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    /**
+     * Creates a id token for the implicit grant flow, "token id_token".
+     * http://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth
+     *
+     * @param plainTextAccessToken
+     * @param nonce
+     * @param resourceOwnerId
+     * @param scopesForIdToken
+     * @return a secure (signed) and encoded jwt
+     * @throws ProfileNotFoundException
+     * @throws KeyNotFoundException
+     * @throws IdTokenException
+     */
+    public String makeForAccessToken(String plainTextAccessToken, String nonce, UUID resourceOwnerId, List<String> scopesForIdToken) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
@@ -58,7 +71,31 @@ public class MakeImplicitIdentityToken {
         }
 
         String accessTokenHash = makeAccessTokenHash.makeEncodedHash(plainTextAccessToken);
-        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, tokenScopes, profile);
+        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, scopesForIdToken, profile);
+
+        RSAPrivateKey key = null;
+        try {
+            key = rsaPrivateKeyRepository.getMostRecentAndActiveForSigning();
+        } catch (RecordNotFoundException e) {
+            throw new KeyNotFoundException("No key available to sign id token", e);
+        }
+
+        RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
+        String encodedJwt = translateIdTokenToEncodedJwt(rsaKeyPair, idToken);
+
+        return encodedJwt;
+    }
+
+    public String makeIdentityOnly(String nonce, UUID resourceOwnerId, List<Scope> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+
+        Profile profile = null;
+        try {
+            profile = profileRepository.getByResourceOwnerId(resourceOwnerId);
+        } catch (RecordNotFoundException e) {
+            throw new ProfileNotFoundException("Profile was not found", e);
+        }
+
+        IdToken idToken = null;
 
         RSAPrivateKey key = null;
         try {

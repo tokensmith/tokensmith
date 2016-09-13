@@ -24,6 +24,9 @@ import org.rootservices.jwt.serializer.exception.JwtToJsonException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -75,6 +78,11 @@ public class MakeCodeGrantIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+
+        List<String> scopesForIdToken = rot.getToken().getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         IdToken idToken = new IdToken();
         SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
         String expected = "some-compact-jwt";
@@ -95,7 +103,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
+        when(mockIdTokenFactory.make(scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))
@@ -235,6 +243,11 @@ public class MakeCodeGrantIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+
+        List<String> scopesForIdToken = rot.getToken().getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
         IdToken idToken = new IdToken();
         SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
@@ -253,7 +266,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(rot.getToken().getTokenScopes(), profile))
+        when(mockIdTokenFactory.make(scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))

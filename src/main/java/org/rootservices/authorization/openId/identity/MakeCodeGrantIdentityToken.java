@@ -25,6 +25,9 @@ import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKey
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by tommackenzie on 1/24/16.
  *
@@ -78,7 +81,11 @@ public class MakeCodeGrantIdentityToken {
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
 
-        IdToken idToken = idTokenFactory.make(resourceOwnerToken.getToken().getTokenScopes(), profile);
+        List<String> scopesForIdToken = resourceOwnerToken.getToken().getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
+        IdToken idToken = idTokenFactory.make(scopesForIdToken, profile);
 
         SecureJwtEncoder secureJwtEncoder;
         try {
