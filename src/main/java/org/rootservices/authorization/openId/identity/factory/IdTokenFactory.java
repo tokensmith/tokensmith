@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 3/19/16.
+ * TODO: should this be a builder?
  */
 @Component
 public class IdTokenFactory {
@@ -43,7 +44,10 @@ public class IdTokenFactory {
     }
 
     public IdToken make(String nonce, List<String> scopes, Profile profile) {
-        return null;
+        IdToken idToken = make(scopes, profile);
+        idToken.setNonce(Optional.of(nonce));
+
+        return idToken;
     }
 
     public IdToken make(List<String> scopes, Profile profile) {

@@ -14,7 +14,6 @@ import org.rootservices.authorization.openId.identity.translator.PrivateKeyTrans
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.TokenScope;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
@@ -256,5 +255,176 @@ public class MakeImplicitIdentityTokenTest {
                 .thenThrow(JwtToJsonException.class);
 
         subject.makeForAccessToken(accessToken, nonce, resourceOwner.getUuid(), scopesForIdToken);
+    }
+
+    @Test
+    public void makeIdentityOnlyShouldReturnEncodedJwt() throws Exception {
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        List<String> scopesForIdToken = new ArrayList<>();
+
+        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
+        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+        IdToken idToken = new IdToken();
+        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
+        String expected = "some-compact-jwt";
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenReturn(profile);
+
+        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+                .thenReturn(idToken);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenReturn(key);
+
+        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
+
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenReturn(mockSecureJwtEncoder);
+
+        when(mockSecureJwtEncoder.encode(idToken))
+                .thenReturn(expected);
+
+        String actual = subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test(expected = ProfileNotFoundException.class)
+    public void makeIdentityOnlyShouldThrowProfileNotFoundException() throws Exception {
+
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        List<String> scopesForIdToken = new ArrayList<>();
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenThrow(RecordNotFoundException.class);
+
+        subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
+    }
+
+    @Test(expected = KeyNotFoundException.class)
+    public void makeIdentityOnlyShouldThrowKeyNotFoundException() throws Exception {
+
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        List<String> scopesForIdToken = new ArrayList<>();
+        IdToken idToken = new IdToken();
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenReturn(profile);
+
+        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+                .thenReturn(idToken);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenThrow(RecordNotFoundException.class);
+
+        subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
+    }
+
+    @Test(expected = IdTokenException.class)
+    public void makeIdentityOnlyWhenInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
+
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        List<String> scopesForIdToken = new ArrayList<>();
+
+        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
+        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+        IdToken idToken = new IdToken();
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenReturn(profile);
+
+        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+                .thenReturn(idToken);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenReturn(key);
+
+        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
+
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenThrow(InvalidAlgorithmException.class);
+
+        subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
+    }
+
+    @Test(expected = IdTokenException.class)
+    public void makeIdentityOnlyWhenInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception {
+
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        List<String> scopesForIdToken = new ArrayList<>();
+
+        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
+        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+        IdToken idToken = new IdToken();
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenReturn(profile);
+
+        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+                .thenReturn(idToken);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenReturn(key);
+
+        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
+
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenThrow(InvalidJsonWebKeyException.class);
+
+        subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
+    }
+
+    @Test(expected = IdTokenException.class)
+    public void makeIdentityOnlyWhenJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
+
+        String nonce = "some-nonce";
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+
+        List<String> scopesForIdToken = new ArrayList<>();
+
+        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
+        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+        IdToken idToken = new IdToken();
+        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
+
+        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getUuid()))
+                .thenReturn(profile);
+
+        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+                .thenReturn(idToken);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenReturn(key);
+
+        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
+
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenReturn(mockSecureJwtEncoder);
+
+        when(mockSecureJwtEncoder.encode(idToken))
+                .thenThrow(JwtToJsonException.class);
+
+        subject.makeIdentityOnly(nonce, resourceOwner.getUuid(), scopesForIdToken);
     }
 }

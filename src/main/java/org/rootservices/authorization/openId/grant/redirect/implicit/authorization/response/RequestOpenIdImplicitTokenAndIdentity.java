@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestOpenIdImplicitTokenAndIdentity {
-    private static String MESSAGE = "Failed to create id_token";
+    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
     private static String SERVER_ERROR = "server_error";
 
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
@@ -93,7 +93,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
 
     protected InformClientException buildInformClientException(ErrorCode ec, URI redirectURI, Optional<String> state, Throwable cause) {
         return new InformClientException(
-            MESSAGE, SERVER_ERROR, ec.getDescription(), ec.getCode(), redirectURI, state, cause
+            EXCEPTION_MESSAGE, SERVER_ERROR, ec.getDescription(), ec.getCode(), redirectURI, state, cause
         );
     }
 }
