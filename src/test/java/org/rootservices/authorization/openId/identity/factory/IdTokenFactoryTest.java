@@ -165,4 +165,29 @@ public class IdTokenFactoryTest {
         verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
+
+    @Test
+    public void makeForIdentityOnlyAndNonceWhenProfileShouldOnlyAddProfileClaims() throws Exception{
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro);
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+
+        String nonce = "some-nonce";
+
+        IdToken actual = subject.make(nonce, scopes, profile);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessTokenHash().isPresent(), is(false));
+
+        assertThat(actual.getNonce().isPresent(), is(true));
+        assertThat(actual.getNonce().get(), is(nonce));
+
+        assertThat(actual.getAddress().isPresent(), is(false));
+        verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
+        verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
+    }
 }

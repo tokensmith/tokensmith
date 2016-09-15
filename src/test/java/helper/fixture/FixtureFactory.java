@@ -1,6 +1,7 @@
 package helper.fixture;
 
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
@@ -384,5 +385,17 @@ public class FixtureFactory {
         accessRequestScope.setCreatedAt(OffsetDateTime.now());
 
         return accessRequestScope;
+    }
+
+    public static OpenIdImplicitAuthRequest makeOpenIdImplicitAuthRequest() throws URISyntaxException {
+        OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
+        request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
+        request.setNonce("nonce");
+        request.setState(Optional.of("state"));
+        request.setScopes(new ArrayList<>());
+        request.getScopes().add("openid");
+        request.getScopes().add("profile");
+
+        return request;
     }
 }

@@ -31,6 +31,12 @@ import java.util.UUID;
  */
 @Component
 public class MakeImplicitIdentityToken {
+    private static String PROFILE_ERROR_MESSAGE = "Profile was not found";
+    private static String KEY_ERROR_MESSAGE = "No key available to sign id token";
+    private static String ALG_ERROR_MESSAGE = "Algorithm to sign with is invalid";
+    private static String JWK_ERROR_MESSAGE = "key is invalid";
+    private static String SERIALIZE_ERROR_MESSAGE = "Could not serialize id token";
+
     private ProfileRepository profileRepository;
     private MakeAccessTokenHash makeAccessTokenHash;
     private IdTokenFactory idTokenFactory;
@@ -67,7 +73,7 @@ public class MakeImplicitIdentityToken {
         try {
             profile = profileRepository.getByResourceOwnerId(resourceOwnerId);
         } catch (RecordNotFoundException e) {
-            throw new ProfileNotFoundException("Profile was not found", e);
+            throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
 
         String accessTokenHash = makeAccessTokenHash.makeEncodedHash(plainTextAccessToken);
@@ -77,7 +83,7 @@ public class MakeImplicitIdentityToken {
         try {
             key = rsaPrivateKeyRepository.getMostRecentAndActiveForSigning();
         } catch (RecordNotFoundException e) {
-            throw new KeyNotFoundException("No key available to sign id token", e);
+            throw new KeyNotFoundException(KEY_ERROR_MESSAGE, e);
         }
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
@@ -86,22 +92,34 @@ public class MakeImplicitIdentityToken {
         return encodedJwt;
     }
 
-    public String makeIdentityOnly(String nonce, UUID resourceOwnerId, List<Scope> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    /**
+     * Creates a id token for the implicit grant flow, "id_token".
+     * http://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth
+     *
+     * @param nonce
+     * @param resourceOwnerId
+     * @param scopes
+     * @return a secure (signed) and encoded jwt
+     * @throws ProfileNotFoundException
+     * @throws KeyNotFoundException
+     * @throws IdTokenException
+     */
+    public String makeIdentityOnly(String nonce, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
             profile = profileRepository.getByResourceOwnerId(resourceOwnerId);
         } catch (RecordNotFoundException e) {
-            throw new ProfileNotFoundException("Profile was not found", e);
+            throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
 
-        IdToken idToken = null;
+        IdToken idToken = idTokenFactory.make(nonce, scopes, profile);
 
         RSAPrivateKey key = null;
         try {
             key = rsaPrivateKeyRepository.getMostRecentAndActiveForSigning();
         } catch (RecordNotFoundException e) {
-            throw new KeyNotFoundException("No key available to sign id token", e);
+            throw new KeyNotFoundException(KEY_ERROR_MESSAGE, e);
         }
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
@@ -116,16 +134,16 @@ public class MakeImplicitIdentityToken {
         try {
             secureJwtEncoder = jwtAppFactory.secureJwtEncoder(Algorithm.RS256, rsaKeyPair);
         } catch (InvalidAlgorithmException e) {
-            throw new IdTokenException("Algorithm to sign with is invalid", e);
+            throw new IdTokenException(ALG_ERROR_MESSAGE, e);
         } catch (InvalidJsonWebKeyException e) {
-            throw new IdTokenException("key is invalid", e);
+            throw new IdTokenException(JWK_ERROR_MESSAGE, e);
         }
 
         String encodedJwt = null;
         try {
             encodedJwt = secureJwtEncoder.encode(idToken);
         } catch (JwtToJsonException e) {
-            throw new IdTokenException("Could not serialize id token", e);
+            throw new IdTokenException(SERIALIZE_ERROR_MESSAGE, e);
         }
 
         return encodedJwt;

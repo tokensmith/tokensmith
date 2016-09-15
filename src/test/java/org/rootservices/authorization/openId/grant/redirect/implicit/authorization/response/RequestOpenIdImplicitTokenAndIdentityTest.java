@@ -69,14 +69,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
     public void requestShouldReturnToken() throws Exception {
         String responseType = "token id_token";
         OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
-
-        OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
-        request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
-        request.setNonce("nonce");
-        request.setState(Optional.of("state"));
-        request.setScopes(new ArrayList<>());
-        request.getScopes().add("openid");
-        request.getScopes().add("profile");
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -118,15 +111,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         String responseType = "token id_token";
         OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
-
-
-        OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
-        request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
-        request.setNonce("nonce");
-        request.setState(Optional.of("state"));
-        request.setScopes(new ArrayList<>());
-        request.getScopes().add("openid");
-        request.getScopes().add("profile");
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -170,17 +155,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
     @Test
     public void requestWhenKeyNotFoundShouldThrowInformClientException() throws Exception {
 
-
         String responseType = "token id_token";
         OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
-
-        OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
-        request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
-        request.setNonce("nonce");
-        request.setState(Optional.of("state"));
-        request.setScopes(new ArrayList<>());
-        request.getScopes().add("openid");
-        request.getScopes().add("profile");
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
@@ -225,14 +202,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
     public void requestWhenJwtEncodingErrorShouldThrowInformClientException() throws Exception {
         String responseType = "token id_token";
         OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(responseType);
-
-        OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
-        request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
-        request.setNonce("nonce");
-        request.setState(Optional.of("state"));
-        request.setScopes(new ArrayList<>());
-        request.getScopes().add("openid");
-        request.getScopes().add("profile");
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
