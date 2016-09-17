@@ -14,13 +14,13 @@ import static org.junit.Assert.*;
 /**
  * Created by tommackenzie on 3/19/16.
  */
-public class AddrToAddrClaimsImplTest {
+public class AddrToAddrClaimsTest {
 
     private AddrToAddrClaims subject;
 
     @Before
     public void setUp() {
-        subject = new AddrToAddrClaimsImpl();
+        subject = new AddrToAddrClaims();
     }
 
     @Test

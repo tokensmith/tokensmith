@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.dto;
+package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity;
 
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 
@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Created by tommackenzie on 6/23/16.
  */
-public class ImplicitGrantAccessToken {
+public class ImplicitAccessToken {
     private URI redirectUri;
     private String accessToken;
     private TokenType tokenType;
@@ -16,10 +16,10 @@ public class ImplicitGrantAccessToken {
     private Optional<String> scope;
     private Optional<String> state;
 
-    public ImplicitGrantAccessToken() {
+    public ImplicitAccessToken() {
     }
 
-    public ImplicitGrantAccessToken(URI redirectUri, String accessToken, TokenType tokenType, Long expiresIn, Optional<String> scope, Optional<String> state) {
+    public ImplicitAccessToken(URI redirectUri, String accessToken, TokenType tokenType, Long expiresIn, Optional<String> scope, Optional<String> state) {
         this.redirectUri = redirectUri;
         this.accessToken = accessToken;
         this.tokenType = tokenType;

@@ -6,9 +6,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.authorization.security.GenerateRSAPrivateKey;
-import org.rootservices.authorization.security.GenerateRSAPrivateKeyImpl;
-import org.rootservices.authorization.security.RSAPrivateKeyFactory;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
@@ -31,7 +28,7 @@ public class GenerateRSAPrivateKeyImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new GenerateRSAPrivateKeyImpl(mockRSAPrivateKeyFactory);
+        subject = new GenerateRSAPrivateKey(mockRSAPrivateKeyFactory);
     }
 
     @Test

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 4/23/15.
  *
  */
-public class GrantAuthCodeImplTest {
+public class IssueAuthCodeTest {
     @Mock
     private AccessRequestRepository mockAccessRequestRepository;
     @Mock
@@ -36,12 +36,12 @@ public class GrantAuthCodeImplTest {
     @Mock
     private InsertAuthCodeWithRetry mockInsertAuthCodeWithRetry;
 
-    private GrantAuthCode subject;
+    private IssueAuthCode subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new GrantAuthCodeImpl(
+        subject = new IssueAuthCode(
             mockAccessRequestRepository, mockScopeRepository, mockAccessRequestScopesRepository, mockInsertAuthCodeWithRetry
         );
     }

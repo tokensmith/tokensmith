@@ -85,6 +85,31 @@ public class IdToken extends Claims {
     @JsonProperty(value="at_hash")
     private Optional<String> accessTokenHash;
 
+    public IdToken() {
+        super();
+        fullName = Optional.empty();
+        lastName = Optional.empty();
+        firstName = Optional.empty();
+        middleName = Optional.empty();
+        nickName = Optional.empty();
+        preferredUsername = Optional.empty();
+        profile = Optional.empty();
+        picture = Optional.empty();
+        website = Optional.empty();
+        gender = Optional.empty();
+        birthdate = Optional.empty();
+        zoneInfo = Optional.empty();
+        locale = Optional.empty();
+        updatedAt = Optional.empty();
+        email = Optional.empty();
+        emailVerified = Optional.empty();
+        address = Optional.empty();
+        phoneNumber = Optional.empty();
+        phoneNumberVerified = Optional.empty();
+        nonce = Optional.empty();
+        accessTokenHash = Optional.empty();
+    }
+
     public long getAuthenticationTime() {
         return authenticationTime;
     }

@@ -10,12 +10,11 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,14 +36,14 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 4/20/15.
  */
-public class RequestAuthCodeImplTest {
+public class RequestAuthCodeTest {
 
     @Mock
     private ValidateParams mockValidateParams;
     @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
-    private GrantAuthCode mockGrantAuthCode;
+    private IssueAuthCode mockIssueAuthCode;
     @Mock
     private AuthResponseFactory mockAuthResponseFactory;
 
@@ -53,15 +52,15 @@ public class RequestAuthCodeImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestAuthCodeImpl(
+        subject = new RequestAuthCode(
                 mockValidateParams,
                 mockLoginResourceOwner,
-                mockGrantAuthCode,
+                mockIssueAuthCode,
                 mockAuthResponseFactory
         );
     }
 
-    public AuthRequest makeAuthRequest(GrantInput input) throws URISyntaxException {
+    public AuthRequest makeAuthRequest(InputParams input) throws URISyntaxException {
 
         Optional<URI> redirectUri = Optional.empty();
         if (input.getRedirectUris() != null && input.getRedirectUris().get(0) != null ) {
@@ -90,7 +89,7 @@ public class RequestAuthCodeImplTest {
         String scope = "profile";
 
         // parameter to pass into method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
+        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
 
         // response from mockValidateParams.
         AuthRequest authRequest = makeAuthRequest(input);
@@ -121,7 +120,7 @@ public class RequestAuthCodeImplTest {
                         input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
 
-        when(mockGrantAuthCode.run(
+        when(mockIssueAuthCode.run(
                         resourceOwner.getUuid(),
                         authRequest.getClientId(),
                         authRequest.getRedirectURI(),
@@ -148,7 +147,7 @@ public class RequestAuthCodeImplTest {
         String scope = "profile";
 
         // parameters to method in test
-        GrantInput input = FixtureFactory.makeGrantInput(clientId, "CODE", scope);
+        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
 
         // response from mockValidateParams
         AuthRequest authRequest = makeAuthRequest(input);
@@ -171,7 +170,7 @@ public class RequestAuthCodeImplTest {
         try {
             authResponse = subject.run(input);
         } catch (UnauthorizedException e) {
-            verify(mockGrantAuthCode, never()).run(
+            verify(mockIssueAuthCode, never()).run(
                 any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
             );
             expectedException = e;

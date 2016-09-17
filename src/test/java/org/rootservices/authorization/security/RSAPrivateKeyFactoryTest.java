@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-public class RSAPrivateKeyFactoryImplTest {
+public class RSAPrivateKeyFactoryTest {
 
     @Autowired
     private RSAPrivateKeyFactory subject;

@@ -17,16 +17,16 @@ import java.util.UUID;
  * Created by tommackenzie on 4/23/15.
  */
 @Component
-public class GrantAuthCodeImpl implements GrantAuthCode {
+public class IssueAuthCode {
     private AccessRequestRepository accessRequestRepository;
     private ScopeRepository scopeRepository;
     private AccessRequestScopesRepository accessRequestScopesRepository;
     private InsertAuthCodeWithRetry insertAuthCodeWithRetry;
 
-    public GrantAuthCodeImpl() {}
+    public IssueAuthCode() {}
 
     @Autowired
-    public GrantAuthCodeImpl(AccessRequestRepository accessRequestRepository, ScopeRepository scopeRepository, AccessRequestScopesRepository accessRequestScopesRepository, InsertAuthCodeWithRetry insertAuthCodeWithRetry) {
+    public IssueAuthCode(AccessRequestRepository accessRequestRepository, ScopeRepository scopeRepository, AccessRequestScopesRepository accessRequestScopesRepository, InsertAuthCodeWithRetry insertAuthCodeWithRetry) {
         this.accessRequestRepository = accessRequestRepository;
         this.scopeRepository = scopeRepository;
         this.accessRequestRepository = accessRequestRepository;
