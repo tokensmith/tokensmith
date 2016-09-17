@@ -27,7 +27,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
-public class JsonToTokenRequestImplTest {
+public class JsonToTokenRequestTest {
 
     @Autowired
     private JsonToTokenRequest subject;

@@ -47,7 +47,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
-public class RequestTokenImplTest {
+public class RequestTokenCodeGrantTest {
 
     @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
