@@ -23,7 +23,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
-public class IsTokenRequestValidImplTest {
+public class IsTokenRequestValidTest {
 
     @Autowired
     private IsTokenRequestValid subject;

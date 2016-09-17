@@ -36,7 +36,7 @@ import java.util.UUID;
  * Created by tommackenzie on 5/24/15.
  */
 @Component
-public class RequestTokenImpl implements RequestToken {
+public class RequestTokenCodeGrant implements RequestToken {
     private LoginConfidentialClient loginConfidentialClient;
     private JsonToTokenRequest jsonToTokenRequest;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
@@ -46,7 +46,7 @@ public class RequestTokenImpl implements RequestToken {
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenImpl(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.jsonToTokenRequest = jsonToTokenRequest;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
