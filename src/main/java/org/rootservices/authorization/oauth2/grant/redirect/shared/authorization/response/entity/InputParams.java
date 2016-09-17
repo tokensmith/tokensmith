@@ -6,11 +6,11 @@ import java.util.List;
  * Created by tommackenzie on 4/25/15.
  *
  * A Value object that represents the inputs the
- * resource owner specifies when they request Authorization.
+ * resource owner specifies when they request authorization.
+ * Is used in both implicit and code grant types.
  *
- * TODO: should this be renamed to represent its a request object?
  */
-public class GrantInput {
+public class InputParams {
     private String userName;
     private String plainTextPassword;
     private List<String> clientIds;

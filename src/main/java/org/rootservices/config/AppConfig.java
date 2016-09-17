@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
@@ -12,23 +13,24 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeResponseType;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCodeImpl;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsTokenResponseType;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.RequestAccessToken;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 /**
  * Created by tommackenzie on 7/4/15.
@@ -37,6 +39,7 @@ import java.security.NoSuchAlgorithmException;
 @ComponentScan("org.rootservices.authorization")
 public class AppConfig {
     private static String ALGORITHM = "RSA";
+    private static String SHA_256 = "SHA-256";
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -80,6 +83,23 @@ public class AppConfig {
             throw new ConfigException("Could not create KeyFactory. ", e);
         }
         return keyFactory;
+    }
+
+    @Bean
+    public Base64.Encoder urlEncoder() {
+        return Base64.getUrlEncoder();
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    public MessageDigest digestSha256() {
+        MessageDigest digest = null;
+        try {
+            digest =  MessageDigest.getInstance(SHA_256);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return digest;
     }
 
     @Bean
@@ -139,7 +159,7 @@ public class AppConfig {
 
     @Bean
     public ValidateParams validateParamsTokenResponseType() {
-        return new ValidateParamsTokenResponseType(
+        return new ValidateParamsImplicitGrant(
                 authRequestFactoryTokenResponseType(),
                 comparePublicClientToAuthRequest()
         );
@@ -170,7 +190,7 @@ public class AppConfig {
 
     @Bean
     public ValidateParams validateParamsCodeResponseType() {
-        return new ValidateParamsCodeResponseType(
+        return new ValidateParamsCodeGrant(
                 authRequestFactory(),
                 compareClientToAuthRequest()
         );
@@ -178,7 +198,7 @@ public class AppConfig {
 
     @Bean
     public RequestAuthCode requestAuthCode() {
-        return new RequestAuthCodeImpl();
+        return new RequestAuthCode();
     }
 
     @Bean

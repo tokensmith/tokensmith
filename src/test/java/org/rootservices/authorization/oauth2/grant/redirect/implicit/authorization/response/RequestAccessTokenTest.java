@@ -7,16 +7,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.dto.ImplicitGrantAccessToken;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.GrantInput;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 
 import java.util.List;
@@ -40,8 +39,6 @@ public class RequestAccessTokenTest {
     @Mock
     private ValidateParams mockValidateParamsTokenResponseType;
     @Mock
-    private ScopeRepository mockScopeRepository;
-    @Mock
     private RandomString mockRandomString;
     @Mock
     private IssueTokenImplicitGrant mockIssueTokenImplicitGrant;
@@ -51,46 +48,44 @@ public class RequestAccessTokenTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateParamsTokenResponseType, mockScopeRepository, mockRandomString, mockIssueTokenImplicitGrant, mockClientRepository);
+        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateParamsTokenResponseType, mockRandomString, mockIssueTokenImplicitGrant, mockClientRepository);
     }
 
     @Test
     public void requestTokenShouldReturnToken() throws Exception {
 
         UUID clientId = UUID.randomUUID();
-        GrantInput grantInput = FixtureFactory.makeEmptyGrantInput();
-        grantInput.getClientIds().add(clientId.toString());
-        grantInput.getRedirectUris().add(FixtureFactory.makeSecureRedirectUri().toString());
-        grantInput.getScopes().add("profile");
-        grantInput.getScopes().add("foo");
+        InputParams inputParams = FixtureFactory.makeEmptyGrantInput();
+        inputParams.getClientIds().add(clientId.toString());
+        inputParams.getRedirectUris().add(FixtureFactory.makeSecureRedirectUri().toString());
+        inputParams.getScopes().add("profile");
+        inputParams.getScopes().add("foo");
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(Optional.of(FixtureFactory.makeSecureRedirectUri()));
-        authRequest.setScopes(grantInput.getScopes());
+        authRequest.setScopes(inputParams.getScopes());
         authRequest.setState(Optional.empty());
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "accessToken";
-        List<Scope> scopesToAddToToken = FixtureFactory.makeScopes();
         Token token = FixtureFactory.makeToken();
 
         when(mockValidateParamsTokenResponseType.run(
-                grantInput.getClientIds(),
-                grantInput.getResponseTypes(),
-                grantInput.getRedirectUris(),
-                grantInput.getScopes(),
-                grantInput.getStates()
+                inputParams.getClientIds(),
+                inputParams.getResponseTypes(),
+                inputParams.getRedirectUris(),
+                inputParams.getScopes(),
+                inputParams.getStates()
         )).thenReturn(authRequest);
 
-        when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
-        ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+        ImplicitAccessToken actual = subject.requestToken(inputParams);
         assertThat(actual, is(notNullValue()));
 
         assertThat(actual.getRedirectUri(), is(FixtureFactory.makeSecureRedirectUri()));
@@ -106,15 +101,15 @@ public class RequestAccessTokenTest {
     @Test
     public void requestTokenWithNoRedirectUriShouldReturnToken() throws Exception {
         UUID clientId = UUID.randomUUID();
-        GrantInput grantInput = FixtureFactory.makeEmptyGrantInput();
-        grantInput.getClientIds().add(clientId.toString());
-        grantInput.getScopes().add("profile");
-        grantInput.getScopes().add("foo");
+        InputParams inputParams = FixtureFactory.makeEmptyGrantInput();
+        inputParams.getClientIds().add(clientId.toString());
+        inputParams.getScopes().add("profile");
+        inputParams.getScopes().add("foo");
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(Optional.empty());
-        authRequest.setScopes(grantInput.getScopes());
+        authRequest.setScopes(inputParams.getScopes());
         authRequest.setState(Optional.empty());
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
@@ -124,23 +119,22 @@ public class RequestAccessTokenTest {
         Client client = FixtureFactory.makeTokenClientWithScopes();
 
         when(mockValidateParamsTokenResponseType.run(
-                grantInput.getClientIds(),
-                grantInput.getResponseTypes(),
-                grantInput.getRedirectUris(),
-                grantInput.getScopes(),
-                grantInput.getStates()
+                inputParams.getClientIds(),
+                inputParams.getResponseTypes(),
+                inputParams.getRedirectUris(),
+                inputParams.getScopes(),
+                inputParams.getStates()
         )).thenReturn(authRequest);
 
-        when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
-        ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+        ImplicitAccessToken actual = subject.requestToken(inputParams);
         assertThat(actual, is(notNullValue()));
 
         assertThat(actual.getRedirectUri(), is(client.getRedirectURI()));
@@ -158,15 +152,15 @@ public class RequestAccessTokenTest {
     @Test
     public void requestTokenWithNoRedirectUriClientNotFoundShouldThrowInformResourceOwnerException() throws Exception {
         UUID clientId = UUID.randomUUID();
-        GrantInput grantInput = FixtureFactory.makeEmptyGrantInput();
-        grantInput.getClientIds().add(clientId.toString());
-        grantInput.getScopes().add("profile");
-        grantInput.getScopes().add("foo");
+        InputParams inputParams = FixtureFactory.makeEmptyGrantInput();
+        inputParams.getClientIds().add(clientId.toString());
+        inputParams.getScopes().add("profile");
+        inputParams.getScopes().add("foo");
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(Optional.empty());
-        authRequest.setScopes(grantInput.getScopes());
+        authRequest.setScopes(inputParams.getScopes());
         authRequest.setState(Optional.empty());
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
@@ -175,24 +169,23 @@ public class RequestAccessTokenTest {
         Token token = FixtureFactory.makeToken();
 
         when(mockValidateParamsTokenResponseType.run(
-                grantInput.getClientIds(),
-                grantInput.getResponseTypes(),
-                grantInput.getRedirectUris(),
-                grantInput.getScopes(),
-                grantInput.getStates()
+                inputParams.getClientIds(),
+                inputParams.getResponseTypes(),
+                inputParams.getRedirectUris(),
+                inputParams.getScopes(),
+                inputParams.getStates()
         )).thenReturn(authRequest);
 
-        when(mockLoginResourceOwner.run(grantInput.getUserName(), grantInput.getPlainTextPassword())).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockScopeRepository.findByNames(authRequest.getScopes())).thenReturn(scopesToAddToToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, scopesToAddToToken, accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 
         try {
-            ImplicitGrantAccessToken actual = subject.requestToken(grantInput);
+            ImplicitAccessToken actual = subject.requestToken(inputParams);
             fail("Expected to throw, InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             verify(mockClientRepository, times(1)).getById(authRequest.getClientId());

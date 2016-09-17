@@ -13,12 +13,12 @@ import java.util.List;
  * Created by tommackenzie on 7/23/16.
  */
 @Component
-public class ValidateOpenIdIdTokenResponseType {
+public class ValidateOpenIdIdImplicitGrant {
     private OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory;
     private ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdIdTokenResponseType(OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory, ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest) {
+    public ValidateOpenIdIdImplicitGrant(OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory, ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest) {
         this.openIdTokenAuthRequestFactory = openIdTokenAuthRequestFactory;
         this.comparePublicClientToOpenIdAuthRequest = comparePublicClientToOpenIdAuthRequest;
     }
