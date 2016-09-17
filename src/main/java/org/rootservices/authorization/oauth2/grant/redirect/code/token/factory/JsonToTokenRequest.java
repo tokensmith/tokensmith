@@ -69,7 +69,7 @@ public class JsonToTokenRequest {
 
     private Optional<String> getJsonParseExceptionDuplicateKey(JsonParseException e) {
         Optional<String> key = Optional.empty();
-        Pattern p = Pattern.compile("Duplicate field \'(\\w+)\'\\n(.*)");
+        Pattern p = Pattern.compile("Duplicate field \'(\\w+)\'");
         Matcher m = p.matcher(e.getMessage());
         if (m.matches()) {
             key = Optional.of(m.group(1));
