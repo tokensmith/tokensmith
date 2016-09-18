@@ -162,7 +162,7 @@ public class TokenInputPasswordGrantFactoryTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMessage(), is(ErrorCode.UNKNOWN_KEY.getDescription()));
         assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
-        assertThat(actual.getKey(), is(nullValue()));
+        assertThat(actual.getKey(), is("foo"));
     }
 
 }

@@ -13,8 +13,9 @@ public class UnknownKeyException extends BaseInformException {
         this.key = key;
     }
 
-    public UnknownKeyException(String message, int code) {
+    public UnknownKeyException(String message, String key, int code) {
         super(message, code);
+        this.key = key;
     }
 
     public String getKey() {
