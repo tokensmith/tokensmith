@@ -1,6 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token.factory;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.authorization.constant.ErrorCode;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +41,8 @@ public class JsonToTokenRequest {
     public TokenRequest run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
         TokenRequest tokenRequest = null;
         try {
-            tokenRequest = objectMapper.readValue(json, TokenRequest.class);
+            Map<String, String> result = objectMapper.readValue(json, new TypeReference<Map<String,String>>() { });
+            //tokenRequest = objectMapper.readValue(json, TokenRequest.class);
         } catch (JsonParseException e) {
             // TODO: see if jackson can throw a specific exception for duplicates.
             Optional<String> duplicateKey = getJsonParseExceptionDuplicateKey(e);

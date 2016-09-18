@@ -13,6 +13,10 @@ public class UnknownKeyException extends BaseInformException {
         this.key = key;
     }
 
+    public UnknownKeyException(String message, int code) {
+        super(message, code);
+    }
+
     public String getKey() {
         return key;
     }
