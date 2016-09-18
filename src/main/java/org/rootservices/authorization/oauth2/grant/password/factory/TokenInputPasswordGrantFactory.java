@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenInputPasswordGrantFactory {
     private static Integer MAX_NUMBER_OF_KEYS = 4;
+    protected static String GRANT_TYPE = "grant_type";
     protected static String USER_NAME = "username";
     protected static String PASSWORD = "password";
     protected static String SCOPE = "scope";
@@ -27,7 +28,12 @@ public class TokenInputPasswordGrantFactory {
     public TokenInputPasswordGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
 
         if (request.size() > MAX_NUMBER_OF_KEYS) {
-            throw new UnknownKeyException(ErrorCode.UNKNOWN_KEY.getDescription(), ErrorCode.UNKNOWN_KEY.getCode());
+            String unknownKey = getFirstUnknownKey(request);
+            throw new UnknownKeyException(
+                ErrorCode.UNKNOWN_KEY.getDescription(),
+                unknownKey,
+                ErrorCode.UNKNOWN_KEY.getCode()
+            );
         }
 
         String requestUsername = required(request.get(USER_NAME), USER_NAME);
@@ -50,6 +56,20 @@ public class TokenInputPasswordGrantFactory {
         return input;
     }
 
+    protected String getFirstUnknownKey(Map<String, String> input) {
+        Set<String> keys = input.keySet();
+        String unknownKey = "";
+
+        for(String key: keys) {
+            if (key.equals(GRANT_TYPE)||key.equals(USER_NAME)||key.equals(PASSWORD)||key.equals(SCOPE)) {
+                continue;
+            } else {
+                unknownKey = key;
+                break;
+            }
+        }
+        return unknownKey;
+    }
     protected String required(String input, String key) throws MissingKeyException{
         if (input == null || input.isEmpty()){
             throw new MissingKeyException(MISSING_KEY_MSG + key, key);
