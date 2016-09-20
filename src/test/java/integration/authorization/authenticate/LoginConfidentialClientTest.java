@@ -33,7 +33,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
 @Transactional
-public class LoginConfidentialClientImplTest {
+public class LoginConfidentialClientTest {
 
     @Autowired
     private LoadCodeClientWithScopes loadCodeClientWithScopes;

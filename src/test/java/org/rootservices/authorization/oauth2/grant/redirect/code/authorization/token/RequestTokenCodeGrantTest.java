@@ -658,7 +658,7 @@ public class RequestTokenCodeGrantTest {
         // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         tokenRepository.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();

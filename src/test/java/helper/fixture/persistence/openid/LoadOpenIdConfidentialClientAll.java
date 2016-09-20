@@ -38,7 +38,7 @@ public class LoadOpenIdConfidentialClientAll {
 
     public Token run() throws DuplicateRecordException, URISyntaxException {
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, "plain-text-auth-code");
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         String accessToken = randomString.run();
         token.setToken(accessToken.getBytes());
         tokenRepository.insert(token);

@@ -22,11 +22,8 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.RandomString;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -73,7 +70,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -115,7 +112,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -161,7 +158,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -206,7 +203,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()

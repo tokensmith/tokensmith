@@ -1,12 +1,9 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,7 +37,7 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
@@ -75,7 +72,7 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void getByAccessTokenShouldBeOk() throws Exception {
         // begin prepare db for test
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();

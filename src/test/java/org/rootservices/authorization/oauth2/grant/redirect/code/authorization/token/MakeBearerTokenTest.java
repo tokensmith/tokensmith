@@ -4,8 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerTokenImpl;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeToken;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -20,16 +19,16 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 6/2/15.
  */
-public class MakeBearerTokenImplTest {
+public class MakeBearerTokenTest {
 
     @Mock
     private HashTextStaticSalt mockHashText;
-    private MakeToken subject;
+    private MakeBearerToken subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
         MockitoAnnotations.initMocks(this);
-        subject = new MakeBearerTokenImpl(mockHashText);
+        subject = new MakeBearerToken(mockHashText);
     }
 
     @Test
