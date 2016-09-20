@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 @Component
 public class IssueTokenCodeGrant {
-    private MakeToken makeToken;
+    private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
@@ -24,8 +24,8 @@ public class IssueTokenCodeGrant {
     private AuthCodeRepository authCodeRepository;
 
     @Autowired
-    public IssueTokenCodeGrant(MakeToken makeToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository) {
-        this.makeToken = makeToken;
+    public IssueTokenCodeGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository) {
+        this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
@@ -33,8 +33,8 @@ public class IssueTokenCodeGrant {
         this.authCodeRepository = authCodeRepository;
     }
 
-    protected Token run(UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
-        Token token = makeToken.run(plainTextToken);
+    public Token run(UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+        Token token = makeBearerToken.run(plainTextToken);
 
         try {
             tokenRepository.insert(token);

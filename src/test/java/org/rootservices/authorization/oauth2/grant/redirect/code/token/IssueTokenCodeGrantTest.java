@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class IssueTokenCodeGrantTest {
     private IssueTokenCodeGrant subject;
     @Mock
-    private MakeToken mockMakeToken;
+    private MakeBearerToken mockMakeBearerToken;
     @Mock
     private TokenRepository mockTokenRepository;
     @Mock
@@ -42,7 +42,7 @@ public class IssueTokenCodeGrantTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new IssueTokenCodeGrant(
-                mockMakeToken,
+                mockMakeBearerToken,
                 mockTokenRepository,
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
@@ -58,8 +58,8 @@ public class IssueTokenCodeGrantTest {
         String plainTextToken = "plain-text-token";
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeToken();
-        when(mockMakeToken.run("plain-text-token")).thenReturn(token);
+        Token token = FixtureFactory.makeOpenIdToken();
+        when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
         subject.run(authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
 
@@ -108,8 +108,8 @@ public class IssueTokenCodeGrantTest {
         String plainTextToken = "plain-text-token";
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeToken();
-        when(mockMakeToken.run("plain-text-token")).thenReturn(token);
+        Token token = FixtureFactory.makeOpenIdToken();
+        when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));

@@ -41,8 +41,8 @@ public class JsonToTokenRequest {
     public TokenRequest run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
         TokenRequest tokenRequest = null;
         try {
-            Map<String, String> result = objectMapper.readValue(json, new TypeReference<Map<String,String>>() { });
-            //tokenRequest = objectMapper.readValue(json, TokenRequest.class);
+            // Map<String, String> result = objectMapper.readValue(json, new TypeReference<Map<String,String>>() { });
+            tokenRequest = objectMapper.readValue(json, TokenRequest.class);
         } catch (JsonParseException e) {
             // TODO: see if jackson can throw a specific exception for duplicates.
             Optional<String> duplicateKey = getJsonParseExceptionDuplicateKey(e);

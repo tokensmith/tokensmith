@@ -70,6 +70,30 @@ public class FixtureFactory {
         return client;
     }
 
+    public static Client makePasswordClientWithOpenIdScopes() throws URISyntaxException {
+
+        Client client = makePasswordClientWithScopes();
+        client.getScopes().add(makeScope("openid"));
+        return client;
+    }
+
+    public static Client makePasswordClientWithScopes() throws URISyntaxException {
+        UUID uuid = UUID.randomUUID();
+
+        ResponseType rt = makeResponseType();
+        rt.setName("PASSWORD");
+
+        List<ResponseType> responseTypes = new ArrayList<>();
+        responseTypes.add(rt);
+
+        URI redirectUri = new URI(SECURE_REDIRECT_URI);
+
+        Client client = new Client(uuid, responseTypes, redirectUri);
+        List<Scope> scopes = makeScopes();
+        client.setScopes(scopes);
+        return client;
+    }
+
     public static ConfidentialClient makeConfidentialClient(Client client) {
         ConfidentialClient confidentialClient = new ConfidentialClient();
         confidentialClient.setUuid(UUID.randomUUID());
@@ -99,6 +123,14 @@ public class FixtureFactory {
         Scope scope = new Scope();
         scope.setUuid(UUID.randomUUID());
         scope.setName("profile");
+
+        return scope;
+    }
+
+    public static Scope makeScope(String name) {
+        Scope scope = new Scope();
+        scope.setUuid(UUID.randomUUID());
+        scope.setName(name);
 
         return scope;
     }
@@ -217,7 +249,7 @@ public class FixtureFactory {
         return accessRequest;
     }
 
-    public static Token makeToken() {
+    public static Token makeOAuthToken() {
         RandomString randomString = new RandomString();
 
         Token token = new Token();
@@ -234,15 +266,22 @@ public class FixtureFactory {
         profile.setName("profile");
         ts1.setScope(profile);
 
-        TokenScope ts2 = new TokenScope();
-        ts2.setId(UUID.randomUUID());
+        token.getTokenScopes().add(ts1);
+
+        return token;
+    }
+
+    public static Token makeOpenIdToken() {
+        Token token = makeOAuthToken();
+
+        TokenScope ts1 = new TokenScope();
+        ts1.setId(UUID.randomUUID());
         Scope openid = new Scope();
         openid.setUuid(UUID.randomUUID());
         openid.setName("openid");
-        ts2.setScope(openid);
+        ts1.setScope(openid);
 
         token.getTokenScopes().add(ts1);
-        token.getTokenScopes().add(ts2);
 
         return token;
     }
@@ -250,7 +289,7 @@ public class FixtureFactory {
     public static ResourceOwnerToken makeResourceOwnerToken() {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setResourceOwner(makeResourceOwner());
-        resourceOwnerToken.setToken(makeToken());
+        resourceOwnerToken.setToken(makeOpenIdToken());
         return resourceOwnerToken;
     }
 

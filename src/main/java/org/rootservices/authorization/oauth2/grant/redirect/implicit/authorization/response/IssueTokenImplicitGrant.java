@@ -1,6 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeToken;
+
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
@@ -19,15 +20,15 @@ import java.util.UUID;
  */
 @Component
 public class IssueTokenImplicitGrant {
-    private MakeToken makeToken;
+    private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
     private ScopeRepository scopeRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
 
     @Autowired
-    public IssueTokenImplicitGrant(MakeToken makeToken, TokenRepository tokenRepository, ScopeRepository scopeRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
-        this.makeToken = makeToken;
+    public IssueTokenImplicitGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ScopeRepository scopeRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
+        this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.scopeRepository = scopeRepository;
         this.tokenScopeRepository = tokenScopeRepository;
@@ -35,7 +36,7 @@ public class IssueTokenImplicitGrant {
     }
 
     public Token run(ResourceOwner resourceOwner, List<String> scopeNames, String plainTextAccessToken) {
-        Token token = makeToken.run(plainTextAccessToken);
+        Token token = makeBearerToken.run(plainTextAccessToken);
         token.setGrantType(GrantType.TOKEN);
 
         try {
@@ -68,6 +69,6 @@ public class IssueTokenImplicitGrant {
     }
 
     public Long getSecondsToExpiration() {
-        return makeToken.getSecondsToExpiration();
+        return makeBearerToken.getSecondsToExpiration();
     }
 }

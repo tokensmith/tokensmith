@@ -14,18 +14,18 @@ import java.util.UUID;
  * Created by tommackenzie on 6/2/15.
  */
 @Component
-public class MakeBearerTokenImpl implements MakeToken {
+public class MakeBearerToken {
 
     private static final Long SECONDS_TO_EXPIRATION = 3600L;
     private static final TokenType TOKEN_TYPE = TokenType.BEARER;
     private HashTextStaticSalt hashText;
 
     @Autowired
-    public MakeBearerTokenImpl(HashTextStaticSalt hashText) {
+    public MakeBearerToken(HashTextStaticSalt hashText) {
         this.hashText = hashText;
     }
 
-    @Override
+
     public Token run(String plainTextToken) {
 
         Token token = new Token();
@@ -40,12 +40,10 @@ public class MakeBearerTokenImpl implements MakeToken {
         return token;
     }
 
-    @Override
     public Long getSecondsToExpiration() {
         return SECONDS_TO_EXPIRATION;
     }
 
-    @Override
     public TokenType getTokenType() {
         return TOKEN_TYPE;
     }
