@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token.exception;
+package org.rootservices.authorization.oauth2.grant.foo.exception;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.springframework.context.annotation.Scope;

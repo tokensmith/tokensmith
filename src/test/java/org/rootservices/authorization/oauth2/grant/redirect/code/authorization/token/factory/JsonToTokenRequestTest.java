@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.TokenRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.InvalidPayloadException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class JsonToTokenRequestTest {
         StringReader sr = new StringReader("{\"grant_type\": \"authorization_code\", \"code\": \"test-code\", \"redirect_uri\": \"https://rootservices.org/continue\"}");
         BufferedReader json = new BufferedReader(sr);
 
-        TokenRequest actual = subject.run(json);
+        TokenInputCodeGrant actual = subject.run(json);
         assertThat(actual).isNotNull();
         assertThat(actual.getGrantType()).isEqualTo("authorization_code");
         assertThat(actual.getCode()).isEqualTo("test-code");
@@ -52,7 +52,7 @@ public class JsonToTokenRequestTest {
         BufferedReader json = new BufferedReader(sr);
 
         DuplicateKeyException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
             fail("DuplicateKeyException was expected.");
@@ -88,7 +88,7 @@ public class JsonToTokenRequestTest {
 
 
         InvalidValueException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
         } catch (DuplicateKeyException e) {
@@ -115,7 +115,7 @@ public class JsonToTokenRequestTest {
         BufferedReader json = new BufferedReader(sr);
 
         InvalidPayloadException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
             fail("InvalidPayloadException was expected.");
@@ -144,7 +144,7 @@ public class JsonToTokenRequestTest {
         BufferedReader json = new BufferedReader(sr);
 
         InvalidPayloadException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
             fail("InvalidPayloadException was expected.");
@@ -173,7 +173,7 @@ public class JsonToTokenRequestTest {
         BufferedReader json = new BufferedReader(sr);
 
         MissingKeyException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
         } catch (DuplicateKeyException e) {
@@ -204,7 +204,7 @@ public class JsonToTokenRequestTest {
         BufferedReader json = new BufferedReader(sr);
 
         UnknownKeyException expected = null;
-        TokenRequest actual = null;
+        TokenInputCodeGrant actual = null;
         try {
             actual = subject.run(json);
             fail("UnknownKeyException was expected");

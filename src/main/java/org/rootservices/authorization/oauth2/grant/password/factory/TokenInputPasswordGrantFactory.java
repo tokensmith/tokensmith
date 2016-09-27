@@ -1,10 +1,12 @@
 package org.rootservices.authorization.oauth2.grant.password.factory;
 
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.foo.validator.TokenPayloadValidator;
 import org.rootservices.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -16,37 +18,32 @@ import java.util.stream.Collectors;
 @Component
 public class TokenInputPasswordGrantFactory {
     private static Integer MAX_NUMBER_OF_KEYS = 4;
-    protected static String GRANT_TYPE = "grant_type";
     protected static String USER_NAME = "username";
     protected static String PASSWORD = "password";
     protected static String SCOPE = "scope";
-    private static String MISSING_KEY_MSG = "missing key ";
+    private static List<String> KNOWN_KEYS = Arrays.asList("grant_type", "username", "password", "scope");
+    private TokenPayloadValidator tokenPayloadValidator;
 
-    public TokenInputPasswordGrantFactory() {
+    @Autowired
+    public TokenInputPasswordGrantFactory(TokenPayloadValidator tokenPayloadValidator) {
+        this.tokenPayloadValidator = tokenPayloadValidator;
     }
 
     public TokenInputPasswordGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
 
         if (request.size() > MAX_NUMBER_OF_KEYS) {
-            String unknownKey = getFirstUnknownKey(request);
+            Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
             throw new UnknownKeyException(
                 ErrorCode.UNKNOWN_KEY.getDescription(),
-                unknownKey,
+                unknownKey.get(),
                 ErrorCode.UNKNOWN_KEY.getCode()
             );
         }
 
-        String requestUsername = required(request.get(USER_NAME), USER_NAME);
-        String requestPassword = required(request.get(PASSWORD), PASSWORD);
-        Optional<String> requestScope = optional(request.get(SCOPE), SCOPE);
-
-        List<String> scopes = new ArrayList<>();
-        if (requestScope.isPresent()) {
-            scopes = Arrays.asList(request.get(SCOPE).split(" "))
-                    .stream()
-                    .map(String::toLowerCase)
-                    .collect(Collectors.toList());
-        }
+        String requestUsername = tokenPayloadValidator.required(request.get(USER_NAME), USER_NAME);
+        String requestPassword = tokenPayloadValidator.required(request.get(PASSWORD), PASSWORD);
+        Optional<String> requestScope = tokenPayloadValidator.optional(request.get(SCOPE), SCOPE);
+        List<String> scopes = delimitedScopeToListScopes(requestScope);
 
         TokenInputPasswordGrant input = new TokenInputPasswordGrant();
         input.setUserName(requestUsername);
@@ -56,42 +53,14 @@ public class TokenInputPasswordGrantFactory {
         return input;
     }
 
-    protected String getFirstUnknownKey(Map<String, String> input) {
-        Set<String> keys = input.keySet();
-        String unknownKey = "";
-
-        for(String key: keys) {
-            if (key.equals(GRANT_TYPE)||key.equals(USER_NAME)||key.equals(PASSWORD)||key.equals(SCOPE)) {
-                continue;
-            } else {
-                unknownKey = key;
-                break;
-            }
+    protected List<String> delimitedScopeToListScopes(Optional<String> delimitedScopes) {
+        List<String> scopes = new ArrayList<>();
+        if (delimitedScopes.isPresent()) {
+            scopes = Arrays.asList(delimitedScopes.get().split(" "))
+                    .stream()
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toList());
         }
-        return unknownKey;
-    }
-    protected String required(String input, String key) throws MissingKeyException{
-        if (input == null || input.isEmpty()){
-            throw new MissingKeyException(MISSING_KEY_MSG + key, key);
-        }
-        return input;
-    }
-
-    protected Optional<String> optional(String input, String key) throws InvalidValueException {
-
-        Optional<String> output = Optional.empty();
-        if (input == null || input.isEmpty()){
-            throw new InvalidValueException(
-                ErrorCode.SCOPES_EMPTY_VALUE.getDescription(),
-                ErrorCode.SCOPES_EMPTY_VALUE.getCode(),
-                key,
-                input
-            );
-        }
-
-        if (input != null) {
-            output = Optional.of(input);
-        }
-        return output;
+        return scopes;
     }
 }

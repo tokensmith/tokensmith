@@ -3,7 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token.validato
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.TokenRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.GrantTypeInvalidException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
@@ -28,8 +28,8 @@ public class IsTokenRequestValidTest {
     @Autowired
     private IsTokenRequestValid subject;
 
-    public TokenRequest makeTokenRequest() throws URISyntaxException {
-        TokenRequest tokenRequest = new TokenRequest();
+    public TokenInputCodeGrant makeTokenRequest() throws URISyntaxException {
+        TokenInputCodeGrant tokenRequest = new TokenInputCodeGrant();
         tokenRequest.setCode("test-code");
         tokenRequest.setGrantType("authorization_code");
         tokenRequest.setRedirectUri(Optional.of(new URI("https://rootservices.com/contine")));
@@ -39,14 +39,14 @@ public class IsTokenRequestValidTest {
 
     @Test
     public void run() throws URISyntaxException, InvalidValueException, MissingKeyException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         boolean actual = subject.run(tokenRequest);
         assertThat(actual).isTrue();
     }
 
     @Test
     public void runRedirectUriIsEmptyExpectTrue() throws URISyntaxException, InvalidValueException, MissingKeyException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         tokenRequest.setRedirectUri(Optional.empty());
 
         boolean actual = subject.run(tokenRequest);
@@ -55,7 +55,7 @@ public class IsTokenRequestValidTest {
 
     @Test
     public void grantTypeIsNullExpectMissingException() throws URISyntaxException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         tokenRequest.setGrantType(null);
 
         MissingKeyException expected = null;
@@ -75,7 +75,7 @@ public class IsTokenRequestValidTest {
 
     @Test
     public void grantTypeIsNotAuthorizationCodeExpectGrantTypeInvalidException() throws URISyntaxException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         tokenRequest.setGrantType("invalid");
 
         GrantTypeInvalidException expected = null;
@@ -100,7 +100,7 @@ public class IsTokenRequestValidTest {
 
     @Test
     public void codeIsNull() throws URISyntaxException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         tokenRequest.setCode(null);
 
         MissingKeyException expected = null;
@@ -120,7 +120,7 @@ public class IsTokenRequestValidTest {
 
     @Test
     public void redirectUriIsInvalidExpectInvalidValueException() throws URISyntaxException {
-        TokenRequest tokenRequest = makeTokenRequest();
+        TokenInputCodeGrant tokenRequest = makeTokenRequest();
         tokenRequest.setRedirectUri(Optional.of(new URI("http://www.rootservices.org/continue")));
 
         InvalidValueException expected = null;
