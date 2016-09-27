@@ -1,13 +1,11 @@
-package org.rootservices.authorization.oauth2.grant.foo.translator;
+package org.rootservices.authorization.oauth2.grant.token.translator;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

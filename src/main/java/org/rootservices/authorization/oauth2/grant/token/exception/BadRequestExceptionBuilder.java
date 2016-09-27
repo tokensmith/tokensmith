@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.foo.exception;
+package org.rootservices.authorization.oauth2.grant.token.exception;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.springframework.context.annotation.Scope;

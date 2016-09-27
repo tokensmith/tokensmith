@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
-import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.IsTokenRequestValid;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

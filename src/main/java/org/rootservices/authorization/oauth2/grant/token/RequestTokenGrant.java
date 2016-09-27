@@ -1,8 +1,8 @@
-package org.rootservices.authorization.oauth2.grant.foo;
+package org.rootservices.authorization.oauth2.grant.token;
 
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestException;
-import org.rootservices.authorization.oauth2.grant.foo.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 
 import java.util.Map;
 import java.util.UUID;

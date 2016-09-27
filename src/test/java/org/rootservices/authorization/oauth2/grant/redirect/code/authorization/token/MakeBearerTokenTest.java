@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.foo.entity.TokenType;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 

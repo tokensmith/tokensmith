@@ -3,15 +3,11 @@ package org.rootservices.authorization.oauth2.grant.password.factory;
 
 
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.validator.TokenPayloadValidator;
 import org.rootservices.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
-import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;

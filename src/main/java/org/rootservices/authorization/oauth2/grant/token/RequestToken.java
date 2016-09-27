@@ -1,11 +1,11 @@
-package org.rootservices.authorization.oauth2.grant.foo;
+package org.rootservices.authorization.oauth2.grant.token;
 
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.entity.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.foo.exception.*;
-import org.rootservices.authorization.oauth2.grant.foo.factory.RequestTokenFactory;
-import org.rootservices.authorization.oauth2.grant.foo.translator.JsonToMapTranslator;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.exception.*;
+import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenFactory;
+import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
