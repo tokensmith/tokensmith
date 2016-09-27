@@ -2,7 +2,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token.validato
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.TokenRequest;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.GrantTypeInvalidException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
@@ -25,7 +25,7 @@ public class IsTokenRequestValid {
         this.urlValidator = urlValidator;
     }
 
-    public boolean run(TokenRequest tokenRequest) throws InvalidValueException, MissingKeyException {
+    public boolean run(TokenInputCodeGrant tokenRequest) throws InvalidValueException, MissingKeyException {
         isGrantTypeValid(tokenRequest.getGrantType());
         isCodeValid(tokenRequest.getCode());
         isRedirectURIValid(tokenRequest.getRedirectUri());

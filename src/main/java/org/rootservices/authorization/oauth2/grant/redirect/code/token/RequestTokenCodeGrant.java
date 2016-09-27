@@ -3,21 +3,22 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.AuthorizationCodeNotFound;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.BadRequestExceptionBuilder;
+import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.request.TokenInput;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.Extension;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
+import org.rootservices.authorization.oauth2.grant.foo.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.foo.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.foo.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.GrantTypeInvalidException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -64,7 +65,7 @@ public class RequestTokenCodeGrant implements RequestToken {
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
 
         // parse input to a pojo
-        TokenRequest tokenRequest = payloadToTokenRequest(tokenInput.getPayload());
+        TokenInputCodeGrant tokenRequest = payloadToTokenRequest(tokenInput.getPayload());
 
         // fetch auth code
         String hashedCode = hashText.run(tokenRequest.getCode());
@@ -102,9 +103,9 @@ public class RequestTokenCodeGrant implements RequestToken {
      * @return A object that represent a request for a token
      * @throws BadRequestException A exception that contains information on why it was a bad request.
      */
-    protected TokenRequest payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
+    protected TokenInputCodeGrant payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
 
-        TokenRequest tokenRequest = null;
+        TokenInputCodeGrant tokenRequest = null;
         try {
             tokenRequest = jsonToTokenRequest.run(payload);
         } catch (DuplicateKeyException e) {

@@ -1,7 +1,5 @@
 package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
-
 import java.net.URI;
 import java.util.Optional;
 

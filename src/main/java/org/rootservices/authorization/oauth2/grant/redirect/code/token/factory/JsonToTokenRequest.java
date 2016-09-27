@@ -1,23 +1,21 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token.factory;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.TokenRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
+import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.IsTokenRequestValid;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,11 +36,11 @@ public class JsonToTokenRequest {
         this.isTokenRequestValid = isTokenRequestValid;
     }
 
-    public TokenRequest run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
-        TokenRequest tokenRequest = null;
+    public TokenInputCodeGrant run(BufferedReader json) throws DuplicateKeyException, InvalidPayloadException, InvalidValueException, MissingKeyException, UnknownKeyException {
+        TokenInputCodeGrant tokenRequest = null;
         try {
             // Map<String, String> result = objectMapper.readValue(json, new TypeReference<Map<String,String>>() { });
-            tokenRequest = objectMapper.readValue(json, TokenRequest.class);
+            tokenRequest = objectMapper.readValue(json, TokenInputCodeGrant.class);
         } catch (JsonParseException e) {
             // TODO: see if jackson can throw a specific exception for duplicates.
             Optional<String> duplicateKey = getJsonParseExceptionDuplicateKey(e);

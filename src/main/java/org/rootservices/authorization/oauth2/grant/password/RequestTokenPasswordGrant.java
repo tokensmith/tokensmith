@@ -4,29 +4,28 @@ import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.foo.RequestTokenGrant;
 import org.rootservices.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
 import org.rootservices.authorization.oauth2.grant.password.factory.TokenInputPasswordGrantFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.BadRequestException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.BadRequestExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.exception.UnknownKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.Extension;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
+import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestExceptionBuilder;
+import org.rootservices.authorization.oauth2.grant.foo.exception.UnknownKeyException;
+import org.rootservices.authorization.oauth2.grant.foo.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.foo.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.foo.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 9/18/16.
  */
 @Component
-public class RequestTokenPasswordGrant {
+public class RequestTokenPasswordGrant implements RequestTokenGrant {
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputPasswordGrantFactory tokenInputPasswordGrantFactory;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
@@ -45,6 +44,7 @@ public class RequestTokenPasswordGrant {
         this.issueTokenPasswordGrant = issueTokenPasswordGrant;
     }
 
+    @Override
     public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, UnauthorizedException {
 
         ConfidentialClient confidentialClient = loginConfidentialClient.run(clientId, clientPassword);

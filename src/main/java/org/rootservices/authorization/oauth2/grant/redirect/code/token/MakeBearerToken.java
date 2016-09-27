@@ -1,6 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
+import org.rootservices.authorization.oauth2.grant.foo.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.GrantType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -12,6 +12,7 @@ import java.util.UUID;
 
 /**
  * Created by tommackenzie on 6/2/15.
+ * TODO: this should be moved to a parent package.
  */
 @Component
 public class MakeBearerToken {

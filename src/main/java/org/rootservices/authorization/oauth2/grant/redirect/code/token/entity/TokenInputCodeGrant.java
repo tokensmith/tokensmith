@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token;
+package org.rootservices.authorization.oauth2.grant.redirect.code.token.entity;
 
 import java.net.URI;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import java.util.Optional;
  * Created by tommackenzie on 6/26/15.
  *
  */
-public class TokenRequest {
+public class TokenInputCodeGrant {
     private String grantType;
     private String code;
     private Optional<URI> redirectUri = Optional.empty();
