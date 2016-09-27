@@ -1,18 +1,17 @@
-package org.rootservices.authorization.oauth2.grant.foo;
+package org.rootservices.authorization.oauth2.grant.token;
 
-import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.entity.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.BadRequestExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
-import org.rootservices.authorization.oauth2.grant.foo.factory.RequestTokenFactory;
-import org.rootservices.authorization.oauth2.grant.foo.translator.JsonToMapTranslator;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
+import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenFactory;
+import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 
 import java.io.BufferedReader;
 import java.io.StringReader;

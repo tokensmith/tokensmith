@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.foo.entity;
+package org.rootservices.authorization.oauth2.grant.token.entity;
 
 /**
  * Created by tommackenzie on 1/17/16.

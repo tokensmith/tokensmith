@@ -1,12 +1,12 @@
-package org.rootservices.authorization.oauth2.grant.foo;
+package org.rootservices.authorization.oauth2.grant.token;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.foo.exception.InvalidPayloadException;
-import org.rootservices.authorization.oauth2.grant.foo.translator.JsonToMapTranslator;
+import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

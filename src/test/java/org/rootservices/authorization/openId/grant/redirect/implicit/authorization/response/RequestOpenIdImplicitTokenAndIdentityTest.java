@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.foo.entity.TokenType;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;

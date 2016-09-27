@@ -1,10 +1,10 @@
-package org.rootservices.authorization.oauth2.grant.foo;
+package org.rootservices.authorization.oauth2.grant.token;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.oauth2.grant.foo.factory.RequestTokenFactory;
+import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenFactory;
 import org.rootservices.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

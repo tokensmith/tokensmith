@@ -1,6 +1,6 @@
-package org.rootservices.authorization.oauth2.grant.foo.factory;
+package org.rootservices.authorization.oauth2.grant.token.factory;
 
-import org.rootservices.authorization.oauth2.grant.foo.RequestTokenGrant;
+import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
 import org.rootservices.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

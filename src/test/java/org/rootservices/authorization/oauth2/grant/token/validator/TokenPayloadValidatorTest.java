@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.foo.validator;
+package org.rootservices.authorization.oauth2.grant.token.validator;
 
 import org.junit.Before;
 import org.junit.Test;
