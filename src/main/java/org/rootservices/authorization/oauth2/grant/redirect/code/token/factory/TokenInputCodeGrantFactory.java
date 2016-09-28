@@ -1,5 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token.factory;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
@@ -18,16 +19,19 @@ import java.util.*;
  */
 @Component
 public class TokenInputCodeGrantFactory {
+
     private static Integer MAX_NUMBER_OF_KEYS = 3;
     protected static String CODE = "code";
     protected static String REDIRECT_URI = "redirect_uri";
     protected static List<String> KNOWN_KEYS = Arrays.asList("grant_type", "code", "redirect_uri");
 
     private TokenPayloadValidator tokenPayloadValidator;
+    private UrlValidator urlValidator;
 
     @Autowired
-    public TokenInputCodeGrantFactory(TokenPayloadValidator tokenPayloadValidator) {
+    public TokenInputCodeGrantFactory(TokenPayloadValidator tokenPayloadValidator, UrlValidator urlValidator) {
         this.tokenPayloadValidator = tokenPayloadValidator;
+        this.urlValidator = urlValidator;
     }
 
     public TokenInputCodeGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
@@ -54,7 +58,7 @@ public class TokenInputCodeGrantFactory {
 
     protected Optional<URI> makeRedirectUri(Optional<String> input) throws InvalidValueException {
         Optional<URI> redirectUri = Optional.empty();
-        if (input.isPresent()) {
+        if (input.isPresent() && urlValidator.isValid(input.get())) {
             try {
                 redirectUri = Optional.of(new URI(input.get()));
             } catch (URISyntaxException e) {
@@ -65,6 +69,13 @@ public class TokenInputCodeGrantFactory {
                         input.get()
                 );
             }
+        } else if (input.isPresent()) { // not a valid url
+            throw new InvalidValueException(
+                    ErrorCode.REDIRECT_URI_INVALID.getDescription(),
+                    ErrorCode.REDIRECT_URI_INVALID.getCode(),
+                    REDIRECT_URI,
+                    input.get()
+            );
         }
         return redirectUri;
     }
