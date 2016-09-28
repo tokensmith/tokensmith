@@ -5,6 +5,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.AuthorizationCodeNotFound;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,9 +39,9 @@ import java.util.UUID;
  * Created by tommackenzie on 5/24/15.
  */
 @Component
-public class RequestTokenCodeGrant implements RequestToken {
+public class RequestTokenCodeGrant {
     private LoginConfidentialClient loginConfidentialClient;
-    private JsonToTokenRequest jsonToTokenRequest;
+    private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private AuthCodeRepository authCodeRepository;
@@ -47,9 +49,9 @@ public class RequestTokenCodeGrant implements RequestToken {
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
-        this.jsonToTokenRequest = jsonToTokenRequest;
+        this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.authCodeRepository = authCodeRepository;
@@ -57,19 +59,25 @@ public class RequestTokenCodeGrant implements RequestToken {
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
-    @Override
-    public TokenResponse run(TokenInput tokenInput) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
 
         // login in a confidential client.
-        UUID clientUUID = UUID.fromString(tokenInput.getClientUUID());
-        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientUUID, tokenInput.getClientPassword());
+        ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
 
-        // parse input to a pojo
-        TokenInputCodeGrant tokenRequest = payloadToTokenRequest(tokenInput.getPayload());
+        TokenInputCodeGrant input = null;
+        try {
+            input = tokenInputCodeGrantFactory.run(request);
+        } catch (UnknownKeyException e) {
+            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
+        } catch (InvalidValueException e) {
+            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
+        } catch (MissingKeyException e) {
+            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
+        }
 
         // fetch auth code
-        String hashedCode = hashText.run(tokenRequest.getCode());
-        AuthCode authCode = fetchAndVerifyAuthCode(clientUUID, hashedCode, tokenRequest.getRedirectUri());
+        String hashedCode = hashText.run(input.getCode());
+        AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
         String plainTextToken = randomString.run();
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerUUID();
@@ -96,33 +104,6 @@ public class RequestTokenCodeGrant implements RequestToken {
         return tokenResponse;
     }
 
-    /**
-     * Makes a token request and validates the token request is accurate.
-     *
-     * @param payload
-     * @return A object that represent a request for a token
-     * @throws BadRequestException A exception that contains information on why it was a bad request.
-     */
-    protected TokenInputCodeGrant payloadToTokenRequest(BufferedReader payload) throws BadRequestException {
-
-        TokenInputCodeGrant tokenRequest = null;
-        try {
-            tokenRequest = jsonToTokenRequest.run(payload);
-        } catch (DuplicateKeyException e) {
-            throw badRequestExceptionBuilder.DuplicateKey(e.getKey(), e.getCode(), e).build();
-        } catch (InvalidPayloadException e) {
-            throw badRequestExceptionBuilder.InvalidPayload(e.getCode(), e).build();
-        } catch (GrantTypeInvalidException e) {
-            throw badRequestExceptionBuilder.UnsupportedGrantType(e.getValue(), e.getCode(), e).build();
-        } catch (InvalidValueException e) {
-            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
-        } catch (MissingKeyException e) {
-            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
-        } catch (UnknownKeyException e) {
-            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
-        }
-        return tokenRequest;
-    }
 
     protected AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
         AuthCode authCode;

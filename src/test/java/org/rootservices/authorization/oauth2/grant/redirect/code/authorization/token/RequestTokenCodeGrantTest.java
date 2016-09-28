@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestToken;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
@@ -33,7 +34,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.fest.assertions.api.Assertions.fail;
@@ -74,7 +78,16 @@ public class RequestTokenCodeGrantTest {
     private RandomString randomString;
 
     @Autowired
-    private RequestToken subject;
+    private RequestTokenCodeGrant subject;
+
+    public Map<String, String> makeRequest(String code, URI redirectURI) {
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "authorization_code");
+        request.put("code", code);
+        request.put("redirect_uri", redirectURI.toString());
+
+        return request;
+    }
 
     @Test
     @Transactional
@@ -82,19 +95,17 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-            "{\"grant_type\": \"authorization_code\", " +
-            "\"code\": \""+ plainTextAuthCode + "\", " +
-            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
 
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        TokenResponse actual = subject.request(
+                authCode.getAccessRequest().getClientUUID(),
+                FixtureFactory.PLAIN_TEXT_PASSWORD,
+                request
+        );
 
-        TokenResponse actual = subject.run(tokenInput);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
         assertThat(actual.getExpiresIn(), is(3600L));
@@ -129,19 +140,17 @@ public class RequestTokenCodeGrantTest {
 
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                        "\"code\": \""+ plainTextAuthCode + "\", " +
-                        "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
 
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        TokenResponse actual = subject.request(
+                authCode.getAccessRequest().getClientUUID(),
+                FixtureFactory.PLAIN_TEXT_PASSWORD,
+                request
+        );
 
-        TokenResponse actual = subject.run(tokenInput);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
         assertThat(actual.getExpiresIn(), is(3600L));
@@ -150,30 +159,26 @@ public class RequestTokenCodeGrantTest {
 
     }
 
-    //TODO: should this be moved to integration namespace?
-
     @Test
     @Transactional
     public void testRunLoginClientFails() throws URISyntaxException, DuplicateRecordException {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \"" + plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \"" + authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
 
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword("wrong-password");
 
         UnauthorizedException expected = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenInput);
+            subject.request(
+                authCode.getAccessRequest().getClientUUID(),
+                "wrong-password",
+                request
+            );
             fail("No exception was thrown. Expected UnauthorizedException");
         } catch (UnauthorizedException e) {
             expected = e;
@@ -192,110 +197,24 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testMissingGrantTypeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        // payload with out grant type.
-        StringReader sr = new StringReader(
-            "{\"code\": \""+ plainTextAuthCode + "\", " +
-            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        BadRequestException expected = null;
-        TokenResponse actual = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("No exception was thrown. Expected BadRequestException");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected BadRequestException");
-        } catch (BadRequestException e ) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected BadRequestException");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
-        }
-
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
-        assertThat(((MissingKeyException) expected.getDomainCause()).getKey(), is(("grant_type")));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDescription(), is("grant_type is a required field"));
-        assertThat(actual, is(nullValue()));
-    }
-
-    @Test
-    @Transactional
-    public void testUnsupportedGrantTypeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        String grantType = "unknown_grant_type";
-        
-        StringReader sr = new StringReader(
-                "{\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"grant_type\": \"" + grantType + "\","+
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        BadRequestException expected = null;
-        TokenResponse actual = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("No exception was thrown. Expected BadRequestException");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected BadRequestException");
-        } catch (BadRequestException e ) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected BadRequestException");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
-        }
-
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.GRANT_TYPE_INVALID.getCode()));
-        assertThat(((InvalidValueException) expected.getDomainCause()).getKey(), is("grant_type"));
-        assertThat(expected.getError(), is("unsupported_grant_type"));
-        assertThat(expected.getDescription(), is(grantType + " is not supported"));
-        assertThat(actual, is(nullValue()));
-    }
-
-    @Test
-    @Transactional
     public void testMissingCodeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-
-        StringReader sr = new StringReader(
-            "{\"grant_type\": \"authorization_code\", " +
-            "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        request.remove("code");
 
         BadRequestException expected = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("No exception was thrown. Expected BadRequestException");
         } catch (UnauthorizedException e) {
             fail("UnauthorizedException was thrown. Expected BadRequestException");
@@ -321,21 +240,20 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-            "{\"grant_type\": \"authorization_code\", " +
-            "\"code\": \""+ plainTextAuthCode + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        request.remove("redirect_uri");
 
         AuthorizationCodeNotFound expected = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("No exception was thrown. Expected AuthorizationCodeNotFound");
         } catch (UnauthorizedException e) {
             fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
@@ -359,22 +277,19 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, true, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \"" + plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \"" + authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
         AuthorizationCodeNotFound expected = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("No exception was thrown. Expected AuthorizationCodeNotFound");
         } catch (UnauthorizedException e) {
             fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
@@ -399,23 +314,20 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ FixtureFactory.REDIRECT_URI + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                new URI(FixtureFactory.REDIRECT_URI)
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
         BadRequestException expected = null;
         TokenResponse actual = null;
 
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("BadRequestException expected");
         } catch (UnauthorizedException e) {
             fail("BadRequestException expected");
@@ -441,23 +353,21 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \"redirect\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        request.put("redirect_uri", "foo");
 
         BadRequestException expected = null;
         TokenResponse actual = null;
 
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("BadRequestException expected");
         } catch (UnauthorizedException e) {
             fail("BadRequestException expected");
@@ -478,155 +388,25 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testGrantTypeRepeatedExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
-
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        TokenResponse actual = null;
-        BadRequestException expected = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
-        } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
-        }
-
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
-        assertThat(expected.getDescription(), is("grant_type is repeated"));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
-    }
-
-    @Test
-    @Transactional
-    public void testCodeRepeatedExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
-
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        TokenResponse actual = null;
-        BadRequestException expected = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
-        } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
-        }
-
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
-        assertThat(expected.getDescription(), is("code is repeated"));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
-    }
-
-    @Test
-    @Transactional
-    public void testRedirectUriRepeatedExpectBadRequest() throws URISyntaxException, DuplicateRecordException {
-
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
-
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"," +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
-        );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
-
-        TokenResponse actual = null;
-        BadRequestException expected = null;
-        try {
-            actual = subject.run(tokenInput);
-            fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
-        } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
-        }
-
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDescription(), is("redirect_uri is repeated"));
-        assertThat(expected.getDomainCause(), instanceOf(DuplicateKeyException.class));
-    }
-
-    @Test
-    @Transactional
     public void shouldThrowBadRequestWhenPayloadHasUnknownKey() throws URISyntaxException, DuplicateRecordException {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        // client_id should not be in payload.
-        StringReader payload = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"," +
-                "\"client_id\": \"42415ecb-857d-4ff3-9223-f1c133b06205\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(payload);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+        request.put("unknown_key", "banana");
 
         TokenResponse actual = null;
         BadRequestException expected = null;
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
             fail("BadRequestException expected");
         } catch (UnauthorizedException e) {
             fail("BadRequestException expected");
@@ -641,7 +421,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual, is(nullValue()));
         assertThat(expected.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
         assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDescription(), is("client_id is a unknown key"));
+        assertThat(expected.getDescription(), is("unknown_key is a unknown key"));
         assertThat(expected.getDomainCause(), instanceOf(UnknownKeyException.class));
     }
 
@@ -668,22 +448,19 @@ public class RequestTokenCodeGrantTest {
         authCodeTokenRepository.insert(authCodeToken);
         // end - insert a token that relates to the auth code.
 
-        StringReader sr = new StringReader(
-                "{\"grant_type\": \"authorization_code\", " +
-                "\"code\": \""+ plainTextAuthCode + "\", " +
-                "\"redirect_uri\": \""+ authCode.getAccessRequest().getRedirectURI().get().toString() + "\"}"
+        Map<String, String> request = makeRequest(
+                plainTextAuthCode,
+                authCode.getAccessRequest().getRedirectURI().get()
         );
-        BufferedReader json = new BufferedReader(sr);
-
-        TokenInput tokenInput = new TokenInput();
-        tokenInput.setPayload(json);
-        tokenInput.setClientUUID(authCode.getAccessRequest().getClientUUID().toString());
-        tokenInput.setClientPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
         CompromisedCodeException exception = null;
         TokenResponse actual = null;
         try {
-            actual = subject.run(tokenInput);
+            actual = subject.request(
+                    authCode.getAccessRequest().getClientUUID(),
+                    FixtureFactory.PLAIN_TEXT_PASSWORD,
+                    request
+            );
         } catch (UnauthorizedException e) {
             fail("actual UnauthorizedException, expected CompromisedCodeException");
         } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
