@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception;
+package org.rootservices.authorization.oauth2.grant.token.exception;
 
 /**
  * Created by tommackenzie on 7/4/15.

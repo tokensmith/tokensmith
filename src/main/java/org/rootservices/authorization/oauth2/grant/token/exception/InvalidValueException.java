@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception;
+package org.rootservices.authorization.oauth2.grant.token.exception;
 
 import org.rootservices.authorization.exception.BaseInformException;
 

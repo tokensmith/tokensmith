@@ -1,11 +1,10 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token.factory;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

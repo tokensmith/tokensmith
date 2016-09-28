@@ -9,17 +9,12 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.T
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.JsonToTokenRequest;
-import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
 import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.request.TokenInput;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.GrantTypeInvalidException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
-import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
+import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -28,7 +23,6 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +43,7 @@ public class RequestTokenCodeGrant {
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, JsonToTokenRequest jsonToTokenRequest, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
