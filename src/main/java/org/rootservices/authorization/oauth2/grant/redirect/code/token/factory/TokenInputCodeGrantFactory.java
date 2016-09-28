@@ -19,9 +19,9 @@ import java.util.*;
 @Component
 public class TokenInputCodeGrantFactory {
     private static Integer MAX_NUMBER_OF_KEYS = 3;
-    protected static String CODE = "username";
-    protected static String REDIRECT_URI = "password";
-    protected static List<String> KNOWN_KEYS = new ArrayList<>();
+    protected static String CODE = "code";
+    protected static String REDIRECT_URI = "redirect_uri";
+    protected static List<String> KNOWN_KEYS = Arrays.asList("grant_type", "code", "redirect_uri");
 
     private TokenPayloadValidator tokenPayloadValidator;
 
