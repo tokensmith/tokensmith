@@ -5,8 +5,8 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
+import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

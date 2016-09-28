@@ -13,8 +13,8 @@ import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyExc
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
+import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.stereotype.Component;

@@ -3,8 +3,8 @@ package org.rootservices.authorization.oauth2.grant.token.validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.validator.exception.MissingKeyException;
+import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
+import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 
 
 import java.util.*;
