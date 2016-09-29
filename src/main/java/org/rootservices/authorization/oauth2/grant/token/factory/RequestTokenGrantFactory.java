@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RequestTokenGrantFactory {
     private static String PASSWORD = "password";
-    private static String CODE = "code";
+    private static String CODE = "authorization_code";
     private RequestTokenPasswordGrant requestTokenPasswordGrant;
     private RequestTokenCodeGrant requestTokenCodeGrant;
 

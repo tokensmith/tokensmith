@@ -17,6 +17,7 @@ import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueE
 import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.RandomString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -35,6 +36,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
 
     private static String OPENID_SCOPE = "openid";
 
+    @Autowired
     public RequestTokenPasswordGrant(LoginConfidentialClient loginConfidentialClient, TokenInputPasswordGrantFactory tokenInputPasswordGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenPasswordGrant issueTokenPasswordGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputPasswordGrantFactory = tokenInputPasswordGrantFactory;

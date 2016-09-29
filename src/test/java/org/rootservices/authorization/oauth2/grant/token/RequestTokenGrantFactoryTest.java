@@ -38,7 +38,7 @@ public class RequestTokenGrantFactoryTest {
 
     @Test
     public void makeShouldBeCode() throws Exception {
-        RequestTokenGrant actual = subject.make("code");
+        RequestTokenGrant actual = subject.make("authorization_code");
         assertThat(actual, instanceOf(RequestTokenCodeGrant.class));
     }
 
