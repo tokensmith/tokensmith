@@ -80,6 +80,15 @@ public class BadRequestExceptionBuilder {
         return this;
     }
 
+    public BadRequestExceptionBuilder CompromisedCode(int code, Throwable domainCause) {
+        this.message = "Bad request";
+        this.error = "invalid_grant";
+        this.description = "the authorization code was already used";
+        this.domainCause = domainCause;
+        this.code = code;
+        return this;
+    }
+
     public BadRequestException build() {
         return new BadRequestException(message, error, description, domainCause, code);
     }

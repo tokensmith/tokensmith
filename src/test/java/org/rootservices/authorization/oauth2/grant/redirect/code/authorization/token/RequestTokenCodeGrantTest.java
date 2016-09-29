@@ -7,15 +7,11 @@ import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.AuthorizationCodeNotFound;
-import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
-import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
@@ -156,7 +152,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testRunLoginClientFails() throws URISyntaxException, DuplicateRecordException {
+    public void testRunLoginClientFails() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -166,33 +162,25 @@ public class RequestTokenCodeGrantTest {
         );
 
 
-        UnauthorizedException expected = null;
-        TokenResponse actual = null;
+        UnauthorizedException actual = null;
         try {
             subject.request(
                 authCode.getAccessRequest().getClientUUID(),
                 "wrong-password",
                 request
             );
-            fail("No exception was thrown. Expected UnauthorizedException");
         } catch (UnauthorizedException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected UnauthorizedException");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("AuthorizationCodeNotFound was thrown. Expected UnauthorizedException");
-        } catch (BadRequestException e) {
-            fail("BadRequestException was thrown. Expected UnauthorizedException");
+            actual = e;
         }
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
-        assertThat(expected.getMessage(), is(ErrorCode.PASSWORD_MISMATCH.getDescription()));
-        assertThat(actual, is(nullValue()));
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
+        assertThat(actual.getMessage(), is(ErrorCode.PASSWORD_MISMATCH.getDescription()));
     }
 
     @Test
     @Transactional
-    public void testMissingCodeExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
+    public void testMissingCodeExpectBadRequestException() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -202,36 +190,28 @@ public class RequestTokenCodeGrantTest {
         );
         request.remove("code");
 
-        BadRequestException expected = null;
-        TokenResponse actual = null;
+        BadRequestException actual = null;
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-            fail("No exception was thrown. Expected BadRequestException");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected BadRequestException");
+
         } catch (BadRequestException e ) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected BadRequestException");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("AuthorizationCodeNotFound was thrown. Expected BadRequestException");
+            actual = e;
         }
 
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
-        assertThat(((MissingKeyException) expected.getDomainCause()).getKey(), is("code"));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDescription(), is("code is a required field"));
-        assertThat(actual, is(nullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
+        assertThat(((MissingKeyException) actual.getDomainCause()).getKey(), is("code"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDescription(), is("code is a required field"));
     }
     
     @Test
     @Transactional
-    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws URISyntaxException, DuplicateRecordException {
+    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -241,34 +221,25 @@ public class RequestTokenCodeGrantTest {
         );
         request.remove("redirect_uri");
 
-        AuthorizationCodeNotFound expected = null;
-        TokenResponse actual = null;
+        NotFoundException actual = null;
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-            fail("No exception was thrown. Expected AuthorizationCodeNotFound");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (BadRequestException e ) {
-            fail("BadRequestException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (AuthorizationCodeNotFound e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (NotFoundException e) {
+            actual = e;
         }
 
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
-        assertThat(expected.getError(), is("invalid_grant"));
-        assertThat(actual, is(nullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
+        assertThat(actual.getError(), is("invalid_grant"));
     }
 
     @Test
     @Transactional
-    public void testIsRevokedExpectAuthorizationCodeNotFound() throws URISyntaxException, DuplicateRecordException {
+    public void testIsRevokedExpectAuthorizationCodeNotFound() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, true, plainTextAuthCode);
 
@@ -277,34 +248,25 @@ public class RequestTokenCodeGrantTest {
                 authCode.getAccessRequest().getRedirectURI().get()
         );
 
-        AuthorizationCodeNotFound expected = null;
-        TokenResponse actual = null;
+        NotFoundException actual = null;
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-            fail("No exception was thrown. Expected AuthorizationCodeNotFound");
-        } catch (UnauthorizedException e) {
-            fail("UnauthorizedException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (BadRequestException e ) {
-            fail("BadRequestException was thrown. Expected AuthorizationCodeNotFound");
-        } catch (AuthorizationCodeNotFound e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("CompromisedCodeException was thrown. Expected AuthorizationCodeNotFound");
+        } catch (NotFoundException e) {
+            actual = e;
         }
 
-        assertThat(expected, is(notNullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.AUTH_CODE_NOT_FOUND.getCode()));
-        assertThat(expected.getError(), is("invalid_grant"));
-        assertThat(actual, is(nullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.AUTH_CODE_NOT_FOUND.getCode()));
+        assertThat(actual.getError(), is("invalid_grant"));
     }
 
     @Test
     @Transactional
-    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
+    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -314,36 +276,29 @@ public class RequestTokenCodeGrantTest {
                 new URI(FixtureFactory.REDIRECT_URI)
         );
 
-        BadRequestException expected = null;
-        TokenResponse actual = null;
+        BadRequestException actual = null;
 
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-            fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
+
         } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
+            actual = e;
         }
 
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
-        assertThat(expected.getDescription(), is("redirect_uri is invalid"));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDomainCause(), instanceOf(InvalidValueException.class));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
+        assertThat(actual.getDescription(), is("redirect_uri is invalid"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDomainCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
     @Transactional
-    public void testRedirectUriIsNotValidExpectBadRequestException() throws URISyntaxException, DuplicateRecordException {
+    public void testRedirectUriIsNotValidExpectBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -354,36 +309,29 @@ public class RequestTokenCodeGrantTest {
         );
         request.put("redirect_uri", "foo");
 
-        BadRequestException expected = null;
-        TokenResponse actual = null;
+        BadRequestException actual = null;
 
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
             fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
         } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
+            actual = e;
         }
 
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
-        assertThat(expected.getDescription(), is("redirect_uri is invalid"));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDomainCause(), instanceOf(InvalidValueException.class));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
+        assertThat(actual.getDescription(), is("redirect_uri is invalid"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDomainCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
     @Transactional
-    public void shouldThrowBadRequestWhenPayloadHasUnknownKey() throws URISyntaxException, DuplicateRecordException {
+    public void shouldThrowBadRequestWhenPayloadHasUnknownKey() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -394,30 +342,23 @@ public class RequestTokenCodeGrantTest {
         );
         request.put("unknown_key", "banana");
 
-        TokenResponse actual = null;
-        BadRequestException expected = null;
+        BadRequestException actual = null;
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-            fail("BadRequestException expected");
-        } catch (UnauthorizedException e) {
-            fail("BadRequestException expected");
-        } catch (AuthorizationCodeNotFound e) {
-            fail("BadRequestException expected");
+
         } catch (BadRequestException e) {
-            expected = e;
-        } catch (CompromisedCodeException e) {
-            fail("BadRequestException expected");
+            actual = e;
         }
 
-        assertThat(actual, is(nullValue()));
-        assertThat(expected.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
-        assertThat(expected.getError(), is("invalid_request"));
-        assertThat(expected.getDescription(), is("unknown_key is a unknown key"));
-        assertThat(expected.getDomainCause(), instanceOf(UnknownKeyException.class));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDescription(), is("unknown_key is a unknown key"));
+        assertThat(actual.getDomainCause(), instanceOf(UnknownKeyException.class));
     }
 
     /**
@@ -448,29 +389,22 @@ public class RequestTokenCodeGrantTest {
                 authCode.getAccessRequest().getRedirectURI().get()
         );
 
-        CompromisedCodeException exception = null;
-        TokenResponse actual = null;
+        BadRequestException actual = null;
         try {
-            actual = subject.request(
+            subject.request(
                     authCode.getAccessRequest().getClientUUID(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
-        } catch (UnauthorizedException e) {
-            fail("actual UnauthorizedException, expected CompromisedCodeException");
-        } catch (AuthorizationCodeNotFound authorizationCodeNotFound) {
-            fail("actual AuthorizationCodeNotFound, expected CompromisedCodeException");
         } catch (BadRequestException e) {
-            fail("actual BadRequestException expected CompromisedCodeException");
-        } catch (CompromisedCodeException e) {
-            exception = e;
+            actual = e;
         }
 
-        assertThat(actual, is(nullValue()));
-        assertThat(exception, is(notNullValue()));
-        assertThat(exception.getCode(), is(ErrorCode.COMPROMISED_AUTH_CODE.getCode()));
-        assertThat(exception.getError(), is("invalid_grant"));
-        assertThat(exception.getDomainCause(), instanceOf(DuplicateRecordException.class));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.COMPROMISED_AUTH_CODE.getCode()));
+        assertThat(actual.getError(), is("invalid_grant"));
+        assertThat(actual.getDomainCause(), instanceOf(CompromisedCodeException.class));
 
         // make sure the first token was revoked.
         Token token1 = tokenRepository.getByAuthCodeId(authCode.getUuid());
