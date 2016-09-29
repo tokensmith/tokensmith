@@ -4,17 +4,12 @@ import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.AuthorizationCodeNotFound;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactory;
-import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
+import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
-import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
-import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -53,7 +48,8 @@ public class RequestTokenCodeGrant {
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
-    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, AuthorizationCodeNotFound, BadRequestException, CompromisedCodeException {
+    // TODO: left off here, what exceptions should this throw?
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException {
 
         // login in a confidential client.
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
@@ -77,12 +73,17 @@ public class RequestTokenCodeGrant {
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerUUID();
         List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
-        Token token = issueTokenCodeGrant.run(
-                authCode.getUuid(),
-                resourceOwnerId,
-                plainTextToken,
-                accessRequestScopes
-        );
+        Token token;
+        try {
+            token = issueTokenCodeGrant.run(
+                    authCode.getUuid(),
+                    resourceOwnerId,
+                    plainTextToken,
+                    accessRequestScopes
+            );
+        } catch (CompromisedCodeException e) {
+            throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();
+        }
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(plainTextToken);
@@ -98,20 +99,27 @@ public class RequestTokenCodeGrant {
         return tokenResponse;
     }
 
-
-    protected AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws AuthorizationCodeNotFound {
+    protected AuthCode fetchAndVerifyAuthCode(UUID clientUUID, String hashedCode, Optional<URI> tokenRequestRedirectUri) throws NotFoundException {
         AuthCode authCode;
         try {
             authCode = authCodeRepository.getByClientIdAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
-            throw new AuthorizationCodeNotFound(
-                    "Access Request was not found", "invalid_grant", e, ErrorCode.AUTH_CODE_NOT_FOUND.getCode()
+            throw new NotFoundException(
+                    "Access Request was not found",
+                    "invalid_grant",
+                    ErrorCode.AUTH_CODE_NOT_FOUND.getDescription(),
+                    ErrorCode.AUTH_CODE_NOT_FOUND.getCode(),
+                    e
             );
         }
 
         if ( ! doRedirectUrisMatch(tokenRequestRedirectUri, authCode.getAccessRequest().getRedirectURI()) ) {
-            throw new AuthorizationCodeNotFound(
-                    "Access Request was not found", "invalid_grant", ErrorCode.REDIRECT_URI_MISMATCH.getCode()
+            throw new NotFoundException(
+                    "Access Request was not found",
+                    "invalid_grant",
+                    ErrorCode.REDIRECT_URI_MISMATCH.getDescription(),
+                    ErrorCode.REDIRECT_URI_MISMATCH.getCode(),
+                    null
             );
         }
         return authCode;
