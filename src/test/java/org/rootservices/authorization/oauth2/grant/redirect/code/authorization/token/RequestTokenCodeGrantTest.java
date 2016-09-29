@@ -82,7 +82,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testRun() throws Exception {
+    public void requestShouldBeOk() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -126,7 +126,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void shouldBeOpenIdExtension() throws Exception {
+    public void requestShouldBeOpenIdExtension() throws Exception {
         String plainTextAuthCode = randomString.run();
 
         AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
@@ -152,7 +152,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testRunLoginClientFails() throws Exception {
+    public void requestWhenLoginClientFailsShouldThrowUnauthorizedException() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -180,7 +180,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testMissingCodeExpectBadRequestException() throws Exception {
+    public void requestWhenMissingCodeShouldThrowBadRequestException() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -211,7 +211,7 @@ public class RequestTokenCodeGrantTest {
     
     @Test
     @Transactional
-    public void testMissingRedirectUriExpectAuthorizationCodeNotFound() throws Exception {
+    public void requestWhenMissingRedirectUriShouldThrowNotFoundException() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
@@ -239,7 +239,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testIsRevokedExpectAuthorizationCodeNotFound() throws Exception {
+    public void requestWhenCodeIsRevokedShouldThrowNotFoundException() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, true, plainTextAuthCode);
 
@@ -266,7 +266,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testRedirectUriIsNotHttpsExpectBadRequestException() throws Exception {
+    public void requesstWhenRedirectUriIsNotHttpsShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -298,7 +298,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void testRedirectUriIsNotValidExpectBadRequestException() throws Exception {
+    public void requestWhenRedirectUriIsNotValidShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -331,7 +331,7 @@ public class RequestTokenCodeGrantTest {
 
     @Test
     @Transactional
-    public void shouldThrowBadRequestWhenPayloadHasUnknownKey() throws Exception {
+    public void requestWhenPayloadHasUnknownKeyShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
@@ -369,7 +369,7 @@ public class RequestTokenCodeGrantTest {
      * @throws URISyntaxException
      */
     @Test
-    public void runExpectCompromisedCodeException() throws Exception {
+    public void requestWhenCodeIsCompromisedShouldThrowBadRequestException() throws Exception {
 
         // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
