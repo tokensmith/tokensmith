@@ -4,7 +4,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
-import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenFactory;
+import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,17 +20,17 @@ import java.util.UUID;
 public class RequestToken {
     private JsonToMapTranslator jsonToMapTranslator;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
-    private RequestTokenFactory requestTokenFactory;
+    private RequestTokenGrantFactory requestTokenGrantFactory;
     private static String GRANT_TYPE = "grant_type";
 
     @Autowired
-    public RequestToken(JsonToMapTranslator jsonToMapTranslator, BadRequestExceptionBuilder badRequestExceptionBuilder, RequestTokenFactory requestTokenFactory) {
+    public RequestToken(JsonToMapTranslator jsonToMapTranslator, BadRequestExceptionBuilder badRequestExceptionBuilder, RequestTokenGrantFactory requestTokenGrantFactory) {
         this.jsonToMapTranslator = jsonToMapTranslator;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
-        this.requestTokenFactory = requestTokenFactory;
+        this.requestTokenGrantFactory = requestTokenGrantFactory;
     }
 
-    public TokenResponse request(UUID clientId, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException {
+    public TokenResponse request(UUID clientId, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException {
 
         Map<String, String> tokenInput = null;
         try {
@@ -41,7 +41,7 @@ public class RequestToken {
             throw badRequestExceptionBuilder.InvalidPayload(e.getCode(), e).build();
         }
 
-        RequestTokenGrant requestTokenGrant = requestTokenFactory.make(tokenInput.get(GRANT_TYPE));
+        RequestTokenGrant requestTokenGrant = requestTokenGrantFactory.make(tokenInput.get(GRANT_TYPE));
 
         if (requestTokenGrant == null) {
             throw badRequestExceptionBuilder.InvalidKeyValue(GRANT_TYPE, ErrorCode.GRANT_TYPE_INVALID.getCode(), null).build();

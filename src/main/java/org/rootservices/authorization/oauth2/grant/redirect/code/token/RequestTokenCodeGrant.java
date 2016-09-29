@@ -5,6 +5,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactory;
+import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
@@ -28,7 +29,7 @@ import java.util.UUID;
  * Created by tommackenzie on 5/24/15.
  */
 @Component
-public class RequestTokenCodeGrant {
+public class RequestTokenCodeGrant implements RequestTokenGrant {
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
@@ -48,7 +49,6 @@ public class RequestTokenCodeGrant {
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
-    // TODO: left off here, what exceptions should this throw?
     public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException {
 
         // login in a confidential client.

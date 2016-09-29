@@ -10,7 +10,7 @@ import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExc
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
 import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
-import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenFactory;
+import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 
 import java.io.BufferedReader;
@@ -34,7 +34,7 @@ public class RequestTokenTest {
     @Mock
     private JsonToMapTranslator mockJsonToMapTranslator;
     @Mock
-    private RequestTokenFactory mockRequestTokenFactory;
+    private RequestTokenGrantFactory mockRequestTokenGrantFactory;
 
     @Before
     public void setUp() {
@@ -42,7 +42,7 @@ public class RequestTokenTest {
         subject = new RequestToken(
                 mockJsonToMapTranslator,
                 new BadRequestExceptionBuilder(),
-                mockRequestTokenFactory
+                mockRequestTokenGrantFactory
         );
     }
 
@@ -59,7 +59,7 @@ public class RequestTokenTest {
         TokenResponse response = new TokenResponse();
 
         when(mockJsonToMapTranslator.to(request)).thenReturn(tokenInput);
-        when(mockRequestTokenFactory.make("password")).thenReturn(mockRequestTokenGrant);
+        when(mockRequestTokenGrantFactory.make("password")).thenReturn(mockRequestTokenGrant);
         when(mockRequestTokenGrant.request(clientId, clientPassword, tokenInput)).thenReturn(response);
 
         TokenResponse actual = subject.request(clientId, clientPassword, request);
@@ -140,7 +140,7 @@ public class RequestTokenTest {
         tokenInput.put("grant_type", "unknown");
 
         when(mockJsonToMapTranslator.to(request)).thenReturn(tokenInput);
-        when(mockRequestTokenFactory.make("unknown")).thenReturn(null);
+        when(mockRequestTokenGrantFactory.make("unknown")).thenReturn(null);
 
         BadRequestException actual = null;
 
