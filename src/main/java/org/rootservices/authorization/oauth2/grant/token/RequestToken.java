@@ -30,7 +30,13 @@ public class RequestToken {
         this.requestTokenGrantFactory = requestTokenGrantFactory;
     }
 
-    public TokenResponse request(UUID clientId, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException {
+    public TokenResponse request(String clientUserName, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException {
+        UUID clientId = null;
+        try {
+            clientId = UUID.fromString(clientUserName);
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorizedException(ErrorCode.CLIENT_USERNAME_DATA_TYPE.getDescription(), e, ErrorCode.CLIENT_USERNAME_DATA_TYPE.getCode());
+        }
 
         Map<String, String> tokenInput = null;
         try {
