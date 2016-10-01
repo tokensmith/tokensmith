@@ -63,7 +63,9 @@ public enum ErrorCode {
     // open id - issues creating identity.
     PROFILE_NOT_FOUND (42, "resource owner doesn't have a profile"),
     SIGN_KEY_NOT_FOUND (43, "no signing key was found"),
-    JWT_ENCODING_ERROR (44, "there was a problem encoding the jwt");
+    JWT_ENCODING_ERROR (44, "there was a problem encoding the jwt"),
+
+    CLIENT_USERNAME_DATA_TYPE(45, "user name is not a uuid");
 
     private int code;
     private final String description;

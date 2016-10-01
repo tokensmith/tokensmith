@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -49,6 +51,7 @@ public class RequestTokenTest {
     @Test
     public void requestShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
+        String clientUserName = clientId.toString();
         String clientPassword = "password";
         StringReader src = new StringReader("foo");
         BufferedReader request = new BufferedReader(src);
@@ -62,14 +65,37 @@ public class RequestTokenTest {
         when(mockRequestTokenGrantFactory.make("password")).thenReturn(mockRequestTokenGrant);
         when(mockRequestTokenGrant.request(clientId, clientPassword, tokenInput)).thenReturn(response);
 
-        TokenResponse actual = subject.request(clientId, clientPassword, request);
+        TokenResponse actual = subject.request(clientUserName, clientPassword, request);
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(response));
     }
 
     @Test
+    public void requestWhenUserNameIsNotUUIDShouldThrowUnauthorizedException() throws Exception {
+        String clientUserName = "foo";
+        String clientPassword = "password";
+        StringReader src = new StringReader("foo");
+        BufferedReader request = new BufferedReader(src);
+
+        Map<String, String> tokenInput = new HashMap<>();
+        tokenInput.put("grant_type", "password");
+
+        UnauthorizedException actual = null;
+        try {
+            subject.request(clientUserName, clientPassword, request);
+        } catch(UnauthorizedException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is(ErrorCode.CLIENT_USERNAME_DATA_TYPE.getDescription()));
+        assertThat(actual.getCode(), is(ErrorCode.CLIENT_USERNAME_DATA_TYPE.getCode()));
+        assertThat(actual.getDomainCause(), instanceOf(IllegalArgumentException.class));
+    }
+
+    @Test
     public void requestWhenDuplicateKeyShouldThrowBadRequestException() throws Exception {
-        UUID clientId = UUID.randomUUID();
+        String clientUserName = UUID.randomUUID().toString();
         String clientPassword = "password";
         StringReader src = new StringReader("foo");
         BufferedReader request = new BufferedReader(src);
@@ -86,7 +112,7 @@ public class RequestTokenTest {
         BadRequestException actual = null;
 
         try {
-            subject.request(clientId, clientPassword, request);
+            subject.request(clientUserName, clientPassword, request);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -100,7 +126,7 @@ public class RequestTokenTest {
     }
     @Test
     public void requestWhenInvalidPayloadShouldThrowBadRequestException() throws Exception {
-        UUID clientId = UUID.randomUUID();
+        String clientUserName = UUID.randomUUID().toString();
         String clientPassword = "password";
         StringReader src = new StringReader("foo");
         BufferedReader request = new BufferedReader(src);
@@ -116,7 +142,7 @@ public class RequestTokenTest {
         BadRequestException actual = null;
 
         try {
-            subject.request(clientId, clientPassword, request);
+            subject.request(clientUserName, clientPassword, request);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -131,7 +157,7 @@ public class RequestTokenTest {
 
     @Test
     public void requestWhenGrantTypeInvalidShouldThrowBadRequestException() throws Exception {
-        UUID clientId = UUID.randomUUID();
+        String clientUserName = UUID.randomUUID().toString();
         String clientPassword = "password";
         StringReader src = new StringReader("foo");
         BufferedReader request = new BufferedReader(src);
@@ -145,7 +171,7 @@ public class RequestTokenTest {
         BadRequestException actual = null;
 
         try {
-            subject.request(clientId, clientPassword, request);
+            subject.request(clientUserName, clientPassword, request);
         } catch (BadRequestException e) {
             actual = e;
         }
