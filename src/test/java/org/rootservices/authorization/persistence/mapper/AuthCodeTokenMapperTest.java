@@ -67,7 +67,7 @@ public class AuthCodeTokenMapperTest {
     }
 
     public Token insertTokenForTest() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         tokenRepository.insert(token);
 
         return token;

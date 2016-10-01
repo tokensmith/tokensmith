@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeToken;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class IssueTokenImplicitGrantTest {
     private IssueTokenImplicitGrant subject;
     @Mock
-    private MakeToken mockMakeToken;
+    private MakeBearerToken mockMakeBearerToken;
     @Mock
     private TokenRepository mockTokenRepository;
     @Mock
@@ -42,7 +42,7 @@ public class IssueTokenImplicitGrantTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new IssueTokenImplicitGrant(mockMakeToken, mockTokenRepository, mockScopeRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockMakeBearerToken, mockTokenRepository, mockScopeRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
     }
 
     @Test
@@ -52,11 +52,11 @@ public class IssueTokenImplicitGrantTest {
         List<String> scopeNames = new ArrayList<>();
         scopeNames.add("profile");
 
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
 
-        when(mockMakeToken.run(plainTextAccessToken)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
 
         List<Scope> scopes = FixtureFactory.makeScopes();
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);

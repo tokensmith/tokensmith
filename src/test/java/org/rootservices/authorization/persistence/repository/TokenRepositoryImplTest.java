@@ -34,14 +34,14 @@ public class TokenRepositoryImplTest {
 
     @Test
     public void insert() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         subject.insert(token);
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
     @Test(expected = DuplicateRecordException.class)
     public void insertDuplicateAuthCode() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         doThrow(org.springframework.dao.DuplicateKeyException.class).when(mockTokenMapper).insert(token);
 
         subject.insert(token);

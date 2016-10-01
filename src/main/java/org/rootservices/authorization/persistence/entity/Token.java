@@ -1,7 +1,5 @@
 package org.rootservices.authorization.persistence.entity;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.response.TokenType;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;

@@ -47,22 +47,25 @@ public enum ErrorCode {
     AUTH_CODE_NOT_FOUND(29, "authorization code was not found"),
     DUPLICATE_KEY (30, "there was a duplicate key in the payload"),
     INVALID_PAYLOAD (31, "the payload couldn't be parsed"),
-    MISSING_KEY (32, "A key is missing from the payload"),
-    REDIRECT_URI_INVALID (33, "redirect_uri is invalid"),
-    GRANT_TYPE_INVALID (34, "grant type is invalid"),
-    UNKNOWN_KEY (35, "a key is unrecognized"),
-    COMPROMISED_AUTH_CODE (36, "authorization code has already been used"),
+    EMPTY_VALUE(32, "empty value was found, expecting it to be non empty."),
+    MISSING_KEY (33, "A key is missing from the payload"),
+    REDIRECT_URI_INVALID (34, "redirect_uri is invalid"),
+    GRANT_TYPE_INVALID (35, "grant type is invalid"),
+    UNKNOWN_KEY (36, "a key is unrecognized"),
+    COMPROMISED_AUTH_CODE (37, "authorization code has already been used"),
 
     // open id token/implicit
-    NONCE_EMPTY_VALUE (37, "nonce is blank or missing"),
-    NONCE_MORE_THAN_ONE_ITEM (38, "nonce has more than one value."),
-    NONCE_EMPTY_LIST (39, "nonce is blank or missing"),
-    NONCE_NULL (40, "nonce is null"),
+    NONCE_EMPTY_VALUE (38, "nonce is blank or missing"),
+    NONCE_MORE_THAN_ONE_ITEM (39, "nonce has more than one value."),
+    NONCE_EMPTY_LIST (40, "nonce is blank or missing"),
+    NONCE_NULL (41, "nonce is null"),
 
     // open id - issues creating identity.
-    PROFILE_NOT_FOUND (41, "resource owner doesn't have a profile"),
-    SIGN_KEY_NOT_FOUND (42, "no signing key was found"),
-    JWT_ENCODING_ERROR (43, "there was a problem encoding the jwt");
+    PROFILE_NOT_FOUND (42, "resource owner doesn't have a profile"),
+    SIGN_KEY_NOT_FOUND (43, "no signing key was found"),
+    JWT_ENCODING_ERROR (44, "there was a problem encoding the jwt"),
+
+    CLIENT_USERNAME_DATA_TYPE(45, "user name is not a uuid");
 
     private int code;
     private final String description;

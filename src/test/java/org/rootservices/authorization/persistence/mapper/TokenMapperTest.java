@@ -38,7 +38,7 @@ public class TokenMapperTest {
 
     @Test
     public void insert() throws Exception {
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         subject.insert(token);
     }
 
@@ -48,7 +48,7 @@ public class TokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token tokenToRevoke = FixtureFactory.makeToken();
+        Token tokenToRevoke = FixtureFactory.makeOpenIdToken();
         subject.insert(tokenToRevoke);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -75,7 +75,7 @@ public class TokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeToken();
+        Token token = FixtureFactory.makeOpenIdToken();
         subject.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
