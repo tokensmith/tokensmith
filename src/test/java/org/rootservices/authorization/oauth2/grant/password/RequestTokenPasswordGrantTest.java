@@ -95,7 +95,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(ro.getId(), "access-token", client.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", client.getScopes()))
                 .thenReturn(token);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -138,7 +138,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(ro.getId(), "access-token", openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", openIdClient.getScopes()))
                 .thenReturn(token);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
