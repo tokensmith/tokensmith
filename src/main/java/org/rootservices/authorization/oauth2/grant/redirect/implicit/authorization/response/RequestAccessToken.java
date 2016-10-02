@@ -62,7 +62,7 @@ public class RequestAccessToken {
         ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
 
         String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(resourceOwner, authRequest.getScopes(), accessToken);
+        Token token = issueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), accessToken);
 
         URI redirectUri;
         if (authRequest.getRedirectURI().isPresent()) {

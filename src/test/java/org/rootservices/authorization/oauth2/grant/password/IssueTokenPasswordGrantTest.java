@@ -8,11 +8,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.repository.ClientTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -34,6 +36,8 @@ public class IssueTokenPasswordGrantTest {
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
     private TokenScopeRepository mockTokenScopeRepository;
+    @Mock
+    private ClientTokenRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -42,12 +46,14 @@ public class IssueTokenPasswordGrantTest {
                 mockMakeBearerToken,
                 mockTokenRepository,
                 mockResourceOwnerTokenRepository,
-                mockTokenScopeRepository
+                mockTokenScopeRepository,
+                mockClientTokenRepository
         );
     }
 
     @Test
     public void runShouldBeOk() throws Exception {
+        UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String plainTextAccessToken = "token";
 
@@ -56,10 +62,11 @@ public class IssueTokenPasswordGrantTest {
         Token token = FixtureFactory.makeOpenIdToken();
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
+        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
 
         when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
 
-        Token actualToken = subject.run(resourceOwner.getId(), plainTextAccessToken, scopes);
+        Token actualToken = subject.run(clientId, resourceOwner.getId(), plainTextAccessToken, scopes);
 
         assertThat(actualToken, is(notNullValue()));
         assertThat(actualToken, is(token));
@@ -83,5 +90,12 @@ public class IssueTokenPasswordGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(token));
         assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
+
+        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
+        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        assertThat(actualCt.getId(), is(notNullValue()));
+        assertThat(actualCt.getTokenId(), is(actualToken.getId()));
+        assertThat(actualCt.getClientId(), is(clientId));
+
     }
 }

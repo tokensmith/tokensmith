@@ -56,7 +56,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
 
         String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(resourceOwner, request.getScopes(),  accessToken);
+        Token token = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(),  accessToken);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
                 .map(item -> item.getScope().getName())

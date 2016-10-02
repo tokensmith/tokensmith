@@ -22,18 +22,20 @@ public class IssueTokenCodeGrant {
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private AuthCodeRepository authCodeRepository;
+    private ClientTokenRepository clientTokenRepository;
 
     @Autowired
-    public IssueTokenCodeGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository) {
+    public IssueTokenCodeGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository) {
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.authCodeRepository = authCodeRepository;
+        this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+    public Token run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
         Token token = makeBearerToken.run(plainTextToken);
 
         try {
@@ -68,6 +70,13 @@ public class IssueTokenCodeGrant {
         resourceOwnerToken.setToken(token);
 
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
+
+        ClientToken clientToken = new ClientToken();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(token.getId());
+
+        clientTokenRepository.insert(clientToken);
 
         for(AccessRequestScope ars: accessRequestScopes) {
             TokenScope ts = new TokenScope();
