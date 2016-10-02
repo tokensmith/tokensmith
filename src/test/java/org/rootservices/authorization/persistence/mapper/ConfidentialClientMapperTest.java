@@ -55,7 +55,7 @@ public class ConfidentialClientMapperTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         subject.insert(confidentialClient);
 
-        ConfidentialClient actual = subject.getByClientUUID(client.getUuid());
+        ConfidentialClient actual = subject.getByClientId(client.getUuid());
 
         // confidential client
         assertThat(actual, is(notNullValue()));

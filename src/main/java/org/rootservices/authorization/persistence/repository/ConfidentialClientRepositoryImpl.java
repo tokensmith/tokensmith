@@ -26,8 +26,8 @@ public class ConfidentialClientRepositoryImpl implements ConfidentialClientRepos
     }
 
     @Override
-    public ConfidentialClient getByClientId(UUID clientUUID) throws RecordNotFoundException {
-        ConfidentialClient confidentialClient = confidentialClientMapper.getByClientUUID(clientUUID);
+    public ConfidentialClient getByClientId(UUID clientId) throws RecordNotFoundException {
+        ConfidentialClient confidentialClient = confidentialClientMapper.getByClientId(clientId);
 
         if ( confidentialClient == null)
             throw new RecordNotFoundException("Confidential Client was not found");
