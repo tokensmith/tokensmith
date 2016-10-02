@@ -76,6 +76,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         Token token;
         try {
             token = issueTokenCodeGrant.run(
+                    cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
                     plainTextToken,

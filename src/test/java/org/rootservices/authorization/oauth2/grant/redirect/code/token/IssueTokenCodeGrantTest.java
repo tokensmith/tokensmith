@@ -37,6 +37,8 @@ public class IssueTokenCodeGrantTest {
     private TokenScopeRepository mockTokenScopeRepository;
     @Mock
     private AuthCodeRepository mockAuthCodeRepository;
+    @Mock
+    private ClientTokenRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -47,12 +49,14 @@ public class IssueTokenCodeGrantTest {
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
                 mockTokenScopeRepository,
-                mockAuthCodeRepository
+                mockAuthCodeRepository,
+                mockClientTokenRepository
         );
     }
 
     @Test
     public void runShouldReturnToken() throws Exception {
+        UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
         String plainTextToken = "plain-text-token";
@@ -61,7 +65,7 @@ public class IssueTokenCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken();
         when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
-        subject.run(authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+        subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
 
         // should insert a token
         verify(mockTokenRepository).insert(token);
@@ -86,6 +90,13 @@ public class IssueTokenCodeGrantTest {
         assertThat(actualROT.getId(), is(notNullValue()));
         assertThat(actualROT.getToken(), is(token));
 
+        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
+        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
+        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        assertThat(actualCt.getId(), is(notNullValue()));
+        assertThat(actualCt.getTokenId(), is(token.getId()));
+        assertThat(actualCt.getClientId(), is(clientId));
+
         // should insert token scopes.
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
@@ -103,6 +114,7 @@ public class IssueTokenCodeGrantTest {
 
     @Test
     public void runShouldThrowCompromisedCodeException() throws Exception{
+        UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
         String plainTextToken = "plain-text-token";
@@ -117,7 +129,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+            subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));
@@ -145,6 +157,7 @@ public class IssueTokenCodeGrantTest {
 
         // should never insert anything else!
         verify(mockResourceOwnerTokenRepository, never()).insert(any(ResourceOwnerToken.class));
+        verify(mockClientTokenRepository, never()).insert(any(ClientToken.class));
         verify(mockTokenScopeRepository, never()).insert(any(TokenScope.class));
     }
 }

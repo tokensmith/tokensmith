@@ -14,10 +14,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
-import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,9 @@ public class RequestTokenCodeGrantTest {
 
     @Autowired
     private TokenRepository tokenRepository;
+
+    @Autowired
+    private ClientTokenRepository clientTokenRepository;
 
     @Autowired
     private RandomString randomString;
@@ -122,6 +122,14 @@ public class RequestTokenCodeGrantTest {
         AuthCodeToken actualAct = authCodeTokenRepository.getByTokenId(actualRot.getToken().getId());
         assertThat(actualAct.getAuthCodeId(), is(authCode.getId()));
         assertThat(actualAct.getTokenId(), is(actualRot.getToken().getId()));
+
+        // token should relate to client
+        ClientToken actualCt = clientTokenRepository.getByTokenId(actualRot.getToken().getId());
+        assertThat(actualCt.getId(), is(notNullValue()));
+        assertThat(actualCt.getClientId(), is(authCode.getAccessRequest().getClientId()));
+        assertThat(actualCt.getTokenId(), is(actualRot.getToken().getId()));
+        assertThat(actualCt.getCreatedAt(), is(notNullValue()));
+        assertThat(actualCt.getUpdatedAt(), is(notNullValue()));
     }
 
     @Test
