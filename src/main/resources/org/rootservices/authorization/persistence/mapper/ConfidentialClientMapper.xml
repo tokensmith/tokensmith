@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ConfidentialClientMapper">
 
     <resultMap id="confidentialClient" type="org.rootservices.authorization.persistence.entity.ConfidentialClient">
-        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <association property="client"
@@ -16,8 +16,8 @@
     <insert id="insert">
         insert into confidential_client (id, client_id, password)
         values (
-            #{confidentialClient.uuid},
-            #{confidentialClient.client.uuid},
+            #{confidentialClient.id},
+            #{confidentialClient.client.id},
             #{confidentialClient.password}
         )
     </insert>

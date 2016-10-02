@@ -45,7 +45,7 @@ public class LoadConfidentialClientTokenReady {
         resourceOwnerRepository.insert(ro);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                ro.getUuid(), client.getUuid()
+                ro.getId(), client.getId()
         );
 
         if (!redirectUriIsPresent) {
@@ -59,7 +59,7 @@ public class LoadConfidentialClientTokenReady {
         for (Scope scope: client.getScopes()) {
             AccessRequestScope ars = new AccessRequestScope(
                     UUID.randomUUID(),
-                    accessRequest.getUuid(),
+                    accessRequest.getId(),
                     scope
             );
             accessRequestScopesRepository.insert(ars);

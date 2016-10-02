@@ -8,7 +8,7 @@ import java.util.UUID;
  * Created by tommackenzie on 2/1/16.
  */
 public class RSAPrivateKey {
-    private UUID uuid;
+    private UUID id;
     private PrivateKeyUse use;
     private BigInteger modulus;
     private BigInteger publicExponent;
@@ -22,12 +22,12 @@ public class RSAPrivateKey {
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public PrivateKeyUse getUse() {

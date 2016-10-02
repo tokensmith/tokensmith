@@ -7,7 +7,7 @@
         insert into client_response_type (id, client_id, response_type_id)
         values (
             #{clientResponseType.id},
-            #{clientResponseType.client.uuid},
+            #{clientResponseType.client.id},
             #{clientResponseType.responseType.id}
         );
     </insert>

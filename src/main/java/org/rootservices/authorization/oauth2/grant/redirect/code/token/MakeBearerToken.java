@@ -30,7 +30,7 @@ public class MakeBearerToken {
     public Token run(String plainTextToken) {
 
         Token token = new Token();
-        token.setUuid(UUID.randomUUID());
+        token.setId(UUID.randomUUID());
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);

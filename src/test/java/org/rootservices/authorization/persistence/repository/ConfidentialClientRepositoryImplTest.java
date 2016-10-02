@@ -47,9 +47,9 @@ public class ConfidentialClientRepositoryImplTest {
     public void getByClientUUID() throws URISyntaxException, RecordNotFoundException {
         Client client = FixtureFactory.makeCodeClientWithScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
-        when(mockConfidentialClientMapper.getByClientId(confidentialClient.getClient().getUuid())).thenReturn(confidentialClient);
+        when(mockConfidentialClientMapper.getByClientId(confidentialClient.getClient().getId())).thenReturn(confidentialClient);
 
-        ConfidentialClient actual = subject.getByClientId(confidentialClient.getClient().getUuid());
+        ConfidentialClient actual = subject.getByClientId(confidentialClient.getClient().getId());
         assertThat(actual).isEqualTo(confidentialClient);
     }
 

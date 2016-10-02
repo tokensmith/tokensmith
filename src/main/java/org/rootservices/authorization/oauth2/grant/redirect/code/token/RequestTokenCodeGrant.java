@@ -70,13 +70,13 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
         String plainTextToken = randomString.run();
-        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerUUID();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
         List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
         Token token;
         try {
             token = issueTokenCodeGrant.run(
-                    authCode.getUuid(),
+                    authCode.getId(),
                     resourceOwnerId,
                     plainTextToken,
                     accessRequestScopes

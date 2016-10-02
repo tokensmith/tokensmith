@@ -74,7 +74,7 @@ public class MakeCodeGrantIdentityToken {
 
         Profile profile = null;
         try {
-            profile = profileRepository.getByResourceOwnerId(resourceOwnerToken.getResourceOwner().getUuid());
+            profile = profileRepository.getByResourceOwnerId(resourceOwnerToken.getResourceOwner().getId());
         } catch (RecordNotFoundException e) {
             throw new ProfileNotFoundException("Profile was not found", e);
         }

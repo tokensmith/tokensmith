@@ -40,7 +40,7 @@ public class LoginResourceOwnerImplTest {
             ro.getEmail(), "password"
         );
 
-        assertThat(actual.getUuid()).isEqualTo(ro.getUuid());
+        assertThat(actual.getId()).isEqualTo(ro.getId());
     }
 
     @Test

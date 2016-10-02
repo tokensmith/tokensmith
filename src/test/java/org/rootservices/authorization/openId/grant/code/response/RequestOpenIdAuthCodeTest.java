@@ -109,7 +109,7 @@ public class RequestOpenIdAuthCodeTest {
         ).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
-                        resourceOwner.getUuid(),
+                        resourceOwner.getId(),
                         authRequest.getClientId(),
                         Optional.of(authRequest.getRedirectURI()),
                         authRequest.getScopes())

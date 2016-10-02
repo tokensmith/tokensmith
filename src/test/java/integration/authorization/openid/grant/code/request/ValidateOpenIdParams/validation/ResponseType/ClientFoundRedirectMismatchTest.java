@@ -28,7 +28,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
         p.responseTypes = null;
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -41,7 +41,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
@@ -54,7 +54,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
         p.responseTypes.add("invalid-response-type");
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -67,7 +67,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
         p.responseTypes.add("CODE");
         p.responseTypes.add("CODE");
 
@@ -81,7 +81,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getUuid());
+        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
         p.responseTypes.add("");
 
         Exception expectedDomainCause = new ResponseTypeException();

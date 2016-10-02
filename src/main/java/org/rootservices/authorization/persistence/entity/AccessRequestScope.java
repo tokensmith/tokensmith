@@ -7,33 +7,33 @@ import java.util.UUID;
  * Created by tommackenzie on 5/19/15.
  */
 public class AccessRequestScope {
-    private UUID uuid;
-    private UUID accessRequestUUID;
+    private UUID id;
+    private UUID accessRequestId;
     private Scope scope;
     private OffsetDateTime createdAt;
 
     public AccessRequestScope() {}
 
-    public AccessRequestScope(UUID uuid, UUID accessRequestUUID, Scope scope) {
-        this.uuid = uuid;
-        this.accessRequestUUID = accessRequestUUID;
+    public AccessRequestScope(UUID id, UUID accessRequestId, Scope scope) {
+        this.id = id;
+        this.accessRequestId = accessRequestId;
         this.scope = scope;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public UUID getAccessRequestUUID() {
-        return accessRequestUUID;
+    public UUID getAccessRequestId() {
+        return accessRequestId;
     }
 
-    public void setAccessRequestUUID(UUID accessRequestUUID) {
-        this.accessRequestUUID = accessRequestUUID;
+    public void setAccessRequestId(UUID accessRequestId) {
+        this.accessRequestId = accessRequestId;
     }
 
     public Scope getScope() {

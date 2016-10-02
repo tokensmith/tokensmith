@@ -41,7 +41,7 @@ public class ClientScopesMapperTests {
                 new URI("https://rootservices.org/continue")
         );
         clientRepository.insert(client);
-        return client.getUuid();
+        return client.getId();
     }
 
     private UUID insertScope() {
@@ -50,7 +50,7 @@ public class ClientScopesMapperTests {
                 "profile"
         );
         scopeRepository.insert(scope);
-        return scope.getUuid();
+        return scope.getId();
     }
 
     @Test

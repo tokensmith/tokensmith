@@ -35,7 +35,7 @@ public class PrivateKeyTranslator {
     public RSAKeyPair from(RSAPrivateKey privateKey) {
 
         RSAKeyPair keyPair = new RSAKeyPair(
-                Optional.of(privateKey.getUuid().toString()),
+                Optional.of(privateKey.getId().toString()),
                 KeyType.RSA,
                 Use.SIGNATURE,
                 privateKey.getModulus(),

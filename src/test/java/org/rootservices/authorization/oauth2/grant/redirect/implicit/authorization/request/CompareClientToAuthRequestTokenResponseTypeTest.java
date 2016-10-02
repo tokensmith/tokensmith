@@ -44,7 +44,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
 
     public AuthRequest makeAuthRequestFromClient(Client client) {
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(client.getUuid());
+        authRequest.setClientId(client.getId());
 
         List<String> responseTypes = new ArrayList<>();
         for(ResponseType responseType: client.getResponseTypes()) {

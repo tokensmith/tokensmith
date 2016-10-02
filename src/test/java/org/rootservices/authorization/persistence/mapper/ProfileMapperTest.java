@@ -110,7 +110,7 @@ public class ProfileMapperTest {
         Address address = FixtureFactory.makeAddress(profile.getId());
         addressMapper.insert(address);
 
-        Profile actual = subject.getByResourceId(ro.getUuid());
+        Profile actual = subject.getByResourceId(ro.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));

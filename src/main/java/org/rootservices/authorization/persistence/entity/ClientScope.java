@@ -7,39 +7,39 @@ import java.util.UUID;
  * Created by tommackenzie on 5/12/15.
  */
 public class ClientScope {
-    private UUID uuid;
-    private UUID clientUUID;
-    private UUID scopeUUID;
+    private UUID id;
+    private UUID clientId;
+    private UUID scopeId;
     private OffsetDateTime createdAt;
 
-    public ClientScope(UUID uuid, UUID clientUUID, UUID scopeUUID) {
-        this.uuid = uuid;
-        this.clientUUID = clientUUID;
-        this.scopeUUID = scopeUUID;
+    public ClientScope(UUID id, UUID clientId, UUID scopeId) {
+        this.id = id;
+        this.clientId = clientId;
+        this.scopeId = scopeId;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID uuid) {
+        this.id = uuid;
     }
 
-    public UUID getClientUUID() {
-        return clientUUID;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClientUUID(UUID clientUUID) {
-        this.clientUUID = clientUUID;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
-    public UUID getScopeUUID() {
-        return scopeUUID;
+    public UUID getScopeId() {
+        return scopeId;
     }
 
-    public void setScopeUUID(UUID scopeUUID) {
-        this.scopeUUID = scopeUUID;
+    public void setScopeId(UUID scopeId) {
+        this.scopeId = scopeId;
     }
 
     public OffsetDateTime getCreatedAt() {

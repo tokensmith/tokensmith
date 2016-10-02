@@ -5,14 +5,14 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ScopeMapper">
 
     <resultMap id="scope" type="org.rootservices.authorization.persistence.entity.Scope">
-        <result column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="name" property="name"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
     <insert id="insert" >
         insert into scope (id, name)
-        values (#{scope.uuid}, #{scope.name})
+        values (#{scope.id}, #{scope.name})
     </insert>
 
     <select id="findByNames" resultMap="scope">

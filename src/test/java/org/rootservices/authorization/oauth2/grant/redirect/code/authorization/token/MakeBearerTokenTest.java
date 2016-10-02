@@ -38,7 +38,7 @@ public class MakeBearerTokenTest {
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
         Token actual = subject.run(plainTextToken);
-        assertThat(actual.getUuid(), is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
 
         assertThat(actual.getToken(), is(notNullValue()));
         assertThat(actual.getToken(), is(hashedToken.getBytes()));

@@ -47,7 +47,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
-        openIdAuthRequest.setClientId(client.getUuid());
+        openIdAuthRequest.setClientId(client.getId());
 
         List<String> requestResponseTypes = new ArrayList<>();
         for(ResponseType rt: client.getResponseTypes()) {
@@ -103,7 +103,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
-        openIdAuthRequest.setClientId(client.getUuid());
+        openIdAuthRequest.setClientId(client.getId());
 
         List<String> requestedResponseTypes = new ArrayList<>();
         requestedResponseTypes.add("TOKEN");
@@ -138,7 +138,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         URI requestRedirectUri = new URI("https://rootservices.org/mismatch");
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
-        openIdAuthRequest.setClientId(client.getUuid());
+        openIdAuthRequest.setClientId(client.getId());
 
         List<String> requestedResponseTypes = new ArrayList<>();
         requestedResponseTypes.add("CODE");
@@ -169,7 +169,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
-        openIdAuthRequest.setClientId(client.getUuid());
+        openIdAuthRequest.setClientId(client.getId());
 
         List<String> requestResponseTypes = new ArrayList<>();
         for(ResponseType rt: client.getResponseTypes()) {

@@ -32,7 +32,7 @@ public class GenerateRSAPrivateKey {
     private RSAPrivateKey translate(RSAPrivateCrtKey rsaPrivateCrtKey) {
         RSAPrivateKey rsaPrivateKey = new RSAPrivateKey();
 
-        rsaPrivateKey.setUuid(UUID.randomUUID());
+        rsaPrivateKey.setId(UUID.randomUUID());
         rsaPrivateKey.setUse(PrivateKeyUse.SIGNATURE);
         rsaPrivateKey.setModulus(rsaPrivateCrtKey.getModulus());
         rsaPrivateKey.setPublicExponent(rsaPrivateCrtKey.getPublicExponent());

@@ -58,7 +58,7 @@
         )
         values (
             #{profile.id},
-            #{profile.resourceOwner.uuid},
+            #{profile.resourceOwner.id},
             #{profile.name, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.middleName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
             #{profile.nickName, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
