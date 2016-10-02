@@ -90,6 +90,7 @@ public class IssueTokenCodeGrantTest {
         assertThat(actualROT.getId(), is(notNullValue()));
         assertThat(actualROT.getToken(), is(token));
 
+        // should insert a client token record.
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
         ClientToken actualCt = clientTokenArgumentCaptor.getValue();

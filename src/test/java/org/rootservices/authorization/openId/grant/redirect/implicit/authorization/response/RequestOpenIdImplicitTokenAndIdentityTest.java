@@ -86,7 +86,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenReturn(idToken);
@@ -128,7 +128,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(pnfe);
@@ -174,7 +174,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(knfe);
@@ -219,7 +219,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(ide);

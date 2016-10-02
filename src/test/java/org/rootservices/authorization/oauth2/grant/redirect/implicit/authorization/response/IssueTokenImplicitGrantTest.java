@@ -8,13 +8,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -38,15 +36,18 @@ public class IssueTokenImplicitGrantTest {
     private TokenScopeRepository mockTokenScopeRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
+    @Mock
+    private ClientTokenRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new IssueTokenImplicitGrant(mockMakeBearerToken, mockTokenRepository, mockScopeRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockMakeBearerToken, mockTokenRepository, mockScopeRepository, mockTokenScopeRepository, mockResourceOwnerTokenRepository, mockClientTokenRepository);
     }
 
     @Test
     public void grantShouldReturnToken() throws Exception{
+        UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String plainTextAccessToken = "token";
         List<String> scopeNames = new ArrayList<>();
@@ -61,7 +62,7 @@ public class IssueTokenImplicitGrantTest {
         List<Scope> scopes = FixtureFactory.makeScopes();
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
 
-        Token actualToken = subject.run(resourceOwner, scopeNames, plainTextAccessToken);
+        Token actualToken = subject.run(clientId, resourceOwner, scopeNames, plainTextAccessToken);
 
         assertThat(actualToken, is(notNullValue()));
         assertThat(actualToken, is(token));
@@ -85,6 +86,13 @@ public class IssueTokenImplicitGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(token));
         assertThat(actualRot.getResourceOwner(), is(resourceOwner));
+
+        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
+        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
+        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        assertThat(actualCt.getId(), is(notNullValue()));
+        assertThat(actualCt.getTokenId(), is(token.getId()));
+        assertThat(actualCt.getClientId(), is(clientId));
 
     }
 }

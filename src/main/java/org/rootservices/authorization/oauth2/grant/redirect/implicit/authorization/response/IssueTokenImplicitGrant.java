@@ -4,10 +4,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.persistence.repository.ScopeRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,17 +22,19 @@ public class IssueTokenImplicitGrant {
     private ScopeRepository scopeRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
+    private ClientTokenRepository clientTokenRepository;
 
     @Autowired
-    public IssueTokenImplicitGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ScopeRepository scopeRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
+    public IssueTokenImplicitGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ScopeRepository scopeRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, ClientTokenRepository clientTokenRepository) {
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.scopeRepository = scopeRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
+        this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(ResourceOwner resourceOwner, List<String> scopeNames, String plainTextAccessToken) {
+    public Token run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, String plainTextAccessToken) {
         Token token = makeBearerToken.run(plainTextAccessToken);
         token.setGrantType(GrantType.TOKEN);
 
@@ -64,6 +63,12 @@ public class IssueTokenImplicitGrant {
         resourceOwnerToken.setResourceOwner(resourceOwner);
         resourceOwnerToken.setToken(token);
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
+
+        ClientToken clientToken = new ClientToken();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(token.getId());
+        clientTokenRepository.insert(clientToken);
 
         return token;
     }
