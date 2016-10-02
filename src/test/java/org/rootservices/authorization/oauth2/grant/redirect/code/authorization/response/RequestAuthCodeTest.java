@@ -121,7 +121,7 @@ public class RequestAuthCodeTest {
         ).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
-                        resourceOwner.getUuid(),
+                        resourceOwner.getId(),
                         authRequest.getClientId(),
                         authRequest.getRedirectURI(),
                         authRequest.getScopes())

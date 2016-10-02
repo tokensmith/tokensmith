@@ -34,17 +34,17 @@ public class ResourceOwnerRepositoryImplTest {
     @Test(expected=RecordNotFoundException.class)
     public void getByUUIDNoRecordFound() throws RecordNotFoundException{
         UUID uuid = UUID.randomUUID();
-        when(mockMapper.getByUUID(uuid)).thenReturn(null);
-        subject.getByUUID(uuid);
+        when(mockMapper.getById(uuid)).thenReturn(null);
+        subject.getById(uuid);
     }
 
     @Test
-    public void getByUUID() throws RecordNotFoundException{
+    public void getById() throws RecordNotFoundException{
 
         ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
 
-        when(mockMapper.getByUUID(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
-        ResourceOwner actualAuthUser = subject.getByUUID(expectedAuthUser.getUuid());
+        when(mockMapper.getById(expectedAuthUser.getId())).thenReturn(expectedAuthUser);
+        ResourceOwner actualAuthUser = subject.getById(expectedAuthUser.getId());
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 

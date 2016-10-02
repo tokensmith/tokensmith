@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.RSAPrivateKeyMapper">
 
     <resultMap id="rsaPrivateKey" type="org.rootservices.authorization.persistence.entity.RSAPrivateKey">
-        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="use" property="use" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="modulus" property="modulus" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
         <result column="public_exponent" property="publicExponent" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
@@ -23,7 +23,7 @@
     <insert id="insert">
         insert into rsa_private_key
         (
-            uuid,
+            id,
             use,
             modulus,
             public_exponent,
@@ -36,7 +36,7 @@
             active
         )
         values (
-            #{rsaPrivateKey.uuid},
+            #{rsaPrivateKey.id},
             #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
             #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
             #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
@@ -53,40 +53,40 @@
     <insert id="insertWithDateTimeValues">
         insert into rsa_private_key
         (
-        uuid,
-        use,
-        modulus,
-        public_exponent,
-        private_exponent,
-        prime_p,
-        prime_q,
-        prime_exponent_p,
-        prime_exponent_q,
-        crt_coefficient,
-        active,
-        created_at,
-        updated_at
+            id,
+            use,
+            modulus,
+            public_exponent,
+            private_exponent,
+            prime_p,
+            prime_q,
+            prime_exponent_p,
+            prime_exponent_q,
+            crt_coefficient,
+            active,
+            created_at,
+            updated_at
         )
         values (
-        #{rsaPrivateKey.uuid},
-        #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
-        #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.privateExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.primeP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.primeQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.primeExponentP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.primeExponentQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.crtCoefficient, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
-        #{rsaPrivateKey.active},
-        #{rsaPrivateKey.createdAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler},
-        #{rsaPrivateKey.updatedAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
+            #{rsaPrivateKey.id},
+            #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.privateExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeExponentP, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.primeExponentQ, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.crtCoefficient, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
+            #{rsaPrivateKey.active},
+            #{rsaPrivateKey.createdAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler},
+            #{rsaPrivateKey.updatedAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
 
     <select id="getMostRecentAndActiveForSigning" resultMap="rsaPrivateKey">
         select
-            uuid,
+            id,
             use,
             modulus,
             public_exponent,
@@ -107,20 +107,20 @@
 
     <select id="getById" resultMap="rsaPrivateKey">
         select
-        uuid,
-        use,
-        modulus,
-        public_exponent,
-        private_exponent,
-        prime_p,
-        prime_q,
-        prime_exponent_p,
-        prime_exponent_q,
-        crt_coefficient,
-        active,
-        updated_at,
-        created_at
+            id,
+            use,
+            modulus,
+            public_exponent,
+            private_exponent,
+            prime_p,
+            prime_q,
+            prime_exponent_p,
+            prime_exponent_q,
+            crt_coefficient,
+            active,
+            updated_at,
+            created_at
         from rsa_private_key
-        where uuid = #{id}
+        where id = #{id}
     </select>
 </mapper>

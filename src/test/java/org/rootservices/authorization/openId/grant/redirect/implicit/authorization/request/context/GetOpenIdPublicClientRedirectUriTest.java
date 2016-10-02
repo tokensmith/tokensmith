@@ -40,11 +40,11 @@ public class GetOpenIdPublicClientRedirectUriTest {
 
         Client client = FixtureFactory.makeTokenClientWithOpenIdScopes();
 
-        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
+        when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         ResponseTypeException rootCause = new ResponseTypeException("");
 
-        boolean actual = subject.run(client.getUuid(), client.getRedirectURI(), rootCause);
+        boolean actual = subject.run(client.getId(), client.getRedirectURI(), rootCause);
         assertThat(actual, is(true));
     }
 
@@ -75,10 +75,10 @@ public class GetOpenIdPublicClientRedirectUriTest {
 
         Client client = FixtureFactory.makeTokenClientWithOpenIdScopes();
 
-        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
+        when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         try {
-            subject.run(client.getUuid(), redirectURI, rootCause);
+            subject.run(client.getId(), redirectURI, rootCause);
             fail("InformResourceOwnerException expected");
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");

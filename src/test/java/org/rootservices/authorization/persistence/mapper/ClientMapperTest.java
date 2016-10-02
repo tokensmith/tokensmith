@@ -42,9 +42,9 @@ public class ClientMapperTest {
     public void getByUUID() throws URISyntaxException {
         Client expectedClient = loadCodeClientWithScopes.run();
 
-        Client actual = subject.getByUUID(expectedClient.getUuid());
+        Client actual = subject.getById(expectedClient.getId());
 
-        assertThat(actual.getUuid(), is(expectedClient.getUuid()));
+        assertThat(actual.getId(), is(expectedClient.getId()));
 
         // respnse types
         assertThat(actual.getResponseTypes(), is(notNullValue()));
@@ -56,13 +56,13 @@ public class ClientMapperTest {
 
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getScopes().size(), is(1));
-        assertThat(actual.getScopes().get(0).getUuid(), is(expectedClient.getScopes().get(0).getUuid()));
+        assertThat(actual.getScopes().get(0).getId(), is(expectedClient.getScopes().get(0).getId()));
         assertThat(actual.getScopes().get(0).getName(), is("profile"));
     }
 
     @Test
     public void getByUUIDNotFound() {
-        Client actual = subject.getByUUID(UUID.randomUUID());
+        Client actual = subject.getById(UUID.randomUUID());
 
         assertThat(actual, is(nullValue()));
     }

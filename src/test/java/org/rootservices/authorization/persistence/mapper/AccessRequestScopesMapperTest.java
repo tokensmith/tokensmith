@@ -53,8 +53,8 @@ public class AccessRequestScopesMapperTest {
         // finally, create the access reqeust.
         AccessRequest accessRequest = new AccessRequest(
                 UUID.randomUUID(),
-                ro.getUuid(),
-                client.getUuid(),
+                ro.getId(),
+                client.getId(),
                 Optional.of(redirectURI)
         );
         accessRequestRepository.insert(accessRequest);
@@ -74,7 +74,7 @@ public class AccessRequestScopesMapperTest {
         Scope scope = persistScope();
 
         AccessRequestScope accessRequestScope = new AccessRequestScope(
-            UUID.randomUUID(), accessRequest.getUuid(), scope
+            UUID.randomUUID(), accessRequest.getId(), scope
         );
 
         subject.insert(accessRequestScope);

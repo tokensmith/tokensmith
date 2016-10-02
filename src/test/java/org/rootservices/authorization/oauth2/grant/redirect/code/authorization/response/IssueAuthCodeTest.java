@@ -77,14 +77,14 @@ public class IssueAuthCodeTest {
         verify(mockAccessRequestScopesRepository).insert(ARSCaptor.capture());
 
         // check access request assigned correct values.
-        assertThat(ARCaptor.getValue().getUuid()).isNotNull();
+        assertThat(ARCaptor.getValue().getId()).isNotNull();
         assertThat(ARCaptor.getValue().getRedirectURI()).isEqualTo(redirectURI);
-        assertThat(ARCaptor.getValue().getClientUUID()).isEqualTo(clientUUID);
+        assertThat(ARCaptor.getValue().getClientId()).isEqualTo(clientUUID);
 
         // check that access request scope assigned correct values.
-        assertThat(ARSCaptor.getValue().getUuid()).isNotNull();
-        assertThat(ARSCaptor.getValue().getAccessRequestUUID()).isEqualTo(ARCaptor.getValue().getUuid());
-        assertThat(ARSCaptor.getValue().getScope().getUuid()).isEqualTo(scope.getUuid());
+        assertThat(ARSCaptor.getValue().getId()).isNotNull();
+        assertThat(ARSCaptor.getValue().getAccessRequestId()).isEqualTo(ARCaptor.getValue().getId());
+        assertThat(ARSCaptor.getValue().getScope().getId()).isEqualTo(scope.getId());
 
     }
 }

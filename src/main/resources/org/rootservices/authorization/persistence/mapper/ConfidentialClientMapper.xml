@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ConfidentialClientMapper">
 
     <resultMap id="confidentialClient" type="org.rootservices.authorization.persistence.entity.ConfidentialClient">
-        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <association property="client"
@@ -14,23 +14,23 @@
     </resultMap>
 
     <insert id="insert">
-        insert into confidential_client (uuid, client_uuid, password)
+        insert into confidential_client (id, client_id, password)
         values (
-            #{confidentialClient.uuid},
-            #{confidentialClient.client.uuid},
+            #{confidentialClient.id},
+            #{confidentialClient.client.id},
             #{confidentialClient.password}
         )
     </insert>
 
-    <select id="getByClientUUID" resultMap="confidentialClient">
+    <select id="getByClientId" resultMap="confidentialClient">
         select
-            confidential_client.uuid,
+            confidential_client.id,
             confidential_client.password,
             confidential_client.created_at,
-            client.uuid as client_uuid,
+            client.id as client_id,
             client.redirect_URI as client_redirect_URI,
             client.created_at as client_created_at,
-            scope.uuid as client_scope_uuid,
+            scope.id as client_scope_id,
             scope.name as client_scope_name,
             scope.created_at as client_scope_created_at,
             response_type.id as client_response_type_id,
@@ -38,11 +38,11 @@
             response_type.created_at as client_response_type_created_at,
             response_type.updated_at as client_response_type_updated_at
         from confidential_client
-        join client on client.uuid = confidential_client.client_uuid
-        join client_scopes on client_scopes.client_uuid = client.uuid
-        join scope on scope.uuid = client_scopes.scope_uuid
-        join client_response_type on client_response_type.client_id = client.uuid
+        join client on client.id = confidential_client.client_id
+        join client_scopes on client_scopes.client_id = client.id
+        join scope on scope.id = client_scopes.scope_id
+        join client_response_type on client_response_type.client_id = client.id
         join response_type on response_type.id = client_response_type.response_type_id
-        where client.uuid = #{clientUUID}
+        where client.id = #{clientId}
     </select>
 </mapper>

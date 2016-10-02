@@ -23,7 +23,7 @@ public class OkTest extends BaseTest {
 
         OpenIdImplicitAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
 
-        assertThat(actual.getClientId(), is(c.getUuid()));
+        assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
         assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
         assertThat(actual.getRedirectURI(), is(c.getRedirectURI()));
@@ -39,7 +39,7 @@ public class OkTest extends BaseTest {
 
         OpenIdImplicitAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
 
-        assertThat(actual.getClientId(), is(c.getUuid()));
+        assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
         assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
         assertThat(actual.getRedirectURI(), is(c.getRedirectURI()));

@@ -92,7 +92,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -141,7 +141,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -168,7 +168,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenThrow(ProfileNotFoundException.class);
 
         subject.make(accessToken);
@@ -190,7 +190,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -220,7 +220,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -255,7 +255,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenReturn(rot);
 
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getUuid()))
+        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenReturn(profile);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())

@@ -55,17 +55,17 @@ public class ConfidentialClientMapperTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         subject.insert(confidentialClient);
 
-        ConfidentialClient actual = subject.getByClientUUID(client.getUuid());
+        ConfidentialClient actual = subject.getByClientId(client.getId());
 
         // confidential client
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(confidentialClient.getUuid()));
+        assertThat(actual.getId(), is(confidentialClient.getId()));
         assertThat(actual.getPassword(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         // client
         assertThat(actual.getClient(), is(notNullValue()));
-        assertThat(actual.getClient().getUuid(), is(client.getUuid()));
+        assertThat(actual.getClient().getId(), is(client.getId()));
         assertThat(actual.getClient().getRedirectURI(), is(client.getRedirectURI()));
 
         assertThat(actual.getClient().getResponseTypes(), is(notNullValue()));
@@ -80,7 +80,7 @@ public class ConfidentialClientMapperTest {
         // scopes
         assertThat(actual.getClient().getScopes(), is(notNullValue()));
         assertThat(actual.getClient().getScopes().size(), is(1));
-        assertThat(actual.getClient().getScopes().get(0).getUuid(), is(client.getScopes().get(0).getUuid()));
+        assertThat(actual.getClient().getScopes().get(0).getId(), is(client.getScopes().get(0).getId()));
         assertThat(actual.getClient().getScopes().get(0).getName(), is("profile"));
     }
 }

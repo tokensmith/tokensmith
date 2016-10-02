@@ -62,13 +62,13 @@ public class GetPublicClientRedirectUriTest {
     public void clientFoundRedirectUriMismatch() throws RecordNotFoundException, URISyntaxException {
 
         Client client = FixtureFactory.makeCodeClientWithScopes();
-        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
+        when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org/will/not/match"));
         ResponseTypeException rootCause = new ResponseTypeException("");
 
         try {
-            subject.run(client.getUuid(), redirectURI, rootCause);
+            subject.run(client.getId(), redirectURI, rootCause);
             fail("InformResourceOwnerException expected");
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
@@ -83,14 +83,14 @@ public class GetPublicClientRedirectUriTest {
     public void clientFoundRedirectUriIsNotPresent() throws RecordNotFoundException, URISyntaxException {
 
         Client client = FixtureFactory.makeCodeClientWithScopes();
-        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
+        when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         Optional<URI> redirectURI = Optional.empty();
         ResponseTypeException rootCause = new ResponseTypeException("");
 
         URI actual = null;
         try {
-            actual = subject.run(client.getUuid(), redirectURI, rootCause);
+            actual = subject.run(client.getId(), redirectURI, rootCause);
         } catch(InformClientException e) {
             fail("No exception expected");
         } catch(InformResourceOwnerException e) {
@@ -104,14 +104,14 @@ public class GetPublicClientRedirectUriTest {
     public void clientFoundRedirectUrisMatch() throws RecordNotFoundException, URISyntaxException {
 
         Client client = FixtureFactory.makeCodeClientWithScopes();
-        when(mockClientRepository.getById(client.getUuid())).thenReturn(client);
+        when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         ResponseTypeException rootCause = new ResponseTypeException("");
         Optional<URI> redirectUri = Optional.of(client.getRedirectURI());
 
         URI actual = null;
         try {
-            actual = subject.run(client.getUuid(), redirectUri, rootCause);
+            actual = subject.run(client.getId(), redirectUri, rootCause);
         } catch(InformClientException|InformResourceOwnerException e) {
             fail("caught: " + e.getClass() + " with code: " + e.getCode() + " when no exception was expected");
         }

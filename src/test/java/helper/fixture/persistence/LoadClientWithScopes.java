@@ -47,7 +47,7 @@ public abstract class LoadClientWithScopes {
             scopesForClient.add(scopeForClient);
 
             ClientScope clientScope = new ClientScope(
-                    UUID.randomUUID(), client.getUuid(), scopeForClient.getUuid()
+                    UUID.randomUUID(), client.getId(), scopeForClient.getId()
             );
             clientScopesRepository.insert(clientScope);
         }

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class ResponseType {
     private UUID id;
-    private String name; // CODE, TOKEN, ID_TOKEN
+    private String name;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 

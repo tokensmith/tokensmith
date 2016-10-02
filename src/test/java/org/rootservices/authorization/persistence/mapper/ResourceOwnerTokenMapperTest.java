@@ -46,7 +46,7 @@ public class ResourceOwnerTokenMapperTest {
 
         TokenScope tokenScope = new TokenScope();
         tokenScope.setId(UUID.randomUUID());
-        tokenScope.setTokenId(token.getUuid());
+        tokenScope.setTokenId(token.getId());
         tokenScope.setScope(scope);
         tokenScopeMapper.insert(tokenScope);
         // end prepare db for test
@@ -57,7 +57,7 @@ public class ResourceOwnerTokenMapperTest {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         ResourceOwner ro = new ResourceOwner();
-        ro.setUuid(resourceOwner.getUuid());
+        ro.setId(resourceOwner.getId());
         resourceOwnerToken.setResourceOwner(ro);
         resourceOwnerToken.setToken(token);
 
@@ -81,7 +81,7 @@ public class ResourceOwnerTokenMapperTest {
 
         TokenScope tokenScope = new TokenScope();
         tokenScope.setId(UUID.randomUUID());
-        tokenScope.setTokenId(token.getUuid());
+        tokenScope.setTokenId(token.getId());
         tokenScope.setScope(scope);
         tokenScopeMapper.insert(tokenScope);
 
@@ -91,7 +91,7 @@ public class ResourceOwnerTokenMapperTest {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         ResourceOwner ro = new ResourceOwner();
-        ro.setUuid(resourceOwner.getUuid());
+        ro.setId(resourceOwner.getId());
         resourceOwnerToken.setResourceOwner(ro);
         resourceOwnerToken.setToken(token);
         subject.insert(resourceOwnerToken);
@@ -103,12 +103,12 @@ public class ResourceOwnerTokenMapperTest {
         assertThat(actual.getId(), is(resourceOwnerToken.getId()));
 
         assertThat(actual.getResourceOwner(), is(notNullValue()));
-        assertThat(actual.getResourceOwner().getUuid(), is(ro.getUuid()));
+        assertThat(actual.getResourceOwner().getId(), is(ro.getId()));
         assertThat(actual.getResourceOwner().getEmail(), is(notNullValue()));
         assertThat(actual.getResourceOwner().getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getToken(), is(notNullValue()));
-        assertThat(actual.getToken().getUuid(), is(token.getUuid()));
+        assertThat(actual.getToken().getId(), is(token.getId()));
         assertThat(actual.getToken().isRevoked(), is(false));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));

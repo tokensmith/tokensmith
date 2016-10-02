@@ -10,7 +10,7 @@ import java.util.UUID;
  * Created by tommackenzie on 9/22/14.
  */
 public class ResourceOwner {
-    private UUID uuid;
+    private UUID id;
     private String email;
     private byte[] password;
     private Boolean emailVerified;
@@ -18,18 +18,18 @@ public class ResourceOwner {
 
     public ResourceOwner() {}
 
-    public ResourceOwner(UUID uuid, String email, byte[] password) {
-        this.uuid = uuid;
+    public ResourceOwner(UUID id, String email, byte[] password) {
+        this.id = id;
         this.email = email;
         this.password = password;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getEmail() {

@@ -19,7 +19,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         p.responseTypes = null;
 
@@ -36,7 +36,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         Exception expectedDomainCause = new ResponseTypeException();
         int expectedErrorCode = ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode();
@@ -52,7 +52,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("invalid-response-type");
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -68,7 +68,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         p.responseTypes.add("CODE");
         p.responseTypes.add("CODE");
@@ -86,7 +86,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("");
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -102,7 +102,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("TOKEN");
 
         int expectedErrorCode = ErrorCode.RESPONSE_TYPE_MISMATCH.getCode();

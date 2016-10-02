@@ -7,7 +7,6 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
 
@@ -21,7 +20,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
 
         p.responseTypes = null;
@@ -37,7 +36,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -52,7 +51,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("invalid-response-type");
 
@@ -67,7 +66,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("CODE");
         p.responseTypes.add("CODE");
@@ -83,7 +82,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("");
 

@@ -92,7 +92,7 @@ public class RequestTokenCodeGrantTest {
         );
 
         TokenResponse actual = subject.request(
-                authCode.getAccessRequest().getClientUUID(),
+                authCode.getAccessRequest().getClientId(),
                 FixtureFactory.PLAIN_TEXT_PASSWORD,
                 request
         );
@@ -108,7 +108,7 @@ public class RequestTokenCodeGrantTest {
         ResourceOwnerToken actualRot = resourceOwnerTokenRepository.getByAccessToken(hashedCode);
 
         assertThat(actualRot.getResourceOwner(), is(notNullValue()));
-        assertThat(actualRot.getResourceOwner().getUuid(), is(authCode.getAccessRequest().getResourceOwnerUUID()));
+        assertThat(actualRot.getResourceOwner().getId(), is(authCode.getAccessRequest().getResourceOwnerId()));
 
         assertThat(actualRot.getToken(), is(notNullValue()));
         assertThat(actualRot.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
@@ -119,9 +119,9 @@ public class RequestTokenCodeGrantTest {
         assertThat(actualRot.getToken().getTokenScopes().get(0).getScope().getName(), is("profile"));
 
         // token should relate to authorization code, via auth_code_token
-        AuthCodeToken actualAct = authCodeTokenRepository.getByTokenId(actualRot.getToken().getUuid());
-        assertThat(actualAct.getAuthCodeId(), is(authCode.getUuid()));
-        assertThat(actualAct.getTokenId(), is(actualRot.getToken().getUuid()));
+        AuthCodeToken actualAct = authCodeTokenRepository.getByTokenId(actualRot.getToken().getId());
+        assertThat(actualAct.getAuthCodeId(), is(authCode.getId()));
+        assertThat(actualAct.getTokenId(), is(actualRot.getToken().getId()));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class RequestTokenCodeGrantTest {
         );
 
         TokenResponse actual = subject.request(
-                authCode.getAccessRequest().getClientUUID(),
+                authCode.getAccessRequest().getClientId(),
                 FixtureFactory.PLAIN_TEXT_PASSWORD,
                 request
         );
@@ -165,7 +165,7 @@ public class RequestTokenCodeGrantTest {
         UnauthorizedException actual = null;
         try {
             subject.request(
-                authCode.getAccessRequest().getClientUUID(),
+                authCode.getAccessRequest().getClientId(),
                 "wrong-password",
                 request
             );
@@ -193,7 +193,7 @@ public class RequestTokenCodeGrantTest {
         BadRequestException actual = null;
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -224,7 +224,7 @@ public class RequestTokenCodeGrantTest {
         NotFoundException actual = null;
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -251,7 +251,7 @@ public class RequestTokenCodeGrantTest {
         NotFoundException actual = null;
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -280,7 +280,7 @@ public class RequestTokenCodeGrantTest {
 
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -313,7 +313,7 @@ public class RequestTokenCodeGrantTest {
 
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -345,7 +345,7 @@ public class RequestTokenCodeGrantTest {
         BadRequestException actual = null;
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -379,8 +379,8 @@ public class RequestTokenCodeGrantTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
-        authCodeToken.setTokenId(token.getUuid());
+        authCodeToken.setAuthCodeId(authCode.getId());
+        authCodeToken.setTokenId(token.getId());
         authCodeTokenRepository.insert(authCodeToken);
         // end - insert a token that relates to the auth code.
 
@@ -392,7 +392,7 @@ public class RequestTokenCodeGrantTest {
         BadRequestException actual = null;
         try {
             subject.request(
-                    authCode.getAccessRequest().getClientUUID(),
+                    authCode.getAccessRequest().getClientId(),
                     FixtureFactory.PLAIN_TEXT_PASSWORD,
                     request
             );
@@ -407,11 +407,11 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getDomainCause(), instanceOf(CompromisedCodeException.class));
 
         // make sure the first token was revoked.
-        Token token1 = tokenRepository.getByAuthCodeId(authCode.getUuid());
+        Token token1 = tokenRepository.getByAuthCodeId(authCode.getId());
         assertThat(token1.isRevoked(), is(true));
 
         // make sure the authorization code was revoked.
-        AuthCode authCode1 = authCodeRepository.getById(authCode.getUuid());
+        AuthCode authCode1 = authCodeRepository.getById(authCode.getId());
         assertThat(authCode1.isRevoked(), is(true));
     }
 }

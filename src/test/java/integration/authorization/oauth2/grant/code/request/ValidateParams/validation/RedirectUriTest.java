@@ -19,7 +19,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("CODE");
         p.redirectUris.add("");
 
@@ -34,7 +34,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("CODE");
         p.redirectUris.add(c.getRedirectURI().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
@@ -50,7 +50,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("CODE");
         p.redirectUris.add("invalid-uri");
 
@@ -64,7 +64,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("CODE");
         p.redirectUris.add("http://rootservices.org");
 
@@ -79,7 +79,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.responseTypes.add("CODE");
         p.redirectUris.add("https://rootservices.org/continue");
 

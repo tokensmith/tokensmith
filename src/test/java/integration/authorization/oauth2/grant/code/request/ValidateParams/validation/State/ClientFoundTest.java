@@ -25,7 +25,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.states.add("some-state");
         p.states.add("some-state");
 
@@ -42,7 +42,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.states.add("");
 
         Exception expectedDomainCause = new StateException();

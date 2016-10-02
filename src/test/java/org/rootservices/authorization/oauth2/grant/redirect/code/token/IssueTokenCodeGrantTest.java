@@ -72,7 +72,7 @@ public class IssueTokenCodeGrantTest {
 
         AuthCodeToken actualACT = authCodeTokenCaptor.getValue();
         assertThat(actualACT.getId(), is(notNullValue()));
-        assertThat(actualACT.getTokenId(), is(token.getUuid()));
+        assertThat(actualACT.getTokenId(), is(token.getId()));
         assertThat(actualACT.getAuthCodeId(), is(authCodeId));
 
         // should insert a resourceOwnerToken
@@ -81,7 +81,7 @@ public class IssueTokenCodeGrantTest {
 
         ResourceOwnerToken actualROT = resourceOwnerTokenCaptor.getValue();
         assertThat(actualROT.getResourceOwner(), is(notNullValue()));
-        assertThat(actualROT.getResourceOwner().getUuid(), is(resourceOwnerId));
+        assertThat(actualROT.getResourceOwner().getId(), is(resourceOwnerId));
 
         assertThat(actualROT.getId(), is(notNullValue()));
         assertThat(actualROT.getToken(), is(token));
@@ -93,11 +93,11 @@ public class IssueTokenCodeGrantTest {
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
 
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getUuid()));
+        assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(accessRequestScopes.get(0).getScope()));
 
         assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getUuid()));
+        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(1).getScope(), is(accessRequestScopes.get(1).getScope()));
     }
 
@@ -136,7 +136,7 @@ public class IssueTokenCodeGrantTest {
 
         AuthCodeToken actualACT = authCodeTokenCaptor.getValue();
         assertThat(actualACT.getId(), is(notNullValue()));
-        assertThat(actualACT.getTokenId(), is(token.getUuid()));
+        assertThat(actualACT.getTokenId(), is(token.getId()));
         assertThat(actualACT.getAuthCodeId(), is(authCodeId));
 
         // should have rejected tokens and auth code.

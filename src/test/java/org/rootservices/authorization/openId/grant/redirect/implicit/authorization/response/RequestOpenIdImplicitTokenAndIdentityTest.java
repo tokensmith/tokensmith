@@ -88,7 +88,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
+                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenReturn(idToken);
 
         OpenIdImplicitAccessToken actual = subject.request(input);
@@ -130,7 +130,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
+                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -176,7 +176,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
+                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -221,7 +221,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockRandomString.run()).thenReturn(accessToken);
         when(mockIssueTokenImplicitGrant.run(resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken)
+                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken)
         ).thenThrow(ide);
 
 

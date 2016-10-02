@@ -44,11 +44,11 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
-        when(mockConfidentialClientRepository.getByClientId(client.getUuid())).thenReturn(confidentialClient);
+        when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
         ResponseTypeException rootCause = new ResponseTypeException("");
 
-        boolean actual = subject.run(client.getUuid(), client.getRedirectURI(), rootCause);
+        boolean actual = subject.run(client.getId(), client.getRedirectURI(), rootCause);
         assertThat(actual, is(true));
     }
 
@@ -80,10 +80,10 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
-        when(mockConfidentialClientRepository.getByClientId(client.getUuid())).thenReturn(confidentialClient);
+        when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
         try {
-            subject.run(client.getUuid(), redirectURI, rootCause);
+            subject.run(client.getId(), redirectURI, rootCause);
             fail("InformResourceOwnerException expected");
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");

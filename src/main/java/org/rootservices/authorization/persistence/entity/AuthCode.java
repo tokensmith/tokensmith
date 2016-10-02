@@ -8,7 +8,7 @@ import java.util.UUID;
  * Created by tommackenzie on 4/8/15.
  */
 public class AuthCode {
-    private UUID uuid;
+    private UUID id;
     private byte[] code;
     private Boolean revoked;
     private AccessRequest accessRequest;
@@ -18,28 +18,28 @@ public class AuthCode {
 
     public AuthCode() {}
 
-    public AuthCode(UUID uuid, byte[] code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
-        this.uuid = uuid;
+    public AuthCode(UUID id, byte[] code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+        this.id = id;
         this.code = code;
         this.revoked = false;
         this.accessRequest = accessRequest;
         this.expiresAt = expiresAt;
     }
 
-    public AuthCode(UUID uuid, byte[] code, Boolean revoked, AccessRequest accessRequest, OffsetDateTime expiresAt) {
-        this.uuid = uuid;
+    public AuthCode(UUID id, byte[] code, Boolean revoked, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+        this.id = id;
         this.code = code;
         this.revoked = revoked;
         this.accessRequest = accessRequest;
         this.expiresAt = expiresAt;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID uuid) {
+        this.id = uuid;
     }
 
     public byte[] getCode() {

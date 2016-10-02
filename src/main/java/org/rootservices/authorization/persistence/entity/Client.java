@@ -10,7 +10,7 @@ import java.util.UUID;
  * Created by tommackenzie on 11/15/14.
  */
 public class Client {
-    private UUID uuid;
+    private UUID id;
     private List<ResponseType> responseTypes;
     private URI redirectURI;
     private List<Scope> scopes;
@@ -18,23 +18,23 @@ public class Client {
 
     public Client() {};
 
-    public Client(UUID uuid, URI redirectURI) {
-        this.uuid = uuid;
+    public Client(UUID id, URI redirectURI) {
+        this.id = id;
         this.redirectURI = redirectURI;
     }
 
-    public Client(UUID uuid, List<ResponseType> responseTypes, URI redirectURI) {
-        this.uuid = uuid;
+    public Client(UUID id, List<ResponseType> responseTypes, URI redirectURI) {
+        this.id = id;
         this.responseTypes = responseTypes;
         this.redirectURI = redirectURI;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID uuid) {
+        this.id = uuid;
     }
 
     public List<ResponseType> getResponseTypes() {

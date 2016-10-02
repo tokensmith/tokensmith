@@ -49,9 +49,9 @@ public class ProfileRepositoryImplTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
         Profile profile = FixtureFactory.makeProfile(ro);
-        when(mockProfileMapper.getByResourceId(ro.getUuid())).thenReturn(profile);
+        when(mockProfileMapper.getByResourceId(ro.getId())).thenReturn(profile);
 
-        Profile actual = subject.getByResourceOwnerId(ro.getUuid());
+        Profile actual = subject.getByResourceOwnerId(ro.getId());
         assertThat(actual, is(profile));
     }
 

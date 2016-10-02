@@ -9,7 +9,7 @@ import java.util.UUID;
  * Created by tommackenzie on 10/11/14.
  */
 public interface ResourceOwnerRepository {
-    ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException;
+    ResourceOwner getById(UUID id) throws RecordNotFoundException;
     ResourceOwner getByEmail(String email) throws RecordNotFoundException;
     void insert(ResourceOwner resourceOwner);
 }
