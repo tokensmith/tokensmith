@@ -49,7 +49,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
     @Override
     public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, UnauthorizedException {
 
-        ConfidentialClient confidentialClient = loginConfidentialClient.run(clientId, clientPassword);
+        ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
 
         TokenInputPasswordGrant input;
         try {
@@ -64,10 +64,10 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPassword());
 
-        List<Scope> scopes = matchScopes(confidentialClient.getClient().getScopes(), input.getScopes());
+        List<Scope> scopes = matchScopes(cc.getClient().getScopes(), input.getScopes());
 
         String accessToken = randomString.run();
-        Token token = issueTokenPasswordGrant.run(resourceOwner.getId(), accessToken, scopes);
+        Token token = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), accessToken, scopes);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessToken);

@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.password;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.repository.ClientTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
@@ -22,16 +23,18 @@ public class IssueTokenPasswordGrant {
     private TokenRepository tokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
+    private ClientTokenRepository clientTokenRepository;
 
     @Autowired
-    public IssueTokenPasswordGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository) {
+    public IssueTokenPasswordGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
+        this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
+    public Token run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
         Token token = makeBearerToken.run(plainTextToken);
         token.setGrantType(GrantType.PASSWORD);
 
@@ -49,6 +52,13 @@ public class IssueTokenPasswordGrant {
         resourceOwnerToken.setToken(token);
 
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
+
+        ClientToken clientToken = new ClientToken();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(token.getId());
+
+        clientTokenRepository.insert(clientToken);
 
         List<TokenScope> tokenScopes = new ArrayList<>();
         for(Scope scope: scopes) {
