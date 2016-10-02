@@ -5,8 +5,8 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AccessRequestMapper">
 
     <resultMap id="accessRequest" type="org.rootservices.authorization.persistence.entity.AccessRequest">
-        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <id column="resource_owner_uuid" property="resourceOwnerUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="resource_owner_id" property="resourceOwnerUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="auth_code_uuid" property="authCodeUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <insert id="insert">
-        insert into access_request (uuid, resource_owner_uuid, client_uuid, redirect_URI)
+        insert into access_request (id, resource_owner_id, client_id, redirect_URI)
         values (
             #{accessRequest.uuid},
             #{accessRequest.resourceOwnerUUID},

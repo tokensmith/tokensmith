@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.TokenMapper">
 
     <resultMap id="token" type="org.rootservices.authorization.persistence.entity.Token">
-        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
@@ -20,19 +20,19 @@
 
     <select id="getByAuthCodeId" resultMap="token">
         select
-            token.uuid,
+            token.id,
             token.token,
             token.revoked,
             token.grant_type,
             token.expires_at,
             token.created_at
         from token
-        join auth_code_token on auth_code_token.token_id = token.uuid
+        join auth_code_token on auth_code_token.token_id = token.id
         where auth_code_token.auth_code_id = #{authCodeId}
     </select>
 
     <insert id="insert" >
-        insert into token (uuid, token, grant_type, expires_at)
+        insert into token (id, token, grant_type, expires_at)
         values (
             #{token.uuid},
             #{token.token},
@@ -45,9 +45,9 @@
         update token
         set revoked = true
         from auth_code_token, auth_code
-        where auth_code_token.token_id = token.uuid
-        and auth_code.uuid = auth_code_token.auth_code_id
-        and auth_code.uuid = #{authCodeId}
+        where auth_code_token.token_id = token.id
+        and auth_code.id = auth_code_token.auth_code_id
+        and auth_code.id = #{authCodeId}
     </update>
 
 </mapper>
