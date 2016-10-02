@@ -42,7 +42,7 @@ public class ScopeMapperTest {
         List<Scope> scopes = subject.findByNames(names);
 
         assertThat(scopes.size()).isEqualTo(1);
-        assertThat(scopes.get(0).getUuid()).isNotNull();
+        assertThat(scopes.get(0).getId()).isNotNull();
         assertThat(scopes.get(0).getName()).isEqualTo(scopeName);
         assertThat(scopes.get(0).getCreatedAt()).isNotNull();
     }
@@ -55,7 +55,7 @@ public class ScopeMapperTest {
 
         Scope actual = subject.findByName(scopeName);
 
-        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getId()).isNotNull();
         assertThat(actual.getName()).isEqualTo(scopeName);
         assertThat(actual.getCreatedAt()).isNotNull();
     }

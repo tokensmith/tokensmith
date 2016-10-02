@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AuthCodeMapper">
 
     <resultMap id="authCode" type="org.rootservices.authorization.persistence.entity.AuthCode">
-        <id column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="code" property="code" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="revoked" property="revoked" javaType="Boolean"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -19,47 +19,47 @@
     </resultMap>
 
     <insert id="insert" >
-        insert into auth_code (uuid, code, revoked, access_request_uuid, expires_at)
+        insert into auth_code (id, code, revoked, access_request_id, expires_at)
         values (
-            #{authCode.uuid},
+            #{authCode.id},
             #{authCode.code},
             #{authCode.revoked},
-            #{authCode.accessRequest.uuid},
+            #{authCode.accessRequest.id},
             #{authCode.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
 
     <select id="getByClientIdAndAuthCode" resultMap="authCode">
         select
-            auth_code.uuid,
+            auth_code.id,
             auth_code.expires_at,
             auth_code.created_at,
             auth_code.revoked,
 
-            ar.uuid as ar_uuid,
-            ar.resource_owner_uuid as ar_resource_owner_uuid,
+            ar.id as ar_id,
+            ar.resource_owner_id as ar_resource_owner_id,
             ar.redirect_uri as ar_redirect_uri,
             ar.created_at as ar_created_at,
 
-            ars.uuid as ar_ars_uuid,
+            ars.id as ar_ars_id,
 
-            scope.uuid as ar_ars_scope_uuid,
+            scope.id as ar_ars_scope_id,
             scope.name as ar_ars_scope_name,
             scope.created_at as ar_ars_scope_created_at,
 
-            token.uuid as token_uuid,
+            token.id as token_id,
             token.revoked as token_revoked,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at
 
         from auth_code
-        join access_request ar on ar.uuid = auth_code.access_request_uuid
-        join resource_owner ro on ro.uuid = ar.resource_owner_uuid
-        left join access_request_scopes ars on ars.access_request_uuid = ar.uuid
-        left join scope on scope.uuid = ars.scope_uuid
-        left join auth_code_token on auth_code_token.auth_code_id = auth_code.uuid
-        left join token on token.uuid = auth_code_token.token_id
-        where ar.client_uuid = #{clientId}
+        join access_request ar on ar.id = auth_code.access_request_id
+        join resource_owner ro on ro.id = ar.resource_owner_id
+        left join access_request_scopes ars on ars.access_request_id = ar.id
+        left join scope on scope.id = ars.scope_id
+        left join auth_code_token on auth_code_token.auth_code_id = auth_code.id
+        left join token on token.id = auth_code_token.token_id
+        where ar.client_id = #{clientId}
         and auth_code.code = decode(#{code}, 'escape')
         and auth_code.expires_at > current_timestamp
         and auth_code.revoked = FALSE
@@ -67,19 +67,19 @@
 
     <select id="getById" resultMap="authCode">
         select
-            auth_code.uuid,
+            auth_code.id,
             auth_code.code,
             auth_code.expires_at,
             auth_code.created_at,
             auth_code.revoked
         from auth_code
-        where auth_code.uuid = #{id}
+        where auth_code.id = #{id}
     </select>
 
     <update id="revokeById">
         update auth_code
         set revoked = true
-        where uuid = #{id}
+        where id = #{id}
     </update>
 
 </mapper>

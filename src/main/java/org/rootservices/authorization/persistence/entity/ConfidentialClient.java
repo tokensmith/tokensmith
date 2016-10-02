@@ -8,25 +8,25 @@ import java.util.UUID;
  * Created by tommackenzie on 5/24/15.
  */
 public class ConfidentialClient {
-    private UUID uuid;
+    private UUID id;
     private Client client;
     private byte[] password;
     private OffsetDateTime createdAt;
 
     public ConfidentialClient() {}
 
-    public ConfidentialClient(UUID uuid, Client client, byte[] password) {
-        this.uuid = uuid;
+    public ConfidentialClient(UUID id, Client client, byte[] password) {
+        this.id = id;
         this.client = client;
         this.password = password;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Client getClient() {

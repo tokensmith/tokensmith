@@ -19,7 +19,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         for(ResponseType rt: c.getResponseTypes()) {
             p.responseTypes.add(rt.getName());
         }
@@ -38,7 +38,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         for(ResponseType rt: c.getResponseTypes()) {
             p.responseTypes.add(rt.getName());
@@ -60,7 +60,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         for(ResponseType rt: c.getResponseTypes()) {
             p.responseTypes.add(rt.getName());

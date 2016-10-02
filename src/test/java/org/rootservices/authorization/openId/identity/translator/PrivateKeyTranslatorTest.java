@@ -46,7 +46,7 @@ public class PrivateKeyTranslatorTest {
 
         RSAPrivateKey actual = subject.to(keyPair);
 
-        assertThat(actual.getUuid(), is(nullValue()));
+        assertThat(actual.getId(), is(nullValue()));
         assertThat(actual.getUse(), is(PrivateKeyUse.SIGNATURE));
         assertThat(actual.getModulus(), is(keyPair.getN()));
         assertThat(actual.getPublicExponent(), is(keyPair.getE()));
@@ -62,7 +62,7 @@ public class PrivateKeyTranslatorTest {
     public void fromShouldTranslate() throws Exception {
 
         RSAPrivateKey privateKey = new RSAPrivateKey();
-        privateKey.setUuid(UUID.randomUUID());
+        privateKey.setId(UUID.randomUUID());
         privateKey.setUse(PrivateKeyUse.SIGNATURE);
         privateKey.setModulus(new BigInteger("1"));
         privateKey.setPublicExponent(new BigInteger("2"));

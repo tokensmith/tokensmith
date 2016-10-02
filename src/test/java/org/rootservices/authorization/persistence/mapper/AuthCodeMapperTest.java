@@ -59,8 +59,8 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
-                client.getUuid()
+                resourceOwner.getId(),
+                client.getId()
         );
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
@@ -81,8 +81,8 @@ public class AuthCodeMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
-                client.getUuid()
+                resourceOwner.getId(),
+                client.getId()
         );
         accessRequestRepository.insert(accessRequest);
         // end prepare db for test.
@@ -92,7 +92,7 @@ public class AuthCodeMapperTest {
         subject.insert(authCode);
 
         // insert duplicate.
-        authCode.setUuid(UUID.randomUUID());
+        authCode.setId(UUID.randomUUID());
         subject.insert(authCode);
     }
 
@@ -103,17 +103,17 @@ public class AuthCodeMapperTest {
         AuthCode expected = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
-        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
 
         assertThat(actual, notNullValue());
-        assertThat(actual.getUuid(), is(expected.getUuid()));
+        assertThat(actual.getId(), is(expected.getId()));
         assertThat(actual.isRevoked(), is(false));
 
         // access request.
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar, notNullValue());
-        assertThat(ar.getUuid(), is(expected.getAccessRequest().getUuid()));
-        assertThat(ar.getResourceOwnerUUID(), is(expected.getAccessRequest().getResourceOwnerUUID()));
+        assertThat(ar.getId(), is(expected.getAccessRequest().getId()));
+        assertThat(ar.getResourceOwnerId(), is(expected.getAccessRequest().getResourceOwnerId()));
 
         // scopes
         assertThat(ar.getAccessRequestScopes(), is(notNullValue()));
@@ -132,15 +132,15 @@ public class AuthCodeMapperTest {
         AuthCode expected = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
-        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(expected.getUuid()));
+        assertThat(actual.getId(), is(expected.getId()));
 
         // access request.
         AccessRequest ar = actual.getAccessRequest();
         assertThat(ar, is(notNullValue()));
-        assertThat(ar.getUuid(), is(expected.getAccessRequest().getUuid()));
+        assertThat(ar.getId(), is(expected.getAccessRequest().getId()));
         assertThat(ar.getAccessRequestScopes(), is(notNullValue()));
         assertThat(ar.getAccessRequestScopes().size(), is(1));
         assertThat(ar.getAccessRequestScopes().get(0).getScope(), is(notNullValue()));
@@ -157,7 +157,7 @@ public class AuthCodeMapperTest {
         AuthCode expected = loadConfidentialClientTokenReady.run(false, true, plainTextAuthCode);
 
         String code = new String(expected.getCode());
-        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
         assertThat(actual, is(nullValue()));
 
     }
@@ -173,20 +173,20 @@ public class AuthCodeMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setTokenId(token.getUuid());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getId());
+        authCodeToken.setAuthCodeId(authCode.getId());
 
         authCodeTokenRepository.insert(authCodeToken);
         // end - prepare db for test.
 
         String code = new String(authCode.getCode());
 
-        AuthCode actual = subject.getByClientIdAndAuthCode(authCode.getAccessRequest().getClientUUID(), code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(authCode.getAccessRequest().getClientId(), code);
         assertThat(actual, is(notNullValue()));
 
         // this test is just to make sure a token is present
         assertThat(actual.getToken(), is(notNullValue()));
-        assertThat(actual.getToken().getUuid(), is(token.getUuid()));
+        assertThat(actual.getToken().getId(), is(token.getId()));
         assertThat(actual.getToken().isRevoked(), is(false));
         assertThat(actual.getToken().getExpiresAt(), is(token.getExpiresAt()));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
@@ -201,17 +201,17 @@ public class AuthCodeMapperTest {
         String plainTextAuthCode2 = randomString.run();
         AuthCode authCodeNotRevoked = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode2);
 
-        subject.revokeById(authCodeToRevoke.getUuid());
+        subject.revokeById(authCodeToRevoke.getId());
 
-        AuthCode actual = subject.getById(authCodeToRevoke.getUuid());
+        AuthCode actual = subject.getById(authCodeToRevoke.getId());
 
         // the one it should have revoked.
-        assertThat(actual.getUuid(), is(authCodeToRevoke.getUuid()));
+        assertThat(actual.getId(), is(authCodeToRevoke.getId()));
         assertThat(actual.isRevoked(), is(true));
 
         // the one it should not have revoked.
-        AuthCode actualNotRevoked = subject.getById(authCodeNotRevoked.getUuid());
-        assertThat(actualNotRevoked.getUuid(), is(authCodeNotRevoked.getUuid()));
+        AuthCode actualNotRevoked = subject.getById(authCodeNotRevoked.getId());
+        assertThat(actualNotRevoked.getId(), is(authCodeNotRevoked.getId()));
         assertThat(actualNotRevoked.isRevoked(), is(false));
     }
 }

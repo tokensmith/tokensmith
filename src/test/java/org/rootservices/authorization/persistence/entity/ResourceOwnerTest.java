@@ -21,9 +21,9 @@ public class ResourceOwnerTest {
     @Test
     public void UUID() {
         UUID uuid = UUID.randomUUID();
-        subject.setUuid(uuid);
+        subject.setId(uuid);
 
-        assertThat(subject.getUuid()).isEqualTo(uuid);
+        assertThat(subject.getId()).isEqualTo(uuid);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ResourceOwnerTest {
         String password = "plainTextPassword";
         subject = new ResourceOwner(uuid, email, password.getBytes());
 
-        assertThat(subject.getUuid()).isEqualTo(uuid);
+        assertThat(subject.getId()).isEqualTo(uuid);
         assertThat(subject.getEmail()).isEqualTo(email);
         assertThat(subject.getPassword()).isEqualTo(password.getBytes());
     }

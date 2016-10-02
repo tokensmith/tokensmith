@@ -26,9 +26,9 @@ public class ClientTest {
     @Test
     public void UUID() {
         UUID uuid = UUID.randomUUID();
-        subject.setUuid(uuid);
+        subject.setId(uuid);
 
-        assertThat(subject.getUuid()).isEqualTo(uuid);
+        assertThat(subject.getId()).isEqualTo(uuid);
     }
 
     @Test

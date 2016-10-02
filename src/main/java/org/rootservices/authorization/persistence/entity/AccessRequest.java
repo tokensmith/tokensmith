@@ -11,44 +11,44 @@ import java.util.UUID;
  * Created by tommackenzie on 4/14/15.
  */
 public class AccessRequest {
-    private UUID uuid;
-    private UUID resourceOwnerUUID;
-    private UUID clientUUID;
+    private UUID id;
+    private UUID resourceOwnerId;
+    private UUID clientId;
     private Optional<URI> redirectURI;
     private List<AccessRequestScope> accessRequestScopes;
     private OffsetDateTime createdAt;
 
     public AccessRequest() {}
 
-    public AccessRequest(UUID uuid, UUID resourceOwnerUUID, UUID clientUUID, Optional<URI> redirectURI) {
-        this.uuid = uuid;
-        this.resourceOwnerUUID = resourceOwnerUUID;
-        this.clientUUID = clientUUID;
+    public AccessRequest(UUID id, UUID resourceOwnerId, UUID clientId, Optional<URI> redirectURI) {
+        this.id = id;
+        this.resourceOwnerId = resourceOwnerId;
+        this.clientId = clientId;
         this.redirectURI = redirectURI;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public UUID getResourceOwnerUUID() {
-        return resourceOwnerUUID;
+    public UUID getResourceOwnerId() {
+        return resourceOwnerId;
     }
 
-    public void setResourceOwnerUUID(UUID resourceOwnerUUID) {
-        this.resourceOwnerUUID = resourceOwnerUUID;
+    public void setResourceOwnerId(UUID resourceOwnerId) {
+        this.resourceOwnerId = resourceOwnerId;
     }
 
-    public UUID getClientUUID() {
-        return clientUUID;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setClientUUID(UUID clientUUID) {
-        this.clientUUID = clientUUID;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
     public Optional<URI> getRedirectURI() {

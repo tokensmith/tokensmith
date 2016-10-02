@@ -24,7 +24,7 @@ public class OkTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         for(ResponseType rt: c.getResponseTypes()) {
             p.responseTypes.add(rt.getName());
@@ -32,7 +32,7 @@ public class OkTest extends BaseTest {
 
         AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId()).isEqualTo(c.getUuid());
+        assertThat(actual.getClientId()).isEqualTo(c.getId());
         assertThat(actual.getResponseTypes().size()).isEqualTo(1);
         assertThat(actual.getResponseTypes().get(0)).isEqualTo(c.getResponseTypes().get(0).getName());
         assertThat(actual.getRedirectURI().isPresent()).isFalse();
@@ -45,7 +45,7 @@ public class OkTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         for(ResponseType rt: c.getResponseTypes()) {
             p.responseTypes.add(rt.getName());
@@ -57,7 +57,7 @@ public class OkTest extends BaseTest {
 
         AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId()).isEqualTo(c.getUuid());
+        assertThat(actual.getClientId()).isEqualTo(c.getId());
         assertThat(actual.getResponseTypes().size()).isEqualTo(1);
         assertThat(actual.getResponseTypes().get(0)).isEqualTo(c.getResponseTypes().get(0).getName());
         assertThat(actual.getRedirectURI().isPresent()).isTrue();

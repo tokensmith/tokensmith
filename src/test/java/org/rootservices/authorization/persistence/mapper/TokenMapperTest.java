@@ -53,15 +53,15 @@ public class TokenMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setTokenId(tokenToRevoke.getUuid());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(tokenToRevoke.getId());
+        authCodeToken.setAuthCodeId(authCode.getId());
 
         authCodeTokenRepository.insert(authCodeToken);
         // end prepare db for test.
 
-        subject.revokeByAuthCodeId(authCode.getUuid());
+        subject.revokeByAuthCodeId(authCode.getId());
 
-        Token revokedToken = subject.getByAuthCodeId(authCode.getUuid());
+        Token revokedToken = subject.getByAuthCodeId(authCode.getId());
         assertTrue(revokedToken.isRevoked());
 
         /**
@@ -80,15 +80,15 @@ public class TokenMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
-        authCodeToken.setTokenId(token.getUuid());
+        authCodeToken.setAuthCodeId(authCode.getId());
+        authCodeToken.setTokenId(token.getId());
         authCodeTokenRepository.insert(authCodeToken);
         // end prepare db for test.
 
-        Token actual = subject.getByAuthCodeId(authCode.getUuid());
+        Token actual = subject.getByAuthCodeId(authCode.getId());
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(token.getUuid()));
+        assertThat(actual.getId(), is(token.getId()));
         assertThat(actual.getToken(), is(token.getToken()));
         assertThat(actual.isRevoked(), is(false));
         assertThat(actual.getGrantType(), is(token.getGrantType()));

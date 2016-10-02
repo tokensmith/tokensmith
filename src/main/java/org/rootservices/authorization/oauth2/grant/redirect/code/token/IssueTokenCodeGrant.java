@@ -45,7 +45,7 @@ public class IssueTokenCodeGrant {
         try {
             AuthCodeToken authCodeToken = new AuthCodeToken();
             authCodeToken.setId(UUID.randomUUID());
-            authCodeToken.setTokenId(token.getUuid());
+            authCodeToken.setTokenId(token.getId());
             authCodeToken.setAuthCodeId(authCodeId);
 
             authCodeTokenRepository.insert(authCodeToken);
@@ -60,7 +60,7 @@ public class IssueTokenCodeGrant {
         }
 
         ResourceOwner resourceOwner = new ResourceOwner();
-        resourceOwner.setUuid(resourceOwnerId);
+        resourceOwner.setId(resourceOwnerId);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
@@ -72,7 +72,7 @@ public class IssueTokenCodeGrant {
         for(AccessRequestScope ars: accessRequestScopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
-            ts.setTokenId(token.getUuid());
+            ts.setTokenId(token.getId());
             ts.setScope(ars.getScope());
 
             tokenScopeRepository.insert(ts);

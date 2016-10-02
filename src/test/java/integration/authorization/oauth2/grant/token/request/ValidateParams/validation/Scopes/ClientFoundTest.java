@@ -19,7 +19,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }
@@ -38,7 +38,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }
@@ -59,7 +59,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }

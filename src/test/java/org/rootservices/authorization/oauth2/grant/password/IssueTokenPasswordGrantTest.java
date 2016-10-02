@@ -59,7 +59,7 @@ public class IssueTokenPasswordGrantTest {
 
         when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
 
-        Token actualToken = subject.run(resourceOwner.getUuid(), plainTextAccessToken, scopes);
+        Token actualToken = subject.run(resourceOwner.getId(), plainTextAccessToken, scopes);
 
         assertThat(actualToken, is(notNullValue()));
         assertThat(actualToken, is(token));
@@ -67,7 +67,7 @@ public class IssueTokenPasswordGrantTest {
 
         assertThat(actualToken.getTokenScopes().size(), is(1));
         assertThat(actualToken.getTokenScopes().get(0).getId(), is(notNullValue()));
-        assertThat(actualToken.getTokenScopes().get(0).getTokenId(), is(token.getUuid()));
+        assertThat(actualToken.getTokenScopes().get(0).getTokenId(), is(token.getId()));
         assertThat(actualToken.getTokenScopes().get(0).getScope(), is(scopes.get(0)));
 
         verify(mockTokenRepository, times(1)).insert(token);
@@ -75,13 +75,13 @@ public class IssueTokenPasswordGrantTest {
         verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
         TokenScope actualTokenScope = tokenScopeCaptor.getValue();
         assertThat(actualTokenScope.getId(), is(notNullValue()));
-        assertThat(actualTokenScope.getTokenId(), is(token.getUuid()));
+        assertThat(actualTokenScope.getTokenId(), is(token.getId()));
         assertThat(actualTokenScope.getScope(), is(scopes.get(0)));
 
         verify(mockResourceOwnerTokenRepository, times(1)).insert(resourceOwnerTokenCaptor.capture());
         ResourceOwnerToken actualRot = resourceOwnerTokenCaptor.getValue();
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(token));
-        assertThat(actualRot.getResourceOwner().getUuid(), is(resourceOwner.getUuid()));
+        assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
     }
 }

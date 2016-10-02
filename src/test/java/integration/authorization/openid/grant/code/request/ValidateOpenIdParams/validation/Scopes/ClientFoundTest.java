@@ -14,7 +14,7 @@ public class ClientFoundTest extends BaseTest {
     public ValidateParamsAttributes makeValidateParamsAttributes(Client client) {
         ValidateParamsAttributes p = new ValidateParamsAttributes();
 
-        p.clientIds.add(client.getUuid().toString());
+        p.clientIds.add(client.getId().toString());
         p.redirectUris.add(client.getRedirectURI().toString());
 
         for(ResponseType responseType: client.getResponseTypes()) {

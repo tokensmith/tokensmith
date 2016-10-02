@@ -84,7 +84,7 @@ public class RequestTokenPasswordGrantTest {
         Token token = FixtureFactory.makeOAuthToken();
         token.setGrantType(GrantType.PASSWORD);
 
-        when(mockLoginConfidentialClient.run(cc.getUuid(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
 
         when(mockTokenInputPasswordGrantFactory.run(request))
@@ -95,10 +95,10 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(ro.getUuid(), "access-token", client.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(ro.getId(), "access-token", client.getScopes()))
                 .thenReturn(token);
 
-        TokenResponse actual = subject.request(cc.getUuid(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
+        TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is("access-token"));
         assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
@@ -127,7 +127,7 @@ public class RequestTokenPasswordGrantTest {
         Token token = FixtureFactory.makeOpenIdToken();
         token.setGrantType(GrantType.PASSWORD);
 
-        when(mockLoginConfidentialClient.run(cc.getUuid(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
 
         when(mockTokenInputPasswordGrantFactory.run(request))
@@ -138,10 +138,10 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(ro.getUuid(), "access-token", openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(ro.getId(), "access-token", openIdClient.getScopes()))
                 .thenReturn(token);
 
-        TokenResponse actual = subject.request(cc.getUuid(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
+        TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is("access-token"));
         assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
@@ -158,7 +158,7 @@ public class RequestTokenPasswordGrantTest {
 
         Map<String, String> request =  new HashMap<>();
 
-        when(mockLoginConfidentialClient.run(cc.getUuid(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
 
         UnknownKeyException uke = new UnknownKeyException(
@@ -172,7 +172,7 @@ public class RequestTokenPasswordGrantTest {
 
         BadRequestException actual = null;
         try{
-            subject.request(cc.getUuid(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
+            subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -193,7 +193,7 @@ public class RequestTokenPasswordGrantTest {
 
         Map<String, String> request =  new HashMap<>();
 
-        when(mockLoginConfidentialClient.run(cc.getUuid(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
 
         InvalidValueException ive = new InvalidValueException(
@@ -208,7 +208,7 @@ public class RequestTokenPasswordGrantTest {
 
         BadRequestException actual = null;
         try{
-            subject.request(cc.getUuid(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
+            subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -229,7 +229,7 @@ public class RequestTokenPasswordGrantTest {
 
         Map<String, String> request =  new HashMap<>();
 
-        when(mockLoginConfidentialClient.run(cc.getUuid(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
 
         MissingKeyException mke = new MissingKeyException(
@@ -242,7 +242,7 @@ public class RequestTokenPasswordGrantTest {
 
         BadRequestException actual = null;
         try{
-            subject.request(cc.getUuid(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
+            subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -269,9 +269,9 @@ public class RequestTokenPasswordGrantTest {
         List<Scope> actual = subject.matchScopes(scopes, scopeNames);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(2));
-        assertThat(actual.get(0).getUuid(), is(notNullValue()));
+        assertThat(actual.get(0).getId(), is(notNullValue()));
         assertThat(actual.get(0).getName(), is("email"));
-        assertThat(actual.get(1).getUuid(), is(notNullValue()));
+        assertThat(actual.get(1).getId(), is(notNullValue()));
         assertThat(actual.get(1).getName(), is("profile"));
 
     }
@@ -287,7 +287,7 @@ public class RequestTokenPasswordGrantTest {
         List<Scope> actual = subject.matchScopes(scopes, scopeNames);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(1));
-        assertThat(actual.get(0).getUuid(), is(notNullValue()));
+        assertThat(actual.get(0).getId(), is(notNullValue()));
         assertThat(actual.get(0).getName(), is("email"));
     }
 

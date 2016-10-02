@@ -47,8 +47,8 @@ public class AccessRequestMapperTest {
         // end prepare db for test
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
-                client.getUuid()
+                resourceOwner.getId(),
+                client.getId()
         );
 
         subject.insert(accessRequest);

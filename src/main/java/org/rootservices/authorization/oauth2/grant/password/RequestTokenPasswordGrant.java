@@ -67,7 +67,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
         List<Scope> scopes = matchScopes(confidentialClient.getClient().getScopes(), input.getScopes());
 
         String accessToken = randomString.run();
-        Token token = issueTokenPasswordGrant.run(resourceOwner.getUuid(), accessToken, scopes);
+        Token token = issueTokenPasswordGrant.run(resourceOwner.getId(), accessToken, scopes);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessToken);

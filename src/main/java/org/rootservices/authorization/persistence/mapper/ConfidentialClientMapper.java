@@ -10,5 +10,5 @@ import java.util.UUID;
  */
 public interface ConfidentialClientMapper {
     void insert(@Param("confidentialClient") ConfidentialClient confidentialClient);
-    ConfidentialClient getByClientUUID(@Param("clientUUID") UUID clientUUID);
+    ConfidentialClient getByClientId(@Param("clientId") UUID clientId);
 }

@@ -20,7 +20,7 @@
         values (
         #{tokenScope.id},
         #{tokenScope.tokenId},
-        #{tokenScope.scope.uuid}
+        #{tokenScope.scope.id}
         )
     </insert>
 

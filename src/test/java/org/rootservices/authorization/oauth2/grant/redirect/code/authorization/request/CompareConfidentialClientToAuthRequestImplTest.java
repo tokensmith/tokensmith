@@ -46,7 +46,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(client.getUuid());
+        authRequest.setClientId(client.getId());
 
         List<String> resonseTypes = new ArrayList<>();
         for(ResponseType rt: client.getResponseTypes()) {
@@ -104,7 +104,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(client.getUuid());
+        authRequest.setClientId(client.getId());
 
         authRequest.setResponseTypes(new ArrayList<>());
         authRequest.getResponseTypes().add("CODE");
@@ -138,7 +138,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
 
         Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(client.getUuid());
+        authRequest.setClientId(client.getId());
 
         authRequest.setResponseTypes(new ArrayList<>());
         authRequest.getResponseTypes().add("CODE");
@@ -168,7 +168,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setClientId(client.getUuid());
+        authRequest.setClientId(client.getId());
 
         authRequest.setResponseTypes(new ArrayList<>());
         for(ResponseType responseType: client.getResponseTypes()) {

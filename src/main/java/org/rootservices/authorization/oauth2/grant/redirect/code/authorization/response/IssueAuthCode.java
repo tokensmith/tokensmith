@@ -46,7 +46,7 @@ public class IssueAuthCode {
             List<Scope> scopes = scopeRepository.findByNames(scopeNames);
             for (Scope scope : scopes) {
                 AccessRequestScope accessRequestScope = new AccessRequestScope(
-                        UUID.randomUUID(), accessRequest.getUuid(), scope
+                        UUID.randomUUID(), accessRequest.getId(), scope
                 );
                 accessRequestScopesRepository.insert(accessRequestScope);
             }

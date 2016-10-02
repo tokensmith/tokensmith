@@ -24,13 +24,13 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
         this.resourceOwnerMapper = authUserMapper;
     }
 
-    public ResourceOwner getByUUID(UUID uuid) throws RecordNotFoundException {
-        ResourceOwner resourceOwner = resourceOwnerMapper.getByUUID(uuid);
+    public ResourceOwner getById(UUID id) throws RecordNotFoundException {
+        ResourceOwner resourceOwner = resourceOwnerMapper.getById(id);
         if (resourceOwner != null) {
             return resourceOwner;
         }
 
-        throw new RecordNotFoundException("Resource Owner: " + uuid.toString());
+        throw new RecordNotFoundException("Resource Owner: " + id.toString());
     }
 
     public ResourceOwner getByEmail(String email) throws RecordNotFoundException {

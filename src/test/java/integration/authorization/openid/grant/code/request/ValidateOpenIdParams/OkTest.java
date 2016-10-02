@@ -22,7 +22,7 @@ public class OkTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
@@ -30,7 +30,7 @@ public class OkTest extends BaseTest {
 
         OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId(), is(c.getUuid()));
+        assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
         assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
         assertThat(actual.getRedirectURI(), is(c.getRedirectURI()));
@@ -43,7 +43,7 @@ public class OkTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
 
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
@@ -55,7 +55,7 @@ public class OkTest extends BaseTest {
 
         OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId(), is(c.getUuid()));
+        assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
         assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
         assertThat(actual.getRedirectURI(), is(c.getRedirectURI()));

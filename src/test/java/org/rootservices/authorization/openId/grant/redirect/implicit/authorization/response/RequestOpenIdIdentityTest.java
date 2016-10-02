@@ -65,7 +65,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getUuid(), request.getScopes())
+                request.getNonce(), ro.getId(), request.getScopes())
         ).thenReturn(idToken);
 
         OpenIdImplicitIdentity actual = subject.request(input);
@@ -96,7 +96,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getUuid(), request.getScopes())
+                request.getNonce(), ro.getId(), request.getScopes())
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -135,7 +135,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getUuid(), request.getScopes())
+                request.getNonce(), ro.getId(), request.getScopes())
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -174,7 +174,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getUuid(), request.getScopes())
+                request.getNonce(), ro.getId(), request.getScopes())
         ).thenThrow(ide);
 
         InformClientException expected = null;

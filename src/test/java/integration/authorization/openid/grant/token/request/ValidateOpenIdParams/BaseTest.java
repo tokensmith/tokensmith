@@ -45,7 +45,7 @@ public abstract class BaseTest {
 
     public ValidateParamsWithNonce makeValidateParamsWithNonce(Client client) {
         ValidateParamsWithNonce p = new ValidateParamsWithNonce();
-        p.clientIds.add(client.getUuid().toString());
+        p.clientIds.add(client.getId().toString());
 
         for(ResponseType responseType: client.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
@@ -62,7 +62,7 @@ public abstract class BaseTest {
     public ValidateParamsWithNonce makeValidateParamsWithNonceRequiredOnly(Client client) {
         ValidateParamsWithNonce p = new ValidateParamsWithNonce();
 
-        p.clientIds.add(client.getUuid().toString());
+        p.clientIds.add(client.getId().toString());
         p.redirectUris.add(client.getRedirectURI().toString());
         for(ResponseType responseType: client.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());

@@ -53,17 +53,17 @@ public class LoginConfidentialClientTest {
     @Test
     public void run() throws URISyntaxException, UnauthorizedException {
         ConfidentialClient expected = prepareDatabaseForTest();
-        ConfidentialClient actual = subject.run(expected.getClient().getUuid(), "password");
+        ConfidentialClient actual = subject.run(expected.getClient().getId(), "password");
 
         // confidential client
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(expected.getUuid()));
+        assertThat(actual.getId(), is(expected.getId()));
         assertThat(actual.getPassword(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         // client
         assertThat(actual.getClient(), is(notNullValue()));
-        assertThat(actual.getClient().getUuid(), is(expected.getClient().getUuid()));
+        assertThat(actual.getClient().getId(), is(expected.getClient().getId()));
         assertThat(actual.getClient().getRedirectURI(), is(expected.getClient().getRedirectURI()));
 
         // response types
@@ -79,7 +79,7 @@ public class LoginConfidentialClientTest {
         // scopes
         assertThat(actual.getClient().getScopes(), is(notNullValue()));
         assertThat(actual.getClient().getScopes().size(), is(1));
-        assertThat(actual.getClient().getScopes().get(0).getUuid(), is(expected.getClient().getScopes().get(0).getUuid()));
+        assertThat(actual.getClient().getScopes().get(0).getId(), is(expected.getClient().getScopes().get(0).getId()));
         assertThat(actual.getClient().getScopes().get(0).getName(), is("profile"));
     }
 
@@ -103,7 +103,7 @@ public class LoginConfidentialClientTest {
         ConfidentialClient actual = null;
 
         try {
-            actual = subject.run(expected.getClient().getUuid(), "passwordThatDoesNotMatch");
+            actual = subject.run(expected.getClient().getId(), "passwordThatDoesNotMatch");
         } catch (UnauthorizedException e) {
             assertThat(e.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
         }
