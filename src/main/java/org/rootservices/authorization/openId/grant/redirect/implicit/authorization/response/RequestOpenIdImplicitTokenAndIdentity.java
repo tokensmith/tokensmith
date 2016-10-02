@@ -65,7 +65,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         String idToken = null;
         try {
             idToken = makeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getUuid(), scopesForIdToken
+                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken
             );
         } catch (ProfileNotFoundException e) {
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;

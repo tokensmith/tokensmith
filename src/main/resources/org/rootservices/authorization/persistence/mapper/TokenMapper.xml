@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.TokenMapper">
 
     <resultMap id="token" type="org.rootservices.authorization.persistence.entity.Token">
-        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
@@ -34,7 +34,7 @@
     <insert id="insert" >
         insert into token (id, token, grant_type, expires_at)
         values (
-            #{token.uuid},
+            #{token.id},
             #{token.token},
             #{token.grantType},
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}

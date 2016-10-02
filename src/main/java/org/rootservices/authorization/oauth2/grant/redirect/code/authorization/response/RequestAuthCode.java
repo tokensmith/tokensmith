@@ -69,7 +69,7 @@ public class RequestAuthCode {
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
         String authorizationCode = issueAuthCode.run(
-                resourceOwner.getUuid(),
+                resourceOwner.getId(),
                 clientId,
                 redirectUri,
                 scopes

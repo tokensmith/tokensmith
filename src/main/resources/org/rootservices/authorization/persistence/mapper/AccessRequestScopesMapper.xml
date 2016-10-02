@@ -5,8 +5,8 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.AccessRequestScopesMapper">
 
     <resultMap id="accessRequestScope" type="org.rootservices.authorization.persistence.entity.AccessRequestScope">
-        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="access_request_id" property="accessRequestUUID" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="access_request_id" property="accessRequestId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
         <association property="scope"
@@ -18,9 +18,9 @@
     <insert id="insert">
         insert into access_request_scopes (id, access_request_id, scope_id)
         values (
-            #{accessRequestScope.uuid},
-            #{accessRequestScope.accessRequestUUID},
-            #{accessRequestScope.scope.uuid}
+            #{accessRequestScope.id},
+            #{accessRequestScope.accessRequestId},
+            #{accessRequestScope.scope.id}
         )
     </insert>
 

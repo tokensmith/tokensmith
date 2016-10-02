@@ -42,7 +42,7 @@ public class TokenScopeMapperTest {
 
         TokenScope tokenScope = new TokenScope();
         tokenScope.setId(UUID.randomUUID());
-        tokenScope.setTokenId(token.getUuid());
+        tokenScope.setTokenId(token.getId());
         tokenScope.setScope(scope);
 
         subject.insert(tokenScope);

@@ -42,7 +42,7 @@ public class IssueTokenPasswordGrant {
         }
 
         ResourceOwner resourceOwner = new ResourceOwner();
-        resourceOwner.setUuid(resourceOwnerId);
+        resourceOwner.setId(resourceOwnerId);
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         resourceOwnerToken.setResourceOwner(resourceOwner);
@@ -54,7 +54,7 @@ public class IssueTokenPasswordGrant {
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
-            ts.setTokenId(token.getUuid());
+            ts.setTokenId(token.getId());
             ts.setScope(scope);
 
             tokenScopeRepository.insert(ts);

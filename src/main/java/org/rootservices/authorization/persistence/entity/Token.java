@@ -8,7 +8,7 @@ import java.util.UUID;
  * Created by tommackenzie on 5/23/15.
  */
 public class Token {
-    private UUID uuid;
+    private UUID id;
     private byte[] token;
     private boolean revoked;
     private GrantType grantType;
@@ -19,18 +19,18 @@ public class Token {
 
     public Token() {}
 
-    public Token(UUID uuid, byte[] token, OffsetDateTime expiresAt) {
-        this.uuid = uuid;
+    public Token(UUID id, byte[] token, OffsetDateTime expiresAt) {
+        this.id = id;
         this.token = token;
         this.expiresAt = expiresAt;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public byte[] getToken() {

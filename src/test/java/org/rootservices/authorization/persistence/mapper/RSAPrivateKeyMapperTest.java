@@ -29,7 +29,7 @@ public class RSAPrivateKeyMapperTest {
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getById(rsaPrivateKey.getUuid());
+        RSAPrivateKey actual = subject.getById(rsaPrivateKey.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
@@ -40,7 +40,7 @@ public class RSAPrivateKeyMapperTest {
     public void getMostRecentAndActiveForSigningShouldFindRecord() {
         RSAPrivateKey rsaPrivateKeyA = FixtureFactory.makeRSAPrivateKey();
         subject.insert(rsaPrivateKeyA);
-        rsaPrivateKeyA = subject.getById(rsaPrivateKeyA.getUuid());
+        rsaPrivateKeyA = subject.getById(rsaPrivateKeyA.getId());
 
         RSAPrivateKey rsaPrivateKeyB = FixtureFactory.makeRSAPrivateKey();
 
@@ -52,7 +52,7 @@ public class RSAPrivateKeyMapperTest {
         RSAPrivateKey actual = subject.getMostRecentAndActiveForSigning();
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(rsaPrivateKeyB.getUuid()));
+        assertThat(actual.getId(), is(rsaPrivateKeyB.getId()));
         assertThat(actual.getUse(), is(rsaPrivateKeyB.getUse()));
 
         assertThat(actual.getModulus(), is(rsaPrivateKeyB.getModulus()));

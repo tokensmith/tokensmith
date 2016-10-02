@@ -18,7 +18,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("CODE");
 
@@ -34,7 +34,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("CODE");
 
@@ -52,7 +52,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(REDIRECT_URI);
         p.responseTypes.add("CODE");
 

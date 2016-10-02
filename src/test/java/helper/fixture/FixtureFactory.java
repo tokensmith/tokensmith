@@ -96,7 +96,7 @@ public class FixtureFactory {
 
     public static ConfidentialClient makeConfidentialClient(Client client) {
         ConfidentialClient confidentialClient = new ConfidentialClient();
-        confidentialClient.setUuid(UUID.randomUUID());
+        confidentialClient.setId(UUID.randomUUID());
         confidentialClient.setClient(client);
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String password = textHasher.run(PLAIN_TEXT_PASSWORD);
@@ -121,7 +121,7 @@ public class FixtureFactory {
 
     public static Scope makeScope() {
         Scope scope = new Scope();
-        scope.setUuid(UUID.randomUUID());
+        scope.setId(UUID.randomUUID());
         scope.setName("profile");
 
         return scope;
@@ -129,7 +129,7 @@ public class FixtureFactory {
 
     public static Scope makeScope(String name) {
         Scope scope = new Scope();
-        scope.setUuid(UUID.randomUUID());
+        scope.setId(UUID.randomUUID());
         scope.setName(name);
 
         return scope;
@@ -149,7 +149,7 @@ public class FixtureFactory {
     public static List<Scope> makeOpenIdScopes() {
         List<Scope> scopes = new ArrayList<>();
         Scope scope = new Scope();
-        scope.setUuid(UUID.randomUUID());
+        scope.setId(UUID.randomUUID());
         scope.setName("openid");
         scopes.add(scope);
         return scopes;
@@ -161,7 +161,7 @@ public class FixtureFactory {
 
     public static ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
-        ro.setUuid(UUID.randomUUID());
+        ro.setId(UUID.randomUUID());
 
         ro.setEmail(makeRandomEmail());
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
@@ -227,7 +227,7 @@ public class FixtureFactory {
 
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
         AuthCode authCode = new AuthCode();
-        authCode.setUuid(UUID.randomUUID());
+        authCode.setId(UUID.randomUUID());
         AppConfig config = new AppConfig();
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
         String hashedCode = textHasher.run(plainTextAuthCode);
@@ -241,9 +241,9 @@ public class FixtureFactory {
 
     public static AccessRequest makeAccessRequest(UUID resourceOwnerId, UUID clientUUID) throws URISyntaxException {
         AccessRequest accessRequest = new AccessRequest();
-        accessRequest.setUuid(UUID.randomUUID());
-        accessRequest.setResourceOwnerUUID(resourceOwnerId);
-        accessRequest.setClientUUID(clientUUID);
+        accessRequest.setId(UUID.randomUUID());
+        accessRequest.setResourceOwnerId(resourceOwnerId);
+        accessRequest.setClientId(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
 
         return accessRequest;
@@ -253,7 +253,7 @@ public class FixtureFactory {
         RandomString randomString = new RandomString();
 
         Token token = new Token();
-        token.setUuid(UUID.randomUUID());
+        token.setId(UUID.randomUUID());
         token.setToken(randomString.run().getBytes());
         token.setExpiresAt(OffsetDateTime.now());
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
@@ -262,7 +262,7 @@ public class FixtureFactory {
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
         Scope profile = new Scope();
-        profile.setUuid(UUID.randomUUID());
+        profile.setId(UUID.randomUUID());
         profile.setName("profile");
         ts1.setScope(profile);
 
@@ -277,7 +277,7 @@ public class FixtureFactory {
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
         Scope openid = new Scope();
-        openid.setUuid(UUID.randomUUID());
+        openid.setId(UUID.randomUUID());
         openid.setName("openid");
         ts1.setScope(openid);
 
@@ -370,7 +370,7 @@ public class FixtureFactory {
 
     public static RSAPrivateKey makeRSAPrivateKey() {
         RSAPrivateKey rsaPrivateKey = new RSAPrivateKey();
-        rsaPrivateKey.setUuid(UUID.randomUUID());
+        rsaPrivateKey.setId(UUID.randomUUID());
         rsaPrivateKey.setUse(PrivateKeyUse.SIGNATURE);
         rsaPrivateKey.setModulus(new BigInteger("1"));
         rsaPrivateKey.setPublicExponent(new BigInteger("2"));
@@ -420,7 +420,7 @@ public class FixtureFactory {
 
     public static AccessRequestScope makeAccessRequestScope() {
         AccessRequestScope accessRequestScope = new AccessRequestScope();
-        accessRequestScope.setUuid(UUID.randomUUID());
+        accessRequestScope.setId(UUID.randomUUID());
         accessRequestScope.setCreatedAt(OffsetDateTime.now());
 
         return accessRequestScope;

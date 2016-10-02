@@ -52,7 +52,7 @@ public class GenerateRSAPrivateKeyImplTest {
         RSAPrivateKey actual = subject.generate(keySize);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getUuid(), is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getUse(), is(PrivateKeyUse.SIGNATURE));
         assertThat(actual.getModulus(), is(new BigInteger("1")));
         assertThat(actual.getPublicExponent(), is(new BigInteger("2")));

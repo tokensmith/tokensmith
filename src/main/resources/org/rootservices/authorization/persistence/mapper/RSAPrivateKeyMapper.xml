@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.RSAPrivateKeyMapper">
 
     <resultMap id="rsaPrivateKey" type="org.rootservices.authorization.persistence.entity.RSAPrivateKey">
-        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="use" property="use" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="modulus" property="modulus" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
         <result column="public_exponent" property="publicExponent" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>
@@ -36,7 +36,7 @@
             active
         )
         values (
-            #{rsaPrivateKey.uuid},
+            #{rsaPrivateKey.id},
             #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
             #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
             #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
@@ -68,7 +68,7 @@
             updated_at
         )
         values (
-            #{rsaPrivateKey.uuid},
+            #{rsaPrivateKey.id},
             #{rsaPrivateKey.use, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
             #{rsaPrivateKey.modulus, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},
             #{rsaPrivateKey.publicExponent, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler},

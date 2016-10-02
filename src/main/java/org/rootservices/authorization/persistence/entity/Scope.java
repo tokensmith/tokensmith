@@ -8,23 +8,23 @@ import java.util.UUID;
  * Created by tommackenzie on 1/18/15.
  */
 public class Scope {
-    private UUID uuid;
+    private UUID id;
     private String name;
     private OffsetDateTime createdAt;
 
     public Scope(){}
 
-    public Scope(UUID uuid, String name) {
-        this.uuid = uuid;
+    public Scope(UUID id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {

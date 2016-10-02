@@ -5,7 +5,7 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper">
 
     <resultMap id="resourceOwner" type="org.rootservices.authorization.persistence.entity.ResourceOwner">
-        <id column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="email_verified" property="emailVerified"/>
@@ -15,7 +15,7 @@
     <insert id="insert" >
         insert into resource_owner (id, email, password)
         values (
-            #{resourceOwner.uuid},
+            #{resourceOwner.id},
             #{resourceOwner.email},
             #{resourceOwner.password}
         )

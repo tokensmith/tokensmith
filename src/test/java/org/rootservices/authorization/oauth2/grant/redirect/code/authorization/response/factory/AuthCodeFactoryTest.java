@@ -44,7 +44,7 @@ public class AuthCodeFactoryTest {
         AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerId, clientUUID);
         AuthCode actual = subject.makeAuthCode(ar, randomString, secondsToExpire);
 
-        assertThat(actual.getUuid()).isNotNull();
+        assertThat(actual.getId()).isNotNull();
         assertThat(actual.getCode()).isEqualTo(hashedRandomString.getBytes());
         assertThat(actual.getAccessRequest()).isEqualTo(ar);
     }

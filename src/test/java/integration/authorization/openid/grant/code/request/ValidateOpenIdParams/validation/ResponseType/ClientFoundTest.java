@@ -16,7 +16,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
         p.responseTypes = null;
 
@@ -33,7 +33,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
 
         Exception expectedDomainCause = new ResponseTypeException();
@@ -50,7 +50,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
         p.responseTypes.add("invalid-response-type");
 
@@ -67,7 +67,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
 
         p.responseTypes.add("CODE");
@@ -86,7 +86,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
         p.responseTypes.add("");
 
@@ -103,7 +103,7 @@ public class ClientFoundTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getUuid().toString());
+        p.clientIds.add(c.getId().toString());
         p.redirectUris.add(c.getRedirectURI().toString());
         p.responseTypes.add("TOKEN");
 

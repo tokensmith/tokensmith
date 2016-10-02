@@ -49,8 +49,8 @@ public class ClientRepositoryImplTest {
     @Test
     public void getByUUID() throws RecordNotFoundException, URISyntaxException{
         Client expectedClient = clientBuilder();
-        when(mockMapper.getById(expectedClient.getUuid())).thenReturn(expectedClient);
-        Client actualClient = subject.getById(expectedClient.getUuid());
+        when(mockMapper.getById(expectedClient.getId())).thenReturn(expectedClient);
+        Client actualClient = subject.getById(expectedClient.getId());
         assertThat(actualClient).isEqualTo(expectedClient);
     }
 }

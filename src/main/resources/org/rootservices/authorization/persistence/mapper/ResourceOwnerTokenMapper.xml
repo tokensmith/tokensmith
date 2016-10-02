@@ -21,8 +21,8 @@
         values
         (
             #{resourceOwnerToken.id},
-            #{resourceOwnerToken.resourceOwner.uuid},
-            #{resourceOwnerToken.token.uuid}
+            #{resourceOwnerToken.resourceOwner.id},
+            #{resourceOwnerToken.token.id}
         )
     </insert>
 

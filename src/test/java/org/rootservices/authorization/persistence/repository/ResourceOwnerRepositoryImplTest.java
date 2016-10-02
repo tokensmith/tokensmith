@@ -43,8 +43,8 @@ public class ResourceOwnerRepositoryImplTest {
 
         ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
 
-        when(mockMapper.getById(expectedAuthUser.getUuid())).thenReturn(expectedAuthUser);
-        ResourceOwner actualAuthUser = subject.getById(expectedAuthUser.getUuid());
+        when(mockMapper.getById(expectedAuthUser.getId())).thenReturn(expectedAuthUser);
+        ResourceOwner actualAuthUser = subject.getById(expectedAuthUser.getId());
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 

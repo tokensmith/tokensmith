@@ -52,7 +52,7 @@ public class IssueTokenImplicitGrant {
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
-            ts.setTokenId(token.getUuid());
+            ts.setTokenId(token.getId());
             ts.setScope(scope);
             tokenScopeRepository.insert(ts);
 

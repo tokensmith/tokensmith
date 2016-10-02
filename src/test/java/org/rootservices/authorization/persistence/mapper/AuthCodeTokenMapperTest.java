@@ -54,8 +54,8 @@ public class AuthCodeTokenMapperTest {
         resourceOwnerRepository.insert(resourceOwner);
 
         AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
-                resourceOwner.getUuid(),
-                client.getUuid()
+                resourceOwner.getId(),
+                client.getId()
         );
         accessRequestRepository.insert(accessRequest);
 
@@ -81,8 +81,8 @@ public class AuthCodeTokenMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setTokenId(token.getUuid());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getId());
+        authCodeToken.setAuthCodeId(authCode.getId());
 
         subject.insert(authCodeToken);
     }
@@ -95,8 +95,8 @@ public class AuthCodeTokenMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setTokenId(token.getUuid());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getId());
+        authCodeToken.setAuthCodeId(authCode.getId());
 
         subject.insert(authCodeToken);
         subject.insert(authCodeToken);
@@ -109,16 +109,16 @@ public class AuthCodeTokenMapperTest {
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setTokenId(token.getUuid());
-        authCodeToken.setAuthCodeId(authCode.getUuid());
+        authCodeToken.setTokenId(token.getId());
+        authCodeToken.setAuthCodeId(authCode.getId());
 
         subject.insert(authCodeToken);
 
-        AuthCodeToken actual = subject.getByTokenId(token.getUuid());
+        AuthCodeToken actual = subject.getByTokenId(token.getId());
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAuthCodeId(), is(authCode.getUuid()));
-        assertThat(actual.getTokenId(), is(token.getUuid()));
+        assertThat(actual.getAuthCodeId(), is(authCode.getId()));
+        assertThat(actual.getTokenId(), is(token.getId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }
