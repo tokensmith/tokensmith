@@ -82,7 +82,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         ImplicitAccessToken actual = subject.requestToken(inputParams);
@@ -129,7 +129,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
@@ -179,7 +179,7 @@ public class RequestAccessTokenTest {
         when(mockLoginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword())).thenReturn(resourceOwner);
         when(mockRandomString.run()).thenReturn(accessToken);
 
-        when(mockIssueTokenImplicitGrant.run(resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
         when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
