@@ -5,18 +5,18 @@
 <mapper namespace="org.rootservices.authorization.persistence.mapper.ScopeMapper">
 
     <resultMap id="scope" type="org.rootservices.authorization.persistence.entity.Scope">
-        <result column="uuid" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="id" property="uuid" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="name" property="name"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
     <insert id="insert" >
-        insert into scope (uuid, name)
+        insert into scope (id, name)
         values (#{scope.uuid}, #{scope.name})
     </insert>
 
     <select id="findByNames" resultMap="scope">
-        select scope.uuid, scope.name, scope.created_at
+        select scope.id, scope.name, scope.created_at
         from scope
         where name in
         <foreach item="item" index="names" collection="names" open="(" separator="," close=")">
@@ -25,7 +25,7 @@
     </select>
 
     <select id="findByName" resultMap="scope">
-        select scope.uuid, scope.name, scope.created_at
+        select scope.id, scope.name, scope.created_at
         from scope
         where name = #{name}
     </select>

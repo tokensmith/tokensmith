@@ -93,14 +93,14 @@
             profile.phone_number_verified,
             profile.updated_at,
             profile.created_at,
-            ro.uuid as ro_uuid,
+            ro.id as ro_id,
             ro.email as ro_email,
             ro.password as ro_password,
             ro.email_verified as ro_email_verified,
             ro.created_at as ro_created_at
         from resource_owner_profile as profile
-        join resource_owner ro on ro.uuid=profile.resource_owner_id
-        where id = #{id}
+        join resource_owner ro on ro.id=profile.resource_owner_id
+        where profile.id = #{id}
     </select>
 
     <select id="getByResourceId" resultMap="profile">
@@ -122,7 +122,7 @@
             profile.phone_number_verified,
             profile.updated_at,
             profile.created_at,
-            ro.uuid as ro_uuid,
+            ro.id as ro_id,
             ro.email as ro_email,
             ro.password as ro_password,
             ro.email_verified as ro_email_verified,
@@ -148,10 +148,10 @@
             family_name.created_at as family_name_created_at,
             family_name.updated_at as family_name_updated_at
         from resource_owner_profile as profile
-        join resource_owner ro on ro.uuid=profile.resource_owner_id
+        join resource_owner ro on ro.id=profile.resource_owner_id
         left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
         left join resource_owner_profile_given_name given_name on given_name.resource_owner_profile_id = profile.id
         left join resource_owner_profile_family_name family_name on family_name.resource_owner_profile_id = profile.id
-        where ro.uuid = #{resourceOwnerId}
+        where ro.id = #{resourceOwnerId}
     </select>
 </mapper>
