@@ -21,15 +21,15 @@
         )
     </insert>
 
-    <select id="getById" resultMap="clientToken">
+    <select id="getByTokenId" resultMap="clientToken">
         select
-            client_token.id,
-            client_token.client_id,
-            client_token.token_id,
-            client_token.created_at,
-            client_token.updated_at
+        client_token.id,
+        client_token.client_id,
+        client_token.token_id,
+        client_token.created_at,
+        client_token.updated_at
         from client_token
-        where client_token.id = #{id}
+        where client_token.token_id = #{tokenId}
     </select>
 
 </mapper>

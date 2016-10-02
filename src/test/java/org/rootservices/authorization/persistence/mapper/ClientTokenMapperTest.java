@@ -58,12 +58,11 @@ public class ClientTokenMapperTest {
 
         subject.insert(clientToken);
 
-        ClientToken actual = subject.getById(clientToken.getId());
+        ClientToken actual = subject.getByTokenId(tokenId);
         assertThat(actual.getId(), is(clientToken.getId()));
         assertThat(actual.getClientId(), is(clientId));
         assertThat(actual.getTokenId(), is(tokenId));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }
-
 }

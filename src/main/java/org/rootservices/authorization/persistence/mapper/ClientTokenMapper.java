@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface ClientTokenMapper {
     void insert(@Param("clientToken") ClientToken clientToken);
-    ClientToken getById(@Param("id") UUID id);
+    ClientToken getByTokenId(@Param("tokenId") UUID tokenId);
 }
