@@ -54,7 +54,7 @@ public class ResourceOwnerMapperTest {
     @Test
     public void getByUUID() {
         ResourceOwner expectedUser = insertResourceOwner();
-        ResourceOwner actual = subject.getByUUID(expectedUser.getUuid());
+        ResourceOwner actual = subject.getById(expectedUser.getUuid());
 
         assertThat(actual.getUuid(), is(expectedUser.getUuid()));
         assertThat(actual.getEmail(), is(expectedUser.getEmail()));
@@ -65,7 +65,7 @@ public class ResourceOwnerMapperTest {
 
     @Test
     public void getByUUIDAuthUserNotFound() {
-        ResourceOwner actual = subject.getByUUID(UUID.randomUUID());
+        ResourceOwner actual = subject.getById(UUID.randomUUID());
 
         assertThat(actual, is(nullValue()));
     }

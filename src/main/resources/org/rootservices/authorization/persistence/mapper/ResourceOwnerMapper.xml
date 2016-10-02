@@ -21,10 +21,10 @@
         )
     </insert>
 
-    <select id="getByUUID" resultMap="resourceOwner">
+    <select id="getById" resultMap="resourceOwner">
         select id, email, password, email_verified, created_at
         from resource_owner
-        where id = #{uuid}
+        where id = #{id}
     </select>
 
     <select id="getByEmail" resultMap="resourceOwner">

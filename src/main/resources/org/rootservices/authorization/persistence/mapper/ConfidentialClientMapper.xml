@@ -22,7 +22,7 @@
         )
     </insert>
 
-    <select id="getByClientUUID" resultMap="confidentialClient">
+    <select id="getByClientId" resultMap="confidentialClient">
         select
             confidential_client.id,
             confidential_client.password,
@@ -43,6 +43,6 @@
         join scope on scope.id = client_scopes.scope_id
         join client_response_type on client_response_type.client_id = client.id
         join response_type on response_type.id = client_response_type.response_type_id
-        where client.id = #{clientUUID}
+        where client.id = #{clientId}
     </select>
 </mapper>

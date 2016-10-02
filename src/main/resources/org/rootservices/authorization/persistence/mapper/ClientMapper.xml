@@ -26,7 +26,7 @@
         )
     </insert>
 
-    <select id="getByUUID" resultMap="client">
+    <select id="getById" resultMap="client">
         select
             client.id,
             client.redirect_uri,
@@ -43,7 +43,7 @@
         join scope on scope.id = client_scopes.scope_id
         join client_response_type on client_response_type.client_id = client.id
         join response_type on response_type.id = client_response_type.response_type_id
-        where client.id = #{uuid}
+        where client.id = #{id}
     </select>
 
 </mapper>
