@@ -286,6 +286,18 @@ public class FixtureFactory {
         return token;
     }
 
+    public static RefreshToken makeRefreshToken(UUID tokenId) {
+        RandomString randomString = new RandomString();
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setId(UUID.randomUUID());
+        refreshToken.setTokenId(tokenId);
+        refreshToken.setToken(randomString.run().getBytes());
+        refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
+        refreshToken.setRevoked(false);
+        return refreshToken;
+    }
+
     public static ResourceOwnerToken makeResourceOwnerToken() {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setResourceOwner(makeResourceOwner());
