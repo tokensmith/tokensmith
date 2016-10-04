@@ -88,6 +88,7 @@ public class IssueTokenCodeGrantTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(plainTextToken));
+        assertThat(actual.getRefreshAccessToken(), is(refreshAccessToken));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
