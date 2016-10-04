@@ -8,6 +8,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +20,11 @@ import java.util.UUID;
  */
 @Component
 public class IssueTokenCodeGrant {
+    private RandomString randomString;
     private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
+    private MakeRefreshToken makeRefreshToken;
+    private RefreshTokenRepository refreshTokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
@@ -30,9 +34,12 @@ public class IssueTokenCodeGrant {
     private static String OPENID_SCOPE = "openid";
 
     @Autowired
-    public IssueTokenCodeGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository) {
+    public IssueTokenCodeGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository) {
+        this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
+        this.makeRefreshToken = makeRefreshToken;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
@@ -46,6 +53,15 @@ public class IssueTokenCodeGrant {
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
+            // TODO: handle this exception
+        }
+
+        String refreshAccessToken = randomString.run();
+        RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
+
+        try {
+            refreshTokenRepository.insert(refreshToken);
+        } catch (DuplicateRecordException e) {
             // TODO: handle this exception
         }
 

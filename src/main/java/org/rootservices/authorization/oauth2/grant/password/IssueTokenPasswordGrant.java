@@ -1,18 +1,18 @@
 package org.rootservices.authorization.oauth2.grant.password;
 
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ClientTokenRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,18 +22,25 @@ import java.util.UUID;
  */
 @Component
 public class IssueTokenPasswordGrant {
+    private RandomString randomString;
     private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
+    private MakeRefreshToken makeRefreshToken;
+    private RefreshTokenRepository refreshTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ClientTokenRepository clientTokenRepository;
 
     private static String OPENID_SCOPE = "openid";
+    private static Long REFRESH_TOKEN_SECONDS_TO_EXPIRATION = 1209600L;
 
     @Autowired
-    public IssueTokenPasswordGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
+    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
+        this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
+        this.makeRefreshToken = makeRefreshToken;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.clientTokenRepository = clientTokenRepository;
@@ -46,6 +53,15 @@ public class IssueTokenPasswordGrant {
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
+            // TODO: handle this exception
+        }
+
+        String refreshAccessToken = randomString.run();
+        RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
+
+        try {
+            refreshTokenRepository.insert(refreshToken);
+        } catch (DuplicateRecordException e) {
             // TODO: handle this exception
         }
 
