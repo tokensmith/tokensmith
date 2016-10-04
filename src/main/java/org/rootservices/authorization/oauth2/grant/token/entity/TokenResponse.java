@@ -7,6 +7,7 @@ package org.rootservices.authorization.oauth2.grant.token.entity;
  */
 public class TokenResponse {
     private String accessToken;
+    private String refreshAccessToken;
     private Long expiresIn;
     private TokenType tokenType;
     private Extension extension;
@@ -19,6 +20,14 @@ public class TokenResponse {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getRefreshAccessToken() {
+        return refreshAccessToken;
+    }
+
+    public void setRefreshAccessToken(String refreshAccessToken) {
+        this.refreshAccessToken = refreshAccessToken;
     }
 
     public Long getExpiresIn() {

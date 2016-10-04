@@ -99,6 +99,7 @@ public class RequestTokenCodeGrantTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getRefreshAccessToken(), is(notNullValue()));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.NONE));

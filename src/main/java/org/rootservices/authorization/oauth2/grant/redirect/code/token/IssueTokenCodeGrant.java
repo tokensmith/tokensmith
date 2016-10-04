@@ -113,13 +113,14 @@ public class IssueTokenCodeGrant {
             tokenScopeRepository.insert(ts);
         }
 
-        TokenResponse tr =  makeTokenResponse(plainTextToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        TokenResponse tr =  makeTokenResponse(plainTextToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
         return tr;
     }
 
-    protected TokenResponse makeTokenResponse(String plainTextToken, Long secondsToExpiration, boolean isOpenId) {
+    protected TokenResponse makeTokenResponse(String accessToken, String refreshAccessToken, Long secondsToExpiration, boolean isOpenId) {
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(plainTextToken);
+        tokenResponse.setAccessToken(accessToken);
+        tokenResponse.setRefreshAccessToken(refreshAccessToken);
         tokenResponse.setExpiresIn(secondsToExpiration);
         tokenResponse.setTokenType(TokenType.BEARER);
 
