@@ -2,6 +2,9 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -24,6 +27,8 @@ public class IssueTokenCodeGrant {
     private AuthCodeRepository authCodeRepository;
     private ClientTokenRepository clientTokenRepository;
 
+    private static String OPENID_SCOPE = "openid";
+
     @Autowired
     public IssueTokenCodeGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository) {
         this.makeBearerToken = makeBearerToken;
@@ -35,7 +40,7 @@ public class IssueTokenCodeGrant {
         this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
         Token token = makeBearerToken.run(plainTextToken);
 
         try {
@@ -78,15 +83,36 @@ public class IssueTokenCodeGrant {
 
         clientTokenRepository.insert(clientToken);
 
+        Boolean isOpenId = false;
         for(AccessRequestScope ars: accessRequestScopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
             ts.setTokenId(token.getId());
             ts.setScope(ars.getScope());
 
+            if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
+                isOpenId = true;
+            }
+
             tokenScopeRepository.insert(ts);
         }
 
-        return token;
+        TokenResponse tr =  makeTokenResponse(plainTextToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        return tr;
+    }
+
+    protected TokenResponse makeTokenResponse(String plainTextToken, Long secondsToExpiration, boolean isOpenId) {
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setAccessToken(plainTextToken);
+        tokenResponse.setExpiresIn(secondsToExpiration);
+        tokenResponse.setTokenType(TokenType.BEARER);
+
+        Extension extension = Extension.NONE;
+        if (isOpenId) {
+            extension = Extension.IDENTITY;
+        }
+        tokenResponse.setExtension(extension);
+
+        return tokenResponse;
     }
 }

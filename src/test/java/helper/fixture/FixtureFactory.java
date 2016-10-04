@@ -424,7 +424,7 @@ public class FixtureFactory {
 
         Scope profile = makeScope();
         AccessRequestScope arsProfile = makeAccessRequestScope();
-        arsOpenId.setScope(profile);
+        arsProfile.setScope(profile);
         accessRequestScopes.add(arsProfile);
 
         return accessRequestScopes;

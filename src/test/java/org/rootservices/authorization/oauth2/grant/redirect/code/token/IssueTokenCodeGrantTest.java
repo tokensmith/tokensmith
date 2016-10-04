@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
@@ -55,7 +58,7 @@ public class IssueTokenCodeGrantTest {
     }
 
     @Test
-    public void runShouldReturnToken() throws Exception {
+    public void runShouldReturnTokenResponse() throws Exception {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
@@ -63,9 +66,16 @@ public class IssueTokenCodeGrantTest {
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
-        when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
+        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
-        subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(plainTextToken));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
         verify(mockTokenRepository).insert(token);

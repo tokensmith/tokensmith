@@ -67,24 +67,8 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
         List<Scope> scopes = matchScopes(cc.getClient().getScopes(), input.getScopes());
 
         String accessToken = randomString.run();
-        Token token = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), accessToken, scopes);
 
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(accessToken);
-        tokenResponse.setExpiresIn(token.getSecondsToExpiration());
-        tokenResponse.setTokenType(TokenType.BEARER);
-
-        Extension extension = Extension.NONE;
-
-        Boolean isOpenId = token.getTokenScopes().stream()
-                .filter(o -> o.getScope().getName().equals(OPENID_SCOPE))
-                .findFirst().isPresent();
-
-        if (isOpenId) {
-            extension = Extension.IDENTITY;
-        }
-        tokenResponse.setExtension(extension);
-
+        TokenResponse tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), accessToken, scopes);
         return tokenResponse;
     }
 

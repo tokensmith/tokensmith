@@ -1,6 +1,9 @@
 package org.rootservices.authorization.oauth2.grant.password;
 
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ClientTokenRepository;
@@ -25,6 +28,8 @@ public class IssueTokenPasswordGrant {
     private TokenScopeRepository tokenScopeRepository;
     private ClientTokenRepository clientTokenRepository;
 
+    private static String OPENID_SCOPE = "openid";
+
     @Autowired
     public IssueTokenPasswordGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
         this.makeBearerToken = makeBearerToken;
@@ -34,7 +39,7 @@ public class IssueTokenPasswordGrant {
         this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
         Token token = makeBearerToken.run(plainTextToken);
         token.setGrantType(GrantType.PASSWORD);
 
@@ -60,18 +65,36 @@ public class IssueTokenPasswordGrant {
 
         clientTokenRepository.insert(clientToken);
 
-        List<TokenScope> tokenScopes = new ArrayList<>();
+        Boolean isOpenId = false;
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
             ts.setTokenId(token.getId());
             ts.setScope(scope);
 
-            tokenScopeRepository.insert(ts);
-            tokenScopes.add(ts);
-        }
-        token.setTokenScopes(tokenScopes);
+            if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
+                isOpenId = true;
+            }
 
-        return token;
+            tokenScopeRepository.insert(ts);
+        }
+
+        TokenResponse tr = makeTokenResponse(plainTextToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        return tr;
+    }
+
+    protected TokenResponse makeTokenResponse(String plainTextToken, Long secondsToExpiration, boolean isOpenId) {
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setAccessToken(plainTextToken);
+        tokenResponse.setExpiresIn(secondsToExpiration);
+        tokenResponse.setTokenType(TokenType.BEARER);
+
+        Extension extension = Extension.NONE;
+        if (isOpenId) {
+            extension = Extension.IDENTITY;
+        }
+        tokenResponse.setExtension(extension);
+
+        return tokenResponse;
     }
 }
