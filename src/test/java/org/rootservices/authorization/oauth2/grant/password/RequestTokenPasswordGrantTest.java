@@ -81,8 +81,7 @@ public class RequestTokenPasswordGrantTest {
         input.setUserName(ro.getEmail());
         input.setPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
-        Token token = FixtureFactory.makeOAuthToken();
-        token.setGrantType(GrantType.PASSWORD);
+        TokenResponse tokenResponse = new TokenResponse();
 
         when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
@@ -96,14 +95,10 @@ public class RequestTokenPasswordGrantTest {
         when(mockRandomString.run()).thenReturn("access-token");
 
         when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", client.getScopes()))
-                .thenReturn(token);
+                .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAccessToken(), is("access-token"));
-        assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
-        assertThat(actual.getExtension(), is(Extension.NONE));
-        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual, is(tokenResponse));
 
     }
 
@@ -124,8 +119,7 @@ public class RequestTokenPasswordGrantTest {
         input.setUserName(ro.getEmail());
         input.setPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
 
-        Token token = FixtureFactory.makeOpenIdToken();
-        token.setGrantType(GrantType.PASSWORD);
+        TokenResponse tokenResponse = new TokenResponse();
 
         when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
                 .thenReturn(cc);
@@ -139,15 +133,11 @@ public class RequestTokenPasswordGrantTest {
         when(mockRandomString.run()).thenReturn("access-token");
 
         when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", openIdClient.getScopes()))
-                .thenReturn(token);
+                .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAccessToken(), is("access-token"));
-        assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
-        assertThat(actual.getExtension(), is(Extension.IDENTITY));
-        assertThat(actual.getTokenType(), is(TokenType.BEARER));
-
+        assertThat(actual, is(tokenResponse));
     }
 
     @Test

@@ -73,9 +73,9 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
         List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
-        Token token;
+        TokenResponse tokenResponse;
         try {
-            token = issueTokenCodeGrant.run(
+            tokenResponse = issueTokenCodeGrant.run(
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
@@ -85,17 +85,6 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         } catch (CompromisedCodeException e) {
             throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();
         }
-
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(plainTextToken);
-        tokenResponse.setExpiresIn(token.getSecondsToExpiration());
-        tokenResponse.setTokenType(TokenType.BEARER);
-
-        Extension extension = Extension.NONE;
-        if (isOpenId(authCode.getAccessRequest().getAccessRequestScopes())) {
-            extension = Extension.IDENTITY;
-        }
-        tokenResponse.setExtension(extension);
 
         return tokenResponse;
     }
@@ -136,14 +125,5 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
             matches = true;
         }
         return matches;
-    }
-
-    protected Boolean isOpenId(List<AccessRequestScope> accessRequestScopes) {
-        for(AccessRequestScope ars: accessRequestScopes) {
-            if (ars.getScope().getName().equalsIgnoreCase("openid")) {
-                return true;
-            }
-        }
-        return false;
     }
 }

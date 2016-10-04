@@ -65,7 +65,7 @@ public class RefreshTokenRepositoryImplTest {
         when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(refreshToken);
 
         RefreshToken actual = subject.getByToken(accessToken);
-        
+
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(refreshToken));
     }
