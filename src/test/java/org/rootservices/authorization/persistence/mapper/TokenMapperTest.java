@@ -22,9 +22,9 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by tommackenzie on 5/23/15.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-@Transactional
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+    @Transactional
 public class TokenMapperTest {
 
     @Autowired
@@ -91,6 +91,25 @@ public class TokenMapperTest {
         assertThat(actual.getId(), is(token.getId()));
         assertThat(actual.getToken(), is(token.getToken()));
         assertThat(actual.isRevoked(), is(false));
+        assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));
+    }
+
+    @Test
+    public void revokeByIdShouldBeOk() {
+        Token token = FixtureFactory.makeOpenIdToken();
+        subject.insert(token);
+
+        assertThat(token.isRevoked(), is(false));
+
+        subject.revokeById(token.getId());
+
+        Token actual = subject.getById(token.getId());
+
+        assertThat(actual.getId(), is(token.getId()));
+        assertThat(actual.getToken(), is(token.getToken()));
+        assertThat(actual.isRevoked(), is(true));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));

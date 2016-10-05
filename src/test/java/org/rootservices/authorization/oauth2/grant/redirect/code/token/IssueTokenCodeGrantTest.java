@@ -8,9 +8,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.RandomString;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +25,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -26,9 +33,15 @@ import static org.mockito.Mockito.*;
 public class IssueTokenCodeGrantTest {
     private IssueTokenCodeGrant subject;
     @Mock
+    private RandomString mockRandomString;
+    @Mock
     private MakeBearerToken mockMakeBearerToken;
     @Mock
     private TokenRepository mockTokenRepository;
+    @Mock
+    private MakeRefreshToken mockMakeRefreshToken;
+    @Mock
+    private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private AuthCodeTokenRepository mockAuthCodeTokenRepository;
     @Mock
@@ -44,8 +57,11 @@ public class IssueTokenCodeGrantTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new IssueTokenCodeGrant(
+                mockRandomString,
                 mockMakeBearerToken,
                 mockTokenRepository,
+                mockMakeRefreshToken,
+                mockRefreshTokenRepository,
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
                 mockTokenScopeRepository,
@@ -55,7 +71,7 @@ public class IssueTokenCodeGrantTest {
     }
 
     @Test
-    public void runShouldReturnToken() throws Exception {
+    public void runShouldReturnTokenResponse() throws Exception {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
@@ -63,12 +79,28 @@ public class IssueTokenCodeGrantTest {
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
-        when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
+        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
-        subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+        String refreshAccessToken = "refresh-token";
+        when(mockRandomString.run()).thenReturn(refreshAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(plainTextToken));
+        assertThat(actual.getRefreshAccessToken(), is(refreshAccessToken));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
         verify(mockTokenRepository).insert(token);
+
+        // should insert a refresh token.
+        verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
 
         // should insert a authCodeToken
         ArgumentCaptor<AuthCodeToken> authCodeTokenCaptor = ArgumentCaptor.forClass(AuthCodeToken.class);
@@ -124,6 +156,13 @@ public class IssueTokenCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken();
         when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
+        String refreshAccessToken = "refresh-access-token";
+        when(mockRandomString.run()).thenReturn(refreshAccessToken);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+
+
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
 
@@ -143,6 +182,9 @@ public class IssueTokenCodeGrantTest {
         // should insert a token
         verify(mockTokenRepository).insert(token);
 
+        // should insert a refresh token
+        verify(mockRefreshTokenRepository).insert(refreshToken);
+
         // should have attempted to insert a authCodeToken
         ArgumentCaptor<AuthCodeToken> authCodeTokenCaptor = ArgumentCaptor.forClass(AuthCodeToken.class);
         verify(mockAuthCodeTokenRepository).insert(authCodeTokenCaptor.capture());
@@ -152,9 +194,14 @@ public class IssueTokenCodeGrantTest {
         assertThat(actualACT.getTokenId(), is(token.getId()));
         assertThat(actualACT.getAuthCodeId(), is(authCodeId));
 
-        // should have rejected tokens and auth code.
+        // should have rejected previous tokens.
         verify(mockTokenRepository).revokeByAuthCodeId(authCodeId);
         verify(mockAuthCodeRepository).revokeById(authCodeId);
+        verify(mockRefreshTokenRepository).revokeByAuthCodeId(authCodeId);
+
+        // should have rejected tokens just inserted.
+        verify(mockTokenRepository).revokeById(token.getId());
+        verify(mockRefreshTokenRepository).revokeByTokenId(token.getId());
 
         // should never insert anything else!
         verify(mockResourceOwnerTokenRepository, never()).insert(any(ResourceOwnerToken.class));

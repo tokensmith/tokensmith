@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.RefreshTokenMapper">
+
+    <resultMap id="refreshToken" type="org.rootservices.authorization.persistence.entity.RefreshToken">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="token" property="token"/>
+        <result column="revoked" property="revoked"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into refresh_token (id, token_id, token, expires_at)
+        values (
+            #{refreshToken.id},
+            #{refreshToken.tokenId},
+            #{refreshToken.token},
+            #{refreshToken.expiresAt}
+        )
+    </insert>
+
+    <select id="getByTokenId" resultMap="refreshToken">
+        select
+        refresh_token.id,
+        refresh_token.token_id,
+        refresh_token.token,
+        refresh_token.revoked,
+        refresh_token.expires_at,
+        refresh_token.created_at
+        from refresh_token
+        where refresh_token.token_id = #{tokenId}
+    </select>
+
+    <select id="getByToken" resultMap="refreshToken">
+        select
+            refresh_token.id,
+            refresh_token.token_id,
+            refresh_token.token,
+            refresh_token.revoked,
+            refresh_token.expires_at,
+            refresh_token.created_at
+        from refresh_token
+        where refresh_token.token = decode(#{token}, 'escape')
+    </select>
+
+    <update id="revokeByAuthCodeId">
+        update refresh_token
+        set revoked = true
+        from token, auth_code_token, auth_code
+        where token.id = refresh_token.token_id
+        and auth_code_token.token_id = token.id
+        and auth_code.id = auth_code_token.auth_code_id
+        and auth_code.id = #{authCodeId}
+    </update>
+
+    <update id="revokeByTokenId">
+        update refresh_token
+        set revoked = true
+        where token_id = #{tokenId}
+    </update>
+</mapper>

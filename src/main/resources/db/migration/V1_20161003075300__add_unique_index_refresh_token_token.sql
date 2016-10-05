@@ -1,0 +1,1 @@
+alter table refresh_token add constraint refresh_token_token_unique unique (token);

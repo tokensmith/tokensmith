@@ -11,6 +11,7 @@ import java.util.UUID;
  */
 public interface TokenRepository {
     void insert(Token token) throws DuplicateRecordException;
-    void revokeByAuthCodeId(UUID authCodeId);
     Token getByAuthCodeId(UUID authCodeId) throws RecordNotFoundException;
+    void revokeByAuthCodeId(UUID authCodeId);
+    void revokeById(UUID id);
 }

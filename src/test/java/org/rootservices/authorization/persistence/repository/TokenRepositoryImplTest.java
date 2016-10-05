@@ -57,6 +57,14 @@ public class TokenRepositoryImplTest {
     }
 
     @Test
+    public void revokeByIdShouldBeOk() {
+        UUID id = UUID.randomUUID();
+
+        subject.revokeById(id);
+        verify(mockTokenMapper).revokeById(id);
+    }
+
+    @Test
     public void getByAuthCodeIdShouldBeOk() throws Exception {
         Token token = new Token();
         UUID authCodeId = UUID.randomUUID();
