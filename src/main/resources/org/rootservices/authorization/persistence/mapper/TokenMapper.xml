@@ -31,6 +31,18 @@
         where auth_code_token.auth_code_id = #{authCodeId}
     </select>
 
+    <select id="getById" resultMap="token">
+        select
+            token.id,
+            token.token,
+            token.revoked,
+            token.grant_type,
+            token.expires_at,
+            token.created_at
+        from token
+        where token.id = #{id}
+    </select>
+
     <insert id="insert" >
         insert into token (id, token, grant_type, expires_at)
         values (
@@ -48,6 +60,12 @@
         where auth_code_token.token_id = token.id
         and auth_code.id = auth_code_token.auth_code_id
         and auth_code.id = #{authCodeId}
+    </update>
+
+    <update id="revokeById">
+        update token
+        set revoked = true
+        where id = #{id}
     </update>
 
 </mapper>

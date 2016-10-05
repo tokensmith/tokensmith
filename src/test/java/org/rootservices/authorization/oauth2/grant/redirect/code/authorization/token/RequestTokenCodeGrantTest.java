@@ -63,6 +63,9 @@ public class RequestTokenCodeGrantTest {
     private TokenRepository tokenRepository;
 
     @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
     private ClientTokenRepository clientTokenRepository;
 
     @Autowired
@@ -99,6 +102,7 @@ public class RequestTokenCodeGrantTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getRefreshAccessToken(), is(notNullValue()));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.NONE));
@@ -385,6 +389,9 @@ public class RequestTokenCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken();
         tokenRepository.insert(token);
 
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        refreshTokenRepository.insert(refreshToken);
+
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
         authCodeToken.setAuthCodeId(authCode.getId());
@@ -415,8 +422,12 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getDomainCause(), instanceOf(CompromisedCodeException.class));
 
         // make sure the first token was revoked.
-        Token token1 = tokenRepository.getByAuthCodeId(authCode.getId());
-        assertThat(token1.isRevoked(), is(true));
+        Token token2 = tokenRepository.getByAuthCodeId(authCode.getId());
+        assertThat(token2.isRevoked(), is(true));
+
+        // make sure the refresh token was revoked.
+        RefreshToken refreshToken2 = refreshTokenRepository.getByTokenId(token2.getId());
+        assertThat(refreshToken2.isRevoked(), is(true));
 
         // make sure the authorization code was revoked.
         AuthCode authCode1 = authCodeRepository.getById(authCode.getId());

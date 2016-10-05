@@ -6,12 +6,14 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.ClientTokenRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.RandomString;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +31,15 @@ import static org.mockito.Mockito.when;
 public class IssueTokenPasswordGrantTest {
     private IssueTokenPasswordGrant subject;
     @Mock
+    private RandomString mockRandomString;
+    @Mock
     private MakeBearerToken mockMakeBearerToken;
     @Mock
     private TokenRepository mockTokenRepository;
+    @Mock
+    private MakeRefreshToken mockMakeRefreshToken;
+    @Mock
+    private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
@@ -43,8 +51,11 @@ public class IssueTokenPasswordGrantTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new IssueTokenPasswordGrant(
+                mockRandomString,
                 mockMakeBearerToken,
                 mockTokenRepository,
+                mockMakeRefreshToken,
+                mockRefreshTokenRepository,
                 mockResourceOwnerTokenRepository,
                 mockTokenScopeRepository,
                 mockClientTokenRepository
@@ -56,28 +67,34 @@ public class IssueTokenPasswordGrantTest {
         UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String plainTextAccessToken = "token";
+        String refreshAccessToken = "refresh-token";
 
-        List<Scope> scopes = FixtureFactory.makeScopes();
+        List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
 
         when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
+        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
-        Token actualToken = subject.run(clientId, resourceOwner.getId(), plainTextAccessToken, scopes);
+        when(mockRandomString.run()).thenReturn(refreshAccessToken);
+        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
 
-        assertThat(actualToken, is(notNullValue()));
-        assertThat(actualToken, is(token));
-        assertThat(actualToken.getGrantType(), is(GrantType.PASSWORD));
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), plainTextAccessToken, scopes);
 
-        assertThat(actualToken.getTokenScopes().size(), is(1));
-        assertThat(actualToken.getTokenScopes().get(0).getId(), is(notNullValue()));
-        assertThat(actualToken.getTokenScopes().get(0).getTokenId(), is(token.getId()));
-        assertThat(actualToken.getTokenScopes().get(0).getScope(), is(scopes.get(0)));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(plainTextAccessToken));
+        assertThat(actual.getRefreshAccessToken(), is(refreshAccessToken));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         verify(mockTokenRepository, times(1)).insert(token);
+
+        verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
 
         verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
         TokenScope actualTokenScope = tokenScopeCaptor.getValue();
@@ -94,7 +111,7 @@ public class IssueTokenPasswordGrantTest {
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
         ClientToken actualCt = clientTokenArgumentCaptor.getValue();
         assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(actualToken.getId()));
+        assertThat(actualCt.getTokenId(), is(token.getId()));
         assertThat(actualCt.getClientId(), is(clientId));
 
     }
