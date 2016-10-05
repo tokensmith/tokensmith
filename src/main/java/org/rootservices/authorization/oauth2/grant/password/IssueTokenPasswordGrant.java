@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.password;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -12,8 +12,6 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

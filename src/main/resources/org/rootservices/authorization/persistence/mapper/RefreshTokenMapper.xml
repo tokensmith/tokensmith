@@ -23,6 +23,18 @@
         )
     </insert>
 
+    <select id="getByTokenId" resultMap="refreshToken">
+        select
+        refresh_token.id,
+        refresh_token.token_id,
+        refresh_token.token,
+        refresh_token.revoked,
+        refresh_token.expires_at,
+        refresh_token.created_at
+        from refresh_token
+        where refresh_token.token_id = #{tokenId}
+    </select>
+
     <select id="getByToken" resultMap="refreshToken">
         select
             refresh_token.id,
@@ -34,4 +46,20 @@
         from refresh_token
         where refresh_token.token = decode(#{token}, 'escape')
     </select>
+
+    <update id="revokeByAuthCodeId">
+        update refresh_token
+        set revoked = true
+        from token, auth_code_token, auth_code
+        where token.id = refresh_token.token_id
+        and auth_code_token.token_id = token.id
+        and auth_code.id = auth_code_token.auth_code_id
+        and auth_code.id = #{authCodeId}
+    </update>
+
+    <update id="revokeByTokenId">
+        update refresh_token
+        set revoked = true
+        where token_id = #{tokenId}
+    </update>
 </mapper>
