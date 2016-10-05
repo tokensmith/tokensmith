@@ -12,7 +12,9 @@ import java.util.UUID;
  */
 @Repository
 public interface TokenMapper {
+    Token getByAuthCodeId(@Param("authCodeId") UUID authCodeId);
+    Token getById(@Param("id") UUID id);
     void insert(@Param("token") Token token) throws DuplicateKeyException;
     void revokeByAuthCodeId(@Param("authCodeId") UUID authCodeId);
-    Token getByAuthCodeId(@Param("authCodeId") UUID authCodeId);
+    void revokeById(@Param("id") UUID id);
 }

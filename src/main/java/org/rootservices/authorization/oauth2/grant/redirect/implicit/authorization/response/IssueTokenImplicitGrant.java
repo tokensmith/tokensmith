@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;

@@ -7,11 +7,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -59,7 +61,7 @@ public class RefreshTokenRepositoryImplTest {
     }
 
     @Test
-    public void getByTokenShouldBeOk() {
+    public void getByTokenShouldBeOk() throws Exception {
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(UUID.randomUUID());
         String accessToken = new String(refreshToken.getToken());
         when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(refreshToken);
@@ -68,5 +70,52 @@ public class RefreshTokenRepositoryImplTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(refreshToken));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByTokenWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
+        String accessToken = "foo";
+        when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(null);
+
+        subject.getByToken(accessToken);
+    }
+
+    @Test
+    public void getByTokenIdShouldBeOk() throws Exception {
+        UUID tokenId = UUID.randomUUID();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+
+        when(mockRefreshTokenMapper.getByTokenId(tokenId)).thenReturn(refreshToken);
+
+        RefreshToken actual = subject.getByTokenId(tokenId);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(refreshToken));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByTokenIdWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
+        UUID tokenId = UUID.randomUUID();
+        when(mockRefreshTokenMapper.getByTokenId(tokenId)).thenReturn(null);
+
+        subject.getByTokenId(tokenId);
+    }
+
+    @Test
+    public void revokeByAuthCodeIdShouldBeOk() {
+        UUID authCodeId = UUID.randomUUID();
+
+        subject.revokeByAuthCodeId(authCodeId);
+
+        verify(mockRefreshTokenMapper, times(1)).revokeByAuthCodeId(authCodeId);
+    }
+
+    @Test
+    public void revokeByTokenIdShouldBeOk() {
+        UUID tokenId = UUID.randomUUID();
+
+        subject.revokeByTokenId(tokenId);
+
+        verify(mockRefreshTokenMapper, times(1)).revokeByTokenId(tokenId);
     }
 }

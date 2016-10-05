@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
-import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
@@ -14,7 +14,6 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 /**

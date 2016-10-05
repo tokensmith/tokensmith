@@ -2,6 +2,8 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -75,6 +77,10 @@ public class IssueTokenCodeGrant {
         } catch (DuplicateRecordException e) {
             tokenRepository.revokeByAuthCodeId(authCodeId);
             authCodeRepository.revokeById(authCodeId);
+            refreshTokenRepository.revokeByAuthCodeId(authCodeId);
+
+            tokenRepository.revokeById(token.getId());
+            refreshTokenRepository.revokeByTokenId(token.getId());
 
             throw new CompromisedCodeException(
                     ErrorCode.COMPROMISED_AUTH_CODE.getDescription(),

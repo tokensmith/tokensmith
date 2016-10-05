@@ -39,6 +39,11 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
+    public void revokeById(UUID id) {
+        tokenMapper.revokeById(id);
+    }
+
+    @Override
     public Token getByAuthCodeId(UUID authCodeId) throws RecordNotFoundException {
         Token token = tokenMapper.getByAuthCodeId(authCodeId);
 

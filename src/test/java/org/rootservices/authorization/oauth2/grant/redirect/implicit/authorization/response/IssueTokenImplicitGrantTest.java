@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeBearerToken;
+import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
 
