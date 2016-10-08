@@ -6,6 +6,6 @@ package org.rootservices.authorization.persistence.entity;
 public enum GrantType {
     AUTHORIZATION_CODE,
     TOKEN,
-    PASSWORD
-
+    PASSWORD,
+    REFRESSH
 }

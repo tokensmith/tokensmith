@@ -22,9 +22,9 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by tommackenzie on 5/23/15.
  */
-    @RunWith(SpringJUnit4ClassRunner.class)
-    @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-    @Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@Transactional
 public class TokenMapperTest {
 
     @Autowired
