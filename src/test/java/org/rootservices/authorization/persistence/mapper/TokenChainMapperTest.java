@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
@@ -55,6 +57,30 @@ public class TokenChainMapperTest {
         tokenChain.setRefreshToken(refreshToken);
 
         subject.insert(tokenChain);
+
+        TokenChain actual = subject.getById(tokenChain.getId());
+
+        assertThat(actual.getId(), is(tokenChain.getId()));
+
+        assertThat(actual.getNextToken().getId(), is(nextToken.getId()));
+        assertThat(actual.getNextToken().getToken(), is(nextToken.getToken()));
+        assertThat(actual.getNextToken().isRevoked(), is(false));
+        assertThat(actual.getNextToken().getGrantType(), is(nextToken.getGrantType()));
+        assertThat(actual.getNextToken().getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getNextToken().getExpiresAt(), is(nextToken.getExpiresAt()));
+        
+        assertThat(actual.getPreviousToken().getId(), is(previousToken.getId()));
+        assertThat(actual.getPreviousToken().getToken(), is(previousToken.getToken()));
+        assertThat(actual.getPreviousToken().isRevoked(), is(false));
+        assertThat(actual.getPreviousToken().getGrantType(), is(previousToken.getGrantType()));
+        assertThat(actual.getPreviousToken().getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getPreviousToken().getExpiresAt(), is(previousToken.getExpiresAt()));
+
+        assertThat(actual.getRefreshToken().getId(), is(refreshToken.getId()));
+        assertThat(actual.getRefreshToken().getTokenId(), is(refreshToken.getTokenId()));
+        assertThat(actual.getRefreshToken().getToken(), is(refreshToken.getToken()));
+        assertThat(actual.getRefreshToken().getExpiresAt(), is(refreshToken.getExpiresAt()));
+        assertThat(actual.getRefreshToken().getCreatedAt(), is(notNullValue()));
     }
 
     @Test(expected = DuplicateKeyException.class)

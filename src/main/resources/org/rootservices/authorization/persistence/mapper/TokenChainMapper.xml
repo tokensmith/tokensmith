@@ -51,7 +51,7 @@
             refresh_token.id as refresh_token_id,
             refresh_token.token_id as refresh_token_token_id,
             refresh_token.token as refresh_token_token,
-            refresh_token.revoked as refresh_token_revoked,,
+            refresh_token.revoked as refresh_token_revoked,
             refresh_token.expires_at as refresh_token_expires_at,
             refresh_token.created_at as refresh_token_created_at
 
