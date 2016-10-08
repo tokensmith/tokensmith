@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.TokenChainMapper">
+
+    <resultMap id="tokenChain" type="org.rootservices.authorization.persistence.entity.TokenChain">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <association property="nextToken"
+                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
+                     columnPrefix="next_token_"/>
+        <association property="previousToken"
+                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
+                     columnPrefix="prev_token_"/>
+        <association property="refreshToken"
+                     resultMap="org.rootservices.authorization.persistence.mapper.RefreshTokenMapper.refreshToken"
+                     columnPrefix="refresh_token_"/>
+    </resultMap>
+
+
+    <insert id="insert" >
+        insert into token_chain (id, next_token_id, prev_token_id, refresh_token_id)
+        values (
+            #{tokenChain.id},
+            #{tokenChain.nextToken.id},
+            #{tokenChain.previousToken.id},
+            #{tokenChain.refreshToken.id}
+        )
+    </insert>
+
+    <select id="getById" resultMap="tokenChain">
+        select
+            token_chain.id,
+            token_chain.created_at,
+
+            next_token.id as next_token_id,
+            next_token.token as next_token_token,
+            next_token.revoked as next_token_revoked,
+            next_token.grant_type as next_token_grant_type,
+            next_token.expires_at as next_token_expires_at,
+            next_token.created_at as next_token_created_at,
+
+            prev_token.id as prev_token_id,
+            prev_token.token as prev_token_token,
+            prev_token.revoked as prev_token_revoked,
+            prev_token.grant_type as prev_token_grant_type,
+            prev_token.expires_at as prev_token_expires_at,
+            prev_token.created_at as prev_token_created_at,
+
+            refresh_token.id as refresh_token_id,
+            refresh_token.token_id as refresh_token_token_id,
+            refresh_token.token as refresh_token_token,
+            refresh_token.revoked as refresh_token_revoked,,
+            refresh_token.expires_at as refresh_token_expires_at,
+            refresh_token.created_at as refresh_token_created_at
+
+            from token_chain
+            join token as next_token on next_token.id = token_chain.next_token_id
+            join token as prev_token on prev_token.id = token_chain.prev_token_id
+            join refresh_token on refresh_token.id = token_chain.refresh_token_id
+            where token_chain.id = #{id}
+    </select>
+
+</mapper>

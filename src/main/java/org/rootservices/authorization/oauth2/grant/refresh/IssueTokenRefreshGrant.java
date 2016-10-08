@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.password;
+package org.rootservices.authorization.oauth2.grant.refresh;
 
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
@@ -9,17 +9,16 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by tommackenzie on 9/18/16.
+ * Created by tommackenzie on 10/7/16.
  */
 @Component
-public class IssueTokenPasswordGrant {
+public class IssueTokenRefreshGrant {
     private RandomString randomString;
     private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
@@ -31,27 +30,17 @@ public class IssueTokenPasswordGrant {
 
     private static String OPENID_SCOPE = "openid";
 
-    @Autowired
-    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
-        this.randomString = randomString;
-        this.makeBearerToken = makeBearerToken;
-        this.tokenRepository = tokenRepository;
-        this.makeRefreshToken = makeRefreshToken;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.tokenScopeRepository = tokenScopeRepository;
-        this.clientTokenRepository = clientTokenRepository;
-    }
-
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID refreshTokenId, String plainTextToken, List<Scope> scopes) {
         Token token = makeBearerToken.run(plainTextToken);
-        token.setGrantType(GrantType.PASSWORD);
+        token.setGrantType(GrantType.REFRESSH);
 
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
             // TODO: handle this exception
         }
+
+        // TODO: mark refresh token as used.
 
         String refreshAccessToken = randomString.run();
         RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
@@ -92,6 +81,7 @@ public class IssueTokenPasswordGrant {
             tokenScopeRepository.insert(ts);
         }
 
+        // TODO: get original auth time.
         TokenResponse tr = makeTokenResponse(plainTextToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
         return tr;
     }
