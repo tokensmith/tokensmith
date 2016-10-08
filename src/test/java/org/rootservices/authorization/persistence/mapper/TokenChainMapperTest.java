@@ -68,7 +68,7 @@ public class TokenChainMapperTest {
         assertThat(actual.getNextToken().getGrantType(), is(nextToken.getGrantType()));
         assertThat(actual.getNextToken().getCreatedAt(), is(notNullValue()));
         assertThat(actual.getNextToken().getExpiresAt(), is(nextToken.getExpiresAt()));
-        
+
         assertThat(actual.getPreviousToken().getId(), is(previousToken.getId()));
         assertThat(actual.getPreviousToken().getToken(), is(previousToken.getToken()));
         assertThat(actual.getPreviousToken().isRevoked(), is(false));
