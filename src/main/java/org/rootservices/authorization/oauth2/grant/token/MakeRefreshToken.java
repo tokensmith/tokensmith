@@ -29,7 +29,7 @@ public class MakeRefreshToken {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setTokenId(tokenId);
-        refreshToken.setToken(hashedToken);
+        refreshToken.setAccessToken(hashedToken);
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
 
         return refreshToken;

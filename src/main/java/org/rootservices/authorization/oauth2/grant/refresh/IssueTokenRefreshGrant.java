@@ -1,5 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.refresh;
 
+import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
@@ -22,16 +23,32 @@ public class IssueTokenRefreshGrant {
     private RandomString randomString;
     private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
+    private TokenChainRepository tokenChainRepository;
     private MakeRefreshToken makeRefreshToken;
     private RefreshTokenRepository refreshTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ClientTokenRepository clientTokenRepository;
 
+    private static String COMPROMISED_MESSAGE = "refresh token was already used";
+
     private static String OPENID_SCOPE = "openid";
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID refreshTokenId, String plainTextToken, List<Scope> scopes) {
-        Token token = makeBearerToken.run(plainTextToken);
+    public IssueTokenRefreshGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, TokenChainRepository tokenChainRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
+        this.randomString = randomString;
+        this.makeBearerToken = makeBearerToken;
+        this.tokenRepository = tokenRepository;
+        this.tokenChainRepository = tokenChainRepository;
+        this.makeRefreshToken = makeRefreshToken;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
+        this.tokenScopeRepository = tokenScopeRepository;
+        this.clientTokenRepository = clientTokenRepository;
+    }
+
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, List<Scope> scopes) throws CompromisedRefreshTokenException {
+        String accessToken = randomString.run();
+        Token token = makeBearerToken.run(accessToken);
         token.setGrantType(GrantType.REFRESSH);
 
         try {
@@ -40,31 +57,25 @@ public class IssueTokenRefreshGrant {
             // TODO: handle this exception
         }
 
-        // TODO: mark refresh token as used.
+        TokenChain tokenChain = makeTokenChain(token, previousTokenId, refreshTokenId);
+        try {
+            tokenChainRepository.insert(tokenChain);
+        } catch (DuplicateRecordException e) {
+            throw new CompromisedRefreshTokenException(COMPROMISED_MESSAGE, e);
+        }
 
         String refreshAccessToken = randomString.run();
         RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
-
         try {
             refreshTokenRepository.insert(refreshToken);
         } catch (DuplicateRecordException e) {
             // TODO: handle this exception
         }
 
-        ResourceOwner resourceOwner = new ResourceOwner();
-        resourceOwner.setId(resourceOwnerId);
-        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
-        resourceOwnerToken.setId(UUID.randomUUID());
-        resourceOwnerToken.setResourceOwner(resourceOwner);
-        resourceOwnerToken.setToken(token);
-
+        ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, token);
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
-        ClientToken clientToken = new ClientToken();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(token.getId());
-
+        ClientToken clientToken = makeClientToken(clientId, token.getId());
         clientTokenRepository.insert(clientToken);
 
         Boolean isOpenId = false;
@@ -81,9 +92,44 @@ public class IssueTokenRefreshGrant {
             tokenScopeRepository.insert(ts);
         }
 
-        // TODO: get original auth time.
-        TokenResponse tr = makeTokenResponse(plainTextToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        TokenResponse tr = makeTokenResponse(accessToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
         return tr;
+    }
+
+    protected TokenChain makeTokenChain(Token nextToken, UUID previousTokenId, UUID refreshTokenId) {
+        TokenChain tokenChain = new TokenChain();
+        tokenChain.setId(UUID.randomUUID());
+        tokenChain.setNextToken(nextToken);
+
+        Token previousToken = new Token();
+        previousToken.setId(previousTokenId);
+        tokenChain.setPreviousToken(previousToken);
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setId(refreshTokenId);
+        tokenChain.setRefreshToken(refreshToken);
+
+        return tokenChain;
+    }
+
+    protected ResourceOwnerToken makeResourceOwnerToken(UUID resourceOwnerId, Token token) {
+        ResourceOwner resourceOwner = new ResourceOwner();
+        resourceOwner.setId(resourceOwnerId);
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(resourceOwner);
+        resourceOwnerToken.setToken(token);
+
+        return resourceOwnerToken;
+    }
+
+    protected ClientToken makeClientToken(UUID clientId, UUID tokenId) {
+        ClientToken clientToken = new ClientToken();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(tokenId);
+
+        return clientToken;
     }
 
     protected TokenResponse makeTokenResponse(String accessToken, String refreshAccessToken, Long secondsToExpiration, boolean isOpenId) {

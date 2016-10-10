@@ -61,23 +61,23 @@ public class RefreshTokenRepositoryImplTest {
     }
 
     @Test
-    public void getByTokenShouldBeOk() throws Exception {
+    public void getByAccessTokenShouldBeOk() throws Exception {
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(UUID.randomUUID());
-        String accessToken = new String(refreshToken.getToken());
-        when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(refreshToken);
+        String accessToken = new String(refreshToken.getAccessToken());
+        when(mockRefreshTokenMapper.getByAccessToken(accessToken)).thenReturn(refreshToken);
 
-        RefreshToken actual = subject.getByToken(accessToken);
+        RefreshToken actual = subject.getByAccessToken(accessToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(refreshToken));
     }
 
     @Test(expected = RecordNotFoundException.class)
-    public void getByTokenWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
+    public void getByAccessTokenWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
         String accessToken = "foo";
-        when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(null);
+        when(mockRefreshTokenMapper.getByAccessToken(accessToken)).thenReturn(null);
 
-        subject.getByToken(accessToken);
+        subject.getByAccessToken(accessToken);
     }
 
     @Test

@@ -22,13 +22,23 @@
     </insert>
 
     <select id="getById" resultMap="resourceOwner">
-        select id, email, password, email_verified, created_at
+        select
+            resource_owner.id,
+            resource_owner.email,
+            resource_owner.password,
+            resource_owner.email_verified,
+            resource_owner.created_at
         from resource_owner
         where id = #{id}
     </select>
 
     <select id="getByEmail" resultMap="resourceOwner">
-        select id, email, password, email_verified, created_at
+        select
+            resource_owner.id,
+            resource_owner.email,
+            resource_owner.password,
+            resource_owner.email_verified,
+            resource_owner.created_at
         from resource_owner
         where email = #{email}
     </select>

@@ -4,10 +4,7 @@ import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadConfidentialClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.persistence.entity.AuthCodeToken;
-import org.rootservices.authorization.persistence.entity.RefreshToken;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +13,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -34,33 +33,54 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenMapper tokenMapper;
     @Autowired
+    private ScopeMapper scopeMapper;
+    @Autowired
+    private TokenScopeMapper tokenScopeMapper;
+    @Autowired
     private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
     @Autowired
     private AuthCodeTokenMapper authCodeTokenMapper;
     @Autowired
     private RandomString randomString;
 
-    public UUID loadToken() {
+    public UUID loadToken(OffsetDateTime expiresAt, boolean revoked) {
         Token token = FixtureFactory.makeOAuthToken();
+        token.setExpiresAt(expiresAt);
+        token.setRevoked(revoked);
+
         tokenMapper.insert(token);
         return token.getId();
     }
 
+    public UUID loadTokenWithScopes(OffsetDateTime expiresAt, boolean revoked) {
+        UUID tokenId = loadToken(expiresAt, revoked);
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(tokenId);
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        return tokenId;
+    }
+
     @Test
     public void insertShouldBeOk() throws Exception {
-        UUID tokenId = loadToken();
+        UUID tokenId = loadToken(OffsetDateTime.now(), false);
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
 
         subject.insert(refreshToken);
 
-        String accessToken = new String(refreshToken.getToken());
-        RefreshToken actual = subject.getByToken(accessToken);
+        RefreshToken actual = subject.getByTokenId(tokenId);
         assertThat(actual, is(notNullValue()));
     }
 
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() throws Exception {
-        UUID tokenId = loadToken();
+        UUID tokenId = loadToken(OffsetDateTime.now(), false);
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
 
         subject.insert(refreshToken);
@@ -71,7 +91,7 @@ public class RefreshTokenMapperTest {
 
     @Test
     public void getByTokenIdShouldBeOk() throws Exception {
-        UUID tokenId = loadToken();
+        UUID tokenId = loadToken(OffsetDateTime.now(), false);
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
 
         subject.insert(refreshToken);
@@ -81,27 +101,103 @@ public class RefreshTokenMapperTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.getTokenId(), is(refreshToken.getTokenId()));
-        assertThat(actual.getToken(), is(refreshToken.getToken()));
+        assertThat(actual.getAccessToken(), is(refreshToken.getAccessToken()));
         assertThat(actual.getExpiresAt(), is(refreshToken.getExpiresAt()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 
     @Test
     public void getByTokenShouldBeOk() throws Exception {
-        UUID tokenId = loadToken();
+        UUID tokenId = loadTokenWithScopes(OffsetDateTime.now(), false);
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
 
         subject.insert(refreshToken);
 
-        String accessToken = new String(refreshToken.getToken());
-        RefreshToken actual = subject.getByToken(accessToken);
+        String accessToken = new String(refreshToken.getAccessToken());
+        RefreshToken actual = subject.getByAccessToken(accessToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.getTokenId(), is(refreshToken.getTokenId()));
-        assertThat(actual.getToken(), is(refreshToken.getToken()));
+        assertThat(actual.getAccessToken(), is(refreshToken.getAccessToken()));
         assertThat(actual.getExpiresAt(), is(refreshToken.getExpiresAt()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getToken(), is(notNullValue()));
+        assertThat(actual.getToken().getId(), is(notNullValue()));
+        assertThat(actual.getToken().getToken(), is(notNullValue()));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getExpiresAt(), is(notNullValue()));
+        assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().size(), is(1));
+        assertThat(actual.getToken().getTokenScopes().get(0).getId(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().get(0).getTokenId(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getId(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getName(), is("address"));
+        assertThat(actual.getToken().getTokenScopes().get(0).getScope().getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByTokenWhenIsRevokedShouldBeNull() throws Exception {
+        UUID tokenId = loadToken(OffsetDateTime.now(), false);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+
+        subject.insert(refreshToken);
+        subject.revokeByTokenId(tokenId);
+
+        String accessToken = new String(refreshToken.getAccessToken());
+        RefreshToken actual = subject.getByAccessToken(accessToken);
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByTokenWhenIsExpiredShouldBeNull() throws Exception {
+        UUID tokenId = loadToken(OffsetDateTime.now(), false);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+        refreshToken.setExpiresAt(OffsetDateTime.now().minusHours(1));
+
+        subject.insert(refreshToken);
+
+        String accessToken = new String(refreshToken.getAccessToken());
+        RefreshToken actual = subject.getByAccessToken(accessToken);
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByTokenWhenTokenIsNotExpiredShouldBeNull() throws Exception {
+        UUID tokenId = loadToken(OffsetDateTime.now().plusHours(1), false);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+        refreshToken.setExpiresAt(OffsetDateTime.now().minusHours(1));
+
+        subject.insert(refreshToken);
+
+        String accessToken = new String(refreshToken.getAccessToken());
+        RefreshToken actual = subject.getByAccessToken(accessToken);
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByTokenWhenTokenRevokedShouldBeNull() throws Exception {
+        UUID tokenId = loadToken(OffsetDateTime.now(), true);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+        refreshToken.setExpiresAt(OffsetDateTime.now().minusHours(1));
+
+        subject.insert(refreshToken);
+
+        String accessToken = new String(refreshToken.getAccessToken());
+        RefreshToken actual = subject.getByAccessToken(accessToken);
+
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -127,8 +223,7 @@ public class RefreshTokenMapperTest {
 
         subject.revokeByAuthCodeId(authCode.getId());
 
-        String accessToken = new String(refreshToken.getToken());
-        RefreshToken actual = subject.getByToken(accessToken);
+        RefreshToken actual = subject.getByTokenId(token.getId());
 
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.isRevoked(), is(true));
@@ -146,8 +241,7 @@ public class RefreshTokenMapperTest {
 
         subject.revokeByTokenId(token.getId());
 
-        String accessToken = new String(refreshToken.getToken());
-        RefreshToken actual = subject.getByToken(accessToken);
+        RefreshToken actual = subject.getByTokenId(token.getId());
 
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.isRevoked(), is(true));

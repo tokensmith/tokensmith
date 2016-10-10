@@ -89,6 +89,16 @@ public class BadRequestExceptionBuilder {
         return this;
     }
 
+    public BadRequestExceptionBuilder CompromisedRefreshToken(int code, Throwable domainCause) {
+        this.message = "Bad request";
+        this.error = "invalid_grant";
+        this.description = "the refresh token was already used";
+        this.domainCause = domainCause;
+        this.code = code;
+        return this;
+    }
+
+
     public BadRequestException build() {
         return new BadRequestException(message, error, description, domainCause, code);
     }
