@@ -292,7 +292,7 @@ public class FixtureFactory {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setTokenId(tokenId);
-        refreshToken.setToken(randomString.run().getBytes());
+        refreshToken.setAccessToken(randomString.run().getBytes());
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
         refreshToken.setRevoked(false);
         return refreshToken;

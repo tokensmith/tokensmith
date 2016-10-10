@@ -78,7 +78,7 @@ public class TokenChainMapperTest {
 
         assertThat(actual.getRefreshToken().getId(), is(refreshToken.getId()));
         assertThat(actual.getRefreshToken().getTokenId(), is(refreshToken.getTokenId()));
-        assertThat(actual.getRefreshToken().getToken(), is(refreshToken.getToken()));
+        assertThat(actual.getRefreshToken().getAccessToken(), is(refreshToken.getAccessToken()));
         assertThat(actual.getRefreshToken().getExpiresAt(), is(refreshToken.getExpiresAt()));
         assertThat(actual.getRefreshToken().getCreatedAt(), is(notNullValue()));
     }

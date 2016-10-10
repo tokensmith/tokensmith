@@ -1,18 +1,14 @@
 package org.rootservices.authorization.persistence.mapper;
 
-import helper.fixture.persistence.openid.LoadOpenIdConfidentialClientAll;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,10 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
 public class ResourceOwnerMapperTest {
-
-    @Autowired
-    private LoadOpenIdConfidentialClientAll loadOpenIdConfidentialClientAll;
-
     @Autowired
     private ResourceOwnerMapper subject;
 

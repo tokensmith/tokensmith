@@ -7,10 +7,13 @@
     <resultMap id="refreshToken" type="org.rootservices.authorization.persistence.entity.RefreshToken">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <id column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="token" property="token"/>
+        <result column="token" property="accessToken"/>
         <result column="revoked" property="revoked"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <association property="token"
+                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
+                     columnPrefix="token_"/>
     </resultMap>
 
     <insert id="insert">
@@ -18,7 +21,7 @@
         values (
             #{refreshToken.id},
             #{refreshToken.tokenId},
-            #{refreshToken.token},
+            #{refreshToken.accessToken},
             #{refreshToken.expiresAt}
         )
     </insert>
@@ -35,16 +38,40 @@
         where refresh_token.token_id = #{tokenId}
     </select>
 
-    <select id="getByToken" resultMap="refreshToken">
+    <select id="getByAccessToken" resultMap="refreshToken">
         select
             refresh_token.id,
             refresh_token.token_id,
             refresh_token.token,
             refresh_token.revoked,
             refresh_token.expires_at,
-            refresh_token.created_at
+            refresh_token.created_at,
+
+            token.id as token_id,
+            token.token as token_token,
+            token.revoked as token_revoked,
+            token.grant_type as token_grant_type,
+            token.expires_at as token_expires_at,
+            token.created_at as token_created_at,
+
+            token_scope.id as token_ts_id,
+            token_scope.token_id as token_ts_token_id,
+            token_scope.created_at as token_ts_created_at,
+            token_scope.updated_at as token_ts_updated_at,
+
+            scope.id as token_ts_scope_id,
+            scope.name as token_ts_scope_name,
+            scope.created_at as token_ts_scope_created_at
+
         from refresh_token
-        where refresh_token.token = decode(#{token}, 'escape')
+        join token on token.id = refresh_token.token_id
+        join token_scope on token_scope.token_id = token.id
+        join scope on scope.id = token_scope.scope_id
+        where refresh_token.token = decode(#{accessToken}, 'escape')
+        and refresh_token.revoked = FALSE
+        and refresh_token.expires_at > current_timestamp
+        and token.revoked = FALSE
+        and token.expires_at <![CDATA[<]]> current_timestamp
     </select>
 
     <update id="revokeByAuthCodeId">

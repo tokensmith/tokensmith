@@ -9,7 +9,8 @@ import java.util.UUID;
 public class RefreshToken {
     private UUID id;
     private UUID tokenId;
-    private byte[] token;
+    private Token token;
+    private byte[] accessToken;
     private OffsetDateTime expiresAt;
     private boolean revoked;
     private OffsetDateTime createdAt;
@@ -30,12 +31,20 @@ public class RefreshToken {
         this.tokenId = tokenId;
     }
 
-    public byte[] getToken() {
+    public Token getToken() {
         return token;
     }
 
-    public void setToken(byte[] token) {
+    public void setToken(Token token) {
         this.token = token;
+    }
+
+    public byte[] getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(byte[] accessToken) {
+        this.accessToken = accessToken;
     }
 
     public OffsetDateTime getExpiresAt() {

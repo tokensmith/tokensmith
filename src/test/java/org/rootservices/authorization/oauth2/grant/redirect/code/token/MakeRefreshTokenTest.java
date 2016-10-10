@@ -39,12 +39,11 @@ public class MakeRefreshTokenTest {
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
         RefreshToken actual = subject.run(tokenId, plainTextToken);
-        assertThat(actual.getId(), is(notNullValue()));
 
-        assertThat(actual.getToken(), is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getTokenId(), is(tokenId));
-        assertThat(actual.getToken(), is(hashedToken.getBytes()));
+        assertThat(actual.getAccessToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
     }
 
