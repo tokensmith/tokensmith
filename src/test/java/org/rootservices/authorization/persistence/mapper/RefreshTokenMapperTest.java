@@ -1,11 +1,10 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.repository.AuthCodeTokenRepository;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,7 +36,7 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenScopeMapper tokenScopeMapper;
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private AuthCodeTokenMapper authCodeTokenMapper;
     @Autowired
@@ -204,7 +203,7 @@ public class RefreshTokenMapperTest {
     public void revokeByAuthCodeIdShouldBeOk() throws Exception {
         // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Token token = FixtureFactory.makeOpenIdToken();
         tokenMapper.insert(token);

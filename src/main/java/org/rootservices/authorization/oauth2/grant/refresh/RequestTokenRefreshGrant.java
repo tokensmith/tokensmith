@@ -78,6 +78,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
                 scopes
             );
         } catch (CompromisedRefreshTokenException e) {
+            // TODO:
             throw badRequestExceptionBuilder.CompromisedRefreshToken(
                 ErrorCode.COMPROMISED_REFRESH_TOKEN.getCode(),
                 e

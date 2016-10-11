@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 public class AuthCodeTokenMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private ClientRepository clientRepository;
     @Autowired

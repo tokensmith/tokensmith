@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
@@ -42,10 +42,10 @@ import static org.junit.Assert.assertThat;
 public class RequestTokenCodeGrantTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientOpendIdTokenReady;
+    private LoadConfClientTokenReady loadConfClientOpendIdTokenReady;
 
     @Autowired
     private HashTextStaticSalt hashText;
@@ -87,7 +87,7 @@ public class RequestTokenCodeGrantTest {
     @Transactional
     public void requestShouldBeOk() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -141,7 +141,7 @@ public class RequestTokenCodeGrantTest {
     public void requestShouldBeOpenIdExtension() throws Exception {
         String plainTextAuthCode = randomString.run();
 
-        AuthCode authCode = loadConfidentialClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -166,7 +166,7 @@ public class RequestTokenCodeGrantTest {
     @Transactional
     public void requestWhenLoginClientFailsShouldThrowUnauthorizedException() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -194,7 +194,7 @@ public class RequestTokenCodeGrantTest {
     @Transactional
     public void requestWhenMissingCodeShouldThrowBadRequestException() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -225,7 +225,7 @@ public class RequestTokenCodeGrantTest {
     @Transactional
     public void requestWhenMissingRedirectUriShouldThrowNotFoundException() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -253,7 +253,7 @@ public class RequestTokenCodeGrantTest {
     @Transactional
     public void requestWhenCodeIsRevokedShouldThrowNotFoundException() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, true, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, true, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -281,7 +281,7 @@ public class RequestTokenCodeGrantTest {
     public void requesstWhenRedirectUriIsNotHttpsShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -313,7 +313,7 @@ public class RequestTokenCodeGrantTest {
     public void requestWhenRedirectUriIsNotValidShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -346,7 +346,7 @@ public class RequestTokenCodeGrantTest {
     public void requestWhenPayloadHasUnknownKeyShouldThrowBadRequestException() throws Exception {
 
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Map<String, String> request = makeRequest(
                 plainTextAuthCode,
@@ -385,7 +385,7 @@ public class RequestTokenCodeGrantTest {
 
         // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
         Token token = FixtureFactory.makeOpenIdToken();
         tokenRepository.insert(token);
 

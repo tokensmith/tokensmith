@@ -14,7 +14,7 @@
 
     <context:component-scan base-package="helper"/>
 
-    <bean name = "loadConfidentialClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfidentialClientTokenReady">
+    <bean name = "loadConfClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfClientTokenReady">
         <property name="loadCodeClientWithScopes">
             <bean class="helper.fixture.persistence.openid.LoadCodeClientWithOpenIdScope" />
         </property>
