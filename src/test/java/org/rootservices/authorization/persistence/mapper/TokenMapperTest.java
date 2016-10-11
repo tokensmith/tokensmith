@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class TokenMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private RandomString randomString;
     @Autowired
@@ -46,7 +46,7 @@ public class TokenMapperTest {
     public void revokeByAuthCodeIdShouldBeOk() throws Exception {
         // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Token tokenToRevoke = FixtureFactory.makeOpenIdToken();
         subject.insert(tokenToRevoke);
@@ -73,7 +73,7 @@ public class TokenMapperTest {
     public void getByAuthCodeIdShouldBeOk() throws Exception {
         // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         Token token = FixtureFactory.makeOpenIdToken();
         subject.insert(token);

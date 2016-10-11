@@ -19,7 +19,7 @@ import java.util.UUID;
  * Loads a client that is ready for a token to be persisted.
  */
 @Component
-public class LoadConfidentialClientTokenReady {
+public class LoadConfClientTokenReady {
     private LoadCodeClientWithScopes loadCodeClientWithScopes;
     private ConfidentialClientRepository confidentialClientRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
@@ -28,7 +28,7 @@ public class LoadConfidentialClientTokenReady {
     private AccessRequestScopesRepository accessRequestScopesRepository;
 
     @Autowired
-    public LoadConfidentialClientTokenReady(LoadCodeClientWithScopes loadCodeClientWithScopes, ConfidentialClientRepository confidentialClientRepository, ResourceOwnerRepository resourceOwnerRepository, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
+    public LoadConfClientTokenReady(LoadCodeClientWithScopes loadCodeClientWithScopes, ConfidentialClientRepository confidentialClientRepository, ResourceOwnerRepository resourceOwnerRepository, AuthCodeRepository authCodeRepository, AccessRequestRepository accessRequestRepository, AccessRequestScopesRepository accessRequestScopesRepository) {
         this.loadCodeClientWithScopes = loadCodeClientWithScopes;
         this.confidentialClientRepository = confidentialClientRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;

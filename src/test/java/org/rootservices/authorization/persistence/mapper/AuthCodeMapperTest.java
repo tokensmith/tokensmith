@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 public class AuthCodeMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -100,7 +100,7 @@ public class AuthCodeMapperTest {
     public void getByClientIdAndAuthCodeShouldBeOk() throws Exception {
 
         String plainTextAuthCode = randomString.run();
-        AuthCode expected = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode expected = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
@@ -129,7 +129,7 @@ public class AuthCodeMapperTest {
     @Test
     public void getByClientIdAndAuthCodeWhenRedirectURIIsNotPresent() throws Exception {
         String plainTextAuthCode = randomString.run();
-        AuthCode expected = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
+        AuthCode expected = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
@@ -154,7 +154,7 @@ public class AuthCodeMapperTest {
     @Test
     public void getByClientIdAndAuthCodeWhenCodeIsRevoked() throws URISyntaxException, DuplicateRecordException {
         String plainTextAuthCode = randomString.run();
-        AuthCode expected = loadConfidentialClientTokenReady.run(false, true, plainTextAuthCode);
+        AuthCode expected = loadConfClientTokenReady.run(false, true, plainTextAuthCode);
 
         String code = new String(expected.getCode());
         AuthCode actual = subject.getByClientIdAndAuthCode(expected.getAccessRequest().getClientId(), code);
@@ -166,7 +166,7 @@ public class AuthCodeMapperTest {
     public void getByClientIdAndAuthCodeWhenTokenIsPresent() throws Exception {
         // begin - prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
         Token token = FixtureFactory.makeOpenIdToken();
         tokenRepository.insert(token);
@@ -195,11 +195,11 @@ public class AuthCodeMapperTest {
     @Test
     public void revokeByIdShouldRevoke() throws Exception{
         String plainTextAuthCode = randomString.run();
-        AuthCode authCodeToRevoke = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode);
+        AuthCode authCodeToRevoke = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
         // insert one more auth code to make sure it only updates one and not all of em.
         String plainTextAuthCode2 = randomString.run();
-        AuthCode authCodeNotRevoked = loadConfidentialClientTokenReady.run(false, false, plainTextAuthCode2);
+        AuthCode authCodeNotRevoked = loadConfClientTokenReady.run(false, false, plainTextAuthCode2);
 
         subject.revokeById(authCodeToRevoke.getId());
 
