@@ -32,8 +32,8 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
-    public RefreshToken getByAccessToken(String token) throws RecordNotFoundException {
-        RefreshToken refreshToken = refreshTokenMapper.getByAccessToken(token);
+    public RefreshToken getByClientIdAndAccessToken(UUID clientId, String token) throws RecordNotFoundException {
+        RefreshToken refreshToken = refreshTokenMapper.getByClientIdAndAccessToken(clientId, token);
         if (refreshToken == null) {
             throw new RecordNotFoundException("refresh token not found.");
         }

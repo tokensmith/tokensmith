@@ -59,10 +59,10 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         } catch (InvalidValueException e) {
             throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (UnknownKeyException e) {
-            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
+            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
         }
 
-        RefreshToken refreshToken = getRefreshToken(input.getRefreshToken());
+        RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), input.getRefreshToken());
         List<Scope> scopes = matchScopes(input.getScopes(), refreshToken.getToken().getTokenScopes());
 
         String accessToken = new String(refreshToken.getToken().getToken());
@@ -88,11 +88,11 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         return tokenResponse;
     }
 
-    protected RefreshToken getRefreshToken(String token) throws NotFoundException {
+    protected RefreshToken getRefreshToken(UUID clientId, String token) throws NotFoundException {
         RefreshToken refreshToken;
 
         try {
-            refreshToken = refreshTokenRepository.getByAccessToken(token);
+            refreshToken = refreshTokenRepository.getByClientIdAndAccessToken(clientId, token);
         } catch (RecordNotFoundException e) {
             throw new NotFoundException(
                 REFRESH_TOKEN_NOT_FOUND,

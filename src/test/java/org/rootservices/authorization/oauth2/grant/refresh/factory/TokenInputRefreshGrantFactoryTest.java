@@ -106,8 +106,27 @@ public class TokenInputRefreshGrantFactoryTest {
     }
 
     @Test
-    public void runWithTooManyKeysShouldThrowUnknownKeyException() throws Exception {
+    public void runWhenRequiredAndOptionalAndUnknownKeysShouldThrowUnknownKeyException() throws Exception {
         Map<String, String> request = makeRequest();
+        request.put("foo", "foo");
+
+        UnknownKeyException actual = null;
+        try {
+            subject.run(request);
+        } catch (UnknownKeyException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is(ErrorCode.UNKNOWN_KEY.getDescription()));
+        assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
+        assertThat(actual.getKey(), is("foo"));
+    }
+
+    @Test
+    public void runWhenRequiredKeysAndUnknownKeyShouldThrowUnknownKeyException() throws Exception {
+        Map<String, String> request = makeRequest();
+        request.remove("scope");
         request.put("foo", "foo");
 
         UnknownKeyException actual = null;

@@ -14,8 +14,8 @@ import java.util.UUID;
 @Repository
 public interface RefreshTokenMapper {
     void insert(@Param("refreshToken") RefreshToken refreshToken);
-    RefreshToken getByTokenId(@Param("tokenId") UUID tokenId) throws RecordNotFoundException;
-    RefreshToken getByAccessToken(@Param("accessToken") String accessToken) throws RecordNotFoundException;
+    RefreshToken getByTokenId(@Param("tokenId") UUID tokenId);
+    RefreshToken getByClientIdAndAccessToken(@Param("clientId") UUID clientId, @Param("accessToken") String accessToken);
     void revokeByAuthCodeId(@Param("authCodeId") UUID authCodeId);
     void revokeByTokenId(@Param("tokenId") UUID tokenId);
 }

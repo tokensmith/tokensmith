@@ -48,8 +48,8 @@ public class LoadOpenIdConfClientAll {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public AuthCode loadAuthCode() throws DuplicateRecordException, URISyntaxException {
-        AuthCode authCode = loadConfClientOpendIdTokenReady.run(true, false, "plain-text-auth-code");
+    public AuthCode loadAuthCode(String plainTextAuthCode) throws DuplicateRecordException, URISyntaxException {
+        AuthCode authCode = loadConfClientOpendIdTokenReady.run(true, false, plainTextAuthCode);
         return authCode;
     }
 
