@@ -94,6 +94,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         try {
             authCode = authCodeRepository.getByClientIdAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
+            // TODO: security - could a client be phishing for other client's auth codes?
             throw new NotFoundException(
                     "Access Request was not found",
                     "invalid_grant",

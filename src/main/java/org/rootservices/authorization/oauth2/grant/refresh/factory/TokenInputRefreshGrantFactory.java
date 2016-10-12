@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class TokenInputRefreshGrantFactory {
-    private static Integer MAX_NUMBER_OF_KEYS = 3;
     protected static String REFRESH_TOKEN = "refresh_token";
     protected static String SCOPE = "scope";
     private static List<String> KNOWN_KEYS = Arrays.asList("grant_type", "refresh_token", "scope");
@@ -29,8 +28,9 @@ public class TokenInputRefreshGrantFactory {
     }
 
     public TokenInputRefreshGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
-        if (request.size() > MAX_NUMBER_OF_KEYS) {
-            Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+
+        Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+        if (unknownKey.isPresent()) {
             throw new UnknownKeyException(
                     ErrorCode.UNKNOWN_KEY.getDescription(),
                     unknownKey.get(),

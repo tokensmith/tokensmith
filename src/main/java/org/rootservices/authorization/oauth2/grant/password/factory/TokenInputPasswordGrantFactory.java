@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class TokenInputPasswordGrantFactory {
-    private static Integer MAX_NUMBER_OF_KEYS = 4;
     protected static String USER_NAME = "username";
     protected static String PASSWORD = "password";
     protected static String SCOPE = "scope";
@@ -31,8 +30,8 @@ public class TokenInputPasswordGrantFactory {
 
     public TokenInputPasswordGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
 
-        if (request.size() > MAX_NUMBER_OF_KEYS) {
-            Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+        Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+        if (unknownKey.isPresent()) {
             throw new UnknownKeyException(
                 ErrorCode.UNKNOWN_KEY.getDescription(),
                 unknownKey.get(),

@@ -3,10 +3,15 @@ package org.rootservices.authorization.oauth2.grant.refresh;
 import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
+import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,7 +24,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -37,7 +44,8 @@ public class RequestTokenRefreshGrantTest {
 
     @Test
     public void requestShouldBeOk() throws Exception {
-        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode();
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
         UUID clientId = authCode.getAccessRequest().getClientId();
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
@@ -55,42 +63,235 @@ public class RequestTokenRefreshGrantTest {
         request.put("refresh_token", new String(refreshToken.getAccessToken()));
 
         TokenResponse actual = subject.request(clientId, "password", request);
+
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getRefreshAccessToken(), is(notNullValue()));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
     }
 
     @Test
-    public void requestWhenMissingKeyShould() {
+    public void requestWhenMissingKeyShouldThrowBadRequestException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+
+        BadRequestException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Bad request"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDescription(), is("refresh_token is a required field"));
+        assertThat(actual.getDomainCause(), is(instanceOf(MissingKeyException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
     }
 
     @Test
-    public void requestWhenInvalidValueShould() {
+    public void requestWhenInvalidValueShouldThrowBadRequestException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("scope", "");
+
+        BadRequestException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Bad request"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDescription(), is("scope is invalid"));
+        assertThat(actual.getDomainCause(), is(instanceOf(InvalidValueException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.EMPTY_VALUE.getCode()));
     }
 
     @Test
-    public void requestWhenUnknownKeyShould() {
+    public void requestWhenUnknownKeyShould() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("foo", "");
+
+        BadRequestException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Bad request"));
+        assertThat(actual.getError(), is("invalid_request"));
+        assertThat(actual.getDescription(), is("foo is a unknown key"));
+        assertThat(actual.getDomainCause(), is(instanceOf(UnknownKeyException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
     }
 
     @Test
-    public void requestWhenRefreshTokenNotFoundShould() {
+    public void requestWhenRefreshTokenNotFoundShould() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", "not-the-real-refresh-token");
+
+        NotFoundException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(NotFoundException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("refresh token was not found"));
+        assertThat(actual.getError(), is("invalid_grant"));
+        assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
+        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
     @Test
-    public void requestWhenExtraScopesShould() {
+    public void requestWhenExtraScopesShouldThrowBadRequestException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("scope", "foo");
+
+        BadRequestException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Bad request"));
+        assertThat(actual.getError(), is("invalid_scope"));
+        assertThat(actual.getDescription(), is("scope is not available for this client"));
+        assertThat(actual.getDomainCause(), is(nullValue()));
+        assertThat(actual.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
     }
 
     @Test
-    public void requestRefreshTokenDoesNotBelongToClientShould() {
+    public void requestRefreshTokenDoesNotBelongToClientShouldThrowNotFoundException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+
+        // load another confidential client.. that doesn't belong to the refresh token ^^
+        String plainTextAuthCode2 = "plain-text-auth-code2";
+        AuthCode authCode2 = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode2);
+        UUID clentId2 = authCode2.getAccessRequest().getClientId();
+
+        NotFoundException actual = null;
+        try {
+            subject.request(clentId2, "password", request);
+        } catch(NotFoundException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("refresh token was not found"));
+        assertThat(actual.getError(), is("invalid_grant"));
+        assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
+        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
     @Test
-    public void requestWhenResourceOwnerNotLinkedToRefreshTokenShould() {
-
+    public void requestWhenResourceOwnerNotLinkedToRefreshTokenShould() throws Exception {
+        // TODO: need to delete the rot record.
     }
 
     @Test

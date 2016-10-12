@@ -38,7 +38,7 @@
         where refresh_token.token_id = #{tokenId}
     </select>
 
-    <select id="getByAccessToken" resultMap="refreshToken">
+    <select id="getByClientIdAndAccessToken" resultMap="refreshToken">
         select
             refresh_token.id,
             refresh_token.token_id,
@@ -67,11 +67,13 @@
         join token on token.id = refresh_token.token_id
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
+        join client_token on client_token.token_id = token.id
         where refresh_token.token = decode(#{accessToken}, 'escape')
         and refresh_token.revoked = FALSE
         and refresh_token.expires_at > current_timestamp
         and token.revoked = FALSE
         and token.expires_at <![CDATA[<]]> current_timestamp
+        and client_token.client_id = #{clientId}
     </select>
 
     <update id="revokeByAuthCodeId">
