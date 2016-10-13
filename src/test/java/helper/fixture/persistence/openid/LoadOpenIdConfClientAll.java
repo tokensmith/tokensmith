@@ -53,7 +53,7 @@ public class LoadOpenIdConfClientAll {
         return authCode;
     }
 
-    public RefreshToken loadRefreshToken(OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
+    public RefreshToken loadRefreshTokenForResourceOwner(OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
 
         Token token = FixtureFactory.makeOpenIdToken();
         String accessToken = randomString.run();
@@ -91,6 +91,41 @@ public class LoadOpenIdConfClientAll {
         rot.setToken(token);
         rot.setResourceOwner(resourceOwner);
         resourceOwnerTokenRepository.insert(rot);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        refreshTokenRepository.insert(refreshToken);
+        return refreshToken;
+    }
+
+    public RefreshToken loadRefreshTokenForClient(OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
+        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = randomString.run();
+        token.setToken(accessToken.getBytes());
+        token.setExpiresAt(tokenExpiresAt);
+
+        // TODO: need to change this once client_credentials is done.
+        token.setGrantType(GrantType.AUTHORIZATION_CODE);
+        tokenRepository.insert(token);
+
+        for(Scope scope: scopesForToken) {
+            TokenScope ts = new TokenScope();
+            ts.setId(UUID.randomUUID());
+            ts.setScope(scope);
+            ts.setTokenId(token.getId());
+            tokenScopeRepository.insert(ts);
+        }
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setTokenId(token.getId());
+        authCodeToken.setAuthCodeId(authCodeId);
+        authCodeTokenRepository.insert(authCodeToken);
+
+        ClientToken clientToken = new ClientToken();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(token.getId());
+        clientTokenRepository.insert(clientToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
         refreshTokenRepository.insert(refreshToken);

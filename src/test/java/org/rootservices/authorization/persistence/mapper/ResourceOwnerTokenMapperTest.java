@@ -68,7 +68,6 @@ public class ResourceOwnerTokenMapperTest {
         assertThat(actual, is(notNullValue()));
     }
 
-
     @Test
     public void getByAccessTokenShouldBeOk() throws Exception {
         // begin prepare db for test

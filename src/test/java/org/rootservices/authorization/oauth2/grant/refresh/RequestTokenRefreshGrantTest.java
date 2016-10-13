@@ -4,6 +4,7 @@ import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -54,7 +55,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -84,7 +85,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -118,7 +119,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -143,7 +144,7 @@ public class RequestTokenRefreshGrantTest {
     }
 
     @Test
-    public void requestWhenUnknownKeyShould() throws Exception {
+    public void requestWhenUnknownKeyShouldThrowBadRequestException() throws Exception {
         String plainTextAuthCode = "plain-text-auth-code";
         AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
         UUID clientId = authCode.getAccessRequest().getClientId();
@@ -154,7 +155,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -190,7 +191,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -225,7 +226,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -261,7 +262,7 @@ public class RequestTokenRefreshGrantTest {
                 .collect(Collectors.toList());
 
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
-        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshToken(
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
                 tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
@@ -290,12 +291,75 @@ public class RequestTokenRefreshGrantTest {
     }
 
     @Test
-    public void requestWhenResourceOwnerNotLinkedToRefreshTokenShould() throws Exception {
-        // TODO: need to delete the rot record.
+    public void requestWhenResourceOwnerNotLinkedToRefreshTokenShouldThrowBadRequestException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForClient(
+                tokenExpirationAt, authCode.getId(), clientId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+
+        NotFoundException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(NotFoundException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("no resource owner was associated to refresh token"));
+        assertThat(actual.getError(), is("invalid_grant"));
+        assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
+        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
     @Test
-    public void requestWhenCompromisedRefreshTokenShould() {
+    public void requestWhenCompromisedRefreshTokenShouldThrowBadRequestException() throws Exception {
+        String plainTextAuthCode = "plain-text-auth-code";
+        AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
+        List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(item -> item.getScope())
+                .collect(Collectors.toList());
+
+        OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
+        RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
+                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+        );
+
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "refresh_token");
+        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+
+        TokenResponse tr = subject.request(clientId, "password", request);
+        assertThat(tr, is(notNullValue()));
+
+        // call it again and it should be compromised.
+        BadRequestException actual = null;
+        try {
+            subject.request(clientId, "password", request);
+        } catch(BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Bad request"));
+        assertThat(actual.getError(), is("invalid_grant"));
+        assertThat(actual.getDescription(), is("the refresh token was already used"));
+        assertThat(actual.getDomainCause(), instanceOf(CompromisedRefreshTokenException.class));
+        assertThat(actual.getCode(), is(ErrorCode.COMPROMISED_REFRESH_TOKEN.getCode()));
     }
 }

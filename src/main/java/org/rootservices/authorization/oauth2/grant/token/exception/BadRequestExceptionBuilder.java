@@ -77,6 +77,7 @@ public class BadRequestExceptionBuilder {
         this.error = "invalid_scope";
         this.description = "scope is not available for this client";
         this.code = code;
+        this.domainCause = null;
         return this;
     }
 
