@@ -59,4 +59,5 @@
         join scope on scope.id = token_scope.scope_id
         where token.token = #{accessToken}
     </select>
+    
 </mapper>

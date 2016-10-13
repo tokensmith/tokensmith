@@ -133,7 +133,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         try {
             rot = resourceOwnerTokenRepository.getByAccessToken(accessToken);
         } catch (RecordNotFoundException e) {
-            // TODO: should this have different desc and code?
+            // TODO: should this have different description and code?
             throw new NotFoundException(
                 RESOURCE_OWNER_NOT_FOUND,
                 INVALID_GRANT,
