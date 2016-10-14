@@ -77,7 +77,8 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        Token headToken = FixtureFactory.makeOpenIdToken();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
         ArgumentCaptor<TokenChain> tokenChainCaptor = ArgumentCaptor.forClass(TokenChain.class);
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
@@ -90,9 +91,9 @@ public class IssueTokenRefreshGrantTest {
         when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
-        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken)).thenReturn(refreshToken);
 
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, scopes);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(plainTextAccessToken));
@@ -142,6 +143,7 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
+        Token headToken = FixtureFactory.makeOpenIdToken();
         String plainTextAccessToken = "token";
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run()).thenReturn(plainTextAccessToken, refreshAccessToken);
@@ -153,7 +155,7 @@ public class IssueTokenRefreshGrantTest {
 
         CompromisedRefreshTokenException actual = null;
         try {
-            subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, scopes);
+            subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
         } catch (CompromisedRefreshTokenException e) {
             actual = e;
         }

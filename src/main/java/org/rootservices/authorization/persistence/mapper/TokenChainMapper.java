@@ -11,5 +11,5 @@ import java.util.UUID;
  */
 public interface TokenChainMapper {
     TokenChain getById(@Param("id") UUID id);
-    void insert(@Param("tokenChain") TokenChain tokenChain) throws DuplicateKeyException;
+    void insert(@Param("tokenChain") TokenChain tokenChain);
 }

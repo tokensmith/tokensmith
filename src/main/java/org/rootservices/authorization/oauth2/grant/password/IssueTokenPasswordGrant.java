@@ -54,7 +54,7 @@ public class IssueTokenPasswordGrant {
         }
 
         String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
+        RefreshToken refreshToken = makeRefreshToken.run(token, token, refreshAccessToken);
 
         try {
             refreshTokenRepository.insert(refreshToken);

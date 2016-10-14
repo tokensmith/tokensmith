@@ -10,6 +10,7 @@ public class RefreshToken {
     private UUID id;
     private UUID tokenId;
     private Token token;
+    private Token headToken;
     private byte[] accessToken;
     private OffsetDateTime expiresAt;
     private boolean revoked;
@@ -37,6 +38,14 @@ public class RefreshToken {
 
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    public Token getHeadToken() {
+        return headToken;
+    }
+
+    public void setHeadToken(Token headToken) {
+        this.headToken = headToken;
     }
 
     public byte[] getAccessToken() {

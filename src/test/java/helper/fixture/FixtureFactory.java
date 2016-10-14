@@ -286,12 +286,14 @@ public class FixtureFactory {
         return token;
     }
 
-    public static RefreshToken makeRefreshToken(UUID tokenId) {
+    public static RefreshToken makeRefreshToken(Token token, Token headToken) {
         RandomString randomString = new RandomString();
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
-        refreshToken.setTokenId(tokenId);
+        refreshToken.setTokenId(token.getId());
+        refreshToken.setToken(token);
+        refreshToken.setHeadToken(headToken);
         refreshToken.setAccessToken(randomString.run().getBytes());
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
         refreshToken.setRevoked(false);

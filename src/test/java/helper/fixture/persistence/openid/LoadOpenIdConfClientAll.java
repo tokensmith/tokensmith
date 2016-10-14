@@ -92,7 +92,10 @@ public class LoadOpenIdConfClientAll {
         rot.setResourceOwner(resourceOwner);
         resourceOwnerTokenRepository.insert(rot);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        Token headToken = FixtureFactory.makeOpenIdToken();
+        tokenRepository.insert(headToken);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }
@@ -127,7 +130,10 @@ public class LoadOpenIdConfClientAll {
         clientToken.setTokenId(token.getId());
         clientTokenRepository.insert(clientToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        Token headToken = FixtureFactory.makeOpenIdToken();
+        tokenRepository.insert(headToken);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }
