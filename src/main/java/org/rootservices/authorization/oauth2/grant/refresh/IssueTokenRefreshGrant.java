@@ -46,7 +46,7 @@ public class IssueTokenRefreshGrant {
         this.clientTokenRepository = clientTokenRepository;
     }
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, List<Scope> scopes) throws CompromisedRefreshTokenException {
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token headToken, List<Scope> scopes) throws CompromisedRefreshTokenException {
         String accessToken = randomString.run();
         Token token = makeBearerToken.run(accessToken);
         token.setGrantType(GrantType.REFRESSH);
@@ -65,7 +65,7 @@ public class IssueTokenRefreshGrant {
         }
 
         String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
+        RefreshToken refreshToken = makeRefreshToken.run(token, headToken, refreshAccessToken);
         try {
             refreshTokenRepository.insert(refreshToken);
         } catch (DuplicateRecordException e) {

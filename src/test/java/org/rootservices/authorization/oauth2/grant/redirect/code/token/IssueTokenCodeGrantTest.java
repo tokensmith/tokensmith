@@ -84,8 +84,11 @@ public class IssueTokenCodeGrantTest {
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
-        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, token);
+
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
         TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
 
@@ -159,8 +162,8 @@ public class IssueTokenCodeGrantTest {
         String refreshAccessToken = "refresh-access-token";
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
-        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, token);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);

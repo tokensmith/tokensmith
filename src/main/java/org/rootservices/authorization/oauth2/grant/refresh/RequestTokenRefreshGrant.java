@@ -65,6 +65,9 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), input.getRefreshToken());
         List<Scope> scopes = matchScopes(input.getScopes(), refreshToken.getToken().getTokenScopes());
 
+        // TODO: original authentication time.
+
+
         String accessToken = new String(refreshToken.getToken().getToken());
         UUID resourceOwnerId = getResourceOwnerId(accessToken);
 
@@ -73,8 +76,9 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
             tokenResponse = issueTokenRefreshGrant.run(
                 cc.getClient().getId(),
                 resourceOwnerId,
-                refreshToken.getTokenId(),
+                refreshToken.getToken().getId(),
                 refreshToken.getId(),
+                refreshToken.getHeadToken(),
                 scopes
             );
         } catch (CompromisedRefreshTokenException e) {

@@ -72,7 +72,8 @@ public class IssueTokenPasswordGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Token token = FixtureFactory.makeOpenIdToken();
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        Token headToken = FixtureFactory.makeOpenIdToken();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
@@ -81,7 +82,7 @@ public class IssueTokenPasswordGrantTest {
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
-        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
         TokenResponse actual = subject.run(clientId, resourceOwner.getId(), plainTextAccessToken, scopes);
 

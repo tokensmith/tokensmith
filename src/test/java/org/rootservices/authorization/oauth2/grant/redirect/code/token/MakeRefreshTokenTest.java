@@ -1,11 +1,13 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
+import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
+import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
@@ -33,16 +35,18 @@ public class MakeRefreshTokenTest {
 
     @Test
     public void runShouldBeOk() throws Exception {
-        UUID tokenId = UUID.randomUUID();
+        Token token = FixtureFactory.makeOpenIdToken();
+        Token headToken = FixtureFactory.makeOpenIdToken();
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        RefreshToken actual = subject.run(tokenId, plainTextToken);
+        RefreshToken actual = subject.run(token, headToken, plainTextToken);
 
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getTokenId(), is(tokenId));
+        assertThat(actual.getToken(), is(token));
+        assertThat(actual.getHeadToken(), is(headToken));
         assertThat(actual.getAccessToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
     }

@@ -2,6 +2,7 @@ package org.rootservices.authorization.oauth2.grant.token;
 
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
+import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,13 +23,14 @@ public class MakeRefreshToken {
         this.hashText = hashText;
     }
 
-    public RefreshToken run(UUID tokenId, String plainTextToken) {
+    public RefreshToken run(Token token, Token headToken, String plainTextToken) {
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
-        refreshToken.setTokenId(tokenId);
+        refreshToken.setToken(token);
+        refreshToken.setHeadToken(headToken);
         refreshToken.setAccessToken(hashedToken);
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
 

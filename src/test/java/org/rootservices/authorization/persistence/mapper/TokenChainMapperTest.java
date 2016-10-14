@@ -38,8 +38,8 @@ public class TokenChainMapperTest {
         return token;
     }
 
-    public RefreshToken loadRefreshToken(UUID tokenId) {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+    public RefreshToken loadRefreshToken(Token token, Token headToken) {
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
         refreshTokenMapper.insert(refreshToken);
         return refreshToken;
     }
@@ -48,7 +48,9 @@ public class TokenChainMapperTest {
     public void insertShouldBeOk() {
         Token nextToken = loadToken();
         Token previousToken = loadToken();
-        RefreshToken refreshToken = loadRefreshToken(previousToken.getId());
+
+        Token headToken = loadToken();
+        RefreshToken refreshToken = loadRefreshToken(previousToken, headToken);
 
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
@@ -87,7 +89,9 @@ public class TokenChainMapperTest {
     public void insertShouldThrowDuplicateKeyException() {
         Token nextToken1 = loadToken();
         Token previousToken1 = loadToken();
-        RefreshToken refreshToken = loadRefreshToken(previousToken1.getId());
+
+        Token headToken = loadToken();
+        RefreshToken refreshToken = loadRefreshToken(previousToken1, headToken);
 
         TokenChain tokenChain1 = new TokenChain();
         tokenChain1.setId(UUID.randomUUID());
