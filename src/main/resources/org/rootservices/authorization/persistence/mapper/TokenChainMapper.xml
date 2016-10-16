@@ -7,9 +7,9 @@
     <resultMap id="tokenChain" type="org.rootservices.authorization.persistence.entity.TokenChain">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
-        <association property="nextToken"
+        <association property="token"
                      resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
-                     columnPrefix="next_token_"/>
+                     columnPrefix="token_"/>
         <association property="previousToken"
                      resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
                      columnPrefix="prev_token_"/>
@@ -20,10 +20,10 @@
 
 
     <insert id="insert" >
-        insert into token_chain (id, next_token_id, prev_token_id, refresh_token_id)
+        insert into token_chain (id, token_id, prev_token_id, refresh_token_id)
         values (
             #{tokenChain.id},
-            #{tokenChain.nextToken.id},
+            #{tokenChain.token.id},
             #{tokenChain.previousToken.id},
             #{tokenChain.refreshToken.id}
         )
@@ -34,12 +34,12 @@
             token_chain.id,
             token_chain.created_at,
 
-            next_token.id as next_token_id,
-            next_token.token as next_token_token,
-            next_token.revoked as next_token_revoked,
-            next_token.grant_type as next_token_grant_type,
-            next_token.expires_at as next_token_expires_at,
-            next_token.created_at as next_token_created_at,
+            token.id as token_id,
+            token.token as token_token,
+            token.revoked as token_revoked,
+            token.grant_type as token_grant_type,
+            token.expires_at as token_expires_at,
+            token.created_at as token_created_at,
 
             prev_token.id as prev_token_id,
             prev_token.token as prev_token_token,
@@ -56,7 +56,7 @@
             refresh_token.created_at as refresh_token_created_at
 
             from token_chain
-            join token as next_token on next_token.id = token_chain.next_token_id
+            join token as token on token.id = token_chain.token_id
             join token as prev_token on prev_token.id = token_chain.prev_token_id
             join refresh_token on refresh_token.id = token_chain.refresh_token_id
             where token_chain.id = #{id}
@@ -67,12 +67,12 @@
             token_chain.id,
             token_chain.created_at,
 
-            next_token.id as next_token_id,
-            next_token.token as next_token_token,
-            next_token.revoked as next_token_revoked,
-            next_token.grant_type as next_token_grant_type,
-            next_token.expires_at as next_token_expires_at,
-            next_token.created_at as next_token_created_at,
+            token.id as token_id,
+            token.token as token_token,
+            token.revoked as token_revoked,
+            token.grant_type as token_grant_type,
+            token.expires_at as token_expires_at,
+            token.created_at as token_created_at,
 
             prev_token.id as prev_token_id,
             prev_token.token as prev_token_token,
@@ -89,10 +89,10 @@
             refresh_token.created_at as refresh_token_created_at
 
         from token_chain
-        join token as next_token on next_token.id = token_chain.next_token_id
+        join token as token on token.id = token_chain.token_id
         join token as prev_token on prev_token.id = token_chain.prev_token_id
         join refresh_token on refresh_token.id = token_chain.refresh_token_id
-        where token_chain.next_token_id = #{tokenId}
+        where token_chain.token_id = #{tokenId}
     </select>
 
 </mapper>

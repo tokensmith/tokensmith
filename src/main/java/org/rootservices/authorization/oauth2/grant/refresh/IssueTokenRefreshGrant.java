@@ -99,7 +99,7 @@ public class IssueTokenRefreshGrant {
     protected TokenChain makeTokenChain(Token nextToken, UUID previousTokenId, UUID refreshTokenId) {
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
-        tokenChain.setNextToken(nextToken);
+        tokenChain.setToken(nextToken);
 
         Token previousToken = new Token();
         previousToken.setId(previousTokenId);
