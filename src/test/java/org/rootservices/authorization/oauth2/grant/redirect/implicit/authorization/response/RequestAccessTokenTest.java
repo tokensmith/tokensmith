@@ -69,7 +69,7 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "accessToken";
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
@@ -115,7 +115,7 @@ public class RequestAccessTokenTest {
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "accessToken";
         List<Scope> scopesToAddToToken = FixtureFactory.makeScopes();
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         Client client = FixtureFactory.makeTokenClientWithScopes();
 
         when(mockValidateParamsTokenResponseType.run(
@@ -166,7 +166,7 @@ public class RequestAccessTokenTest {
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "accessToken";
         List<Scope> scopesToAddToToken = FixtureFactory.makeScopes();
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),

@@ -386,14 +386,18 @@ public class RequestTokenCodeGrantTest {
         // insert a token that relates to the auth code.
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
-        Token token = FixtureFactory.makeOpenIdToken();
+
+        String accessToken = randomString.run();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenRepository.insert(token);
 
         // need to insert a head token.
-        Token headToken = FixtureFactory.makeOpenIdToken();
+        String headAccessToken = randomString.run();
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
         tokenRepository.insert(headToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
+        String refreshAccessToken = randomString.run();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         refreshTokenRepository.insert(refreshToken);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();

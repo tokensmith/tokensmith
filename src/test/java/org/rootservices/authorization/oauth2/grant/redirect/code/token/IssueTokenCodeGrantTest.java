@@ -78,15 +78,14 @@ public class IssueTokenCodeGrantTest {
         String plainTextToken = "plain-text-token";
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
 
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, token);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
         when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
@@ -156,13 +155,13 @@ public class IssueTokenCodeGrantTest {
         String plainTextToken = "plain-text-token";
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
         String refreshAccessToken = "refresh-access-token";
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, token);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
         when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
 

@@ -66,8 +66,8 @@ public class AuthCodeTokenMapperTest {
         return authCode;
     }
 
-    public Token insertTokenForTest() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeOpenIdToken();
+    public Token insertTokenForTest(String accessToken) throws DuplicateRecordException {
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenRepository.insert(token);
 
         return token;
@@ -76,8 +76,9 @@ public class AuthCodeTokenMapperTest {
     @Test
     public void testInsert() throws Exception {
 
+        String accessToken = "access-token";
         AuthCode authCode = insertAuthCodeForTest();
-        Token token = insertTokenForTest();
+        Token token = insertTokenForTest(accessToken);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -90,8 +91,9 @@ public class AuthCodeTokenMapperTest {
     @Test(expected = DuplicateKeyException.class)
     public void insertDuplicateExpectDuplicateKeyException() throws Exception {
 
+        String accessToken = "access-token";
         AuthCode authCode = insertAuthCodeForTest();
-        Token token = insertTokenForTest();
+        Token token = insertTokenForTest(accessToken);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -104,8 +106,9 @@ public class AuthCodeTokenMapperTest {
 
     @Test
     public void getByTokenIdShouldBeOk() throws Exception{
+        String accessToken = "access-token";
         AuthCode authCode = insertAuthCodeForTest();
-        Token token = insertTokenForTest();
+        Token token = insertTokenForTest(accessToken);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());

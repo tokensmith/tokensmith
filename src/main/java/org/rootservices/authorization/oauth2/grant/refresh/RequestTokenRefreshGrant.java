@@ -13,6 +13,7 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
+    private HashTextStaticSalt hashText;
     private RefreshTokenRepository refreshTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private IssueTokenRefreshGrant issueTokenRefreshGrant;
@@ -37,10 +39,11 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private static String RESOURCE_OWNER_NOT_FOUND = "no resource owner was associated to refresh token";
 
     @Autowired
-    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
+    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputRefreshGrantFactory = tokenInputRefreshGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
+        this.hashText = hashText;
         this.refreshTokenRepository = refreshTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.issueTokenRefreshGrant = issueTokenRefreshGrant;
@@ -62,11 +65,9 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
             throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
         }
 
-        RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), input.getRefreshToken());
+        String hashedRefreshToken = hashText.run(input.getRefreshToken());
+        RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), hashedRefreshToken);
         List<Scope> scopes = matchScopes(input.getScopes(), refreshToken.getToken().getTokenScopes());
-
-        // TODO: original authentication time.
-
 
         String accessToken = new String(refreshToken.getToken().getToken());
         UUID resourceOwnerId = getResourceOwnerId(accessToken);
@@ -92,11 +93,11 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         return tokenResponse;
     }
 
-    protected RefreshToken getRefreshToken(UUID clientId, String token) throws NotFoundException {
+    protected RefreshToken getRefreshToken(UUID clientId, String hashedRefreshToken) throws NotFoundException {
         RefreshToken refreshToken;
 
         try {
-            refreshToken = refreshTokenRepository.getByClientIdAndAccessToken(clientId, token);
+            refreshToken = refreshTokenRepository.getByClientIdAndAccessToken(clientId, hashedRefreshToken);
         } catch (RecordNotFoundException e) {
             throw new NotFoundException(
                 REFRESH_TOKEN_NOT_FOUND,

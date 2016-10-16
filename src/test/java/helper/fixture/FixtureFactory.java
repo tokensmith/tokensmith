@@ -228,9 +228,11 @@ public class FixtureFactory {
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {
         AuthCode authCode = new AuthCode();
         authCode.setId(UUID.randomUUID());
+
         AppConfig config = new AppConfig();
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
         String hashedCode = textHasher.run(plainTextAuthCode);
+
         authCode.setCode(hashedCode.getBytes());
         authCode.setRevoked(isRevoked);
         authCode.setAccessRequest(accessRequest);
@@ -249,12 +251,14 @@ public class FixtureFactory {
         return accessRequest;
     }
 
-    public static Token makeOAuthToken() {
-        RandomString randomString = new RandomString();
+    public static Token makeOAuthToken(String accessToken) {
+        AppConfig config = new AppConfig();
+        HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
+        String hashedAccessToken = textHasher.run(accessToken);
 
         Token token = new Token();
         token.setId(UUID.randomUUID());
-        token.setToken(randomString.run().getBytes());
+        token.setToken(hashedAccessToken.getBytes());
         token.setExpiresAt(OffsetDateTime.now());
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         token.setTokenScopes(new ArrayList<>());
@@ -271,8 +275,8 @@ public class FixtureFactory {
         return token;
     }
 
-    public static Token makeOpenIdToken() {
-        Token token = makeOAuthToken();
+    public static Token makeOpenIdToken(String accessToken) {
+        Token token = makeOAuthToken(accessToken);
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -286,24 +290,27 @@ public class FixtureFactory {
         return token;
     }
 
-    public static RefreshToken makeRefreshToken(Token token, Token headToken) {
-        RandomString randomString = new RandomString();
+    public static RefreshToken makeRefreshToken(String refreshAccessToken, Token token, Token headToken) {
+        AppConfig config = new AppConfig();
+        HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
+        String hashedRefreshAccessToken = textHasher.run(refreshAccessToken);
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setTokenId(token.getId());
         refreshToken.setToken(token);
         refreshToken.setHeadToken(headToken);
-        refreshToken.setAccessToken(randomString.run().getBytes());
+        refreshToken.setAccessToken(hashedRefreshAccessToken.getBytes());
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
         refreshToken.setRevoked(false);
         return refreshToken;
     }
 
-    public static ResourceOwnerToken makeResourceOwnerToken() {
+    public static ResourceOwnerToken makeResourceOwnerToken(String accessToken) {
+
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setResourceOwner(makeResourceOwner());
-        resourceOwnerToken.setToken(makeOpenIdToken());
+        resourceOwnerToken.setToken(makeOpenIdToken(accessToken));
         return resourceOwnerToken;
     }
 

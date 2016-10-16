@@ -74,7 +74,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -133,7 +133,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
@@ -156,7 +156,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
 
@@ -180,7 +180,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -210,7 +210,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -239,7 +239,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken();
+        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
         Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
