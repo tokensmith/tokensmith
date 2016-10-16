@@ -31,7 +31,7 @@ public class RequestToken {
     }
 
     public TokenResponse request(String clientUserName, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException {
-        UUID clientId = null;
+        UUID clientId;
         try {
             clientId = UUID.fromString(clientUserName);
         } catch (IllegalArgumentException e) {

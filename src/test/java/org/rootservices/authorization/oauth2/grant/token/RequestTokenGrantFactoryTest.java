@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
+import org.rootservices.authorization.oauth2.grant.refresh.RequestTokenRefreshGrant;
 import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 import org.rootservices.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 
@@ -21,13 +22,15 @@ public class RequestTokenGrantFactoryTest {
     private RequestTokenPasswordGrant mockRequestTokenPasswordGrant;
     @Mock
     private RequestTokenCodeGrant mockRequestTokenCodeGrant;
+    @Mock
+    private RequestTokenRefreshGrant mockRequestTokenRefreshGrant;
 
     private RequestTokenGrantFactory subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestTokenGrantFactory(mockRequestTokenPasswordGrant, mockRequestTokenCodeGrant);
+        subject = new RequestTokenGrantFactory(mockRequestTokenPasswordGrant, mockRequestTokenCodeGrant, mockRequestTokenRefreshGrant);
     }
 
     @Test
@@ -40,6 +43,12 @@ public class RequestTokenGrantFactoryTest {
     public void makeShouldBeCode() throws Exception {
         RequestTokenGrant actual = subject.make("authorization_code");
         assertThat(actual, instanceOf(RequestTokenCodeGrant.class));
+    }
+
+    @Test
+    public void makeShouldBeRefresh() throws Exception {
+        RequestTokenGrant actual = subject.make("refresh_token");
+        assertThat(actual, instanceOf(RequestTokenRefreshGrant.class));
     }
 
     @Test

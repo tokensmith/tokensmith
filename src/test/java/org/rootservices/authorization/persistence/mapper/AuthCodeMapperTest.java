@@ -168,7 +168,8 @@ public class AuthCodeMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenRepository.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();

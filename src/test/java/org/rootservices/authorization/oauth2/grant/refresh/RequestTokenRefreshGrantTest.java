@@ -54,14 +54,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
 
         TokenResponse actual = subject.request(clientId, "password", request);
 
@@ -84,9 +85,10 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
@@ -118,14 +120,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
         request.put("scope", "");
 
         BadRequestException actual = null;
@@ -154,14 +157,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
         request.put("foo", "");
 
         BadRequestException actual = null;
@@ -190,9 +194,10 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
@@ -225,14 +230,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
         request.put("scope", "foo");
 
         BadRequestException actual = null;
@@ -261,14 +267,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
 
         // load another confidential client.. that doesn't belong to the refresh token ^^
         String plainTextAuthCode2 = "plain-text-auth-code2";
@@ -300,14 +307,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForClient(
-                tokenExpirationAt, authCode.getId(), clientId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
 
         NotFoundException actual = null;
         try {
@@ -335,14 +343,15 @@ public class RequestTokenRefreshGrantTest {
                 .map(item -> item.getScope())
                 .collect(Collectors.toList());
 
+        String refreshAccessToken = "refresh-access-token";
         OffsetDateTime tokenExpirationAt = OffsetDateTime.now().minusDays(1);
         RefreshToken refreshToken = loadOpenIdConfClientAll.loadRefreshTokenForResourceOwner(
-                tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
+                refreshAccessToken, tokenExpirationAt, authCode.getId(), clientId, resourceOwnerId, scopesForToken
         );
 
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "refresh_token");
-        request.put("refresh_token", new String(refreshToken.getAccessToken()));
+        request.put("refresh_token", refreshAccessToken);
 
         TokenResponse tr = subject.request(clientId, "password", request);
         assertThat(tr, is(notNullValue()));

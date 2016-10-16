@@ -10,6 +10,7 @@ import org.rootservices.authorization.persistence.exceptions.DuplicateRecordExce
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.TokenMapper;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
@@ -34,14 +35,16 @@ public class TokenRepositoryImplTest {
 
     @Test
     public void insert() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(token);
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
     @Test(expected = DuplicateRecordException.class)
     public void insertDuplicateAuthCode() throws DuplicateRecordException {
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         doThrow(org.springframework.dao.DuplicateKeyException.class).when(mockTokenMapper).insert(token);
 
         subject.insert(token);
@@ -81,5 +84,15 @@ public class TokenRepositoryImplTest {
         when(mockTokenMapper.getByAuthCodeId(authCodeId)).thenReturn(null);
 
         subject.getByAuthCodeId(authCodeId);
+    }
+
+    @Test
+    public void updateExpiresAtByAccessTokenShouldBeOk() {
+        String accessToken = "access-token";
+        OffsetDateTime expiresAt = OffsetDateTime.now();
+
+        subject.updateExpiresAtByAccessToken(expiresAt, accessToken);
+
+        verify(mockTokenMapper, times(1)).updateExpiresAtByAccessToken(expiresAt, accessToken);
     }
 }

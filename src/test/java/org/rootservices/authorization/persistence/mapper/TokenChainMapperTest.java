@@ -32,25 +32,30 @@ public class TokenChainMapperTest {
     @Autowired
     private RefreshTokenMapper refreshTokenMapper;
 
-    public Token loadToken() {
-        Token token = FixtureFactory.makeOAuthToken();
+    public Token loadToken(String accessToken) {
+        Token token = FixtureFactory.makeOAuthToken(accessToken);
         tokenMapper.insert(token);
         return token;
     }
 
-    public RefreshToken loadRefreshToken(Token token, Token headToken) {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
+    public RefreshToken loadRefreshToken(String refreshAccessToken, Token token, Token headToken) {
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         refreshTokenMapper.insert(refreshToken);
         return refreshToken;
     }
 
     @Test
     public void insertShouldBeOk() {
-        Token token = loadToken();
-        Token previousToken = loadToken();
+        String accessToken = "access-token";
+        String headAccessToken = "head-access-token";
+        String prevAccessToken = "prev-access-token";
+        String refreshAccessToken = "refresh-access-token";
 
-        Token headToken = loadToken();
-        RefreshToken refreshToken = loadRefreshToken(previousToken, headToken);
+        Token token = loadToken(accessToken);
+        Token previousToken = loadToken(prevAccessToken);
+
+        Token headToken = loadToken(headAccessToken);
+        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken, headToken);
 
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
@@ -87,11 +92,16 @@ public class TokenChainMapperTest {
 
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() {
-        Token token1 = loadToken();
-        Token previousToken1 = loadToken();
+        String accessToken = "access-token";
+        String headAccessToken = "head-access-token";
+        String prevAccessToken = "prev-access-token";
+        String refreshAccessToken = "refresh-access-token";
 
-        Token headToken = loadToken();
-        RefreshToken refreshToken = loadRefreshToken(previousToken1, headToken);
+        Token token1 = loadToken(accessToken);
+        Token previousToken1 = loadToken(prevAccessToken);
+
+        Token headToken = loadToken(headAccessToken);
+        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken1, headToken);
 
         TokenChain tokenChain1 = new TokenChain();
         tokenChain1.setId(UUID.randomUUID());
@@ -101,8 +111,10 @@ public class TokenChainMapperTest {
 
         subject.insert(tokenChain1);
 
-        Token token2 = loadToken();
-        Token previousToken2 = loadToken();
+        String accessToken2 = "access-token";
+        String prevAccessToken2 = "prev-access-token";
+        Token token2 = loadToken(accessToken2);
+        Token previousToken2 = loadToken(prevAccessToken2);
 
         TokenChain tokenChain2 = new TokenChain();
         tokenChain2.setId(UUID.randomUUID());

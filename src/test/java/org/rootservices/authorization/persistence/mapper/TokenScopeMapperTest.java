@@ -31,7 +31,8 @@ public class TokenScopeMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();

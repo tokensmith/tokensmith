@@ -96,10 +96,10 @@ public class IssueTokenRefreshGrant {
         return tr;
     }
 
-    protected TokenChain makeTokenChain(Token nextToken, UUID previousTokenId, UUID refreshTokenId) {
+    protected TokenChain makeTokenChain(Token token, UUID previousTokenId, UUID refreshTokenId) {
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
-        tokenChain.setToken(nextToken);
+        tokenChain.setToken(token);
 
         Token previousToken = new Token();
         previousToken.setId(previousTokenId);

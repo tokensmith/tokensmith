@@ -5,6 +5,7 @@ import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ import java.util.UUID;
 public class LoadOpenIdConfClientAll {
     private LoadConfClientTokenReady loadConfClientOpendIdTokenReady;
     private RandomString randomString;
+    private HashTextStaticSalt hashText;
     private TokenRepository tokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
@@ -37,7 +39,7 @@ public class LoadOpenIdConfClientAll {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, ClientTokenRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
+    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, HashTextStaticSalt hashText, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, ClientTokenRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
         this.loadConfClientOpendIdTokenReady = loadConfClientOpendIdTokenReady;
         this.randomString = randomString;
         this.tokenRepository = tokenRepository;
@@ -53,11 +55,10 @@ public class LoadOpenIdConfClientAll {
         return authCode;
     }
 
-    public RefreshToken loadRefreshTokenForResourceOwner(OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
+    public RefreshToken loadRefreshTokenForResourceOwner(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
 
-        Token token = FixtureFactory.makeOpenIdToken();
         String accessToken = randomString.run();
-        token.setToken(accessToken.getBytes());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         token.setExpiresAt(tokenExpiresAt);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         tokenRepository.insert(token);
@@ -92,17 +93,18 @@ public class LoadOpenIdConfClientAll {
         rot.setResourceOwner(resourceOwner);
         resourceOwnerTokenRepository.insert(rot);
 
-        Token headToken = FixtureFactory.makeOpenIdToken();
+        String headAccessToken = randomString.run();
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
         tokenRepository.insert(headToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }
 
-    public RefreshToken loadRefreshTokenForClient(OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
-        Token token = FixtureFactory.makeOpenIdToken();
+    public RefreshToken loadRefreshTokenForClient(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
         String accessToken = randomString.run();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         token.setToken(accessToken.getBytes());
         token.setExpiresAt(tokenExpiresAt);
 
@@ -130,10 +132,11 @@ public class LoadOpenIdConfClientAll {
         clientToken.setTokenId(token.getId());
         clientTokenRepository.insert(clientToken);
 
-        Token headToken = FixtureFactory.makeOpenIdToken();
+        String headAccessToken = randomString.run();
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
         tokenRepository.insert(headToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token, headToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }
