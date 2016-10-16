@@ -46,7 +46,7 @@ public class TokenChainMapperTest {
 
     @Test
     public void insertShouldBeOk() {
-        Token nextToken = loadToken();
+        Token token = loadToken();
         Token previousToken = loadToken();
 
         Token headToken = loadToken();
@@ -54,7 +54,7 @@ public class TokenChainMapperTest {
 
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
-        tokenChain.setNextToken(nextToken);
+        tokenChain.setToken(token);
         tokenChain.setPreviousToken(previousToken);
         tokenChain.setRefreshToken(refreshToken);
 
@@ -64,12 +64,12 @@ public class TokenChainMapperTest {
 
         assertThat(actual.getId(), is(tokenChain.getId()));
 
-        assertThat(actual.getNextToken().getId(), is(nextToken.getId()));
-        assertThat(actual.getNextToken().getToken(), is(nextToken.getToken()));
-        assertThat(actual.getNextToken().isRevoked(), is(false));
-        assertThat(actual.getNextToken().getGrantType(), is(nextToken.getGrantType()));
-        assertThat(actual.getNextToken().getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getNextToken().getExpiresAt(), is(nextToken.getExpiresAt()));
+        assertThat(actual.getToken().getId(), is(token.getId()));
+        assertThat(actual.getToken().getToken(), is(token.getToken()));
+        assertThat(actual.getToken().isRevoked(), is(false));
+        assertThat(actual.getToken().getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getToken().getExpiresAt(), is(token.getExpiresAt()));
 
         assertThat(actual.getPreviousToken().getId(), is(previousToken.getId()));
         assertThat(actual.getPreviousToken().getToken(), is(previousToken.getToken()));
@@ -87,7 +87,7 @@ public class TokenChainMapperTest {
 
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() {
-        Token nextToken1 = loadToken();
+        Token token1 = loadToken();
         Token previousToken1 = loadToken();
 
         Token headToken = loadToken();
@@ -95,18 +95,18 @@ public class TokenChainMapperTest {
 
         TokenChain tokenChain1 = new TokenChain();
         tokenChain1.setId(UUID.randomUUID());
-        tokenChain1.setNextToken(nextToken1);
+        tokenChain1.setToken(token1);
         tokenChain1.setPreviousToken(previousToken1);
         tokenChain1.setRefreshToken(refreshToken);
 
         subject.insert(tokenChain1);
 
-        Token nextToken2 = loadToken();
+        Token token2 = loadToken();
         Token previousToken2 = loadToken();
 
         TokenChain tokenChain2 = new TokenChain();
         tokenChain2.setId(UUID.randomUUID());
-        tokenChain2.setNextToken(nextToken2);
+        tokenChain2.setToken(token2);
         tokenChain2.setPreviousToken(previousToken2);
         tokenChain2.setRefreshToken(refreshToken);
 

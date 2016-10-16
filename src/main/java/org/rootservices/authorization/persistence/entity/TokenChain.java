@@ -8,7 +8,7 @@ import java.util.UUID;
  */
 public class TokenChain {
     private UUID id;
-    private Token nextToken;
+    private Token token;
     private Token previousToken;
     private RefreshToken refreshToken;
     private OffsetDateTime createdAt;
@@ -21,12 +21,12 @@ public class TokenChain {
         this.id = id;
     }
 
-    public Token getNextToken() {
-        return nextToken;
+    public Token getToken() {
+        return token;
     }
 
-    public void setNextToken(Token nextToken) {
-        this.nextToken = nextToken;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     public Token getPreviousToken() {

@@ -108,7 +108,7 @@ public class IssueTokenRefreshGrantTest {
         TokenChain tokenChain = tokenChainCaptor.getValue();
         assertThat(tokenChain, is(notNullValue()));
         assertThat(tokenChain.getId(), is(notNullValue()));
-        assertThat(tokenChain.getNextToken().getId(), is(token.getId()));
+        assertThat(tokenChain.getToken().getId(), is(token.getId()));
         assertThat(tokenChain.getPreviousToken().getId(), is(previousTokenId));
         assertThat(tokenChain.getRefreshToken().getId(), is(refreshTokenId));
 
