@@ -12,6 +12,7 @@ import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
+import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private RefreshTokenRepository refreshTokenRepository;
-    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
+    private ResourceOwnerRepository resourceOwnerRepository;
     private IssueTokenRefreshGrant issueTokenRefreshGrant;
 
     private static String INVALID_GRANT = "invalid_grant";
@@ -39,13 +40,13 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private static String RESOURCE_OWNER_NOT_FOUND = "no resource owner was associated to refresh token";
 
     @Autowired
-    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
+    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerRepository resourceOwnerRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputRefreshGrantFactory = tokenInputRefreshGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.refreshTokenRepository = refreshTokenRepository;
-        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
+        this.resourceOwnerRepository = resourceOwnerRepository;
         this.issueTokenRefreshGrant = issueTokenRefreshGrant;
     }
 
@@ -134,9 +135,9 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     }
 
     protected UUID getResourceOwnerId(String accessToken) throws NotFoundException {
-        ResourceOwnerToken rot;
+        ResourceOwner resourceOwner;
         try {
-            rot = resourceOwnerTokenRepository.getByAccessToken(accessToken);
+            resourceOwner = resourceOwnerRepository.getByAccessToken(accessToken);
         } catch (RecordNotFoundException e) {
             // TODO: should this have different description and code?
             throw new NotFoundException(
@@ -147,7 +148,6 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
                 e
             );
         }
-
-        return rot.getResourceOwner().getId();
+        return resourceOwner.getId();
     }
 }

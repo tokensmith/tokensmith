@@ -72,6 +72,26 @@ public class ResourceOwnerRepositoryImplTest {
         assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
     }
 
+    @Test(expected= RecordNotFoundException.class)
+    public void getByAccessTokenShouldThrowRecordNotFound() throws RecordNotFoundException{
+        String accessToken = "access-token";
+
+        when(mockMapper.getByAccessToken(accessToken)).thenReturn(null);
+        subject.getByAccessToken(accessToken);
+    }
+
+    @Test
+    public void getByAccessTokenShouldBeOk() throws RecordNotFoundException{
+
+        String accessToken = "access-token";
+        ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
+
+        when(mockMapper.getByAccessToken(accessToken)).thenReturn(expectedAuthUser);
+
+        ResourceOwner actualAuthUser = subject.getByAccessToken(accessToken);
+        assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
+    }
+
     @Test
     public void insert() {
         ResourceOwner authUser = FixtureFactory.makeResourceOwner();

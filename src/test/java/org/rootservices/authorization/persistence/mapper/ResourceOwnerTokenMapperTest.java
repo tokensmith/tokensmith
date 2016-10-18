@@ -65,7 +65,8 @@ public class ResourceOwnerTokenMapperTest {
         subject.insert(resourceOwnerToken);
 
         // make sure it was inserted.
-        ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwnerToken actual = subject.getByAccessToken(hashedAccessToken);
         assertThat(actual, is(notNullValue()));
     }
 
@@ -98,7 +99,8 @@ public class ResourceOwnerTokenMapperTest {
         subject.insert(resourceOwnerToken);
         // end prepare db for test
 
-        ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwnerToken actual = subject.getByAccessToken(hashedAccessToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(resourceOwnerToken.getId()));
