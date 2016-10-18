@@ -10,5 +10,5 @@ import java.util.UUID;
  */
 public interface ResourceOwnerTokenMapper {
     void insert(@Param("resourceOwnerToken") ResourceOwnerToken resourceOwnerToken);
-    ResourceOwnerToken getByAccessToken(@Param("accessToken") byte[] accessToken);
+    ResourceOwnerToken getByAccessToken(@Param("accessToken") String accessToken);
 }
