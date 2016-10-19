@@ -19,8 +19,6 @@ import java.util.*;
  */
 @Component
 public class TokenInputCodeGrantFactory {
-
-    private static Integer MAX_NUMBER_OF_KEYS = 3;
     protected static String CODE = "code";
     protected static String REDIRECT_URI = "redirect_uri";
     protected static List<String> KNOWN_KEYS = Arrays.asList("grant_type", "code", "redirect_uri");
@@ -36,8 +34,8 @@ public class TokenInputCodeGrantFactory {
 
     public TokenInputCodeGrant run(Map<String, String> request) throws UnknownKeyException, InvalidValueException, MissingKeyException {
 
-        if (request.size() > MAX_NUMBER_OF_KEYS) {
-            Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+        Optional<String> unknownKey = tokenPayloadValidator.getFirstUnknownKey(request, KNOWN_KEYS);
+        if (unknownKey.isPresent()) {
             throw new UnknownKeyException(
                     ErrorCode.UNKNOWN_KEY.getDescription(),
                     unknownKey.get(),

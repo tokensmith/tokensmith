@@ -1,0 +1,1 @@
+CREATE INDEX token_revoked on token (revoked);

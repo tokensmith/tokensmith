@@ -1,18 +1,17 @@
 package org.rootservices.authorization.persistence.mapper;
 
-import helper.fixture.persistence.openid.LoadOpenIdConfidentialClientAll;
+import helper.fixture.FixtureFactory;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.persistence.entity.ResourceOwnerToken;
 import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,12 +26,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
 public class ResourceOwnerMapperTest {
-
-    @Autowired
-    private LoadOpenIdConfidentialClientAll loadOpenIdConfidentialClientAll;
-
     @Autowired
     private ResourceOwnerMapper subject;
+    @Autowired
+    private ResourceOwnerTokenMapper resourceOwnerTokenMapper;
+    @Autowired
+    private TokenMapper tokenMapper;
 
     public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
@@ -52,7 +51,7 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    public void getByUUID() {
+    public void getById() {
         ResourceOwner expectedUser = insertResourceOwner();
         ResourceOwner actual = subject.getById(expectedUser.getId());
 
@@ -64,7 +63,7 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
-    public void getByUUIDAuthUserNotFound() {
+    public void getByIdAuthUserNotFound() {
         ResourceOwner actual = subject.getById(UUID.randomUUID());
 
         assertThat(actual, is(nullValue()));
@@ -72,12 +71,36 @@ public class ResourceOwnerMapperTest {
 
     @Test
     public void getByEmail() {
-
         ResourceOwner expectedUser = insertResourceOwner();
         ResourceOwner actual = subject.getByEmail(expectedUser.getEmail());
 
-
         assertThat(actual.getId(), is(expectedUser.getId()));
+        assertThat(actual.getEmail(), is(expectedUser.getEmail()));
+        assertThat(actual.getPassword(), is(expectedUser.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByAccessToken() throws Exception {
+        // prepare data for test.
+        ResourceOwner expectedUser = insertResourceOwner();
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        tokenMapper.insert(token);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(expectedUser);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+        // end prepare
+
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwner actual = subject.getByAccessToken(hashedAccessToken);
+
+        assertThat(actual, is(notNullValue()));
         assertThat(actual.getEmail(), is(expectedUser.getEmail()));
         assertThat(actual.getPassword(), is(expectedUser.getPassword()));
         assertThat(actual.isEmailVerified(), is(false));

@@ -1,0 +1,1 @@
+CREATE INDEX refresh_token_revoked on refresh_token (revoked);

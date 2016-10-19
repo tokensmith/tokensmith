@@ -66,27 +66,29 @@ public class IssueTokenPasswordGrantTest {
     public void runShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        String plainTextAccessToken = "token";
-        String refreshAccessToken = "refresh-token";
 
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
-        Token token = FixtureFactory.makeOpenIdToken();
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(token.getId());
+        String accessToken = "access-token";
+        String headAccessToken = "head-access-token";
+        String refreshAccessToken = "refresh-access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
 
-        when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
+        when(mockMakeBearerToken.run(accessToken)).thenReturn(token);
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
-        when(mockMakeRefreshToken.run(token.getId(), refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), plainTextAccessToken, scopes);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), accessToken, scopes);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAccessToken(), is(plainTextAccessToken));
+        assertThat(actual.getAccessToken(), is(accessToken));
         assertThat(actual.getRefreshAccessToken(), is(refreshAccessToken));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));

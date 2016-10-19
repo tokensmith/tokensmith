@@ -65,7 +65,10 @@ public enum ErrorCode {
     SIGN_KEY_NOT_FOUND (43, "no signing key was found"),
     JWT_ENCODING_ERROR (44, "there was a problem encoding the jwt"),
 
-    CLIENT_USERNAME_DATA_TYPE(45, "user name is not a uuid");
+    CLIENT_USERNAME_DATA_TYPE(45, "user name is not a uuid"),
+
+    REFRESH_TOKEN_NOT_FOUND (46, "refresh token was not found"),
+    COMPROMISED_REFRESH_TOKEN(47, "refresh token was already used");
 
     private int code;
     private final String description;

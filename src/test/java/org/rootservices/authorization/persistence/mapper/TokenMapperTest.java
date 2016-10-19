@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadConfidentialClientTokenReady;
+import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -22,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by tommackenzie on 5/23/15.
  */
-    @RunWith(SpringJUnit4ClassRunner.class)
-    @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
-    @Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@Transactional
 public class TokenMapperTest {
 
     @Autowired
-    private LoadConfidentialClientTokenReady loadConfidentialClientTokenReady;
+    private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private RandomString randomString;
     @Autowired
@@ -38,7 +39,8 @@ public class TokenMapperTest {
 
     @Test
     public void insert() throws Exception {
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "accessToken";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(token);
     }
 
@@ -46,9 +48,10 @@ public class TokenMapperTest {
     public void revokeByAuthCodeIdShouldBeOk() throws Exception {
         // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token tokenToRevoke = FixtureFactory.makeOpenIdToken();
+        String accessToken = "accessToken";
+        Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(tokenToRevoke);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -73,9 +76,10 @@ public class TokenMapperTest {
     public void getByAuthCodeIdShouldBeOk() throws Exception {
         // begin prepare db for test.
         String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfidentialClientTokenReady.run(true, false, plainTextAuthCode);
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -98,7 +102,8 @@ public class TokenMapperTest {
 
     @Test
     public void revokeByIdShouldBeOk() {
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(token);
 
         assertThat(token.isRevoked(), is(false));
@@ -113,5 +118,27 @@ public class TokenMapperTest {
         assertThat(actual.getGrantType(), is(token.getGrantType()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));
+    }
+
+    @Test
+    public void updateExpiresAtByAccessTokenShouldBeOk() {
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        subject.insert(token);
+
+        assertThat(token.isRevoked(), is(false));
+
+        OffsetDateTime expiresAt = token.getExpiresAt().minusDays(1);
+        String hashedAccessToken = new String(token.getToken());
+        subject.updateExpiresAtByAccessToken(expiresAt, hashedAccessToken);
+
+        Token actual = subject.getById(token.getId());
+
+        assertThat(actual.getId(), is(token.getId()));
+        assertThat(actual.getToken(), is(token.getToken()));
+        assertThat(actual.isRevoked(), is(false));
+        assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getExpiresAt(), is(expiresAt));
     }
 }

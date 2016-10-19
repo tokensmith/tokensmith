@@ -1,7 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.openid.LoadOpenIdConfidentialClientAll;
+import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.*;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 public class AccessRequestMapperTest {
 
     @Autowired
-    private LoadOpenIdConfidentialClientAll loadOpenIdConfidentialClientAll;
+    private LoadOpenIdConfClientAll loadOpenIdConfClientAll;
 
     @Autowired
     private ClientRepository clientRepository;

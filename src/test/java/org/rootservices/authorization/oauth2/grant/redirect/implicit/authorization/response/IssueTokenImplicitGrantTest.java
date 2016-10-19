@@ -53,7 +53,7 @@ public class IssueTokenImplicitGrantTest {
         List<String> scopeNames = new ArrayList<>();
         scopeNames.add("profile");
 
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(plainTextAccessToken);
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
 

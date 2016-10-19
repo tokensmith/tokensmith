@@ -70,7 +70,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -112,7 +112,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken("access-token");
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -158,7 +158,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken("access-token");
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()
@@ -203,7 +203,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken();
+        Token token = FixtureFactory.makeOpenIdToken("access-token");
         token.setSecondsToExpiration(3600L);
 
         List<String> scopesForIdToken = token.getTokenScopes().stream()

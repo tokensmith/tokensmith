@@ -37,7 +37,8 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
@@ -64,15 +65,16 @@ public class ResourceOwnerTokenMapperTest {
         subject.insert(resourceOwnerToken);
 
         // make sure it was inserted.
-        ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwnerToken actual = subject.getByAccessToken(hashedAccessToken);
         assertThat(actual, is(notNullValue()));
     }
-
 
     @Test
     public void getByAccessTokenShouldBeOk() throws Exception {
         // begin prepare db for test
-        Token token = FixtureFactory.makeOpenIdToken();
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
@@ -97,7 +99,8 @@ public class ResourceOwnerTokenMapperTest {
         subject.insert(resourceOwnerToken);
         // end prepare db for test
 
-        ResourceOwnerToken actual = subject.getByAccessToken(token.getToken());
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwnerToken actual = subject.getByAccessToken(hashedAccessToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(resourceOwnerToken.getId()));
