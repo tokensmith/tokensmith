@@ -20,7 +20,7 @@ public class ResourceOwnerTokenRepositoryImpl implements ResourceOwnerTokenRepos
 
     @Override
     public ResourceOwnerToken getByAccessToken(String accessToken) throws RecordNotFoundException {
-        ResourceOwnerToken resourceOwnerToken = resourceOwnerTokenMapper.getByAccessToken(accessToken.getBytes());
+        ResourceOwnerToken resourceOwnerToken = resourceOwnerTokenMapper.getByAccessToken(accessToken);
 
         if (resourceOwnerToken == null) {
             throw new RecordNotFoundException("resource owneer token record not found");

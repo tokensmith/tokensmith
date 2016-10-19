@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -41,6 +42,11 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public void revokeById(UUID id) {
         tokenMapper.revokeById(id);
+    }
+
+    @Override
+    public void updateExpiresAtByAccessToken(OffsetDateTime expiresAt, String accessToken) {
+        tokenMapper.updateExpiresAtByAccessToken(expiresAt, accessToken);
     }
 
     @Override

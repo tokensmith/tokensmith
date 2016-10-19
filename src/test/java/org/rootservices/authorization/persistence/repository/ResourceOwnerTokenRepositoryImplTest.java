@@ -33,7 +33,7 @@ public class ResourceOwnerTokenRepositoryImplTest {
     public void getByAccessTokenShouldBeOk() throws Exception {
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
 
-        when(mockResourceOwnerTokenMapper.getByAccessToken("token".getBytes())).thenReturn(resourceOwnerToken);
+        when(mockResourceOwnerTokenMapper.getByAccessToken("token")).thenReturn(resourceOwnerToken);
 
         ResourceOwnerToken actual = subject.getByAccessToken("token");
 
@@ -42,7 +42,7 @@ public class ResourceOwnerTokenRepositoryImplTest {
 
     @Test(expected = RecordNotFoundException.class)
     public void getByAccessTokenShouldThrowRecordNotFound() throws Exception {
-        when(mockResourceOwnerTokenMapper.getByAccessToken("token".getBytes())).thenReturn(null);
+        when(mockResourceOwnerTokenMapper.getByAccessToken("token")).thenReturn(null);
 
         subject.getByAccessToken("token");
     }

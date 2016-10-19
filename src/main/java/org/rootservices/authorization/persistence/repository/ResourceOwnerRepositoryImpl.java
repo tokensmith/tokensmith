@@ -42,6 +42,16 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
         throw new RecordNotFoundException("Resource Owner: " + email);
     }
 
+    @Override
+    public ResourceOwner getByAccessToken(String accessToken) throws RecordNotFoundException {
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByAccessToken(accessToken);
+        if (resourceOwner != null) {
+            return resourceOwner;
+        }
+
+        throw new RecordNotFoundException("Resource Owner was not found");
+    }
+
     public void insert(ResourceOwner resourceOwner) {
         resourceOwnerMapper.insert(resourceOwner);
     }

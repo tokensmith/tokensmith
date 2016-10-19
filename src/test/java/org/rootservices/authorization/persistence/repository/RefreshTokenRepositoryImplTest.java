@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
+import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.RefreshTokenMapper;
@@ -36,7 +37,14 @@ public class RefreshTokenRepositoryImplTest {
 
     @Test
     public void insertShouldBeOk() throws Exception {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(UUID.randomUUID());
+        // need to insert a head token.
+        String accessToken = "access-token";
+        String hedAccessToken = "head-access-token";
+        String refreshAccessToken = "refresh-access-token";
+
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(hedAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
         subject.insert(refreshToken);
         verify(mockRefreshTokenMapper, times(1)).insert(refreshToken);
@@ -44,7 +52,13 @@ public class RefreshTokenRepositoryImplTest {
 
     @Test
     public void insertShouldThrowDuplicateRecordException() throws Exception {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(UUID.randomUUID());
+        String accessToken = "access-token";
+        String hedAccessToken = "head-access-token";
+        String refreshAccessToken = "refresh-access-token";
+
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(hedAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
         DuplicateKeyException dke = new DuplicateKeyException("");
         doThrow(dke).when(mockRefreshTokenMapper).insert(any(RefreshToken.class));
@@ -61,33 +75,47 @@ public class RefreshTokenRepositoryImplTest {
     }
 
     @Test
-    public void getByTokenShouldBeOk() throws Exception {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(UUID.randomUUID());
-        String accessToken = new String(refreshToken.getToken());
-        when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(refreshToken);
+    public void getByClientIdAndAccessTokenShouldBeOk() throws Exception {
+        String accessToken = "access-token";
+        String hedAccessToken = "head-access-token";
+        String refreshAccessToken = "refresh-access-token";
 
-        RefreshToken actual = subject.getByToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(hedAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
+
+        UUID clientId = UUID.randomUUID();
+        String hashedAccessToken = new String(refreshToken.getAccessToken());
+        when(mockRefreshTokenMapper.getByClientIdAndAccessToken(clientId, hashedAccessToken)).thenReturn(refreshToken);
+
+        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedAccessToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(refreshToken));
     }
 
     @Test(expected = RecordNotFoundException.class)
-    public void getByTokenWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
+    public void getByClientIdAndAccessTokenWhenNotFoundShouldThrowRecordNotFoundException() throws Exception {
+        UUID clientId = UUID.randomUUID();
         String accessToken = "foo";
-        when(mockRefreshTokenMapper.getByToken(accessToken)).thenReturn(null);
+        when(mockRefreshTokenMapper.getByClientIdAndAccessToken(clientId, accessToken)).thenReturn(null);
 
-        subject.getByToken(accessToken);
+        subject.getByClientIdAndAccessToken(clientId, accessToken);
     }
 
     @Test
     public void getByTokenIdShouldBeOk() throws Exception {
-        UUID tokenId = UUID.randomUUID();
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(tokenId);
+        String accessToken = "access-token";
+        String hedAccessToken = "head-access-token";
+        String refreshAccessToken = "refresh-access-token";
 
-        when(mockRefreshTokenMapper.getByTokenId(tokenId)).thenReturn(refreshToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(hedAccessToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
-        RefreshToken actual = subject.getByTokenId(tokenId);
+        when(mockRefreshTokenMapper.getByTokenId(token.getId())).thenReturn(refreshToken);
+
+        RefreshToken actual = subject.getByTokenId(token.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(refreshToken));

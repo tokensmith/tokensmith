@@ -77,6 +77,7 @@ public class BadRequestExceptionBuilder {
         this.error = "invalid_scope";
         this.description = "scope is not available for this client";
         this.code = code;
+        this.domainCause = null;
         return this;
     }
 
@@ -88,6 +89,16 @@ public class BadRequestExceptionBuilder {
         this.code = code;
         return this;
     }
+
+    public BadRequestExceptionBuilder CompromisedRefreshToken(int code, Throwable domainCause) {
+        this.message = "Bad request";
+        this.error = "invalid_grant";
+        this.description = "the refresh token was already used";
+        this.domainCause = domainCause;
+        this.code = code;
+        return this;
+    }
+
 
     public BadRequestException build() {
         return new BadRequestException(message, error, description, domainCause, code);

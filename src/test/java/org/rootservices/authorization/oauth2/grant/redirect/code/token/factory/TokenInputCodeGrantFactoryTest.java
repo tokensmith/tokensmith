@@ -42,11 +42,32 @@ public class TokenInputCodeGrantFactoryTest {
     }
 
     @Test
-    public void runWhenUnknownKeyShouldThrowUnknownKeyException() throws Exception {
+    public void runWhenRequiredAndOptionalAndUnknownKeyShouldThrowUnknownKeyException() throws Exception {
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "authorization_code");
         request.put("code", "some-code");
         request.put("redirect_uri", "https://rootservices.org");
+        request.put("foo", "banana");
+
+        UnknownKeyException actual = null;
+        try {
+            subject.run(request);
+        } catch (UnknownKeyException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is(ErrorCode.UNKNOWN_KEY.getDescription()));
+        assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
+        assertThat(actual.getKey(), is("foo"));
+    }
+
+    @Test
+    public void runWhenRequiredAndUnknownKeyShouldThrowUnknownKeyException() throws Exception {
+        Map<String, String> request = new HashMap<>();
+        request.put("grant_type", "authorization_code");
+        request.put("code", "some-code");
         request.put("foo", "banana");
 
         UnknownKeyException actual = null;

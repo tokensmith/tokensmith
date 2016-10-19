@@ -30,7 +30,6 @@ public class IssueTokenPasswordGrant {
     private ClientTokenRepository clientTokenRepository;
 
     private static String OPENID_SCOPE = "openid";
-    private static Long REFRESH_TOKEN_SECONDS_TO_EXPIRATION = 1209600L;
 
     @Autowired
     public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
@@ -55,7 +54,7 @@ public class IssueTokenPasswordGrant {
         }
 
         String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = makeRefreshToken.run(token.getId(), refreshAccessToken);
+        RefreshToken refreshToken = makeRefreshToken.run(token, token, refreshAccessToken);
 
         try {
             refreshTokenRepository.insert(refreshToken);

@@ -68,4 +68,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateExpiresAtByAccessToken">
+        update token
+        set expires_at = #{expiresAt}
+        where token = decode(#{accessToken}, 'escape')
+    </update>
+
 </mapper>
