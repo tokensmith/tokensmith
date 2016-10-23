@@ -1,17 +1,20 @@
 package org.rootservices.authorization.openId.identity.factory;
 
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.Address;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.translator.AddrToAddrClaims;
 import org.rootservices.authorization.openId.identity.translator.ProfileToIdToken;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.entity.TokenScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -34,24 +37,30 @@ public class IdTokenFactory {
         this.addrToAddrClaims = addrToAddrClaims;
     }
 
-    public IdToken make(String accessTokenHash, String nonce, List<String> scopes, Profile profile) {
-        IdToken idToken = make(scopes, profile);
-
+    // make for implicit grant
+    public IdToken make(String accessTokenHash, String nonce, TokenClaims tokenClaims, List<String> scopes, Profile profile) {
+        IdToken idToken = make(tokenClaims, scopes, profile);
+        idToken.setNonce(Optional.of(nonce));
         idToken.setAccessTokenHash(Optional.of(accessTokenHash));
+
+        return idToken;
+    }
+
+    // make for open id implicit identity only
+    public IdToken make(String nonce, TokenClaims tokenClaims, List<String> scopes, Profile profile) {
+        IdToken idToken = make(tokenClaims, scopes, profile);
         idToken.setNonce(Optional.of(nonce));
 
         return idToken;
     }
 
-    public IdToken make(String nonce, List<String> scopes, Profile profile) {
-        IdToken idToken = make(scopes, profile);
-        idToken.setNonce(Optional.of(nonce));
-
-        return idToken;
-    }
-
-    public IdToken make(List<String> scopes, Profile profile) {
+    public IdToken make(TokenClaims tokenClaims, List<String> scopes, Profile profile) {
         IdToken idToken = new IdToken();
+
+        idToken.setAudience(tokenClaims.getAudience());
+        idToken.setIssuedAt(Optional.of(tokenClaims.getIssuedAt()));
+        idToken.setExpirationTime(Optional.of(tokenClaims.getExpirationTime()));
+        idToken.setAuthenticationTime(tokenClaims.getAuthTime());
 
         if (scopes.contains(PROFILE)) {
             profileToIdToken.toProfileClaims(idToken, profile);

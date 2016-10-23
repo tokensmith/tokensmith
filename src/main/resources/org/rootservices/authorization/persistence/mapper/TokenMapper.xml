@@ -9,8 +9,8 @@
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
-        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
-        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
         <collection property="tokenScopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
@@ -43,7 +43,7 @@
         where token.id = #{id}
     </select>
 
-    <insert id="insert" >
+    <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
         insert into token (id, token, grant_type, expires_at)
         values (
             #{token.id},

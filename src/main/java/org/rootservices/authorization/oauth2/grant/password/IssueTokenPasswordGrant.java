@@ -2,6 +2,7 @@ package org.rootservices.authorization.oauth2.grant.password;
 
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -12,6 +13,8 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,11 +31,12 @@ public class IssueTokenPasswordGrant {
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ClientTokenRepository clientTokenRepository;
+    private TokenResponseBuilder tokenResponseBuilder;
 
     private static String OPENID_SCOPE = "openid";
 
     @Autowired
-    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
+    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder) {
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
@@ -41,6 +45,7 @@ public class IssueTokenPasswordGrant {
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.clientTokenRepository = clientTokenRepository;
+        this.tokenResponseBuilder = tokenResponseBuilder;
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
@@ -78,7 +83,7 @@ public class IssueTokenPasswordGrant {
 
         clientTokenRepository.insert(clientToken);
 
-        Boolean isOpenId = false;
+        Extension extension = Extension.NONE;
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
@@ -86,29 +91,28 @@ public class IssueTokenPasswordGrant {
             ts.setScope(scope);
 
             if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
-                isOpenId = true;
+                extension = Extension.IDENTITY;
             }
 
             tokenScopeRepository.insert(ts);
         }
 
-        TokenResponse tr = makeTokenResponse(plainTextToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        // build the response.
+        List<String> audience = new ArrayList<>();
+        audience.add(clientId.toString());
+
+        // TODO: 130584847 - nonce
+        TokenResponse tr = tokenResponseBuilder
+                .setAccessToken(plainTextToken)
+                .setRefreshAccessToken(refreshAccessToken)
+                .setTokenType(TokenType.BEARER)
+                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
+                .setExtension(extension)
+                .setAudience(audience)
+                .setIssuedAt(OffsetDateTime.now().toEpochSecond())
+                .setExpirationTime(token.getExpiresAt().toEpochSecond())
+                .setAuthTime(token.getCreatedAt().toEpochSecond())
+                .build();
         return tr;
-    }
-
-    protected TokenResponse makeTokenResponse(String accessToken, String refreshAccessToken, Long secondsToExpiration, boolean isOpenId) {
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(accessToken);
-        tokenResponse.setRefreshAccessToken(refreshAccessToken);
-        tokenResponse.setExpiresIn(secondsToExpiration);
-        tokenResponse.setTokenType(TokenType.BEARER);
-
-        Extension extension = Extension.NONE;
-        if (isOpenId) {
-            extension = Extension.IDENTITY;
-        }
-        tokenResponse.setExtension(extension);
-
-        return tokenResponse;
     }
 }

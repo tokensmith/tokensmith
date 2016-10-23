@@ -1,6 +1,7 @@
 package helper.fixture;
 
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
@@ -334,13 +335,13 @@ public class FixtureFactory {
         return input;
     }
 
-    public static OpenIdInputParams makeOpenIdInputParams(String responseType) {
+    public static OpenIdInputParams makeOpenIdInputParams(UUID clientId, String responseType) {
         OpenIdInputParams input = new OpenIdInputParams();
         input.setUserName(makeRandomEmail());
         input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
 
         List<String> clientIds = new ArrayList<>();
-        clientIds.add(UUID.randomUUID().toString());
+        clientIds.add(clientId.toString());
         input.setClientIds(clientIds);
 
         List<String> redirectUris = new ArrayList();
@@ -447,8 +448,9 @@ public class FixtureFactory {
         return accessRequestScope;
     }
 
-    public static OpenIdImplicitAuthRequest makeOpenIdImplicitAuthRequest() throws URISyntaxException {
+    public static OpenIdImplicitAuthRequest makeOpenIdImplicitAuthRequest(UUID clientId) throws URISyntaxException {
         OpenIdImplicitAuthRequest request = new OpenIdImplicitAuthRequest();
+        request.setClientId(clientId);
         request.setRedirectURI(new URI(FixtureFactory.SECURE_REDIRECT_URI));
         request.setNonce("nonce");
         request.setState(Optional.of("state"));
@@ -457,5 +459,15 @@ public class FixtureFactory {
         request.getScopes().add("profile");
 
         return request;
+    }
+
+    public static TokenClaims makeTokenClaims(List<String> audience) {
+        TokenClaims tc = new TokenClaims();
+        tc.setAudience(audience);
+        tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
+        tc.setExpirationTime(OffsetDateTime.now().plusDays(1).toEpochSecond());
+        tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
+
+        return tc;
     }
 }
