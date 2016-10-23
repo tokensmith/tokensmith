@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,6 +17,14 @@ import java.util.List;
 public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
     private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSxxx");
+    private List<String> datePatterns = Arrays.asList(
+            "yyyy-MM-dd H:m:s.SSSSSSX",
+            "yyyy-MM-dd H:m:s.SSSSX",
+            "yyyy-MM-dd H:m:s.SSSX",
+            "yyyy-MM-dd H:m:s.SSX",
+            "yyyy-MM-dd H:m:s.SX"
+    );
+
 
     @Override
     public void setParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
@@ -29,15 +38,22 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
     @Override
     public OffsetDateTime getResult(ResultSet rs, String columnName) throws SQLException {
-        // patterns cant dynamically determine length of Fraction of seconds.
-        List<String> datePatterns = new ArrayList<>();
-        datePatterns.add("yyyy-MM-dd H:m:s.SSSSSSX");
-        datePatterns.add("yyyy-MM-dd H:m:s.SSSSX");
-        datePatterns.add("yyyy-MM-dd H:m:s.SSSX");
-        datePatterns.add("yyyy-MM-dd H:m:s.SSX");
-        datePatterns.add("yyyy-MM-dd H:m:s.SX");
-
         String columnValue = rs.getString(columnName);
+        OffsetDateTime result = to(columnValue);
+        return result;
+    }
+
+    @Override
+    public OffsetDateTime getResult(ResultSet rs, int columnIndex) throws SQLException {
+        return to(rs.getString(columnIndex));
+    }
+
+    @Override
+    public OffsetDateTime getResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return OffsetDateTime.parse(cs.getString(columnIndex));
+    }
+
+    protected OffsetDateTime to(String columnValue) {
         OffsetDateTime result = null;
         if (columnValue != null) {
             for (String datePattern: datePatterns) {
@@ -51,15 +67,5 @@ public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
             }
         }
         return result;
-    }
-
-    @Override
-    public OffsetDateTime getResult(ResultSet rs, int columnIndex) throws SQLException {
-        return OffsetDateTime.parse(rs.getString(columnIndex));
-    }
-
-    @Override
-    public OffsetDateTime getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return OffsetDateTime.parse(cs.getString(columnIndex));
     }
 }

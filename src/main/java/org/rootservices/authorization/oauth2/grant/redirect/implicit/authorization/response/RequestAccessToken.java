@@ -28,20 +28,16 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestAccessToken {
-    @Autowired
     private LoginResourceOwner loginResourceOwner;
-    @Autowired
     private ValidateParams validateParamsImplicitGrant;
-    @Autowired
     private RandomString randomString;
-    @Autowired
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
-    @Autowired
     private ClientRepository clientRepository;
 
     public RequestAccessToken() {
     }
 
+    @Autowired
     public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateParamsImplicitGrant = validateParamsImplicitGrant;
@@ -70,6 +66,7 @@ public class RequestAccessToken {
         } else {
             redirectUri = fetchClientRedirectURI(authRequest.getClientId());
         }
+
         return translate(redirectUri, accessToken, issueTokenImplicitGrant.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
     }
 

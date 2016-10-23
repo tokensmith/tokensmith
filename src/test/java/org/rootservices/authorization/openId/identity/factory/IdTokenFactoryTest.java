@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.translator.AddrToAddrClaims;
 import org.rootservices.authorization.openId.identity.translator.ProfileToIdToken;
@@ -13,6 +14,7 @@ import org.rootservices.authorization.persistence.entity.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -49,10 +51,16 @@ public class IdTokenFactoryTest {
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
 
-        IdToken actual = subject.make(scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+        IdToken actual = subject.make(tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
+        // TODO: 130584847 assertions
+
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
         verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
@@ -67,10 +75,16 @@ public class IdTokenFactoryTest {
         List<String> scopes = new ArrayList<>();
         scopes.add("email");
 
-        IdToken actual = subject.make(scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
+        IdToken actual = subject.make(tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
+        // TODO: 130584847 assertions
+
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(1)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
         verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
@@ -85,10 +99,16 @@ public class IdTokenFactoryTest {
         List<String> scopes = new ArrayList<>();
         scopes.add("phone");
 
-        IdToken actual = subject.make(scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
+        IdToken actual = subject.make(tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
+        // TODO: 130584847 assertions
+
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
         verify(mockProfileToIdToken, times(1)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
@@ -108,11 +128,16 @@ public class IdTokenFactoryTest {
         org.rootservices.authorization.openId.identity.entity.Address addressClaim = new org.rootservices.authorization.openId.identity.entity.Address();
         when(mockAddrToAddrClaims.to(profile.getAddresses().get(0))).thenReturn(addressClaim);
 
-        IdToken actual = subject.make(scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
+        IdToken actual = subject.make(tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(true));
         assertThat(actual.getAddress().get(), is(addressClaim));
+        // TODO: 130584847 assertions
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -128,7 +153,11 @@ public class IdTokenFactoryTest {
         List<String> scopes = new ArrayList<>();
         scopes.add("address");
 
-        IdToken actual = subject.make(scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
+        IdToken actual = subject.make(tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -150,11 +179,16 @@ public class IdTokenFactoryTest {
         String accessTokenHash = "access-token-hash";
         String nonce = "some-nonce";
 
-        IdToken actual = subject.make(accessTokenHash, nonce, scopes, profile);
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+        IdToken actual = subject.make(accessTokenHash, nonce, tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(true));
         assertThat(actual.getAccessTokenHash().get(), is(accessTokenHash));
+        // TODO: 130584847 - add more assertions
 
         assertThat(actual.getNonce().isPresent(), is(true));
         assertThat(actual.getNonce().get(), is(nonce));
@@ -175,16 +209,20 @@ public class IdTokenFactoryTest {
         scopes.add("profile");
 
         String nonce = "some-nonce";
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(nonce, scopes, profile);
+        IdToken actual = subject.make(nonce, tc, scopes, profile);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(false));
 
         assertThat(actual.getNonce().isPresent(), is(true));
         assertThat(actual.getNonce().get(), is(nonce));
-
         assertThat(actual.getAddress().isPresent(), is(false));
+        // TODO: 130584847 - add more assertions
+
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
         verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));

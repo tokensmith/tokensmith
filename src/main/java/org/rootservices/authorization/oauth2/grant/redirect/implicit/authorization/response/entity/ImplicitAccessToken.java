@@ -3,7 +3,9 @@ package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 6/23/16.
@@ -16,8 +18,7 @@ public class ImplicitAccessToken {
     private Optional<String> scope;
     private Optional<String> state;
 
-    public ImplicitAccessToken() {
-    }
+    public ImplicitAccessToken() {}
 
     public ImplicitAccessToken(URI redirectUri, String accessToken, TokenType tokenType, Long expiresIn, Optional<String> scope, Optional<String> state) {
         this.redirectUri = redirectUri;

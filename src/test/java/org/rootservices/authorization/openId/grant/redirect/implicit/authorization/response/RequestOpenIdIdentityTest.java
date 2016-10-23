@@ -3,11 +3,13 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
@@ -18,12 +20,15 @@ import org.rootservices.authorization.openId.identity.exception.KeyNotFoundExcep
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -47,9 +52,12 @@ public class RequestOpenIdIdentityTest {
 
     @Test
     public void requestShouldReturnIdentity() throws Exception {
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams("id_token");
-        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
+        String responseType = "id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
         String idToken = "encoded-jwt";
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -65,7 +73,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getId(), request.getScopes())
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenReturn(idToken);
 
         OpenIdImplicitIdentity actual = subject.request(input);
@@ -74,13 +82,19 @@ public class RequestOpenIdIdentityTest {
         assertThat(actual.getRedirectUri(), is(request.getRedirectURI()));
         assertThat(actual.getState(), is(Optional.of("state")));
         assertThat(actual.getScope(), is(Optional.empty()));
+
+        // TODO: 130584847 assertions
     }
 
     @Test
     public void requestWhenProfileNotFoundShouldThrowInformClientException() throws Exception {
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams("id_token");
-        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
+        String responseType = "id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
+
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
         ProfileNotFoundException pnfe = new ProfileNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -96,7 +110,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getId(), request.getScopes())
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -117,9 +131,13 @@ public class RequestOpenIdIdentityTest {
 
     @Test
     public void requestWhenKeyNotFoundShouldThrowInformClientException() throws Exception {
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams("id_token");
-        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
+        String responseType = "id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
+
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
         KeyNotFoundException knfe = new KeyNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -135,7 +153,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getId(), request.getScopes())
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -156,9 +174,13 @@ public class RequestOpenIdIdentityTest {
 
     @Test
     public void requestWhenJwtEncodingErrorShouldThrowInformClientException() throws Exception {
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams("id_token");
-        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest();
+        String responseType = "id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
+
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
         IdTokenException ide = new IdTokenException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -174,7 +196,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), ro.getId(), request.getScopes())
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(ide);
 
         InformClientException expected = null;

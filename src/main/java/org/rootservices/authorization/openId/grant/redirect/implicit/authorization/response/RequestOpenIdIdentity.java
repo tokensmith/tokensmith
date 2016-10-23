@@ -5,6 +5,7 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,10 +52,18 @@ public class RequestOpenIdIdentity {
 
         // TODO: should it fetch scopes from the database?
 
+        List<String> audience = new ArrayList<>();
+        audience.add(request.getClientId().toString());
+
+        // TODO: 130584847 - issuer
+        TokenClaims tc = new TokenClaims();
+        tc.setAudience(audience);
+        tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
+
         String idToken = null;
         try {
             idToken = makeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), resourceOwner.getId(), request.getScopes()
+                request.getNonce(), tc, resourceOwner.getId(), request.getScopes()
             );
         } catch (ProfileNotFoundException e) {
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;

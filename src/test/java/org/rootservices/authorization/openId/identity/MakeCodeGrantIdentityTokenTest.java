@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
@@ -71,6 +72,7 @@ public class MakeCodeGrantIdentityTokenTest {
 
     @Test
     public void makeShouldReturnEncodedJwt() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -103,13 +105,13 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenReturn("some-compact-jwt");
 
-        String actual = subject.make(accessToken);
+        String actual = subject.make(accessToken, tc);
 
         assertThat(actual, is(expected));
 
@@ -117,6 +119,7 @@ public class MakeCodeGrantIdentityTokenTest {
 
     @Test(expected = AccessRequestNotFoundException.class)
     public void makeShouldThrowAccessRequestNotFoundException() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -125,11 +128,12 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
     }
 
     @Test(expected = KeyNotFoundException.class)
     public void makeShouldThrowKeyNotFoundException() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -147,12 +151,13 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(KeyNotFoundException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
 
     }
 
     @Test(expected = ProfileNotFoundException.class)
     public void makeShouldThrowProfileNotFoundException() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -171,12 +176,13 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
                 .thenThrow(ProfileNotFoundException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
 
     }
 
     @Test(expected = IdTokenException.class)
     public void makeInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -201,12 +207,13 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
 
     }
 
     @Test(expected = IdTokenException.class)
     public void makeInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception{
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -231,11 +238,12 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
     }
 
     @Test(expected = IdTokenException.class)
     public void makeWhenEncodeThrowsJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
+        TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -266,12 +274,12 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.make(accessToken);
+        subject.make(accessToken, tc);
     }
 }
