@@ -47,7 +47,12 @@ public class RequestOpenIdIdentityTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestOpenIdIdentity(mockValidateOpenIdIdImplicitGrant, mockLoginResourceOwner, mockMakeImplicitIdentityToken);
+        subject = new RequestOpenIdIdentity(
+                mockValidateOpenIdIdImplicitGrant,
+                mockLoginResourceOwner,
+                mockMakeImplicitIdentityToken,
+                "https://sso.rootservices.org"
+        );
     }
 
     @Test

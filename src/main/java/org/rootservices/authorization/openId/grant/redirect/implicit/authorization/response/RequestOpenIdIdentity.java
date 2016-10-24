@@ -29,18 +29,20 @@ import java.util.Optional;
  */
 @Component
 public class RequestOpenIdIdentity {
-    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
-    private static String SERVER_ERROR = "server_error";
-
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
 
+    private String issuer;
+    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
+    private static String SERVER_ERROR = "server_error";
+
     @Autowired
-    public RequestOpenIdIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, MakeImplicitIdentityToken makeImplicitIdentityToken) {
+    public RequestOpenIdIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, MakeImplicitIdentityToken makeImplicitIdentityToken, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
+        this.issuer = issuer;
     }
 
     public OpenIdImplicitIdentity request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
@@ -55,8 +57,8 @@ public class RequestOpenIdIdentity {
         List<String> audience = new ArrayList<>();
         audience.add(request.getClientId().toString());
 
-        // TODO: 130584847 - issuer
         TokenClaims tc = new TokenClaims();
+        tc.setIssuer(issuer);
         tc.setAudience(audience);
         tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
 

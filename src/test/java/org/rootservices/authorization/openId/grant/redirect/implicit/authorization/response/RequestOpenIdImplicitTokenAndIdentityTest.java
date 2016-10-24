@@ -67,7 +67,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 mockRandomString,
                 mockIssueTokenImplicitGrant,
                 mockMakeImplicitIdentityToken,
-                new OpenIdImplicitAccessTokenBuilder()
+                new OpenIdImplicitAccessTokenBuilder(),
+                "https://sso.rootservices.org"
         );
     }
 

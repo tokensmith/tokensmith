@@ -61,7 +61,8 @@ public class IssueTokenPasswordGrantTest {
                 mockResourceOwnerTokenRepository,
                 mockTokenScopeRepository,
                 mockClientTokenRepository,
-                new TokenResponseBuilder()
+                new TokenResponseBuilder(),
+                "https://sso.rootservices.org"
         );
     }
 
