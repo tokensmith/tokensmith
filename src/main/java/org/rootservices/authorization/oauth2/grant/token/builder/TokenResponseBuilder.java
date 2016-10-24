@@ -87,6 +87,7 @@ public class TokenResponseBuilder {
         tr.setExtension(this.extension);
 
         TokenClaims tc = new TokenClaims();
+        tc.setIssuer(this.issuer);
         tc.setAudience(this.audience);
         tc.setIssuedAt(this.issuedAt);
         tc.setExpirationTime(this.expirationTime);

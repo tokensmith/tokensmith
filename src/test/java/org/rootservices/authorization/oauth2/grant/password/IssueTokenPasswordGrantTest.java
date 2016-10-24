@@ -101,6 +101,8 @@ public class IssueTokenPasswordGrantTest {
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         assertThat(actual.getTokenClaims(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getIssuer(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getIssuer(), is("https://sso.rootservices.org"));
         assertThat(actual.getTokenClaims().getAudience(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getAudience().size(), is(1));
         assertThat(actual.getTokenClaims().getAudience().get(0), is(clientId.toString()));
