@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
@@ -88,7 +89,14 @@ public class RequestOpenIdIdentityTest {
         assertThat(actual.getState(), is(Optional.of("state")));
         assertThat(actual.getScope(), is(Optional.empty()));
 
-        // TODO: 130584847 assertions
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
     }
 
     @Test
@@ -132,6 +140,15 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(ProfileNotFoundException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
     }
 
     @Test
@@ -175,6 +192,15 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(KeyNotFoundException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
     }
 
     @Test
@@ -218,6 +244,15 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(IdTokenException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
     }
 
 }

@@ -117,7 +117,14 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(actual.getScope(), is(Optional.empty()));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
 
-        // TODO: 130584847 assertions for tcArgumentCaptor
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
     }
 
     @Test
@@ -168,6 +175,15 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(ProfileNotFoundException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
     }
 
     @Test
@@ -218,6 +234,15 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(KeyNotFoundException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
     }
 
     @Test
@@ -268,5 +293,14 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(IdTokenException.class));
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
     }
 }

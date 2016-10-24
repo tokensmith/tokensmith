@@ -463,6 +463,7 @@ public class FixtureFactory {
 
     public static TokenClaims makeTokenClaims(List<String> audience) {
         TokenClaims tc = new TokenClaims();
+        tc.setIssuer("https://sso.rootservices.org");
         tc.setAudience(audience);
         tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
         tc.setExpirationTime(OffsetDateTime.now().plusDays(1).toEpochSecond());
