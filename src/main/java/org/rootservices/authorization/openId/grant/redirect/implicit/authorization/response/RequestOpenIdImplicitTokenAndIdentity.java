@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestOpenIdImplicitTokenAndIdentity {
-    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
-    private static String SERVER_ERROR = "server_error";
-
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
     private RandomString randomString;
@@ -45,14 +42,19 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
     private OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder;
 
+    private String issuer;
+    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
+    private static String SERVER_ERROR = "server_error";
+
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
         this.openIdImplicitAccessTokenBuilder = openIdImplicitAccessTokenBuilder;
+        this.issuer = issuer;
     }
 
     public OpenIdImplicitAccessToken request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
@@ -72,8 +74,8 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         List<String> audience = new ArrayList<>();
         audience.add(request.getClientId().toString());
 
-        // TODO: 130584847 - issuer
         TokenClaims tc = new TokenClaims();
+        tc.setIssuer(issuer);
         tc.setAudience(audience);
         tc.setIssuedAt(token.getCreatedAt().toEpochSecond());
         tc.setExpirationTime(token.getExpiresAt().toEpochSecond());

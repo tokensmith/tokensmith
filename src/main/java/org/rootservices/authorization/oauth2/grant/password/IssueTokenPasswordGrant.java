@@ -33,10 +33,11 @@ public class IssueTokenPasswordGrant {
     private ClientTokenRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
+    private String issuer;
     private static String OPENID_SCOPE = "openid";
 
     @Autowired
-    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder) {
+    public IssueTokenPasswordGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
@@ -46,6 +47,7 @@ public class IssueTokenPasswordGrant {
         this.tokenScopeRepository = tokenScopeRepository;
         this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
+        this.issuer = issuer;
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
@@ -101,13 +103,13 @@ public class IssueTokenPasswordGrant {
         List<String> audience = new ArrayList<>();
         audience.add(clientId.toString());
 
-        // TODO: 130584847 - nonce
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(plainTextToken)
                 .setRefreshAccessToken(refreshAccessToken)
                 .setTokenType(TokenType.BEARER)
                 .setExpiresIn(makeBearerToken.getSecondsToExpiration())
                 .setExtension(extension)
+                .setIssuer(issuer)
                 .setAudience(audience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(token.getExpiresAt().toEpochSecond())

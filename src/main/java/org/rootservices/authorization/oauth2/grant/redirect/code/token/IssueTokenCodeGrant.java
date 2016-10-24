@@ -37,10 +37,11 @@ public class IssueTokenCodeGrant {
     private ClientTokenRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
+    private String issuer;
     private static String OPENID_SCOPE = "openid";
 
     @Autowired
-    public IssueTokenCodeGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder) {
+    public IssueTokenCodeGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
@@ -52,6 +53,7 @@ public class IssueTokenCodeGrant {
         this.authCodeRepository = authCodeRepository;
         this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
+        this.issuer = issuer;
     }
 
     public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
@@ -128,13 +130,13 @@ public class IssueTokenCodeGrant {
         List<String> audience = new ArrayList<>();
         audience.add(clientId.toString());
 
-        // TODO: 130584847 - nonce
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(plainTextToken)
                 .setRefreshAccessToken(refreshAccessToken)
                 .setTokenType(TokenType.BEARER)
                 .setExpiresIn(makeBearerToken.getSecondsToExpiration())
                 .setExtension(extension)
+                .setIssuer(issuer)
                 .setAudience(audience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(token.getExpiresAt().toEpochSecond())

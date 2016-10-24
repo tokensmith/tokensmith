@@ -69,7 +69,8 @@ public class IssueTokenCodeGrantTest {
                 mockTokenScopeRepository,
                 mockAuthCodeRepository,
                 mockClientTokenRepository,
-                new TokenResponseBuilder()
+                new TokenResponseBuilder(),
+                "https://sso.rootservices.org"
         );
     }
 

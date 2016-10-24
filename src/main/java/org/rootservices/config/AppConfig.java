@@ -206,4 +206,9 @@ public class AppConfig {
         return new RequestAccessToken();
     }
 
+    @Bean
+    public String issuer() {
+        return System.getenv("ISSUER");
+    }
+
 }

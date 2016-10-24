@@ -22,6 +22,7 @@ public class TokenResponseBuilder {
     private Long expiresIn;
     private TokenType tokenType;
     private Extension extension;
+    private String issuer;
     private List<String> audience;
     private Long issuedAt;
     private Long expirationTime;
@@ -49,6 +50,11 @@ public class TokenResponseBuilder {
 
     public TokenResponseBuilder setExtension(Extension extension) {
         this.extension = extension;
+        return this;
+    }
+
+    public TokenResponseBuilder setIssuer(String issuer) {
+        this.issuer = issuer;
         return this;
     }
 

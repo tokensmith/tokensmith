@@ -34,10 +34,11 @@ public class IssueTokenRefreshGrant {
     private ClientTokenRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
+    private String issuer;
     private static String COMPROMISED_MESSAGE = "refresh token was already used";
     private static String OPENID_SCOPE = "openid";
 
-    public IssueTokenRefreshGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, TokenChainRepository tokenChainRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder) {
+    public IssueTokenRefreshGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, TokenChainRepository tokenChainRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
@@ -48,6 +49,7 @@ public class IssueTokenRefreshGrant {
         this.tokenScopeRepository = tokenScopeRepository;
         this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
+        this.issuer = issuer;
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token headToken, List<Scope> scopes) throws CompromisedRefreshTokenException {
@@ -100,13 +102,13 @@ public class IssueTokenRefreshGrant {
         List<String> audience = new ArrayList<>();
         audience.add(clientId.toString());
 
-        // TODO: 130584847 - nonce
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(accessToken)
                 .setRefreshAccessToken(refreshAccessToken)
                 .setTokenType(TokenType.BEARER)
                 .setExpiresIn(makeBearerToken.getSecondsToExpiration())
                 .setExtension(extension)
+                .setIssuer(issuer)
                 .setAudience(audience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(token.getExpiresAt().toEpochSecond())
