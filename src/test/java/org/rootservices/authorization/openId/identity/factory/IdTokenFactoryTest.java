@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +60,18 @@ public class IdTokenFactoryTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
-        // TODO: 130584847 assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -83,7 +95,18 @@ public class IdTokenFactoryTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
-        // TODO: 130584847 assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(1)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -107,7 +130,18 @@ public class IdTokenFactoryTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
-        // TODO: 130584847 assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -137,7 +171,18 @@ public class IdTokenFactoryTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(true));
         assertThat(actual.getAddress().get(), is(addressClaim));
-        // TODO: 130584847 assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -161,6 +206,18 @@ public class IdTokenFactoryTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -188,7 +245,18 @@ public class IdTokenFactoryTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(true));
         assertThat(actual.getAccessTokenHash().get(), is(accessTokenHash));
-        // TODO: 130584847 - add more assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         assertThat(actual.getNonce().isPresent(), is(true));
         assertThat(actual.getNonce().get(), is(nonce));
@@ -221,7 +289,18 @@ public class IdTokenFactoryTest {
         assertThat(actual.getNonce().isPresent(), is(true));
         assertThat(actual.getNonce().get(), is(nonce));
         assertThat(actual.getAddress().isPresent(), is(false));
-        // TODO: 130584847 - add more assertions
+
+        assertThat(actual.getIssuer().isPresent(), is(true));
+        assertThat(actual.getIssuer().get(), is(tc.getIssuer()));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(1));
+        assertThat(actual.getAudience().get(0), is(tc.getAudience().get(0)));
+        assertThat(actual.getIssuedAt().isPresent(), is(true));
+        assertThat(actual.getIssuedAt().get(), is(tc.getIssuedAt()));
+        assertThat(actual.getExpirationTime().isPresent(), is(true));
+        assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
+        assertThat(actual.getAuthenticationTime(), is(notNullValue()));
+        assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
 
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));

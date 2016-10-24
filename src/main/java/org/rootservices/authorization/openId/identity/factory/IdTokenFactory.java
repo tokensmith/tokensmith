@@ -57,6 +57,7 @@ public class IdTokenFactory {
     public IdToken make(TokenClaims tokenClaims, List<String> scopes, Profile profile) {
         IdToken idToken = new IdToken();
 
+        idToken.setIssuer(Optional.of(tokenClaims.getIssuer()));
         idToken.setAudience(tokenClaims.getAudience());
         idToken.setIssuedAt(Optional.of(tokenClaims.getIssuedAt()));
         idToken.setExpirationTime(Optional.of(tokenClaims.getExpirationTime()));
