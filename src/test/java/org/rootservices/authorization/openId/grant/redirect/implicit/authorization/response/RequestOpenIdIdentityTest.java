@@ -94,9 +94,8 @@ public class RequestOpenIdIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(notNullValue()));
     }
 
     @Test
@@ -146,9 +145,8 @@ public class RequestOpenIdIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(notNullValue()));
     }
 
     @Test
@@ -198,9 +196,8 @@ public class RequestOpenIdIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(notNullValue()));
     }
 
     @Test
@@ -250,9 +247,8 @@ public class RequestOpenIdIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(notNullValue()));
     }
 
 }
