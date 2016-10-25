@@ -77,7 +77,7 @@ public class IdToken extends Claims {
     // end standard claims.
 
     @JsonProperty(value="auth_time")
-    private long authenticationTime;
+    private Long authenticationTime;
 
     @JsonProperty(value="nonce")
     private Optional<String> nonce;
@@ -110,11 +110,11 @@ public class IdToken extends Claims {
         accessTokenHash = Optional.empty();
     }
 
-    public long getAuthenticationTime() {
+    public Long getAuthenticationTime() {
         return authenticationTime;
     }
 
-    public void setAuthenticationTime(long authenticationTime) {
+    public void setAuthenticationTime(Long authenticationTime) {
         this.authenticationTime = authenticationTime;
     }
 

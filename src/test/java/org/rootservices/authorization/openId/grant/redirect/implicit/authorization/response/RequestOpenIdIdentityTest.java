@@ -12,6 +12,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.IdentityClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
@@ -63,7 +64,7 @@ public class RequestOpenIdIdentityTest {
         OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
+        ArgumentCaptor<IdentityClaims> icArgumentCaptor = ArgumentCaptor.forClass(IdentityClaims.class);
         String idToken = "encoded-jwt";
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -79,7 +80,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), icArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenReturn(idToken);
 
         OpenIdImplicitIdentity actual = subject.request(input);
@@ -89,14 +90,11 @@ public class RequestOpenIdIdentityTest {
         assertThat(actual.getState(), is(Optional.of("state")));
         assertThat(actual.getScope(), is(Optional.empty()));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
-        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
-        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(icArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(icArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(icArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(icArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(icArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
     }
 
     @Test
@@ -107,7 +105,7 @@ public class RequestOpenIdIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
+        ArgumentCaptor<IdentityClaims> icArgumentCaptor = ArgumentCaptor.forClass(IdentityClaims.class);
         ProfileNotFoundException pnfe = new ProfileNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -123,7 +121,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), icArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -141,14 +139,11 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(ProfileNotFoundException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
-        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
-        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(icArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(icArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(icArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(icArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(icArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
     }
 
     @Test
@@ -159,7 +154,7 @@ public class RequestOpenIdIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
+        ArgumentCaptor<IdentityClaims> icArgumentCaptor = ArgumentCaptor.forClass(IdentityClaims.class);
         KeyNotFoundException knfe = new KeyNotFoundException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -175,7 +170,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), icArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -193,14 +188,11 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(KeyNotFoundException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
-        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
-        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
+        assertThat(icArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(icArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(icArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(icArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(icArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
     }
 
     @Test
@@ -211,7 +203,7 @@ public class RequestOpenIdIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
+        ArgumentCaptor<IdentityClaims> icArgumentCaptor = ArgumentCaptor.forClass(IdentityClaims.class);
         IdTokenException ide = new IdTokenException("", null);
 
         when(mockValidateOpenIdIdImplicitGrant.run(
@@ -227,7 +219,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), icArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
         ).thenThrow(ide);
 
         InformClientException expected = null;
@@ -245,14 +237,12 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getDomainCause(), instanceOf(IdTokenException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
-        assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
-        assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
+        assertThat(icArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(icArgumentCaptor.getValue().getAudience(), is(notNullValue()));
+        assertThat(icArgumentCaptor.getValue().getAudience().size(), is(1));
+        assertThat(icArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
+        assertThat(icArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
 
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(nullValue()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(nullValue()));
     }
 
 }

@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.identity;
 
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.IdentityClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -105,7 +106,7 @@ public class MakeImplicitIdentityToken {
      * @throws KeyNotFoundException
      * @throws IdTokenException
      */
-    public String makeIdentityOnly(String nonce, TokenClaims tokenClaim, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    public String makeIdentityOnly(String nonce, IdentityClaims identityClaims, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
@@ -114,7 +115,7 @@ public class MakeImplicitIdentityToken {
             throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
 
-        IdToken idToken = idTokenFactory.make(nonce, tokenClaim, scopes, profile);
+        IdToken idToken = idTokenFactory.make(nonce, identityClaims, scopes, profile);
 
         RSAPrivateKey key = null;
         try {

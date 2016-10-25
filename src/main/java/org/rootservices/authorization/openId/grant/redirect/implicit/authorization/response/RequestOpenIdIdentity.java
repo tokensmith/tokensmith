@@ -8,6 +8,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.IdentityClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
@@ -57,15 +58,15 @@ public class RequestOpenIdIdentity {
         List<String> audience = new ArrayList<>();
         audience.add(request.getClientId().toString());
 
-        TokenClaims tc = new TokenClaims();
-        tc.setIssuer(issuer);
-        tc.setAudience(audience);
-        tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
+        IdentityClaims ic = new IdentityClaims();
+        ic.setIssuer(issuer);
+        ic.setAudience(audience);
+        ic.setIssuedAt(OffsetDateTime.now().toEpochSecond());
 
         String idToken = null;
         try {
             idToken = makeImplicitIdentityToken.makeIdentityOnly(
-                request.getNonce(), tc, resourceOwner.getId(), request.getScopes()
+                request.getNonce(), ic, resourceOwner.getId(), request.getScopes()
             );
         } catch (ProfileNotFoundException e) {
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;

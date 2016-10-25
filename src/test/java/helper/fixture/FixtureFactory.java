@@ -3,6 +3,7 @@ package helper.fixture;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.IdentityClaims;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
@@ -470,5 +471,14 @@ public class FixtureFactory {
         tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
 
         return tc;
+    }
+
+    public static IdentityClaims makeIdentityClaims(List<String> audience) {
+        IdentityClaims ic = new IdentityClaims();
+        ic.setIssuer("https://sso.rootservices.org");
+        ic.setAudience(audience);
+        ic.setIssuedAt(OffsetDateTime.now().toEpochSecond());
+
+        return ic;
     }
 }

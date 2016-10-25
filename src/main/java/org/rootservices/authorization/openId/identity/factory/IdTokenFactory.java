@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.identity.factory;
 
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.IdentityClaims;
 import org.rootservices.authorization.openId.identity.entity.Address;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.translator.AddrToAddrClaims;
@@ -47,21 +48,33 @@ public class IdTokenFactory {
     }
 
     // make for open id implicit identity only
-    public IdToken make(String nonce, TokenClaims tokenClaims, List<String> scopes, Profile profile) {
-        IdToken idToken = make(tokenClaims, scopes, profile);
+    public IdToken make(String nonce, IdentityClaims identityClaims, List<String> scopes, Profile profile) {
+        IdToken idToken = foo(scopes, profile);
+
         idToken.setNonce(Optional.of(nonce));
+        idToken.setIssuer(Optional.of(identityClaims.getIssuer()));
+        idToken.setAudience(identityClaims.getAudience());
+        idToken.setIssuedAt(Optional.of(identityClaims.getIssuedAt()));
+
 
         return idToken;
     }
 
     public IdToken make(TokenClaims tokenClaims, List<String> scopes, Profile profile) {
-        IdToken idToken = new IdToken();
+        IdToken idToken = foo(scopes, profile);
 
         idToken.setIssuer(Optional.of(tokenClaims.getIssuer()));
         idToken.setAudience(tokenClaims.getAudience());
         idToken.setIssuedAt(Optional.of(tokenClaims.getIssuedAt()));
         idToken.setExpirationTime(Optional.of(tokenClaims.getExpirationTime()));
         idToken.setAuthenticationTime(tokenClaims.getAuthTime());
+
+        return idToken;
+
+    }
+
+    protected IdToken foo(List<String> scopes, Profile profile) {
+        IdToken idToken = new IdToken();
 
         if (scopes.contains(PROFILE)) {
             profileToIdToken.toProfileClaims(idToken, profile);
@@ -73,9 +86,9 @@ public class IdTokenFactory {
 
         if (scopes.contains(PHONE)) {
             profileToIdToken.toPhoneClaims(
-                idToken,
-                profile.getPhoneNumber(),
-                profile.isPhoneNumberVerified()
+                    idToken,
+                    profile.getPhoneNumber(),
+                    profile.isPhoneNumberVerified()
             );
         }
 
