@@ -36,6 +36,7 @@ public class RequestOpenIdIdentity {
     private String issuer;
     private static String EXCEPTION_MESSAGE = "Failed to create id_token";
     private static String SERVER_ERROR = "server_error";
+    private static final Long SECONDS_TO_EXPIRATION = 3600L;
 
     @Autowired
     public RequestOpenIdIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, MakeImplicitIdentityToken makeImplicitIdentityToken, String issuer) {
@@ -61,6 +62,8 @@ public class RequestOpenIdIdentity {
         tc.setIssuer(issuer);
         tc.setAudience(audience);
         tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
+        tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
+        tc.setExpirationTime(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION).toEpochSecond());
 
         String idToken = null;
         try {
