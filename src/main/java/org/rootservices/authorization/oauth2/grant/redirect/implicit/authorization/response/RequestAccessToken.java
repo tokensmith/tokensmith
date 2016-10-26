@@ -34,9 +34,6 @@ public class RequestAccessToken {
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private ClientRepository clientRepository;
 
-    public RequestAccessToken() {
-    }
-
     @Autowired
     public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;

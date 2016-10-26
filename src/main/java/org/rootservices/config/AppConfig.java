@@ -202,13 +202,7 @@ public class AppConfig {
     }
 
     @Bean
-    public RequestAccessToken requestAccessToken() {
-        return new RequestAccessToken();
-    }
-
-    @Bean
     public String issuer() {
         return System.getenv("ISSUER");
     }
-
 }
