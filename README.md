@@ -1,8 +1,6 @@
 Use cases for, [OAuth 2.0](http://tools.ietf.org/html/rfc6749)
 ---------------------------------------------------------------------------------------------------------------------
 
-[![Build Status](https://travis-ci.org/RootServices/auth.svg?branch=development)](https://travis-ci.org/RootServices/auth)
-
 Dependencies
 ------------
  - Postgres 9.3
@@ -27,8 +25,8 @@ Environment Variables for configuring db connection
 export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
 export AUTH_DB_USER="postgres";
 export AUTH_DB_PASSWORD="";
-export AUTH_DB_DRIVER="org.postgresql.Driver";
 export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
+export ISSUER="https://sso.rootservices.org"
 ```
 
 Running migrations (replace values where necessary).

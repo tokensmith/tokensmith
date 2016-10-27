@@ -3,12 +3,14 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.builder.OpenIdImplicitAccessTokenBuilder;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
@@ -21,8 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -30,22 +35,26 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestOpenIdImplicitTokenAndIdentity {
-    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
-    private static String SERVER_ERROR = "server_error";
-
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
     private RandomString randomString;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
+    private OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder;
+
+    private String issuer;
+    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
+    private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
+        this.openIdImplicitAccessTokenBuilder = openIdImplicitAccessTokenBuilder;
+        this.issuer = issuer;
     }
 
     public OpenIdImplicitAccessToken request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
@@ -62,10 +71,20 @@ public class RequestOpenIdImplicitTokenAndIdentity {
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
+        List<String> audience = new ArrayList<>();
+        audience.add(request.getClientId().toString());
+
+        TokenClaims tc = new TokenClaims();
+        tc.setIssuer(issuer);
+        tc.setAudience(audience);
+        tc.setIssuedAt(token.getCreatedAt().toEpochSecond());
+        tc.setExpirationTime(token.getExpiresAt().toEpochSecond());
+        tc.setAuthTime(token.getCreatedAt().toEpochSecond());
+
         String idToken = null;
         try {
             idToken = makeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), resourceOwner.getId(), scopesForIdToken
+                accessToken, request.getNonce(), tc, resourceOwner.getId(), scopesForIdToken
             );
         } catch (ProfileNotFoundException e) {
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;
@@ -78,14 +97,15 @@ public class RequestOpenIdImplicitTokenAndIdentity {
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         }
 
-        OpenIdImplicitAccessToken response = new OpenIdImplicitAccessToken();
-        response.setAccessToken(accessToken);
-        response.setExpiresIn(token.getSecondsToExpiration());
-        response.setIdToken(idToken);
-        response.setRedirectUri(request.getRedirectURI());
-        response.setState(request.getState());
-        response.setScope(Optional.empty());
-        response.setTokenType(TokenType.BEARER);
+        OpenIdImplicitAccessToken response = openIdImplicitAccessTokenBuilder
+            .setAccessToken(accessToken)
+            .setExpiresIn(token.getSecondsToExpiration())
+            .setIdToken(idToken)
+            .setRedirectUri(request.getRedirectURI())
+            .setState(request.getState())
+            .setScope(Optional.empty())
+            .setTokenType(TokenType.BEARER)
+            .build();
 
         return response;
     }

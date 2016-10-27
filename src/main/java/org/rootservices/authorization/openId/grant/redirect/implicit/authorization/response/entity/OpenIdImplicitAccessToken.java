@@ -3,7 +3,9 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 6/23/16.
@@ -16,6 +18,12 @@ public class OpenIdImplicitAccessToken {
     private Long expiresIn;
     private Optional<String> scope;
     private Optional<String> state;
+
+    private List<UUID> audience;
+    private Long issuedAt;
+    private Long expirationTime;
+    private Long authTime;
+    private String nonce;
 
     public OpenIdImplicitAccessToken() {
     }
@@ -74,5 +82,45 @@ public class OpenIdImplicitAccessToken {
 
     public void setState(Optional<String> state) {
         this.state = state;
+    }
+
+    public List<UUID> getAudience() {
+        return audience;
+    }
+
+    public void setAudience(List<UUID> audience) {
+        this.audience = audience;
+    }
+
+    public Long getIssuedAt() {
+        return issuedAt;
+    }
+
+    public void setIssuedAt(Long issuedAt) {
+        this.issuedAt = issuedAt;
+    }
+
+    public Long getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(Long expirationTime) {
+        this.expirationTime = expirationTime;
+    }
+
+    public Long getAuthTime() {
+        return authTime;
+    }
+
+    public void setAuthTime(Long authTime) {
+        this.authTime = authTime;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }

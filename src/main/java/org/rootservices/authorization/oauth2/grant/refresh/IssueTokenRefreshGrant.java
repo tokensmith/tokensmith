@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.refresh;
 import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -12,6 +13,8 @@ import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,12 +32,13 @@ public class IssueTokenRefreshGrant {
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private ClientTokenRepository clientTokenRepository;
+    private TokenResponseBuilder tokenResponseBuilder;
 
+    private String issuer;
     private static String COMPROMISED_MESSAGE = "refresh token was already used";
-
     private static String OPENID_SCOPE = "openid";
 
-    public IssueTokenRefreshGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, TokenChainRepository tokenChainRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository) {
+    public IssueTokenRefreshGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, TokenChainRepository tokenChainRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
@@ -44,6 +48,8 @@ public class IssueTokenRefreshGrant {
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
         this.clientTokenRepository = clientTokenRepository;
+        this.tokenResponseBuilder = tokenResponseBuilder;
+        this.issuer = issuer;
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token headToken, List<Scope> scopes) throws CompromisedRefreshTokenException {
@@ -78,7 +84,7 @@ public class IssueTokenRefreshGrant {
         ClientToken clientToken = makeClientToken(clientId, token.getId());
         clientTokenRepository.insert(clientToken);
 
-        Boolean isOpenId = false;
+        Extension extension = Extension.NONE;
         for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
@@ -86,13 +92,28 @@ public class IssueTokenRefreshGrant {
             ts.setScope(scope);
 
             if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
-                isOpenId = true;
+                extension = Extension.IDENTITY;
             }
 
             tokenScopeRepository.insert(ts);
         }
 
-        TokenResponse tr = makeTokenResponse(accessToken, refreshAccessToken, makeBearerToken.getSecondsToExpiration(), isOpenId);
+        // build the response.
+        List<String> audience = new ArrayList<>();
+        audience.add(clientId.toString());
+
+        TokenResponse tr = tokenResponseBuilder
+                .setAccessToken(accessToken)
+                .setRefreshAccessToken(refreshAccessToken)
+                .setTokenType(TokenType.BEARER)
+                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
+                .setExtension(extension)
+                .setIssuer(issuer)
+                .setAudience(audience)
+                .setIssuedAt(OffsetDateTime.now().toEpochSecond())
+                .setExpirationTime(token.getExpiresAt().toEpochSecond())
+                .setAuthTime(headToken.getCreatedAt().toEpochSecond())
+                .build();
         return tr;
     }
 
@@ -130,21 +151,5 @@ public class IssueTokenRefreshGrant {
         clientToken.setTokenId(tokenId);
 
         return clientToken;
-    }
-
-    protected TokenResponse makeTokenResponse(String accessToken, String refreshAccessToken, Long secondsToExpiration, boolean isOpenId) {
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccessToken(accessToken);
-        tokenResponse.setRefreshAccessToken(refreshAccessToken);
-        tokenResponse.setExpiresIn(secondsToExpiration);
-        tokenResponse.setTokenType(TokenType.BEARER);
-
-        Extension extension = Extension.NONE;
-        if (isOpenId) {
-            extension = Extension.IDENTITY;
-        }
-        tokenResponse.setExtension(extension);
-
-        return tokenResponse;
     }
 }

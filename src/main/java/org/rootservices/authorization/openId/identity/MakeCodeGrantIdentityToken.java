@@ -1,5 +1,6 @@
 package org.rootservices.authorization.openId.identity;
 
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
@@ -54,7 +55,7 @@ public class MakeCodeGrantIdentityToken {
         this.idTokenFactory = idTokenFactory;
     }
 
-    public String make(String accessToken) throws AccessRequestNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
+    public String make(String accessToken, TokenClaims tokenClaims) throws AccessRequestNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
 
         String hashedAccessToken = hashText.run(accessToken);
 
@@ -85,7 +86,7 @@ public class MakeCodeGrantIdentityToken {
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
-        IdToken idToken = idTokenFactory.make(scopesForIdToken, profile);
+        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, profile);
 
         SecureJwtEncoder secureJwtEncoder;
         try {

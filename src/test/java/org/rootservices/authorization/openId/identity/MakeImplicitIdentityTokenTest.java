@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -27,6 +28,7 @@ import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKey
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -73,8 +75,11 @@ public class MakeImplicitIdentityTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
-
         List<String> scopesForIdToken = new ArrayList<>();
+
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -88,7 +93,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -102,7 +107,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenReturn(expected);
 
-        String actual = subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        String actual = subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
 
         assertThat(actual, is(expected));
     }
@@ -116,10 +121,14 @@ public class MakeImplicitIdentityTokenTest {
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         List<String> scopesForIdToken = new ArrayList<>();
 
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = KeyNotFoundException.class)
@@ -130,8 +139,12 @@ public class MakeImplicitIdentityTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
-
         List<String> scopesForIdToken = new ArrayList<>();
+
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
         IdToken idToken = new IdToken();
 
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
@@ -140,13 +153,13 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -157,8 +170,11 @@ public class MakeImplicitIdentityTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
-
         List<String> scopesForIdToken = new ArrayList<>();
+
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -170,7 +186,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -181,7 +197,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -192,8 +208,11 @@ public class MakeImplicitIdentityTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
-
         List<String> scopesForIdToken = new ArrayList<>();
+
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -205,7 +224,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -216,7 +235,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -226,8 +245,11 @@ public class MakeImplicitIdentityTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
-
         List<String> scopesForIdToken = new ArrayList<>();
+
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -240,7 +262,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -254,7 +276,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test
@@ -265,6 +287,9 @@ public class MakeImplicitIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
 
         List<String> scopesForIdToken = new ArrayList<>();
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -275,7 +300,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -289,7 +314,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenReturn(expected);
 
-        String actual = subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        String actual = subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
 
         assertThat(actual, is(expected));
     }
@@ -302,10 +327,14 @@ public class MakeImplicitIdentityTokenTest {
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         List<String> scopesForIdToken = new ArrayList<>();
 
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = KeyNotFoundException.class)
@@ -317,18 +346,22 @@ public class MakeImplicitIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
 
         List<String> scopesForIdToken = new ArrayList<>();
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
+
         IdToken idToken = new IdToken();
 
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -340,6 +373,9 @@ public class MakeImplicitIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
 
         List<String> scopesForIdToken = new ArrayList<>();
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -348,7 +384,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -359,7 +395,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -371,6 +407,9 @@ public class MakeImplicitIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
 
         List<String> scopesForIdToken = new ArrayList<>();
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -379,7 +418,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -390,7 +429,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -402,6 +441,9 @@ public class MakeImplicitIdentityTokenTest {
         Profile profile = FixtureFactory.makeProfile(resourceOwner);
 
         List<String> scopesForIdToken = new ArrayList<>();
+        List<String> audience = new ArrayList<>();
+        audience.add(UUID.randomUUID().toString());
+        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -411,7 +453,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -425,6 +467,6 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.makeIdentityOnly(nonce, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
     }
 }

@@ -78,7 +78,8 @@ public class RequestOpenIdAuthCodeTest {
     public void testRun() throws Exception {
 
         // parameter to pass into method in test
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams("CODE");
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, "CODE");
 
         // response from mockValidateParams.
         OpenIdAuthRequest authRequest = makeOpenIdAuthRequest(input);
