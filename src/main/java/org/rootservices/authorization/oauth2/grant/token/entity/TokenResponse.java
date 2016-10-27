@@ -1,5 +1,8 @@
 package org.rootservices.authorization.oauth2.grant.token.entity;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * Created by tommackenzie on 6/3/15.
  *
@@ -11,6 +14,7 @@ public class TokenResponse {
     private Long expiresIn;
     private TokenType tokenType;
     private Extension extension;
+    private TokenClaims tokenClaims;
 
     public TokenResponse(){}
 
@@ -52,5 +56,13 @@ public class TokenResponse {
 
     public void setExtension(Extension extension) {
         this.extension = extension;
+    }
+
+    public TokenClaims getTokenClaims() {
+        return tokenClaims;
+    }
+
+    public void setTokenClaims(TokenClaims tokenClaims) {
+        this.tokenClaims = tokenClaims;
     }
 }

@@ -42,6 +42,8 @@ public class TokenMapperTest {
         String accessToken = "accessToken";
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         subject.insert(token);
+
+        assertThat(token.getCreatedAt(), is(notNullValue()));
     }
 
     @Test

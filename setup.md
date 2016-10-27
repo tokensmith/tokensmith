@@ -6,7 +6,7 @@ Environment Variables
    export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
    export AUTH_DB_USER="postgres";
    export AUTH_DB_PASSWORD="";
-   export AUTH_DB_DRIVER="org.postgresql.Driver";
+   export ISSUER="https://sso.rootservices.org"
    ```
  - Run the command, `source ~/.profile`
 

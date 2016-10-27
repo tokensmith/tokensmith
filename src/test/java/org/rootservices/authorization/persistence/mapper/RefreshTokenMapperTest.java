@@ -118,7 +118,7 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.getTokenId(), is(refreshToken.getTokenId()));
         assertThat(actual.getAccessToken(), is(refreshToken.getAccessToken()));
-        assertThat(actual.getExpiresAt(), is(refreshToken.getExpiresAt()));
+        assertThat(actual.getExpiresAt().toEpochSecond(), is(refreshToken.getExpiresAt().toEpochSecond()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 
@@ -159,7 +159,7 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.getTokenId(), is(refreshToken.getTokenId()));
         assertThat(actual.getAccessToken(), is(refreshToken.getAccessToken()));
-        assertThat(actual.getExpiresAt(), is(refreshToken.getExpiresAt()));
+        assertThat(actual.getExpiresAt().toEpochSecond(), is(refreshToken.getExpiresAt().toEpochSecond()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getToken(), is(notNullValue()));

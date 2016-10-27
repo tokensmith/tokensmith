@@ -10,6 +10,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -18,6 +19,7 @@ import org.rootservices.authorization.persistence.exceptions.DuplicateRecordExce
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,7 +68,9 @@ public class IssueTokenCodeGrantTest {
                 mockResourceOwnerTokenRepository,
                 mockTokenScopeRepository,
                 mockAuthCodeRepository,
-                mockClientTokenRepository
+                mockClientTokenRepository,
+                new TokenResponseBuilder(),
+                "https://sso.rootservices.org"
         );
     }
 
@@ -79,6 +83,8 @@ public class IssueTokenCodeGrantTest {
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+
         when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
@@ -97,6 +103,16 @@ public class IssueTokenCodeGrantTest {
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
+
+        assertThat(actual.getTokenClaims(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getIssuer(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(actual.getTokenClaims().getAudience(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getAudience().size(), is(1));
+        assertThat(actual.getTokenClaims().getAudience().get(0), is(clientId.toString()));
+        assertThat(actual.getTokenClaims().getIssuedAt(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getExpirationTime(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
 
         // should insert a token
         verify(mockTokenRepository).insert(token);

@@ -1,5 +1,6 @@
 package org.rootservices.authorization.openId.identity;
 
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -67,7 +68,7 @@ public class MakeImplicitIdentityToken {
      * @throws KeyNotFoundException
      * @throws IdTokenException
      */
-    public String makeForAccessToken(String plainTextAccessToken, String nonce, UUID resourceOwnerId, List<String> scopesForIdToken) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    public String makeForAccessToken(String plainTextAccessToken, String nonce, TokenClaims tokenClaims, UUID resourceOwnerId, List<String> scopesForIdToken) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
@@ -77,7 +78,7 @@ public class MakeImplicitIdentityToken {
         }
 
         String accessTokenHash = makeAccessTokenHash.makeEncodedHash(plainTextAccessToken);
-        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, scopesForIdToken, profile);
+        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, tokenClaims, scopesForIdToken, profile);
 
         RSAPrivateKey key = null;
         try {
@@ -104,7 +105,7 @@ public class MakeImplicitIdentityToken {
      * @throws KeyNotFoundException
      * @throws IdTokenException
      */
-    public String makeIdentityOnly(String nonce, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    public String makeIdentityOnly(String nonce, TokenClaims tokenClaim, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
@@ -113,7 +114,7 @@ public class MakeImplicitIdentityToken {
             throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
 
-        IdToken idToken = idTokenFactory.make(nonce, scopes, profile);
+        IdToken idToken = idTokenFactory.make(nonce, tokenClaim, scopes, profile);
 
         RSAPrivateKey key = null;
         try {
