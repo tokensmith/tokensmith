@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
-import org.rootservices.authorization.openId.identity.exception.IdTokenException;
-import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
-import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
-import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
+import org.rootservices.authorization.openId.identity.exception.*;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
@@ -117,8 +114,8 @@ public class MakeCodeGrantIdentityTokenTest {
 
     }
 
-    @Test(expected = AccessRequestNotFoundException.class)
-    public void makeShouldThrowAccessRequestNotFoundException() throws Exception {
+    @Test(expected = RotNotFoundException.class)
+    public void makeShouldThrowRotNotFoundException() throws Exception {
         TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
