@@ -4,8 +4,8 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
-import org.rootservices.authorization.openId.identity.exception.AccessRequestNotFoundException;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
+import org.rootservices.authorization.openId.identity.exception.RotNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.Profile;
@@ -55,7 +55,7 @@ public class MakeCodeGrantIdentityToken {
         this.idTokenFactory = idTokenFactory;
     }
 
-    public String make(String accessToken, TokenClaims tokenClaims) throws AccessRequestNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
+    public String make(String accessToken, TokenClaims tokenClaims) throws RotNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
 
         String hashedAccessToken = hashText.run(accessToken);
 
@@ -63,7 +63,7 @@ public class MakeCodeGrantIdentityToken {
         try {
             resourceOwnerToken = resourceOwnerTokenRepository.getByAccessToken(hashedAccessToken);
         } catch (RecordNotFoundException e) {
-            throw new AccessRequestNotFoundException("Could not find resource owner", e);
+            throw new RotNotFoundException("Could not find resource owner token", e);
         }
 
         RSAPrivateKey key = null;
