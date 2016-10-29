@@ -12,7 +12,8 @@ import org.rootservices.authorization.persistence.exceptions.DuplicateRecordExce
 import org.rootservices.authorization.persistence.repository.AuthCodeRepository;
 import org.rootservices.authorization.security.RandomString;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -44,7 +45,7 @@ public class InsertAuthCodeWithRetryTest {
         when(mockAuthCodeFactory.makeAuthCode(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
 
         String actual = subject.run(accessRequest, 1);
-        assertThat(actual).isEqualTo(authorizationCode);
+        assertThat(actual, is(authorizationCode));
         verify(mockAuthCodeRepository).insert(authCode);
     }
 
@@ -61,7 +62,7 @@ public class InsertAuthCodeWithRetryTest {
         .doNothing().when(mockAuthCodeRepository).insert(authCode);
 
         String actual = subject.run(accessRequest, 1);
-        assertThat(actual).isEqualTo(authorizationCode);
+        assertThat(actual, is(authorizationCode));
 
         verify(mockAuthCodeRepository, times(2)).insert(authCode);
     }

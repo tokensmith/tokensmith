@@ -8,8 +8,6 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
 
 /**
  * Created by tommackenzie on 3/1/15.

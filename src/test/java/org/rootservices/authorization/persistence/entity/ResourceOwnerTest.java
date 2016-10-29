@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Created by tommackenzie on 9/22/14.
  */
@@ -23,7 +25,7 @@ public class ResourceOwnerTest {
         UUID uuid = UUID.randomUUID();
         subject.setId(uuid);
 
-        assertThat(subject.getId()).isEqualTo(uuid);
+        assertThat(subject.getId(), is(uuid));
     }
 
     @Test
@@ -31,7 +33,7 @@ public class ResourceOwnerTest {
         String email = "test@rootservices.com";
         subject.setEmail(email);
 
-        assertThat(subject.getEmail()).isEqualTo(email);
+        assertThat(subject.getEmail(), is(email));
     }
 
     @Test
@@ -39,7 +41,7 @@ public class ResourceOwnerTest {
         String password = "plainTextPassword";
         subject.setPassword(password.getBytes());
 
-        assertThat(subject.getPassword()).isEqualTo(password.getBytes());
+        assertThat(subject.getPassword(), is(password.getBytes()));
     }
 
     @Test
@@ -49,9 +51,9 @@ public class ResourceOwnerTest {
         String password = "plainTextPassword";
         subject = new ResourceOwner(uuid, email, password.getBytes());
 
-        assertThat(subject.getId()).isEqualTo(uuid);
-        assertThat(subject.getEmail()).isEqualTo(email);
-        assertThat(subject.getPassword()).isEqualTo(password.getBytes());
+        assertThat(subject.getId(), is(uuid));
+        assertThat(subject.getEmail(), is(email));
+        assertThat(subject.getPassword(), is(password.getBytes()));
     }
 
 }

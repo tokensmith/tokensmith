@@ -11,7 +11,8 @@ import org.mockito.Mock;
 
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -45,7 +46,7 @@ public class ResourceOwnerRepositoryImplTest {
 
         when(mockMapper.getById(expectedAuthUser.getId())).thenReturn(expectedAuthUser);
         ResourceOwner actualAuthUser = subject.getById(expectedAuthUser.getId());
-        assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
+        assertThat(actualAuthUser, is(expectedAuthUser));
     }
 
     @Test(expected= RecordNotFoundException.class)
@@ -69,7 +70,7 @@ public class ResourceOwnerRepositoryImplTest {
         ResourceOwner actualAuthUser = subject.getByEmail(
                 expectedAuthUser.getEmail()
         );
-        assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
+        assertThat(actualAuthUser, is(expectedAuthUser));
     }
 
     @Test(expected= RecordNotFoundException.class)
@@ -89,7 +90,7 @@ public class ResourceOwnerRepositoryImplTest {
         when(mockMapper.getByAccessToken(accessToken)).thenReturn(expectedAuthUser);
 
         ResourceOwner actualAuthUser = subject.getByAccessToken(accessToken);
-        assertThat(actualAuthUser).isEqualTo(expectedAuthUser);
+        assertThat(actualAuthUser, is(expectedAuthUser));
     }
 
     @Test

@@ -10,8 +10,8 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 1/31/15.
@@ -36,7 +36,7 @@ public class RequiredParamImplTest {
         List<String> items = makeItems();
 
         boolean actual = subject.run(items);
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual, is(true));
     }
 
     @Test(expected=ParamIsNullError.class)

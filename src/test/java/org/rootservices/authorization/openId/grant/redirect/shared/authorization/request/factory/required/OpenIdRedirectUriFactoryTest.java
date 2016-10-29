@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,7 +53,7 @@ public class OpenIdRedirectUriFactoryTest {
         when(mockUrlValidator.isValid(items.get(0))).thenReturn(true);
 
         URI actual = subject.makeRedirectUri(items);
-        assertThat(actual.toString()).isEqualTo(items.get(0));
+        assertThat(actual.toString(), is(items.get(0)));
     }
 
     @Test
@@ -66,8 +68,8 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_EMPTY_VALUE.getCode());
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_EMPTY_VALUE.getCode()));
         }
     }
 
@@ -85,8 +87,8 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM.getCode()));
         }
     }
 
@@ -101,8 +103,8 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getCause() instanceof NoItemsError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_EMPTY_LIST.getCode());
+            assertThat(e.getCause(), instanceOf(NoItemsError.class));
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_EMPTY_LIST.getCode()));
         }
     }
 
@@ -117,8 +119,8 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getCause() instanceof ParamIsNullError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_NULL.getCode());
+            assertThat(e.getCause(), instanceOf(ParamIsNullError.class));
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_NULL.getCode()));
         }
     }
 
@@ -135,7 +137,7 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_DATA_TYPE.getCode());
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_DATA_TYPE.getCode()));
         }
     }
 

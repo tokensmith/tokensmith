@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 
 /**
  * Created by tommackenzie on 5/12/15.
@@ -41,10 +44,10 @@ public class ScopeMapperTest {
         names.add(scopeName);
         List<Scope> scopes = subject.findByNames(names);
 
-        assertThat(scopes.size()).isEqualTo(1);
-        assertThat(scopes.get(0).getId()).isNotNull();
-        assertThat(scopes.get(0).getName()).isEqualTo(scopeName);
-        assertThat(scopes.get(0).getCreatedAt()).isNotNull();
+        assertThat(scopes.size(), is(1));
+        assertThat(scopes.get(0).getId(), is(notNullValue()));
+        assertThat(scopes.get(0).getName(), is(scopeName));
+        assertThat(scopes.get(0).getCreatedAt(), is(notNullValue()));
     }
 
     @Test
@@ -55,8 +58,8 @@ public class ScopeMapperTest {
 
         Scope actual = subject.findByName(scopeName);
 
-        assertThat(actual.getId()).isNotNull();
-        assertThat(actual.getName()).isEqualTo(scopeName);
-        assertThat(actual.getCreatedAt()).isNotNull();
+        assertThat(actual.getId(), is(notNullValue()));
+        assertThat(actual.getName(), is(scopeName));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 }
