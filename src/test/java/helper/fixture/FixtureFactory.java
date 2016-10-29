@@ -168,6 +168,7 @@ public class FixtureFactory {
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
         ro.setPassword(hashedPassword.getBytes());
+        ro.setEmailVerified(false);
 
         return ro;
     }
@@ -190,6 +191,7 @@ public class FixtureFactory {
         profile.setLocale(Optional.empty());
         profile.setPhoneNumber(Optional.empty());
         profile.setPhoneNumberVerified(false);
+
 
         return profile;
     }
