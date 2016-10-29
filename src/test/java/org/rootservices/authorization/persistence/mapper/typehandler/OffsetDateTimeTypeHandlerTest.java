@@ -9,10 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -87,12 +87,12 @@ public class OffsetDateTimeTypeHandlerTest {
         when(resultSet.getString(columnName)).thenReturn(timeStamp);
 
         OffsetDateTime actual = subject.getResult(resultSet, columnName);
-        assertThat(actual.getYear()).isEqualTo(2015);
-        assertThat(actual.getMonthValue()).isEqualTo(5);
-        assertThat(actual.getDayOfMonth()).isEqualTo(14);
-        assertThat(actual.getHour()).isEqualTo(11);
-        assertThat(actual.getMinute()).isEqualTo(58);
-        assertThat(actual.getSecond()).isEqualTo(22);
-        assertThat(actual.getOffset()).isEqualTo(offset);
+        assertThat(actual.getYear(), is(2015));
+        assertThat(actual.getMonthValue(), is(5));
+        assertThat(actual.getDayOfMonth(), is(14));
+        assertThat(actual.getHour(), is(11));
+        assertThat(actual.getMinute(), is(58));
+        assertThat(actual.getSecond(), is(22));
+        assertThat(actual.getOffset(), is(offset));
     }
 }

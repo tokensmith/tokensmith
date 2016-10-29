@@ -12,7 +12,9 @@ import org.rootservices.authorization.security.HashTextStaticSalt;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,8 +46,8 @@ public class AuthCodeFactoryTest {
         AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerId, clientUUID);
         AuthCode actual = subject.makeAuthCode(ar, randomString, secondsToExpire);
 
-        assertThat(actual.getId()).isNotNull();
-        assertThat(actual.getCode()).isEqualTo(hashedRandomString.getBytes());
-        assertThat(actual.getAccessRequest()).isEqualTo(ar);
+        assertThat(actual.getId(), is(notNullValue()));
+        assertThat(actual.getCode(), is(hashedRandomString.getBytes()));
+        assertThat(actual.getAccessRequest(), is(ar));
     }
 }

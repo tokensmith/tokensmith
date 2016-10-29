@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,7 +46,7 @@ public class ScopesFactoryTest {
         when(mockOptionalParam.run(items)).thenReturn(true);
 
         List<String> actual = subject.makeScopes(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -55,7 +57,7 @@ public class ScopesFactoryTest {
         when(mockOptionalParam.run(items)).thenReturn(true);
 
         List<String> actual = subject.makeScopes(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class ScopesFactoryTest {
         when(mockOptionalParam.run(items)).thenReturn(true);
 
         List<String> actual = subject.makeScopes(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -81,8 +83,8 @@ public class ScopesFactoryTest {
             subject.makeScopes(items);
             fail("ScopesException was expected.");
         } catch (ScopesException e) {
-            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_EMPTY_VALUE.getCode());
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCode(), is(ErrorCode.SCOPES_EMPTY_VALUE.getCode()));
         }
 
     }
@@ -100,8 +102,8 @@ public class ScopesFactoryTest {
             subject.makeScopes(items);
             fail("ScopesException was expected.");
         } catch (ScopesException e) {
-            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCode(), is(ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode()));
         }
     }
 }
