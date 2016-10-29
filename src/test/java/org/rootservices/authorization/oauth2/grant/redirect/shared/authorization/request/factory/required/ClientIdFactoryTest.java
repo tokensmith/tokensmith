@@ -74,7 +74,7 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_VALUE.getCode());
         }
     }
@@ -93,7 +93,7 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM.getCode());
         }
     }
@@ -109,7 +109,7 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
+            assertThat(e.getCause() instanceof NoItemsError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_LIST.getCode());
         }
     }
@@ -125,7 +125,7 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
+            assertThat(e.getCause() instanceof ParamIsNullError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_NULL.getCode());
         }
     }

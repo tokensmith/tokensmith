@@ -26,7 +26,6 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.RandomString;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -174,7 +173,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getCode(), is(ErrorCode.PROFILE_NOT_FOUND.getCode()));
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
-        assertThat(expected.getDomainCause(), instanceOf(ProfileNotFoundException.class));
+        assertThat(expected.getCause(), instanceOf(ProfileNotFoundException.class));
 
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
@@ -233,7 +232,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getCode(), is(ErrorCode.SIGN_KEY_NOT_FOUND.getCode()));
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
-        assertThat(expected.getDomainCause(), instanceOf(KeyNotFoundException.class));
+        assertThat(expected.getCause(), instanceOf(KeyNotFoundException.class));
 
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
@@ -292,7 +291,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(expected.getCode(), is(ErrorCode.JWT_ENCODING_ERROR.getCode()));
         assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
         assertThat(expected.getState(), is(request.getState()));
-        assertThat(expected.getDomainCause(), instanceOf(IdTokenException.class));
+        assertThat(expected.getCause(), instanceOf(IdTokenException.class));
 
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));

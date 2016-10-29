@@ -5,7 +5,6 @@ package org.rootservices.authorization.persistence.exceptions;
  * Created by tommackenzie on 10/11/14.
  */
 public class RecordNotFoundException extends Exception {
-    private Throwable domainCause;
 
     public RecordNotFoundException() {}
 
@@ -13,16 +12,11 @@ public class RecordNotFoundException extends Exception {
         super(message);
     }
 
-    public RecordNotFoundException(String message, Throwable domainCause) {
-        super(message);
-        this.domainCause = domainCause;
+    public RecordNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void setDomainCause(Throwable domainCause) {
-        this.domainCause = domainCause;
-    }
-
-    public Throwable getDomainCause() {
-        return domainCause;
+    public Throwable getCause() {
+        return super.getCause();
     }
 }

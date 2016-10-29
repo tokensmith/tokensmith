@@ -66,7 +66,7 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_EMPTY_VALUE.getCode());
         }
     }
@@ -85,7 +85,7 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM.getCode());
         }
     }
@@ -101,7 +101,7 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getDomainCause() instanceof NoItemsError).isEqualTo(true);
+            assertThat(e.getCause() instanceof NoItemsError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_EMPTY_LIST.getCode());
         }
     }
@@ -117,7 +117,7 @@ public class OpenIdRedirectUriFactoryTest {
             subject.makeRedirectUri(items);
             fail("RedirectUriException was expected.");
         } catch (RedirectUriException e) {
-            assertThat(e.getDomainCause() instanceof ParamIsNullError).isEqualTo(true);
+            assertThat(e.getCause() instanceof ParamIsNullError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_NULL.getCode());
         }
     }

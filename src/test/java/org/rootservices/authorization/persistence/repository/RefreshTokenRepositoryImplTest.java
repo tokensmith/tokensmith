@@ -14,7 +14,6 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -71,7 +70,7 @@ public class RefreshTokenRepositoryImplTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomainCause(), is(dke));
+        assertThat(actual.getCause(), is(dke));
     }
 
     @Test
