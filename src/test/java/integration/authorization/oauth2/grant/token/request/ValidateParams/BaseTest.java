@@ -52,7 +52,7 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_RESOURCE_OWNER);
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
@@ -65,7 +65,7 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_RESOURCE_OWNER);
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
@@ -78,7 +78,7 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_CLIENT);
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
             assertThat(e.getCode(), is(expectedErrorCode));
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getDescription(), is(expectedDescription));
@@ -94,7 +94,7 @@ public abstract class BaseTest {
             validateParamsTokenResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail(NO_EXCEPTION_EXPECTED_INFORM_CLIENT);
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(expectedErrorCode));
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getDescription(), is(expectedDescription));

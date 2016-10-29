@@ -81,7 +81,7 @@ public class StateFactoryTest {
             subject.makeState(items);
             fail("StateException was expected.");
         } catch (StateException e) {
-            assertThat(e.getDomainCause() instanceof EmptyValueError).isEqualTo(true);
+            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_EMPTY_VALUE.getCode());
         }
     }
@@ -99,7 +99,7 @@ public class StateFactoryTest {
             subject.makeState(items);
             fail("StateException was expected.");
         } catch (StateException e) {
-            assertThat(e.getDomainCause() instanceof MoreThanOneItemError).isEqualTo(true);
+            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
             assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode());
         }
     }

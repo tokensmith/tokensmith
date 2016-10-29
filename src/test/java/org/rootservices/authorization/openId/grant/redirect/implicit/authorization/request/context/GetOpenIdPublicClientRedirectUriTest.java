@@ -62,7 +62,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getDomainCause() instanceof RecordNotFoundException, is(true));
+            assertThat(e.getCause() instanceof RecordNotFoundException, is(true));
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
         }
     }
@@ -83,7 +83,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getDomainCause() instanceof ResponseTypeException, is(true));
+            assertThat(e.getCause() instanceof ResponseTypeException, is(true));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }

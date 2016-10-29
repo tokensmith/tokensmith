@@ -13,9 +13,7 @@ import org.rootservices.authorization.oauth2.grant.password.factory.TokenInputPa
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.token.exception.UnknownKeyException;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.token.exception.InvalidValueException;
 import org.rootservices.authorization.oauth2.grant.token.exception.MissingKeyException;
 import org.rootservices.authorization.persistence.entity.*;
@@ -172,7 +170,7 @@ public class RequestTokenPasswordGrantTest {
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
         assertThat(actual.getDescription(), is("foo is a unknown key"));
-        assertThat(actual.getDomainCause(), is(uke));
+        assertThat(actual.getCause(), is(uke));
     }
 
     @Test
@@ -208,7 +206,7 @@ public class RequestTokenPasswordGrantTest {
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getCode(), is(ErrorCode.SCOPES_EMPTY_VALUE.getCode()));
         assertThat(actual.getDescription(), is("scope is invalid"));
-        assertThat(actual.getDomainCause(), is(ive));
+        assertThat(actual.getCause(), is(ive));
     }
 
     @Test
@@ -242,7 +240,7 @@ public class RequestTokenPasswordGrantTest {
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
         assertThat(actual.getDescription(), is("password is a required field"));
-        assertThat(actual.getDomainCause(), is(mke));
+        assertThat(actual.getCause(), is(mke));
     }
 
 

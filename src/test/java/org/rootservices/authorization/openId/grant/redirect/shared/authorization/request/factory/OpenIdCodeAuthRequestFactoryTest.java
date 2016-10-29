@@ -156,7 +156,7 @@ public class OpenIdCodeAuthRequestFactoryTest {
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -185,7 +185,7 @@ public class OpenIdCodeAuthRequestFactoryTest {
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -217,7 +217,7 @@ public class OpenIdCodeAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
         }
     }
@@ -250,7 +250,7 @@ public class OpenIdCodeAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
         }
     }
@@ -285,7 +285,7 @@ public class OpenIdCodeAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
         }
     }
