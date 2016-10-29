@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.ClientMapper;
 
@@ -13,7 +12,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,6 +51,6 @@ public class ClientRepositoryImplTest {
         Client expectedClient = clientBuilder();
         when(mockMapper.getById(expectedClient.getId())).thenReturn(expectedClient);
         Client actualClient = subject.getById(expectedClient.getId());
-        assertThat(actualClient).isEqualTo(expectedClient);
+        assertThat(actualClient, is(expectedClient));
     }
 }

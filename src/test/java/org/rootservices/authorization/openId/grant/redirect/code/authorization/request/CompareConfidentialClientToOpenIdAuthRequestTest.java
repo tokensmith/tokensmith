@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
@@ -65,7 +64,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         ).thenReturn(confidentialClient);
 
         boolean isValid = subject.run(openIdAuthRequest);
-        assertThat(isValid).isTrue();
+        assertThat(isValid, is(true));
     }
 
     @Test
@@ -91,7 +90,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
             subject.run(openIdAuthRequest);
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_NOT_FOUND.getCode());
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -124,9 +123,9 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         } catch (InformResourceOwnerException e) {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode());
-            assertTrue(e.getError().equals("unauthorized_client"));
-            assertTrue(e.getRedirectURI().equals(client.getRedirectURI()));
+            assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode()));
+            assertThat(e.getError(), is("unauthorized_client"));
+            assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
         }
     }
 
@@ -157,7 +156,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
             subject.run(openIdAuthRequest);
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.REDIRECT_URI_MISMATCH.getCode());
+            assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -192,9 +191,9 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         } catch (InformResourceOwnerException e) {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.SCOPES_NOT_SUPPORTED.getCode());
-            assertTrue(e.getError().equals("invalid_scope"));
-            assertTrue(e.getRedirectURI().equals(client.getRedirectURI()));
+            assertThat(e.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
+            assertThat(e.getError(), is("invalid_scope"));
+            assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
         }
     }
 }

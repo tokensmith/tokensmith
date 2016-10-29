@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 
 public class AuthRequestTest {
 
@@ -25,7 +27,7 @@ public class AuthRequestTest {
         UUID uuid = UUID.randomUUID();
         subject.setClientId(uuid);
 
-        assertThat(subject.getClientId()).isEqualTo(uuid);
+        assertThat(subject.getClientId(), is(uuid));
     }
 
     @Test
@@ -33,7 +35,7 @@ public class AuthRequestTest {
         Optional<URI> redirectUri = Optional.ofNullable(new URI("https://rootservices.org"));
         subject.setRedirectURI(redirectUri);
 
-        assertThat(subject.getRedirectURI()).isEqualTo(redirectUri);
+        assertThat(subject.getRedirectURI(), is(redirectUri));
     }
 
     @Test
@@ -43,6 +45,6 @@ public class AuthRequestTest {
 
         subject.setScopes(scopes);
 
-        assertThat(subject.getScopes()).isEqualTo(scopes);
+        assertThat(subject.getScopes(), is(scopes));
     }
 }

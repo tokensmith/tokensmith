@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -71,20 +73,20 @@ public class IssueAuthCodeTest {
 
         String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames);
 
-        assertThat(actual).isEqualTo("randomString");
+        assertThat(actual, is("randomString"));
 
         verify(mockAccessRequestRepository).insert(ARCaptor.capture());
         verify(mockAccessRequestScopesRepository).insert(ARSCaptor.capture());
 
         // check access request assigned correct values.
-        assertThat(ARCaptor.getValue().getId()).isNotNull();
-        assertThat(ARCaptor.getValue().getRedirectURI()).isEqualTo(redirectURI);
-        assertThat(ARCaptor.getValue().getClientId()).isEqualTo(clientUUID);
+        assertThat(ARCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(ARCaptor.getValue().getRedirectURI(), is(redirectURI));
+        assertThat(ARCaptor.getValue().getClientId(), is(clientUUID));
 
         // check that access request scope assigned correct values.
-        assertThat(ARSCaptor.getValue().getId()).isNotNull();
-        assertThat(ARSCaptor.getValue().getAccessRequestId()).isEqualTo(ARCaptor.getValue().getId());
-        assertThat(ARSCaptor.getValue().getScope().getId()).isEqualTo(scope.getId());
+        assertThat(ARSCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(ARSCaptor.getValue().getAccessRequestId(), is(ARCaptor.getValue().getId()));
+        assertThat(ARSCaptor.getValue().getScope().getId(), is(scope.getId()));
 
     }
 }

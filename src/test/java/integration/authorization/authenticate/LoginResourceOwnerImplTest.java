@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+
 
 /**
  * Created by tommackenzie on 4/13/15.
@@ -40,7 +44,7 @@ public class LoginResourceOwnerImplTest {
             ro.getEmail(), "password"
         );
 
-        assertThat(actual.getId()).isEqualTo(ro.getId());
+        assertThat(actual.getId(), is(ro.getId()));
     }
 
     @Test
@@ -52,11 +56,11 @@ public class LoginResourceOwnerImplTest {
                 "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
             );
         } catch (UnauthorizedException e) {
-            assertThat(e.getCause()).isInstanceOf(RecordNotFoundException.class);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.RESOURCE_OWNER_NOT_FOUND.getCode());
+            assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));
+            assertThat(e.getCode(), is(ErrorCode.RESOURCE_OWNER_NOT_FOUND.getCode()));
         }
 
-        assertThat(actual).isNull();
+        assertThat(actual, is(nullValue()));
     }
 
     @Test
@@ -70,11 +74,11 @@ public class LoginResourceOwnerImplTest {
                  ro.getEmail(), "wrong-password"
             );
         } catch (UnauthorizedException e) {
-            assertThat(e.getCause()).isNull();
-            assertThat(e.getCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getCode());
+            assertThat(e.getCause(), is(nullValue()));
+            assertThat(e.getCode(), is(ErrorCode.PASSWORD_MISMATCH.getCode()));
         }
 
-        assertThat(actual).isNull();
+        assertThat(actual, is(nullValue()));
     }
 
 }
