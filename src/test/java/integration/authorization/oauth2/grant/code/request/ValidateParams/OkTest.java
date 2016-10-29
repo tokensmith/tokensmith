@@ -10,11 +10,10 @@ import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 
 public class OkTest extends BaseTest {
@@ -32,12 +31,12 @@ public class OkTest extends BaseTest {
 
         AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId()).isEqualTo(c.getId());
-        assertThat(actual.getResponseTypes().size()).isEqualTo(1);
-        assertThat(actual.getResponseTypes().get(0)).isEqualTo(c.getResponseTypes().get(0).getName());
-        assertThat(actual.getRedirectURI().isPresent()).isFalse();
-        assertThat(actual.getScopes()).isEmpty();
-        assertThat(actual.getState().isPresent()).isFalse();
+        assertThat(actual.getClientId(), is(c.getId()));
+        assertThat(actual.getResponseTypes().size(),is(1));
+        assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
+        assertThat(actual.getRedirectURI().isPresent(), is(false));
+        assertThat(actual.getScopes().isEmpty(), is(true));
+        assertThat(actual.getState().isPresent(), is(false));
     }
 
     @Test
@@ -57,15 +56,15 @@ public class OkTest extends BaseTest {
 
         AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
 
-        assertThat(actual.getClientId()).isEqualTo(c.getId());
-        assertThat(actual.getResponseTypes().size()).isEqualTo(1);
-        assertThat(actual.getResponseTypes().get(0)).isEqualTo(c.getResponseTypes().get(0).getName());
-        assertThat(actual.getRedirectURI().isPresent()).isTrue();
-        assertThat(actual.getRedirectURI().get()).isEqualTo(c.getRedirectURI());
-        assertThat(actual.getScopes()).isNotNull();
-        assertThat(actual.getScopes().size()).isEqualTo(1);
-        assertThat(actual.getScopes().get(0)).isEqualTo("profile");
-        assertThat(actual.getState().isPresent()).isTrue();
-        assertThat(actual.getState().get()).isEqualTo("some-state");
+        assertThat(actual.getClientId(), is(c.getId()));
+        assertThat(actual.getResponseTypes().size(), is(1));
+        assertThat(actual.getResponseTypes().get(0), is(c.getResponseTypes().get(0).getName()));
+        assertThat(actual.getRedirectURI().isPresent(), is(true));
+        assertThat(actual.getRedirectURI().get(), is(c.getRedirectURI()));
+        assertThat(actual.getScopes(), is(notNullValue()));
+        assertThat(actual.getScopes().size(), is(1));
+        assertThat(actual.getScopes().get(0), is("profile"));
+        assertThat(actual.getState().isPresent(), is(true));
+        assertThat(actual.getState().get(), is("some-state"));
     }
 }

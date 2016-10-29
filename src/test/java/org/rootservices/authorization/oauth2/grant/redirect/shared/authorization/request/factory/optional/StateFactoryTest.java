@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,7 +46,7 @@ public class StateFactoryTest {
 
         when(mockOptionalParam.run(items)).thenReturn(true);
         Optional<String> actual = subject.makeState(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -55,7 +57,7 @@ public class StateFactoryTest {
 
         when(mockOptionalParam.run(items)).thenReturn(true);
         Optional<String> actual = subject.makeState(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class StateFactoryTest {
 
         when(mockOptionalParam.run(items)).thenReturn(true);
         Optional<String> actual = subject.makeState(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -81,8 +83,8 @@ public class StateFactoryTest {
             subject.makeState(items);
             fail("StateException was expected.");
         } catch (StateException e) {
-            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_EMPTY_VALUE.getCode());
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCode(), is(ErrorCode.STATE_EMPTY_VALUE.getCode()));
         }
     }
 
@@ -99,8 +101,8 @@ public class StateFactoryTest {
             subject.makeState(items);
             fail("StateException was expected.");
         } catch (StateException e) {
-            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));;
+            assertThat(e.getCode(), is(ErrorCode.STATE_MORE_THAN_ONE_ITEM.getCode()));
         }
     }
 }

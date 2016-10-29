@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 
@@ -43,7 +45,7 @@ public class ClientIdFactoryTest {
         when(mockRequiredParam.run(items)).thenReturn(true);
 
         UUID actual = subject.makeClientId(items);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -58,7 +60,7 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_DATA_TYPE.getCode());
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_ID_DATA_TYPE.getCode()));
         }
     }
 
@@ -74,8 +76,8 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getCause() instanceof EmptyValueError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_VALUE.getCode());
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_ID_EMPTY_VALUE.getCode()));
         }
     }
 
@@ -93,8 +95,8 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getCause() instanceof MoreThanOneItemError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM.getCode());
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM.getCode()));
         }
     }
 
@@ -109,8 +111,8 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getCause() instanceof NoItemsError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_EMPTY_LIST.getCode());
+            assertThat(e.getCause(), instanceOf(NoItemsError.class));
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_ID_EMPTY_LIST.getCode()));
         }
     }
 
@@ -125,8 +127,8 @@ public class ClientIdFactoryTest {
             subject.makeClientId(items);
             fail("ClientIdException was expected.");
         } catch (ClientIdException e) {
-            assertThat(e.getCause() instanceof ParamIsNullError).isEqualTo(true);
-            assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_ID_NULL.getCode());
+            assertThat(e.getCause() instanceof ParamIsNullError, is(true));
+            assertThat(e.getCode(), is(ErrorCode.CLIENT_ID_NULL.getCode()));
         }
     }
 }

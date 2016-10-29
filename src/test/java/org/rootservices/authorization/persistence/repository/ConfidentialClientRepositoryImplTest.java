@@ -13,7 +13,9 @@ import org.rootservices.authorization.persistence.mapper.ConfidentialClientMappe
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,7 +52,7 @@ public class ConfidentialClientRepositoryImplTest {
         when(mockConfidentialClientMapper.getByClientId(confidentialClient.getClient().getId())).thenReturn(confidentialClient);
 
         ConfidentialClient actual = subject.getByClientId(confidentialClient.getClient().getId());
-        assertThat(actual).isEqualTo(confidentialClient);
+        assertThat(actual, is(confidentialClient));
     }
 
     @Test(expected = RecordNotFoundException.class)

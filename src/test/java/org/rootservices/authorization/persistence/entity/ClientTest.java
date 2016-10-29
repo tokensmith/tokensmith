@@ -9,7 +9,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 
 /**
  * Created by tommackenzie on 11/15/14.
@@ -28,7 +30,7 @@ public class ClientTest {
         UUID uuid = UUID.randomUUID();
         subject.setId(uuid);
 
-        assertThat(subject.getId()).isEqualTo(uuid);
+        assertThat(subject.getId(), is(uuid));
     }
 
     @Test
@@ -36,7 +38,7 @@ public class ClientTest {
         List<ResponseType> rts = FixtureFactory.makeResponseTypes();
         subject.setResponseTypes(rts);
 
-        assertThat(subject.getResponseTypes()).isEqualTo(rts);
+        assertThat(subject.getResponseTypes(), is(rts));
     }
 
     @Test
@@ -44,6 +46,6 @@ public class ClientTest {
         URI redirectUri = new URI("https://rootservices.org");
         subject.setRedirectURI(redirectUri);
 
-        assertThat(subject.getRedirectURI()).isEqualTo(redirectUri);
+        assertThat(subject.getRedirectURI(), is(redirectUri));
     }
 }
