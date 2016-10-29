@@ -105,7 +105,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("refresh_token is a required field"));
-        assertThat(actual.getDomainCause(), is(instanceOf(MissingKeyException.class)));
+        assertThat(actual.getCause(), is(instanceOf(MissingKeyException.class)));
         assertThat(actual.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
     }
 
@@ -142,7 +142,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("scope is invalid"));
-        assertThat(actual.getDomainCause(), is(instanceOf(InvalidValueException.class)));
+        assertThat(actual.getCause(), is(instanceOf(InvalidValueException.class)));
         assertThat(actual.getCode(), is(ErrorCode.EMPTY_VALUE.getCode()));
     }
 
@@ -179,7 +179,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("foo is a unknown key"));
-        assertThat(actual.getDomainCause(), is(instanceOf(UnknownKeyException.class)));
+        assertThat(actual.getCause(), is(instanceOf(UnknownKeyException.class)));
         assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
     }
 
@@ -215,7 +215,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("refresh token was not found"));
         assertThat(actual.getError(), is("invalid_grant"));
         assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
-        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCause(), is(instanceOf(RecordNotFoundException.class)));
         assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
@@ -252,7 +252,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_scope"));
         assertThat(actual.getDescription(), is("scope is not available for this client"));
-        assertThat(actual.getDomainCause(), is(nullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
         assertThat(actual.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
     }
 
@@ -293,7 +293,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("refresh token was not found"));
         assertThat(actual.getError(), is("invalid_grant"));
         assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
-        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCause(), is(instanceOf(RecordNotFoundException.class)));
         assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
@@ -328,7 +328,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("no resource owner was associated to refresh token"));
         assertThat(actual.getError(), is("invalid_grant"));
         assertThat(actual.getDescription(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getDescription()));
-        assertThat(actual.getDomainCause(), is(instanceOf(RecordNotFoundException.class)));
+        assertThat(actual.getCause(), is(instanceOf(RecordNotFoundException.class)));
         assertThat(actual.getCode(), is(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getCode()));
     }
 
@@ -368,7 +368,7 @@ public class RequestTokenRefreshGrantTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_grant"));
         assertThat(actual.getDescription(), is("the refresh token was already used"));
-        assertThat(actual.getDomainCause(), instanceOf(CompromisedRefreshTokenException.class));
+        assertThat(actual.getCause(), instanceOf(CompromisedRefreshTokenException.class));
         assertThat(actual.getCode(), is(ErrorCode.COMPROMISED_REFRESH_TOKEN.getCode()));
     }
 }

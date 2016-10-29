@@ -59,7 +59,7 @@ public class JsonToMapTranslatorTest {
 
         assertThat(expected, is(notNullValue()));
         assertThat(expected.getKey(), is("grant_type"));
-        assertThat(expected.getDomainCause(), instanceOf(JsonParseException.class));
+        assertThat(expected.getCause(), instanceOf(JsonParseException.class));
         assertThat(expected.getCode(), is(ErrorCode.DUPLICATE_KEY.getCode()));
         assertThat(expected.getMessage(), is(ErrorCode.DUPLICATE_KEY.getDescription()));
 
@@ -81,7 +81,7 @@ public class JsonToMapTranslatorTest {
         }
 
         assertThat(expected, is(notNullValue()));
-        assertThat(expected.getDomainCause(), instanceOf(IOException.class));
+        assertThat(expected.getCause(), instanceOf(IOException.class));
         assertThat(expected.getCode(), is(ErrorCode.INVALID_PAYLOAD.getCode()));
         assertThat(expected.getMessage(), is(ErrorCode.INVALID_PAYLOAD.getDescription()));
     }
@@ -102,7 +102,7 @@ public class JsonToMapTranslatorTest {
         }
 
         assertThat(expected, is(notNullValue()));
-        assertThat(expected.getDomainCause(), instanceOf(IOException.class));
+        assertThat(expected.getCause(), instanceOf(IOException.class));
         assertThat(expected.getCode(), is(ErrorCode.INVALID_PAYLOAD.getCode()));
         assertThat(expected.getMessage(), is(ErrorCode.INVALID_PAYLOAD.getDescription()));
     }

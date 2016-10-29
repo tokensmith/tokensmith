@@ -2,7 +2,6 @@ package integration.authorization.authenticate;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
@@ -91,7 +90,7 @@ public class LoginConfidentialClientTest {
         try {
             actual = subject.run(UUID.randomUUID(), "password");
         } catch (UnauthorizedException e) {
-            assertThat(e.getDomainCause(), instanceOf(RecordNotFoundException.class));
+            assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
         }
         assertThat(actual, is(nullValue()));

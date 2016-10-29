@@ -54,6 +54,6 @@ public class TokenChainRepositoryImplTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMessage(), is("Could not insert token chain - refresh token was already used"));
-        assertThat(actual.getDomainCause(), instanceOf(DuplicateKeyException.class));
+        assertThat(actual.getCause(), instanceOf(DuplicateKeyException.class));
     }
 }

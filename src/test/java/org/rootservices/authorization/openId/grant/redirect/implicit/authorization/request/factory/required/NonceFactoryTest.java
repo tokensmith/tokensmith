@@ -61,7 +61,7 @@ public class NonceFactoryTest {
             subject.makeNonce(items);
             fail("NonceException was expected.");
         } catch (NonceException e) {
-            assertThat(e.getDomainCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
             assertThat(e.getCode(), is(ErrorCode.NONCE_EMPTY_VALUE.getCode()));
         }
     }
@@ -80,7 +80,7 @@ public class NonceFactoryTest {
             subject.makeNonce(items);
             fail("NonceException was expected.");
         } catch (NonceException e) {
-            assertThat(e.getDomainCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));
             assertThat(e.getCode(), is(ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getCode()));
         }
     }
@@ -96,7 +96,7 @@ public class NonceFactoryTest {
             subject.makeNonce(items);
             fail("NonceException was expected.");
         } catch (NonceException e) {
-            assertThat(e.getDomainCause(), instanceOf(NoItemsError.class));
+            assertThat(e.getCause(), instanceOf(NoItemsError.class));
             assertThat(e.getCode(), is(ErrorCode.NONCE_EMPTY_LIST.getCode()));
         }
     }
@@ -112,7 +112,7 @@ public class NonceFactoryTest {
             subject.makeNonce(items);
             fail("NonceException was expected.");
         } catch (NonceException e) {
-            assertThat(e.getDomainCause(), instanceOf(ParamIsNullError.class));
+            assertThat(e.getCause(), instanceOf(ParamIsNullError.class));
             assertThat(e.getCode(), is(ErrorCode.NONCE_NULL.getCode()));
         }
     }

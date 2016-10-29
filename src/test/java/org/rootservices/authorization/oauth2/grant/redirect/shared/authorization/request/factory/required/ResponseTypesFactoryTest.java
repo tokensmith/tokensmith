@@ -66,7 +66,7 @@ public class ResponseTypesFactoryTest {
             subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode()));
             assertThat(e.getError(), is("unsupported_response_type"));
         }
@@ -82,7 +82,7 @@ public class ResponseTypesFactoryTest {
             subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause(), instanceOf(EmptyValueError.class));
+            assertThat(e.getCause(), instanceOf(EmptyValueError.class));
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_EMPTY_VALUE.getCode()));
             assertThat(e.getError(), is("invalid_request"));
         }
@@ -100,7 +100,7 @@ public class ResponseTypesFactoryTest {
             subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause(), instanceOf(MoreThanOneItemError.class));
+            assertThat(e.getCause(), instanceOf(MoreThanOneItemError.class));
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_MORE_THAN_ONE_ITEM.getCode()));
             assertThat(e.getError(), is("invalid_request"));
         }
@@ -116,7 +116,7 @@ public class ResponseTypesFactoryTest {
             subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause(), instanceOf(NoItemsError.class));
+            assertThat(e.getCause(), instanceOf(NoItemsError.class));
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_EMPTY_LIST.getCode()));
             assertThat(e.getError(), is("invalid_request"));
         }
@@ -131,7 +131,7 @@ public class ResponseTypesFactoryTest {
             subject.makeResponseTypes(items);
             fail("ResponseTypeException was expected.");
         } catch (ResponseTypeException e) {
-            assertThat(e.getDomainCause(), instanceOf(ParamIsNullError.class));
+            assertThat(e.getCause(), instanceOf(ParamIsNullError.class));
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_NULL.getCode()));
             assertThat(e.getError(), is("invalid_request"));
         }
