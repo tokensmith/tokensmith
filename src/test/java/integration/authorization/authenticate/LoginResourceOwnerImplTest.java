@@ -52,7 +52,7 @@ public class LoginResourceOwnerImplTest {
                 "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
             );
         } catch (UnauthorizedException e) {
-            assertThat(e.getDomainCause()).isInstanceOf(RecordNotFoundException.class);
+            assertThat(e.getCause()).isInstanceOf(RecordNotFoundException.class);
             assertThat(e.getCode()).isEqualTo(ErrorCode.RESOURCE_OWNER_NOT_FOUND.getCode());
         }
 
@@ -70,7 +70,7 @@ public class LoginResourceOwnerImplTest {
                  ro.getEmail(), "wrong-password"
             );
         } catch (UnauthorizedException e) {
-            assertThat(e.getDomainCause()).isNull();
+            assertThat(e.getCause()).isNull();
             assertThat(e.getCode()).isEqualTo(ErrorCode.PASSWORD_MISMATCH.getCode());
         }
 

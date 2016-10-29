@@ -190,7 +190,7 @@ public class RequestAccessTokenTest {
         } catch (InformResourceOwnerException e) {
             verify(mockClientRepository, times(1)).getById(authRequest.getClientId());
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
-            assertThat(e.getDomainCause(), instanceOf(RecordNotFoundException.class));
+            assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));
             assertThat(e.getMessage(), is(ErrorCode.CLIENT_NOT_FOUND.getDescription()));
         }
     }

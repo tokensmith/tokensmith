@@ -49,7 +49,7 @@ public abstract class BaseTest {
             validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail("InformClientException was thrown. Expected, InformResourceOwnerException");
@@ -62,7 +62,7 @@ public abstract class BaseTest {
             validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(expectedErrorCode));
 
         } catch(InformClientException e) {
@@ -76,7 +76,7 @@ public abstract class BaseTest {
             validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
             assertThat(e.getCode(), is(expectedErrorCode));
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getRedirectURI(), is(expectedRedirect));
@@ -92,7 +92,7 @@ public abstract class BaseTest {
             validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
-            assertThat(e.getDomainCause(), is(nullValue()));
+            assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(expectedErrorCode));
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getRedirectURI(), is(expectedRedirect));

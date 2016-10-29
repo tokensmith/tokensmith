@@ -73,7 +73,7 @@ public class AuthResponseFactoryTest {
             );
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode()).isEqualTo(ErrorCode.CLIENT_NOT_FOUND.getCode());
-            assertThat(e.getDomainCause()).isInstanceOf(RecordNotFoundException.class);
+            assertThat(e.getCause()).isInstanceOf(RecordNotFoundException.class);
         }
 
         assertThat(actual).isNull();

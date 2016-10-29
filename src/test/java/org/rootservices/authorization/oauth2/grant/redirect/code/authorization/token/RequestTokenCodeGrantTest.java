@@ -216,7 +216,7 @@ public class RequestTokenCodeGrantTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCode(), is(ErrorCode.MISSING_KEY.getCode()));
-        assertThat(((MissingKeyException) actual.getDomainCause()).getKey(), is("code"));
+        assertThat(((MissingKeyException) actual.getCause()).getKey(), is("code"));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("code is a required field"));
     }
@@ -305,7 +305,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
         assertThat(actual.getDescription(), is("redirect_uri is invalid"));
         assertThat(actual.getError(), is("invalid_request"));
-        assertThat(actual.getDomainCause(), instanceOf(InvalidValueException.class));
+        assertThat(actual.getCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
@@ -338,7 +338,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getCode(), is(ErrorCode.REDIRECT_URI_INVALID.getCode()));
         assertThat(actual.getDescription(), is("redirect_uri is invalid"));
         assertThat(actual.getError(), is("invalid_request"));
-        assertThat(actual.getDomainCause(), instanceOf(InvalidValueException.class));
+        assertThat(actual.getCause(), instanceOf(InvalidValueException.class));
     }
 
     @Test
@@ -370,7 +370,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getCode(), is(ErrorCode.UNKNOWN_KEY.getCode()));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("unknown_key is a unknown key"));
-        assertThat(actual.getDomainCause(), instanceOf(UnknownKeyException.class));
+        assertThat(actual.getCause(), instanceOf(UnknownKeyException.class));
     }
 
     /**
@@ -427,7 +427,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCode(), is(ErrorCode.COMPROMISED_AUTH_CODE.getCode()));
         assertThat(actual.getError(), is("invalid_grant"));
-        assertThat(actual.getDomainCause(), instanceOf(CompromisedCodeException.class));
+        assertThat(actual.getCause(), instanceOf(CompromisedCodeException.class));
 
         // make sure the first token was revoked.
         Token token2 = tokenRepository.getByAuthCodeId(authCode.getId());

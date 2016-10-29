@@ -53,7 +53,7 @@ public class GetConfidentialClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), instanceOf(RecordNotFoundException.class));
+            assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
         }
     }
@@ -74,7 +74,7 @@ public class GetConfidentialClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getDomainCause(), instanceOf(ResponseTypeException.class));
+            assertThat(e.getCause(), instanceOf(ResponseTypeException.class));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }

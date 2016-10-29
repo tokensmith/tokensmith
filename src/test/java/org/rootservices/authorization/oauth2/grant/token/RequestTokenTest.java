@@ -90,7 +90,7 @@ public class RequestTokenTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getMessage(), is(ErrorCode.CLIENT_USERNAME_DATA_TYPE.getDescription()));
         assertThat(actual.getCode(), is(ErrorCode.CLIENT_USERNAME_DATA_TYPE.getCode()));
-        assertThat(actual.getDomainCause(), instanceOf(IllegalArgumentException.class));
+        assertThat(actual.getCause(), instanceOf(IllegalArgumentException.class));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class RequestTokenTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomainCause(), is(dke));
+        assertThat(actual.getCause(), is(dke));
         assertThat(actual.getCode(), is(dke.getCode()));
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
@@ -148,7 +148,7 @@ public class RequestTokenTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomainCause(), is(ipe));
+        assertThat(actual.getCause(), is(ipe));
         assertThat(actual.getCode(), is(ipe.getCode()));
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
@@ -177,7 +177,7 @@ public class RequestTokenTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getDomainCause(), is(nullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
         assertThat(actual.getCode(), is(ErrorCode.GRANT_TYPE_INVALID.getCode()));
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));

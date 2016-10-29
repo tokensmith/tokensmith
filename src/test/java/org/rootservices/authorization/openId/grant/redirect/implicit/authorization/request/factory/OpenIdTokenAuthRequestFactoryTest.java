@@ -169,7 +169,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -200,7 +200,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformResourceOwnerException");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
         } catch (InformClientException e) {
             fail("Expected InformResourceOwnerException");
         }
@@ -234,7 +234,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
             assertThat(e.getDescription(), is(exception.getDescription()));
             assertThat(e.getError(), is(exception.getError()));
@@ -271,7 +271,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
             assertThat(e.getDescription(), is(exception.getDescription()));
             assertThat(e.getError(), is(exception.getError()));
@@ -310,7 +310,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
             assertThat(e.getDescription(), is(exception.getDescription()));
             assertThat(e.getError(), is(exception.getError()));
@@ -348,7 +348,7 @@ public class OpenIdTokenAuthRequestFactoryTest {
             fail("Expected InformClientException");
         } catch (InformClientException e) {
             assertThat(e.getCode(), is(exception.getCode()));
-            assertThat(e.getDomainCause(), is(exception));
+            assertThat(e.getCause(), is(exception));
             assertThat(e.getRedirectURI(), is(expectedRedirectUri));
             assertThat(e.getDescription(), is(exception.getDescription()));
             assertThat(e.getError(), is(exception.getError()));
