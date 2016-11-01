@@ -6,7 +6,7 @@
 
 <configuration>
     <settings>
-        <setting name="logImpl" value="LOG4J"/>
+        <setting name="logImpl" value="LOG4J2"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
