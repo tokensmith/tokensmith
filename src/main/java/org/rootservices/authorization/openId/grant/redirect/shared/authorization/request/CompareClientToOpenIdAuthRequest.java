@@ -39,7 +39,8 @@ public abstract class CompareClientToOpenIdAuthRequest {
                     "unauthorized_client",
                     ErrorCode.RESPONSE_TYPE_MISMATCH.getDescription(),
                     ErrorCode.RESPONSE_TYPE_MISMATCH.getCode(),
-                    client.getRedirectURI()
+                    client.getRedirectURI(),
+                    authRequest.getState()
             );
         }
 
@@ -49,7 +50,8 @@ public abstract class CompareClientToOpenIdAuthRequest {
                     "invalid_scope",
                     ErrorCode.SCOPES_NOT_SUPPORTED.getDescription(),
                     ErrorCode.SCOPES_NOT_SUPPORTED.getCode(),
-                    client.getRedirectURI()
+                    client.getRedirectURI(),
+                    authRequest.getState()
             );
         }
 

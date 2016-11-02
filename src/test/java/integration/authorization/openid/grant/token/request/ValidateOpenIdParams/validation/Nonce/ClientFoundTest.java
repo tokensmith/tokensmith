@@ -22,7 +22,7 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.NONCE_NULL.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.NONCE_EMPTY_LIST.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -70,6 +70,6 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.NONCE_EMPTY_VALUE.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 }

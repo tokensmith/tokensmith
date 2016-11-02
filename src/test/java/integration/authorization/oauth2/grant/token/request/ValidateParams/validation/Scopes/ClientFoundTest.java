@@ -23,14 +23,14 @@ public class ClientFoundTest extends BaseTest {
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }
-
+        p.states.add("some-state");
         p.scopes.add("invalid-scope");
 
         int expectedErrorCode = ErrorCode.SCOPES_NOT_SUPPORTED.getCode();
         String expectedDescription = ErrorCode.SCOPES_NOT_SUPPORTED.getDescription();
         String expectedError = "invalid_scope";
 
-        runExpectInformClientExceptionNoCause(p, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithStateNoCause(p, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ClientFoundTest extends BaseTest {
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }
-
+        p.states.add("some-state");
         p.scopes.add("profile");
         p.scopes.add("profile");
 
@@ -51,7 +51,7 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ClientFoundTest extends BaseTest {
         for(ResponseType responseType: c.getResponseTypes()) {
             p.responseTypes.add(responseType.getName());
         }
-
+        p.states.add("some-state");
         p.scopes.add("");
 
         Exception expectedDomainCause = new ScopesException();
@@ -71,6 +71,6 @@ public class ClientFoundTest extends BaseTest {
         String expectedDescription = ErrorCode.SCOPES_EMPTY_VALUE.getDescription();
         String expectedError = "invalid_scope";
 
-        runExpectInformClientException(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 }

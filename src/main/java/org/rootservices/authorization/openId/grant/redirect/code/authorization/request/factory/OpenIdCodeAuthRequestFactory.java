@@ -56,21 +56,22 @@ public class OpenIdCodeAuthRequestFactory {
         openIdAuthRequest.setClientId(clientId);
         openIdAuthRequest.setRedirectURI(redirectUri);
 
+        Optional<String> cleanedState = Optional.empty();
         List<String> cleanedResponseType;
         List<String> cleanedScopes;
-        Optional<String> cleanedStates;
+
         try {
+            cleanedState = stateFactory.makeState(states);
             cleanedResponseType = responseTypesFactory.makeResponseTypes(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
-            cleanedStates = stateFactory.makeState(states);
         } catch (ResponseTypeException |ScopesException | StateException e) {
             getOpenIdConfidentialClientRedirectUri.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, e);
+            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, cleanedState, e);
         }
 
         openIdAuthRequest.setResponseTypes(cleanedResponseType);
         openIdAuthRequest.setScopes(cleanedScopes);
-        openIdAuthRequest.setState(cleanedStates);
+        openIdAuthRequest.setState(cleanedState);
         return openIdAuthRequest;
     }
 }
