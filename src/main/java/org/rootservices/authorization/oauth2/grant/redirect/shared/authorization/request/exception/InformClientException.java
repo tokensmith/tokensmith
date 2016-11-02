@@ -30,11 +30,12 @@ public class InformClientException extends BaseInformException {
         this.redirectURI = redirectURI;
     }
 
-    public InformClientException(String message, String error, String description, int code, URI redirectURI) {
+    public InformClientException(String message, String error, String description, int code, URI redirectURI, Optional<String> state) {
         super(message, code);
         this.error = error;
         this.description = description;
         this.redirectURI = redirectURI;
+        this.state = state;
     }
 
     public InformClientException(String message, int code, URI redirectURI) {

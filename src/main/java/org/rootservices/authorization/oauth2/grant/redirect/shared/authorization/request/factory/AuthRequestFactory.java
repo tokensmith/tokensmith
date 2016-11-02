@@ -56,21 +56,21 @@ public class AuthRequestFactory {
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(redirectUri);
 
+        Optional<String> cleanedState = Optional.empty();
         List<String> cleanedResponseTypes;
         List<String> cleanedScopes;
-        Optional<String> cleanedStates;
         try {
+            cleanedState = stateFactory.makeState(states);
             cleanedResponseTypes = responseTypesFactory.makeResponseTypes(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
-            cleanedStates = stateFactory.makeState(states);
         } catch (ResponseTypeException |ScopesException | StateException e) {
             URI clientRedirectUri = getClientRedirect.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), clientRedirectUri, e);
+            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), clientRedirectUri, cleanedState, e);
         }
 
         authRequest.setResponseTypes(cleanedResponseTypes);
         authRequest.setScopes(cleanedScopes);
-        authRequest.setState(cleanedStates);
+        authRequest.setState(cleanedState);
 
         return authRequest;
     }
