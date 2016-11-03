@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
@@ -112,6 +113,9 @@ public class ComparePublicClientToOpenIdAuthRequestTest {
         scopes.add("openid");
         openIdAuthRequest.setScopes(scopes);
 
+        Optional<String> state = Optional.of("some-state");
+        openIdAuthRequest.setState(state);
+
         when(mockClientRepository.getById(
                 openIdAuthRequest.getClientId())
         ).thenReturn(client);
@@ -125,6 +129,7 @@ public class ComparePublicClientToOpenIdAuthRequestTest {
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode()));
             assertThat(e.getError(), is("unauthorized_client"));
             assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
+            assertThat(e.getState(), is(openIdAuthRequest.getState()));
         }
     }
 
@@ -175,9 +180,13 @@ public class ComparePublicClientToOpenIdAuthRequestTest {
         openIdAuthRequest.setResponseTypes(requestResponseTypes);
 
         openIdAuthRequest.setRedirectURI(client.getRedirectURI());
+
         List<String> scopes = new ArrayList<>();
         scopes.add("invalid-scope");
         openIdAuthRequest.setScopes(scopes);
+
+        Optional<String> state = Optional.of("some-state");
+        openIdAuthRequest.setState(state);
 
         when(mockClientRepository.getById(
                 openIdAuthRequest.getClientId())
@@ -192,6 +201,7 @@ public class ComparePublicClientToOpenIdAuthRequestTest {
             assertThat(e.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
             assertThat(e.getError(), is("invalid_scope"));
             assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
+            assertThat(e.getState(), is(openIdAuthRequest.getState()));
         }
     }
 }

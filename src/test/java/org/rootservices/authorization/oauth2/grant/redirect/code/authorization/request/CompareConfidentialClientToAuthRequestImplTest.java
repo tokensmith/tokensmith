@@ -111,9 +111,13 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         authRequest.getResponseTypes().add("CODE");
 
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
+
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
         authRequest.setScopes(scopes);
+
+        Optional<String> state = Optional.of("some-state");
+        authRequest.setState(state);
 
         when(mockConfidentialClientRepository.getByClientId(
                 authRequest.getClientId())
@@ -128,6 +132,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
             assertThat(e.getCode(), is(ErrorCode.RESPONSE_TYPE_MISMATCH.getCode()));
             assertThat(e.getError(), is("unauthorized_client"));
             assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
+            assertThat(e.getState(), is(authRequest.getState()));
         }
     }
 
@@ -177,9 +182,13 @@ public class CompareConfidentialClientToAuthRequestImplTest {
         }
 
         authRequest.setRedirectURI(Optional.ofNullable(client.getRedirectURI()));
+
         List<String> scopes = new ArrayList<>();
         scopes.add("unsupported-scope");
         authRequest.setScopes(scopes);
+
+        Optional<String> state = Optional.of("some-state");
+        authRequest.setState(state);
 
         when(mockConfidentialClientRepository.getByClientId(
                 authRequest.getClientId())
@@ -194,6 +203,7 @@ public class CompareConfidentialClientToAuthRequestImplTest {
             assertThat(e.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
             assertThat(e.getError(), is("invalid_scope"));
             assertThat(e.getRedirectURI(), is(client.getRedirectURI()));
+            assertThat(e.getState(), is(authRequest.getState()));
         }
     }
 }

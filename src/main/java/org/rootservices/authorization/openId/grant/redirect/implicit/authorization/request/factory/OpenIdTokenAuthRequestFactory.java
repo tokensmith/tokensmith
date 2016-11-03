@@ -57,24 +57,24 @@ public class OpenIdTokenAuthRequestFactory {
         authRequest.setClientId(clientId);
         authRequest.setRedirectURI(redirectUri);
 
+        Optional<String> cleanedState = Optional.empty();
         List<String> cleanedResponseType;
         List<String> cleanedScopes;
-        Optional<String> cleanedStates;
         String nonce;
 
         try {
+            cleanedState = stateFactory.makeState(states);
             cleanedResponseType = responseTypesFactory.makeResponseTypes(responseTypes);
             cleanedScopes = scopesFactory.makeScopes(scopes);
-            cleanedStates = stateFactory.makeState(states);
             nonce = nonceFactory.makeNonce(nonces);
         } catch (ResponseTypeException |ScopesException | StateException | NonceException e) {
             getOpenIdPublicClientRedirectUri.run(clientId, redirectUri, e);
-            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, e);
+            throw new InformClientException("", e.getError(), e.getDescription(), e.getCode(), redirectUri, cleanedState, e);
         }
 
         authRequest.setResponseTypes(cleanedResponseType);
         authRequest.setScopes(cleanedScopes);
-        authRequest.setState(cleanedStates);
+        authRequest.setState(cleanedState);
         authRequest.setNonce(nonce);
         return authRequest;
     }
