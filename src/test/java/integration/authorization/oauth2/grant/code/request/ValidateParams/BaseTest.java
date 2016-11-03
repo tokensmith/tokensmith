@@ -2,6 +2,7 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
 import helper.ValidateParamsAttributes;
 import helper.fixture.persistence.LoadCodeConfidentialClientWithScopes;
+import org.hamcrest.MatcherAssert;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -70,6 +71,24 @@ public abstract class BaseTest {
         }
     }
 
+    public void runExpectInformClientExceptionWithState(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
+
+        try {
+            validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+            fail("expected InformResourceOwnerException to be thrown");
+        } catch (InformClientException e) {
+            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCode(), is(expectedErrorCode));
+            assertThat(e.getError(), is(expectedError));
+            assertThat(e.getRedirectURI(), is(expectedRedirect));
+            assertThat(e.getDescription(), is(expectedDescription));
+            assertThat(e.getState().isPresent(), is(true));
+            MatcherAssert.assertThat(e.getState().get(), is(p.states.get(0)));
+        } catch (InformResourceOwnerException e) {
+            fail("InformResourceOwnerException was thrown. Expected, InformClientException");
+        }
+    }
+
     public void runExpectInformClientException(ValidateParamsAttributes p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
@@ -81,12 +100,13 @@ public abstract class BaseTest {
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getRedirectURI(), is(expectedRedirect));
             assertThat(e.getDescription(), is(expectedDescription));
+            assertThat(e.getState().isPresent(), is(false));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
         }
     }
 
-    public void runExpectInformClientExceptionNoCause(ValidateParamsAttributes p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionWithStateNoCause(ValidateParamsAttributes p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
 
         try {
             validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
@@ -97,6 +117,8 @@ public abstract class BaseTest {
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getRedirectURI(), is(expectedRedirect));
             assertThat(e.getDescription(), is(expectedDescription));
+            assertThat(e.getState().isPresent(), is(true));
+            MatcherAssert.assertThat(e.getState().get(), is(p.states.get(0)));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
         }
