@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.TokenSizeMapper">
+
+    <resultMap id="tokenSize" type="org.rootservices.authorization.persistence.entity.TokenSize">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="access_token_size" property="accessTokenSize" />
+        <result column="authorization_code_size" property="authorizationCodeSize" />
+        <result column="refresh_token_size" property="refreshTokenSize" />
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="get" resultMap="tokenSize">
+        select
+            token_size.id,
+            token_size.access_token_size,
+            token_size.authorization_code_size,
+            token_size.refresh_token_size,
+            token_size.created_at,
+            token_size.updated_at
+        from token_size
+        limit 1
+    </select>
+
+</mapper>
