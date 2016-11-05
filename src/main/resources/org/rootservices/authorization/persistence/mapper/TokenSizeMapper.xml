@@ -25,4 +25,25 @@
         limit 1
     </select>
 
+    <update id="updateAccessTokenSize">
+        update token_size
+        set access_token_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
+    <update id="updateAuthorizationCodeSize">
+        update token_size
+        set authorization_code_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
+    <update id="updateRefreshTokenSize">
+        update token_size
+        set refresh_token_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
 </mapper>
