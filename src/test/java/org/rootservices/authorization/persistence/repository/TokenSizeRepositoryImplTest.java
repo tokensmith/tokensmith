@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.persistence.entity.TokenSize;
-import org.rootservices.authorization.persistence.mapper.TokenSizeMapper;
+import org.rootservices.authorization.persistence.entity.Configuration;
+import org.rootservices.authorization.persistence.mapper.ConfigurationMapper;
 
 import java.util.UUID;
 
@@ -20,23 +20,23 @@ import static org.mockito.Mockito.when;
  * Created by tommackenzie on 11/5/16.
  */
 public class TokenSizeRepositoryImplTest {
-    private TokenSizeRepository subject;
+    private ConfigurationRepository subject;
 
     @Mock
-    private TokenSizeMapper mockTokenSizeMapper;
+    private ConfigurationMapper mockTokenSizeMapper;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new TokenSizeRepositoryImpl(mockTokenSizeMapper);
+        subject = new ConfigurationRepositoryImpl(mockTokenSizeMapper);
     }
 
     @Test
     public void getShouldBeOk() {
-        TokenSize tokenSize = new TokenSize();
+        Configuration tokenSize = new Configuration();
         when(mockTokenSizeMapper.get()).thenReturn(tokenSize);
 
-        TokenSize actual = subject.get();
+        Configuration actual = subject.get();
 
         assertThat(actual, is(notNullValue()));
     }
