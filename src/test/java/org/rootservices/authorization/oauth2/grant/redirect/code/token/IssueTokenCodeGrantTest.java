@@ -55,6 +55,7 @@ public class IssueTokenCodeGrantTest {
     @Mock
     private ClientTokenRepository mockClientTokenRepository;
 
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -89,13 +90,14 @@ public class IssueTokenCodeGrantTest {
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
         String refreshAccessToken = "refresh-token";
-        when(mockRandomString.run()).thenReturn(refreshAccessToken);
+
+        when(mockRandomString.run()).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
         when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
 
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(plainTextToken));
@@ -175,7 +177,7 @@ public class IssueTokenCodeGrantTest {
         when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
 
         String refreshAccessToken = "refresh-access-token";
-        when(mockRandomString.run()).thenReturn(refreshAccessToken);
+        when(mockRandomString.run()).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
         when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
@@ -187,7 +189,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, plainTextToken, accessRequestScopes);
+            subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));

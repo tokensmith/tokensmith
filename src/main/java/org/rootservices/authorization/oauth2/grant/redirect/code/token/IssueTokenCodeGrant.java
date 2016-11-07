@@ -56,7 +56,8 @@ public class IssueTokenCodeGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, String plainTextToken, List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId,  List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
+        String plainTextToken = randomString.run();
         Token token = makeBearerToken.run(plainTextToken);
 
         try {
