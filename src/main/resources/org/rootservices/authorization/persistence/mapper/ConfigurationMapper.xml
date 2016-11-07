@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.rootservices.authorization.persistence.mapper.TokenSizeMapper">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.ConfigurationMapper">
 
-    <resultMap id="tokenSize" type="org.rootservices.authorization.persistence.entity.TokenSize">
+    <resultMap id="configuration" type="org.rootservices.authorization.persistence.entity.Configuration">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="access_token_size" property="accessTokenSize" />
         <result column="authorization_code_size" property="authorizationCodeSize" />
@@ -13,34 +13,34 @@
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
-    <select id="get" resultMap="tokenSize">
+    <select id="get" resultMap="configuration">
         select
-            token_size.id,
-            token_size.access_token_size,
-            token_size.authorization_code_size,
-            token_size.refresh_token_size,
-            token_size.created_at,
-            token_size.updated_at
-        from token_size
+            configuration.id,
+            configuration.access_token_size,
+            configuration.authorization_code_size,
+            configuration.refresh_token_size,
+            configuration.created_at,
+            configuration.updated_at
+        from configuration
         limit 1
     </select>
 
     <update id="updateAccessTokenSize">
-        update token_size
+        update configuration
         set access_token_size = #{size},
         updated_at=now()
         where id=#{id}
     </update>
 
     <update id="updateAuthorizationCodeSize">
-        update token_size
+        update configuration
         set authorization_code_size = #{size},
         updated_at=now()
         where id=#{id}
     </update>
 
     <update id="updateRefreshTokenSize">
-        update token_size
+        update configuration
         set refresh_token_size = #{size},
         updated_at=now()
         where id=#{id}

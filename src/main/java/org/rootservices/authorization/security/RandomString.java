@@ -15,6 +15,8 @@ import java.security.SecureRandom;
 public class RandomString {
 
     private SecureRandom secureRandom = new SecureRandom();
+    private static Integer BASE_32 = 32;
+    private static Integer MAGIC_FIVE = 5;
 
     public RandomString() {}
 
@@ -23,6 +25,10 @@ public class RandomString {
     }
 
     public String run() {
-        return new BigInteger(130, secureRandom).toString(32);
+        return new BigInteger(130, secureRandom).toString(BASE_32);
+    }
+
+    public String run(Integer numChars) {
+        return new BigInteger(numChars * MAGIC_FIVE, secureRandom).toString(BASE_32);
     }
 }

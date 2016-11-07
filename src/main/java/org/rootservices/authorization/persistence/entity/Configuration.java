@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 11/5/16.
  */
-public class TokenSize {
+public class Configuration {
     private UUID id;
     private Integer accessTokenSize;
     private Integer authorizationCodeSize;
