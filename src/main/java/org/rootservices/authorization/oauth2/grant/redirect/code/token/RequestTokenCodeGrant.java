@@ -35,17 +35,15 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private AuthCodeRepository authCodeRepository;
-    private RandomString randomString;
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.authCodeRepository = authCodeRepository;
-        this.randomString = randomString;
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
@@ -69,7 +67,6 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         String hashedCode = hashText.run(input.getCode());
         AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
-        String plainTextToken = randomString.run();
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
         List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
@@ -79,7 +76,6 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
-                    plainTextToken,
                     accessRequestScopes
             );
         } catch (CompromisedCodeException e) {
