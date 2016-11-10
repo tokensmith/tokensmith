@@ -8,6 +8,7 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,23 @@ public class TokenMapperTest {
         subject.insert(token);
 
         assertThat(token.getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void insertDuplicateShouldThrowDuplicateKeyException() throws Exception {
+        String accessToken = "accessToken";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        subject.insert(token);
+
+        DuplicateKeyException actual = null;
+        token.setId(UUID.randomUUID());
+        try {
+            subject.insert(token);
+        } catch(DuplicateKeyException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage().contains("Detail: Key (token)"), is(true));
     }
 
     @Test

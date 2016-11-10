@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 11/5/16.
  */
-public class TokenSizeRepositoryImplTest {
+public class ConfigurationRepositoryImplTest {
     private ConfigurationRepository subject;
 
     @Mock

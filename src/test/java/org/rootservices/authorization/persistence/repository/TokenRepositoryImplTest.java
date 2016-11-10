@@ -5,14 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.postgresql.util.PSQLException;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.TokenMapper;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -41,13 +44,35 @@ public class TokenRepositoryImplTest {
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
-    @Test(expected = DuplicateRecordException.class)
+    @Test
     public void insertDuplicateAuthCode() throws DuplicateRecordException {
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
-        doThrow(org.springframework.dao.DuplicateKeyException.class).when(mockTokenMapper).insert(token);
 
-        subject.insert(token);
+        String msg =
+        "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +
+        "Detail: Key (token)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865497843673249577244476d474b504b4e316e59614378657a466b342e314b69) already exists.\n" +
+        "### The error may involve defaultParameterMap\n" +
+        "### The error occurred while setting parameters\n" +
+        "### SQL: insert into token (id, token, grant_type, expires_at)         values (             ?,             ?,             ?,             ?         )\n" +
+        "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +
+        "Detail: Key (token)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865497843673249577244476d474b504b4e316e59614378657a466b342e314b69) already exists.\n" +
+        "; SQL []; ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +
+        "Detail: Key (token)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865497843673249577244476d474b504b4e316e59614378657a466b342e314b69) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +
+        "Detail: Key (token)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865497843673249577244476d474b504b4e316e59614378657a466b342e314b69) already exists.\"";
+
+        DuplicateKeyException dke = new DuplicateKeyException(msg);
+        doThrow(dke).when(mockTokenMapper).insert(token);
+
+        DuplicateRecordException actual = null;
+        try {
+            subject.insert(token);
+        } catch (DuplicateRecordException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getKey().isPresent(), is(true));
+        assertThat(actual.getKey().get(), is("token"));
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
