@@ -9,7 +9,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by tommackenzie on 5/23/15.
@@ -18,6 +21,9 @@ import java.util.UUID;
 public class TokenRepositoryImpl implements TokenRepository {
     private static String DUPLICATE_RECORD_MSG = "Could not insert token record.";
     private static String RECORD_NOT_FOUND_MSG = "Could not find token record.";
+
+    private Pattern uniqueKeyPattern = Pattern.compile(".*Detail: Key \\((\\w+)\\).*", Pattern.DOTALL);
+
     private TokenMapper tokenMapper;
 
     @Autowired
@@ -30,7 +36,12 @@ public class TokenRepositoryImpl implements TokenRepository {
         try {
             tokenMapper.insert(token);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateRecordException(DUPLICATE_RECORD_MSG, e);
+            Matcher matcher = uniqueKeyPattern.matcher(e.getMessage());
+            Optional<String> key = Optional.empty();
+            if (matcher.matches()) {
+                key = Optional.of(matcher.group(1));
+            }
+            throw new DuplicateRecordException(DUPLICATE_RECORD_MSG, e, key);
         }
     }
 

@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
-public class TokenSizeMapperTest {
+public class ConfigurationMapperTest {
     @Autowired
     private ConfigurationMapper subject;
 
