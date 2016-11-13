@@ -9,6 +9,7 @@ import org.postgresql.util.PSQLException;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.TokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -27,13 +28,15 @@ public class TokenRepositoryImplTest {
 
     @Mock
     private TokenMapper mockTokenMapper;
+    @Mock
+    private DuplicateRecordExceptionFactory mockDuplicateRecordExceptionFactory;
 
     private TokenRepository subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new TokenRepositoryImpl(mockTokenMapper);
+        subject = new TokenRepositoryImpl(mockTokenMapper, mockDuplicateRecordExceptionFactory);
     }
 
     @Test
@@ -45,7 +48,7 @@ public class TokenRepositoryImplTest {
     }
 
     @Test
-    public void insertDuplicateAuthCode() throws DuplicateRecordException {
+    public void insertDuplicateTokenShouldThrowDuplicateRecordException() throws DuplicateRecordException {
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
 
@@ -64,16 +67,16 @@ public class TokenRepositoryImplTest {
         DuplicateKeyException dke = new DuplicateKeyException(msg);
         doThrow(dke).when(mockTokenMapper).insert(token);
 
+        DuplicateRecordException dre = new DuplicateRecordException("message", dke);
+        when(mockDuplicateRecordExceptionFactory.make(dke, "token")).thenReturn(dre);
+
         DuplicateRecordException actual = null;
         try {
             subject.insert(token);
         } catch (DuplicateRecordException e) {
             actual = e;
         }
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getKey().isPresent(), is(true));
-        assertThat(actual.getKey().get(), is("token"));
-        verify(mockTokenMapper, times(1)).insert(token);
+        assertThat(actual, is(dre));
     }
 
     @Test

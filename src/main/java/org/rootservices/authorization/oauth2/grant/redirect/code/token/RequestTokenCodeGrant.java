@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
@@ -47,7 +48,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
-    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException {
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException, ServerException {
 
         // login in a confidential client.
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
@@ -76,10 +77,13 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
-                    accessRequestScopes
+                    accessRequestScopes,
+                    1
             );
         } catch (CompromisedCodeException e) {
             throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();
+        } catch (ServerException e) {
+            throw e;
         }
 
         return tokenResponse;

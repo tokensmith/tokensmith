@@ -1,6 +1,10 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
@@ -25,77 +29,85 @@ import java.util.UUID;
  */
 @Component
 public class IssueTokenCodeGrant {
-    private RandomString randomString;
+
+    private InsertTokenGraph insertTokenGraph;
+
     private MakeBearerToken makeBearerToken;
+    // TODO: figure out how to remove this as a dep. ^
+
     private TokenRepository tokenRepository;
-    private MakeRefreshToken makeRefreshToken;
     private RefreshTokenRepository refreshTokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenScopeRepository tokenScopeRepository;
     private AuthCodeRepository authCodeRepository;
     private ClientTokenRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
-
     private String issuer;
-    private static String OPENID_SCOPE = "openid";
 
-    @Autowired
-    public IssueTokenCodeGrant(RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
-        this.randomString = randomString;
+    public IssueTokenCodeGrant(InsertTokenGraph insertTokenGraph, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+        this.insertTokenGraph = insertTokenGraph;
         this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
-        this.makeRefreshToken = makeRefreshToken;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.tokenScopeRepository = tokenScopeRepository;
         this.authCodeRepository = authCodeRepository;
         this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId,  List<AccessRequestScope> accessRequestScopes) throws CompromisedCodeException {
-        String plainTextToken = randomString.run();
-        Token token = makeBearerToken.run(plainTextToken);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<AccessRequestScope> accessRequestScopes, Integer attempt) throws CompromisedCodeException, ServerException {
 
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(accessRequestScopes);
+        relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
+
+        List<String> audience = new ArrayList<>();
+        audience.add(clientId.toString());
+
+        TokenResponse tr = tokenResponseBuilder
+                .setAccessToken(tokenGraph.getPlainTextAccessToken())
+                .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken())
+                .setTokenType(TokenType.BEARER)
+                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
+                .setExtension(tokenGraph.getExtension())
+                .setIssuer(issuer)
+                .setAudience(audience)
+                .setIssuedAt(OffsetDateTime.now().toEpochSecond())
+                .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
+                .setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond())
+                .build();
+
+        return tr;
+    }
+
+    protected void relateTokenGraphToAuthCode(Token token, UUID authCodeId, UUID resourceOwnerId, UUID clientId) throws CompromisedCodeException {
+        // insert auth_code_token
+        AuthCodeToken authCodeToken = makeAuthCodeToken(token.getId(), authCodeId);
         try {
-            tokenRepository.insert(token);
-        } catch( DuplicateRecordException e) {
-            // TODO: handle this exception
-        }
-
-        String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = makeRefreshToken.run(token, token, refreshAccessToken);
-
-        try {
-            refreshTokenRepository.insert(refreshToken);
-        } catch (DuplicateRecordException e) {
-            // TODO: handle this exception
-        }
-
-        try {
-            AuthCodeToken authCodeToken = new AuthCodeToken();
-            authCodeToken.setId(UUID.randomUUID());
-            authCodeToken.setTokenId(token.getId());
-            authCodeToken.setAuthCodeId(authCodeId);
-
             authCodeTokenRepository.insert(authCodeToken);
         } catch (DuplicateRecordException e) {
-            tokenRepository.revokeByAuthCodeId(authCodeId);
-            authCodeRepository.revokeById(authCodeId);
-            refreshTokenRepository.revokeByAuthCodeId(authCodeId);
-
-            tokenRepository.revokeById(token.getId());
-            refreshTokenRepository.revokeByTokenId(token.getId());
-
-            throw new CompromisedCodeException(
-                    ErrorCode.COMPROMISED_AUTH_CODE.getDescription(),
-                    "invalid_grant", e, ErrorCode.COMPROMISED_AUTH_CODE.getCode()
-            );
+            handleDuplicateAuthCodeToken(e, authCodeId, token.getId());
         }
 
+        // insert resource_owner_token. Associate token with resource owner.
+        ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, token);
+        resourceOwnerTokenRepository.insert(resourceOwnerToken);
+
+        // insert client_token. Associate token with client.
+        ClientToken clientToken = makeClientToken(clientId, token.getId());
+        clientTokenRepository.insert(clientToken);
+    }
+
+    protected AuthCodeToken makeAuthCodeToken(UUID tokenId, UUID authCodeId) {
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setTokenId(tokenId);
+        authCodeToken.setAuthCodeId(authCodeId);
+        return authCodeToken;
+    }
+
+    protected  ResourceOwnerToken makeResourceOwnerToken(UUID resourceOwnerId, Token token) {
         ResourceOwner resourceOwner = new ResourceOwner();
         resourceOwner.setId(resourceOwnerId);
 
@@ -103,47 +115,30 @@ public class IssueTokenCodeGrant {
         resourceOwnerToken.setId(UUID.randomUUID());
         resourceOwnerToken.setResourceOwner(resourceOwner);
         resourceOwnerToken.setToken(token);
+        return resourceOwnerToken;
+    }
 
-        resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
+    protected ClientToken makeClientToken(UUID clientId, UUID tokenId) {
         ClientToken clientToken = new ClientToken();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
-        clientToken.setTokenId(token.getId());
+        clientToken.setTokenId(tokenId);
+        return clientToken;
+    }
 
-        clientTokenRepository.insert(clientToken);
+    protected void handleDuplicateAuthCodeToken(DuplicateRecordException e, UUID authCodeId, UUID tokenId) throws CompromisedCodeException {
+        tokenRepository.revokeByAuthCodeId(authCodeId);
+        authCodeRepository.revokeById(authCodeId);
+        refreshTokenRepository.revokeByAuthCodeId(authCodeId);
 
-        Extension extension = Extension.NONE;
-        for(AccessRequestScope ars: accessRequestScopes) {
-            TokenScope ts = new TokenScope();
-            ts.setId(UUID.randomUUID());
-            ts.setTokenId(token.getId());
-            ts.setScope(ars.getScope());
+        tokenRepository.revokeById(tokenId);
+        refreshTokenRepository.revokeByTokenId(tokenId);
 
-            if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
-                extension = Extension.IDENTITY;
-            }
-
-            tokenScopeRepository.insert(ts);
-        }
-
-        // build the response.
-        List<String> audience = new ArrayList<>();
-        audience.add(clientId.toString());
-
-        TokenResponse tr = tokenResponseBuilder
-                .setAccessToken(plainTextToken)
-                .setRefreshAccessToken(refreshAccessToken)
-                .setTokenType(TokenType.BEARER)
-                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
-                .setExtension(extension)
-                .setIssuer(issuer)
-                .setAudience(audience)
-                .setIssuedAt(OffsetDateTime.now().toEpochSecond())
-                .setExpirationTime(token.getExpiresAt().toEpochSecond())
-                .setAuthTime(token.getCreatedAt().toEpochSecond())
-                .build();
-
-        return tr;
+        throw new CompromisedCodeException(
+            ErrorCode.COMPROMISED_AUTH_CODE.getDescription(),
+            "invalid_grant",
+            e,
+            ErrorCode.COMPROMISED_AUTH_CODE.getCode()
+        );
     }
 }

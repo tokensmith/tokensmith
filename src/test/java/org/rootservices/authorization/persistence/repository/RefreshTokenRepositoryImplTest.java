@@ -9,6 +9,7 @@ import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -27,11 +28,13 @@ public class RefreshTokenRepositoryImplTest {
     private RefreshTokenRepository subject;
     @Mock
     private RefreshTokenMapper mockRefreshTokenMapper;
+    @Mock
+    private DuplicateRecordExceptionFactory mockDuplicateRecordExceptionFactory;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RefreshTokenRepositoryImpl(mockRefreshTokenMapper);
+        subject = new RefreshTokenRepositoryImpl(mockRefreshTokenMapper, mockDuplicateRecordExceptionFactory);
     }
 
     @Test
@@ -62,6 +65,9 @@ public class RefreshTokenRepositoryImplTest {
         DuplicateKeyException dke = new DuplicateKeyException("");
         doThrow(dke).when(mockRefreshTokenMapper).insert(any(RefreshToken.class));
 
+        DuplicateRecordException dre = new DuplicateRecordException("message", dke);
+        when(mockDuplicateRecordExceptionFactory.make(dke, "refresh_token")).thenReturn(dre);
+
         DuplicateRecordException actual = null;
         try {
             subject.insert(refreshToken);
@@ -70,7 +76,7 @@ public class RefreshTokenRepositoryImplTest {
         }
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(dke));
+        assertThat(actual, is(dre));
     }
 
     @Test

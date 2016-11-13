@@ -7,6 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
@@ -18,9 +20,12 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -34,14 +39,13 @@ import static org.mockito.Mockito.verify;
  */
 public class IssueTokenCodeGrantTest {
     private IssueTokenCodeGrant subject;
+
     @Mock
-    private RandomString mockRandomString;
+    private InsertTokenGraph mockInsertTokenGraph;
     @Mock
     private MakeBearerToken mockMakeBearerToken;
     @Mock
     private TokenRepository mockTokenRepository;
-    @Mock
-    private MakeRefreshToken mockMakeRefreshToken;
     @Mock
     private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
@@ -49,25 +53,20 @@ public class IssueTokenCodeGrantTest {
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
-    private TokenScopeRepository mockTokenScopeRepository;
-    @Mock
     private AuthCodeRepository mockAuthCodeRepository;
     @Mock
     private ClientTokenRepository mockClientTokenRepository;
-
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new IssueTokenCodeGrant(
-                mockRandomString,
+                mockInsertTokenGraph,
                 mockMakeBearerToken,
                 mockTokenRepository,
-                mockMakeRefreshToken,
                 mockRefreshTokenRepository,
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
-                mockTokenScopeRepository,
                 mockAuthCodeRepository,
                 mockClientTokenRepository,
                 new TokenResponseBuilder(),
@@ -80,28 +79,19 @@ public class IssueTokenCodeGrantTest {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
-        String plainTextToken = "plain-text-token";
+
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
-        token.setCreatedAt(OffsetDateTime.now());
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
 
-        when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
         when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
 
-        String refreshAccessToken = "refresh-token";
-
-        when(mockRandomString.run()).thenReturn(plainTextToken, refreshAccessToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
-
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAccessToken(), is(plainTextToken));
-        assertThat(actual.getRefreshAccessToken(), is(refreshAccessToken));
+        assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
+        assertThat(actual.getRefreshAccessToken(), is(tokenGraph.getPlainTextRefreshToken()));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -114,13 +104,7 @@ public class IssueTokenCodeGrantTest {
         assertThat(actual.getTokenClaims().getAudience().get(0), is(clientId.toString()));
         assertThat(actual.getTokenClaims().getIssuedAt(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getExpirationTime(), is(notNullValue()));
-        assertThat(actual.getTokenClaims().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
-
-        // should insert a token
-        verify(mockTokenRepository).insert(token);
-
-        // should insert a refresh token.
-        verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
+        assertThat(actual.getTokenClaims().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
 
         // should insert a authCodeToken
         ArgumentCaptor<AuthCodeToken> authCodeTokenCaptor = ArgumentCaptor.forClass(AuthCodeToken.class);
@@ -128,7 +112,7 @@ public class IssueTokenCodeGrantTest {
 
         AuthCodeToken actualACT = authCodeTokenCaptor.getValue();
         assertThat(actualACT.getId(), is(notNullValue()));
-        assertThat(actualACT.getTokenId(), is(token.getId()));
+        assertThat(actualACT.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualACT.getAuthCodeId(), is(authCodeId));
 
         // should insert a resourceOwnerToken
@@ -140,29 +124,16 @@ public class IssueTokenCodeGrantTest {
         assertThat(actualROT.getResourceOwner().getId(), is(resourceOwnerId));
 
         assertThat(actualROT.getId(), is(notNullValue()));
-        assertThat(actualROT.getToken(), is(token));
+        assertThat(actualROT.getToken(), is(tokenGraph.getToken()));
 
         // should insert a client token record.
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
         ClientToken actualCt = clientTokenArgumentCaptor.getValue();
         assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(token.getId()));
+        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualCt.getClientId(), is(clientId));
 
-        // should insert token scopes.
-        ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
-        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
-
-        List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
-
-        assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(0).getScope(), is(accessRequestScopes.get(0).getScope()));
-
-        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(1).getScope(), is(accessRequestScopes.get(1).getScope()));
     }
 
     @Test
@@ -170,18 +141,10 @@ public class IssueTokenCodeGrantTest {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
-        String plainTextToken = "plain-text-token";
         List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
 
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
-        when(mockMakeBearerToken.run("plain-text-token")).thenReturn(token);
-
-        String refreshAccessToken = "refresh-access-token";
-        when(mockRandomString.run()).thenReturn(plainTextToken, refreshAccessToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
-
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
@@ -189,7 +152,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes);
+            subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));
@@ -199,19 +162,13 @@ public class IssueTokenCodeGrantTest {
 
         assertThat(expected, is(notNullValue()));
 
-        // should insert a token
-        verify(mockTokenRepository).insert(token);
-
-        // should insert a refresh token
-        verify(mockRefreshTokenRepository).insert(refreshToken);
-
         // should have attempted to insert a authCodeToken
         ArgumentCaptor<AuthCodeToken> authCodeTokenCaptor = ArgumentCaptor.forClass(AuthCodeToken.class);
         verify(mockAuthCodeTokenRepository).insert(authCodeTokenCaptor.capture());
 
         AuthCodeToken actualACT = authCodeTokenCaptor.getValue();
         assertThat(actualACT.getId(), is(notNullValue()));
-        assertThat(actualACT.getTokenId(), is(token.getId()));
+        assertThat(actualACT.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualACT.getAuthCodeId(), is(authCodeId));
 
         // should have rejected previous tokens.
@@ -220,12 +177,11 @@ public class IssueTokenCodeGrantTest {
         verify(mockRefreshTokenRepository).revokeByAuthCodeId(authCodeId);
 
         // should have rejected tokens just inserted.
-        verify(mockTokenRepository).revokeById(token.getId());
-        verify(mockRefreshTokenRepository).revokeByTokenId(token.getId());
+        verify(mockTokenRepository).revokeById(tokenGraph.getToken().getId());
+        verify(mockRefreshTokenRepository).revokeByTokenId(tokenGraph.getToken().getId());
 
         // should never insert anything else!
         verify(mockResourceOwnerTokenRepository, never()).insert(any(ResourceOwnerToken.class));
         verify(mockClientTokenRepository, never()).insert(any(ClientToken.class));
-        verify(mockTokenScopeRepository, never()).insert(any(TokenScope.class));
     }
 }

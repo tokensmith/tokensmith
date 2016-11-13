@@ -3,6 +3,7 @@ package org.rootservices.authorization.persistence.repository;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.TokenMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -19,16 +20,16 @@ import java.util.regex.Pattern;
  */
 @Component
 public class TokenRepositoryImpl implements TokenRepository {
-    private static String DUPLICATE_RECORD_MSG = "Could not insert token record.";
+    private static String SCHEMA = "token";
     private static String RECORD_NOT_FOUND_MSG = "Could not find token record.";
 
-    private Pattern uniqueKeyPattern = Pattern.compile(".*Detail: Key \\((\\w+)\\).*", Pattern.DOTALL);
-
+    private DuplicateRecordExceptionFactory duplicateRecordExceptionFactory;
     private TokenMapper tokenMapper;
 
     @Autowired
-    public TokenRepositoryImpl(TokenMapper tokenMapper) {
+    public TokenRepositoryImpl(TokenMapper tokenMapper, DuplicateRecordExceptionFactory duplicateRecordExceptionFactory) {
         this.tokenMapper = tokenMapper;
+        this.duplicateRecordExceptionFactory = duplicateRecordExceptionFactory;
     }
 
     @Override
@@ -36,12 +37,7 @@ public class TokenRepositoryImpl implements TokenRepository {
         try {
             tokenMapper.insert(token);
         } catch (DuplicateKeyException e) {
-            Matcher matcher = uniqueKeyPattern.matcher(e.getMessage());
-            Optional<String> key = Optional.empty();
-            if (matcher.matches()) {
-                key = Optional.of(matcher.group(1));
-            }
-            throw new DuplicateRecordException(DUPLICATE_RECORD_MSG, e, key);
+            throw duplicateRecordExceptionFactory.make(e, SCHEMA);
         }
     }
 
