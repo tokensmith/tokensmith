@@ -9,11 +9,12 @@
         <result column="access_token_size" property="accessTokenSize" />
         <result column="authorization_code_size" property="authorizationCodeSize" />
         <result column="refresh_token_size" property="refreshTokenSize" />
-        <result column="accessTokenCodeSecondsToExpiry" property="access_token_code_seconds_to_expiry" />
-        <result column="accessTokenTokenSecondsToExpiry" property="access_token_token_seconds_to_expiry" />
-        <result column="accessTokenPasswordSecondsToExpiry" property="access_token_password_seconds_to_expiry" />
-        <result column="accessTokenRefreshSecondsToExpiry" property="access_token_refresh_seconds_to_expiry" />
-        <result column="accessTokenClientSecondsToExpiry" property="access_token_client_seconds_to_expiry" />
+        <result column="access_token_code_seconds_to_expiry" property="accessTokenCodeSecondsToExpiry" />
+        <result column="access_token_token_seconds_to_expiry" property="accessTokenTokenSecondsToExpiry" />
+        <result column="access_token_password_seconds_to_expiry" property="accessTokenPasswordSecondsToExpiry"  />
+        <result column="access_token_refresh_seconds_to_expiry" property="accessTokenRefreshSecondsToExpiry" />
+        <result column="access_token_client_seconds_to_expiry" property="accessTokenClientSecondsToExpiry"  />
+        <result column="refresh_token_seconds_to_expiry" property="refreshTokenSecondsToExpiry"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
@@ -29,6 +30,7 @@
             configuration.access_token_password_seconds_to_expiry,
             configuration.access_token_refresh_seconds_to_expiry,
             configuration.access_token_client_seconds_to_expiry,
+            configuration.refresh_token_seconds_to_expiry,
             configuration.created_at,
             configuration.updated_at
         from configuration

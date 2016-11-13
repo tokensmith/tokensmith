@@ -69,7 +69,7 @@ public class IssueTokenCodeGrant {
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
                 .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken())
                 .setTokenType(TokenType.BEARER)
-                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
+                .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())
                 .setIssuer(issuer)
                 .setAudience(audience)

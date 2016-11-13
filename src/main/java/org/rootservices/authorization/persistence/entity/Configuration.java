@@ -16,6 +16,7 @@ public class Configuration {
     private Long accessTokenPasswordSecondsToExpiry;
     private Long accessTokenRefreshSecondsToExpiry;
     private Long accessTokenClientSecondsToExpiry;
+    private Long refreshTokenSecondsToExpiry;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
@@ -89,6 +90,14 @@ public class Configuration {
 
     public void setAccessTokenClientSecondsToExpiry(Long accessTokenClientSecondsToExpiry) {
         this.accessTokenClientSecondsToExpiry = accessTokenClientSecondsToExpiry;
+    }
+
+    public Long getRefreshTokenSecondsToExpiry() {
+        return refreshTokenSecondsToExpiry;
+    }
+
+    public void setRefreshTokenSecondsToExpiry(Long refreshTokenSecondsToExpiry) {
+        this.refreshTokenSecondsToExpiry = refreshTokenSecondsToExpiry;
     }
 
     public OffsetDateTime getCreatedAt() {

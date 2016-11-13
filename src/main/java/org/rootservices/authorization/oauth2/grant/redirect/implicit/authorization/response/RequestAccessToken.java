@@ -64,7 +64,7 @@ public class RequestAccessToken {
             redirectUri = fetchClientRedirectURI(authRequest.getClientId());
         }
 
-        return translate(redirectUri, accessToken, issueTokenImplicitGrant.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
+        return translate(redirectUri, accessToken, token.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
     }
 
     private URI fetchClientRedirectURI(UUID clientId) throws InformResourceOwnerException {

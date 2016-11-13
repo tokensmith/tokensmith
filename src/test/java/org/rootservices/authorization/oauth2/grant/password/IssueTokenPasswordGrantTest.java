@@ -85,11 +85,10 @@ public class IssueTokenPasswordGrantTest {
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
         ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
 
-        when(mockMakeBearerToken.run(accessToken)).thenReturn(token);
-        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
+        when(mockMakeBearerToken.run(accessToken, 3600L)).thenReturn(token);
 
         when(mockRandomString.run()).thenReturn(refreshAccessToken);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
         TokenResponse actual = subject.run(clientId, resourceOwner.getId(), accessToken, scopes);
 

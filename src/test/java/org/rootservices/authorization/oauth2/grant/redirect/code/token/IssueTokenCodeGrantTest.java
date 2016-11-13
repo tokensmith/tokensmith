@@ -85,8 +85,6 @@ public class IssueTokenCodeGrantTest {
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
         when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
 
-        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
-
         TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
 
         assertThat(actual, is(notNullValue()));

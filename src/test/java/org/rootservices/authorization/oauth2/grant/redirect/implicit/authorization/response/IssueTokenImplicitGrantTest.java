@@ -57,7 +57,7 @@ public class IssueTokenImplicitGrantTest {
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
 
-        when(mockMakeBearerToken.run(plainTextAccessToken)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextAccessToken, 3600L)).thenReturn(token);
 
         List<Scope> scopes = FixtureFactory.makeScopes();
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
