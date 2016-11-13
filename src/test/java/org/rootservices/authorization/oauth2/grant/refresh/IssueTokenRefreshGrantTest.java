@@ -96,10 +96,9 @@ public class IssueTokenRefreshGrantTest {
 
         when(mockRandomString.run()).thenReturn(accessToken, refreshAccessToken);
 
-        when(mockMakeBearerToken.run(accessToken)).thenReturn(token);
-        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
+        when(mockMakeBearerToken.run(accessToken, 3600L)).thenReturn(token);
 
-        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
         TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
 
@@ -169,7 +168,7 @@ public class IssueTokenRefreshGrantTest {
 
         when(mockRandomString.run()).thenReturn(accessToken, refreshAccessToken);
 
-        when(mockMakeBearerToken.run(accessToken)).thenReturn(token);
+        when(mockMakeBearerToken.run(accessToken, 3600L)).thenReturn(token);
 
         DuplicateRecordException dre = new DuplicateRecordException("", null);
         doThrow(dre).when(mockTokenChainRepository).insert(any(TokenChain.class));

@@ -79,15 +79,14 @@ public class InsertTokenGraphTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken)).thenReturn(token);
-        when(mockMakeBearerToken.getSecondsToExpiration()).thenReturn(3600L);
+        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
         TokenGraph actual = subject.insertTokenGraph(ars);
 
@@ -130,12 +129,12 @@ public class InsertTokenGraphTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        List<AccessRequestScope> ars = new ArrayList<>();
+        Long secondsToExpiration = 3600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -152,12 +151,12 @@ public class InsertTokenGraphTest {
         Integer attempt = 2;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        List<AccessRequestScope> ars = new ArrayList<>();
+        Long secondsToExpiration = 3600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -174,12 +173,12 @@ public class InsertTokenGraphTest {
         Integer attempt = 2;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        List<AccessRequestScope> ars = new ArrayList<>();
+        Long secondsToExpiration = 3600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -189,7 +188,6 @@ public class InsertTokenGraphTest {
         assertThat(actual.getCause(), is(dre));
     }
 
-    // REFRESH
     @Test
     public void handleDuplicateRefreshTokenShouldRetry() {
         // TODOD: implement this.
@@ -202,13 +200,13 @@ public class InsertTokenGraphTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        UUID tokenId = UUID.randomUUID();
-        List<AccessRequestScope> ars = new ArrayList<>();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, tokenId, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;
@@ -217,7 +215,7 @@ public class InsertTokenGraphTest {
         assertThat(actual.getMessage(), is("Failed to insert refresh_token. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
 
-        verify(mockTokenRepository, times(1)).revokeById(tokenId);
+        verify(mockTokenRepository, times(1)).revokeById(tokenGraph.getToken().getId());
     }
 
     @Test
@@ -227,13 +225,13 @@ public class InsertTokenGraphTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        UUID tokenId = UUID.randomUUID();
-        List<AccessRequestScope> ars = new ArrayList<>();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, tokenId, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;
@@ -242,7 +240,7 @@ public class InsertTokenGraphTest {
         assertThat(actual.getMessage(), is("Failed to insert refresh_token. Unknown key, unknown. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
 
-        verify(mockTokenRepository, times(1)).revokeById(tokenId);
+        verify(mockTokenRepository, times(1)).revokeById(tokenGraph.getToken().getId());
     }
 
     @Test
@@ -252,13 +250,13 @@ public class InsertTokenGraphTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        UUID tokenId = UUID.randomUUID();
-        List<AccessRequestScope> ars = new ArrayList<>();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, tokenId, ars
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;
@@ -267,6 +265,6 @@ public class InsertTokenGraphTest {
         assertThat(actual.getMessage(), is("Failed to insert refresh_token. Unknown key, foo. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
 
-        verify(mockTokenRepository, times(1)).revokeById(tokenId);
+        verify(mockTokenRepository, times(1)).revokeById(tokenGraph.getToken().getId());
     }
 }

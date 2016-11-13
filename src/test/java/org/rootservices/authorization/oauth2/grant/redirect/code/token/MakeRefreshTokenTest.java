@@ -43,7 +43,7 @@ public class MakeRefreshTokenTest {
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        RefreshToken actual = subject.run(token, headToken, plainTextToken);
+        RefreshToken actual = subject.run(token, headToken, plainTextToken, 1209600L);
 
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));

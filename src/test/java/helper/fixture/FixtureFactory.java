@@ -267,6 +267,7 @@ public class FixtureFactory {
         token.setExpiresAt(OffsetDateTime.now());
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         token.setTokenScopes(new ArrayList<>());
+        token.setSecondsToExpiration(3600L);
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -487,6 +488,7 @@ public class FixtureFactory {
         c.setAccessTokenPasswordSecondsToExpiry(3600L);
         c.setAccessTokenRefreshSecondsToExpiry(3600L);
         c.setAccessTokenClientSecondsToExpiry(3600L);
+        c.setRefreshTokenSecondsToExpiry(1209600L);
         c.setCreatedAt(OffsetDateTime.now());
         c.setUpdatedAt(OffsetDateTime.now());
         return c;
