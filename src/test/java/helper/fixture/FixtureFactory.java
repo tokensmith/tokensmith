@@ -1,6 +1,8 @@
 package helper.fixture;
 
+import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
+import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
@@ -472,5 +474,38 @@ public class FixtureFactory {
         tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
 
         return tc;
+    }
+
+    public static Configuration makeConfiguration() {
+        Configuration c = new Configuration();
+        c.setId(UUID.randomUUID());
+        c.setAccessTokenSize(32);
+        c.setRefreshTokenSize(32);
+        c.setAuthorizationCodeSize(32);
+        c.setAccessTokenTokenSecondsToExpiry(3600L);
+        c.setAccessTokenCodeSecondsToExpiry(3600L);
+        c.setAccessTokenPasswordSecondsToExpiry(3600L);
+        c.setAccessTokenRefreshSecondsToExpiry(3600L);
+        c.setAccessTokenClientSecondsToExpiry(3600L);
+        c.setCreatedAt(OffsetDateTime.now());
+        c.setUpdatedAt(OffsetDateTime.now());
+        return c;
+    }
+
+    public static TokenGraph makeTokenGraph() {
+        String plainTextToken = "plain-text-token";
+        Token token = makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+        String refreshAccessToken = "refresh-token";
+
+        TokenGraph tokenGraph = new TokenGraph(
+                token,
+                UUID.randomUUID(),
+                plainTextToken,
+                refreshAccessToken,
+                Extension.IDENTITY
+        );
+
+        return tokenGraph;
     }
 }

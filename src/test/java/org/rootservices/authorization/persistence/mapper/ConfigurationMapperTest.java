@@ -31,6 +31,13 @@ public class ConfigurationMapperTest {
         assertThat(actual.getAccessTokenSize(), is(32));
         assertThat(actual.getAuthorizationCodeSize(), is(32));
         assertThat(actual.getRefreshTokenSize(), is(32));
+
+        assertThat(actual.getAccessTokenClientSecondsToExpiry(), is(3600L));
+        assertThat(actual.getAccessTokenCodeSecondsToExpiry(), is(3600L));
+        assertThat(actual.getAccessTokenPasswordSecondsToExpiry(), is(3600L));
+        assertThat(actual.getAccessTokenRefreshSecondsToExpiry(), is(3600L));
+        assertThat(actual.getAccessTokenTokenSecondsToExpiry(), is(3600L));
+
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }

@@ -50,13 +50,17 @@ public class InsertAuthCodeWithRetryTest {
     }
 
     @Test
-    public void testDuplicateFound() throws Exception {
+    public void testDuplicateFoundSuccessOnRetry() throws Exception {
         AccessRequest accessRequest = new AccessRequest();
 
         String authorizationCode = "randomString";
         when(mockRandomString.run()).thenReturn(authorizationCode);
         AuthCode authCode = new AuthCode();
-        when(mockAuthCodeFactory.makeAuthCode(accessRequest, authorizationCode, subject.getSecondsToExpiration())).thenReturn(authCode);
+        when(mockAuthCodeFactory.makeAuthCode(
+                accessRequest,
+                authorizationCode,
+                subject.getSecondsToExpiration())
+        ).thenReturn(authCode);
 
         doThrow(DuplicateRecordException.class)
         .doNothing().when(mockAuthCodeRepository).insert(authCode);

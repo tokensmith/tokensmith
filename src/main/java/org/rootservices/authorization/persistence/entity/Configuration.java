@@ -11,6 +11,11 @@ public class Configuration {
     private Integer accessTokenSize;
     private Integer authorizationCodeSize;
     private Integer refreshTokenSize;
+    private Long accessTokenCodeSecondsToExpiry;
+    private Long accessTokenTokenSecondsToExpiry;
+    private Long accessTokenPasswordSecondsToExpiry;
+    private Long accessTokenRefreshSecondsToExpiry;
+    private Long accessTokenClientSecondsToExpiry;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
@@ -44,6 +49,46 @@ public class Configuration {
 
     public void setRefreshTokenSize(Integer refreshTokenSize) {
         this.refreshTokenSize = refreshTokenSize;
+    }
+
+    public Long getAccessTokenCodeSecondsToExpiry() {
+        return accessTokenCodeSecondsToExpiry;
+    }
+
+    public void setAccessTokenCodeSecondsToExpiry(Long accessTokenCodeSecondsToExpiry) {
+        this.accessTokenCodeSecondsToExpiry = accessTokenCodeSecondsToExpiry;
+    }
+
+    public Long getAccessTokenTokenSecondsToExpiry() {
+        return accessTokenTokenSecondsToExpiry;
+    }
+
+    public void setAccessTokenTokenSecondsToExpiry(Long accessTokenTokenSecondsToExpiry) {
+        this.accessTokenTokenSecondsToExpiry = accessTokenTokenSecondsToExpiry;
+    }
+
+    public Long getAccessTokenPasswordSecondsToExpiry() {
+        return accessTokenPasswordSecondsToExpiry;
+    }
+
+    public void setAccessTokenPasswordSecondsToExpiry(Long accessTokenPasswordSecondsToExpiry) {
+        this.accessTokenPasswordSecondsToExpiry = accessTokenPasswordSecondsToExpiry;
+    }
+
+    public Long getAccessTokenRefreshSecondsToExpiry() {
+        return accessTokenRefreshSecondsToExpiry;
+    }
+
+    public void setAccessTokenRefreshSecondsToExpiry(Long accessTokenRefreshSecondsToExpiry) {
+        this.accessTokenRefreshSecondsToExpiry = accessTokenRefreshSecondsToExpiry;
+    }
+
+    public Long getAccessTokenClientSecondsToExpiry() {
+        return accessTokenClientSecondsToExpiry;
+    }
+
+    public void setAccessTokenClientSecondsToExpiry(Long accessTokenClientSecondsToExpiry) {
+        this.accessTokenClientSecondsToExpiry = accessTokenClientSecondsToExpiry;
     }
 
     public OffsetDateTime getCreatedAt() {

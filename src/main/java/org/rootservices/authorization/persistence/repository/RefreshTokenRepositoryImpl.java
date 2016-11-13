@@ -3,6 +3,7 @@ package org.rootservices.authorization.persistence.repository;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -15,11 +16,15 @@ import java.util.UUID;
  */
 @Component
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
+    private static String SCHEMA = "refresh_token";
+
     private RefreshTokenMapper refreshTokenMapper;
+    private DuplicateRecordExceptionFactory duplicateRecordExceptionFactory;
 
     @Autowired
-    public RefreshTokenRepositoryImpl(RefreshTokenMapper refreshTokenMapper) {
+    public RefreshTokenRepositoryImpl(RefreshTokenMapper refreshTokenMapper, DuplicateRecordExceptionFactory duplicateRecordExceptionFactory) {
         this.refreshTokenMapper = refreshTokenMapper;
+        this.duplicateRecordExceptionFactory = duplicateRecordExceptionFactory;
     }
 
     @Override
@@ -27,7 +32,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         try {
             refreshTokenMapper.insert(refreshToken);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateRecordException("Could not insert refresh token", e);
+            throw duplicateRecordExceptionFactory.make(e, SCHEMA);
         }
     }
 
