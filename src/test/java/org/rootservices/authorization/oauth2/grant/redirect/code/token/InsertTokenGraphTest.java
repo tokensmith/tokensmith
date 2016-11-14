@@ -29,9 +29,7 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by tommackenzie on 11/13/16.
@@ -118,8 +116,60 @@ public class InsertTokenGraphTest {
     }
 
     @Test
-    public void handleDuplicateTokenShouldRetry() {
-        // TODO: implement this.
+    public void handleDuplicateTokenShouldRetry() throws Exception {
+        List<AccessRequestScope> ars = FixtureFactory.makeAccessRequestScopes();
+
+        Configuration configuration = FixtureFactory.makeConfiguration();
+        when(mockConfigurationRepository.get()).thenReturn(configuration);
+
+        String plainTextToken = "plain-text-token";
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+
+        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+
+        String refreshAccessToken = "refresh-token";
+        when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+
+        // force a retry.
+        DuplicateKeyException dke = new DuplicateKeyException("test");
+        DuplicateRecordException dre = new DuplicateRecordException("test", dke, Optional.of("token"));
+        doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
+        when(mockRandomString.run(33)).thenReturn(plainTextToken);
+
+        TokenGraph actual = subject.insertTokenGraph(ars);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
+        assertThat(actual.getToken(), is(token));
+        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
+
+        // should have updated configuration.
+        verify(mockConfigurationRepository).updateAccessTokenSize(configuration.getId(), 33);
+
+        // should insert a token
+        verify(mockTokenRepository, times(2)).insert(token);
+        // should insert a refresh token.
+        verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
+
+        // should insert token scopes.
+        ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
+        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
+
+        List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
+
+        assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
+        assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
+        assertThat(actualTokenScopes.get(0).getScope(), is(ars.get(0).getScope()));
+
+        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
+        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
+        assertThat(actualTokenScopes.get(1).getScope(), is(ars.get(1).getScope()));
     }
 
     @Test
@@ -189,8 +239,60 @@ public class InsertTokenGraphTest {
     }
 
     @Test
-    public void handleDuplicateRefreshTokenShouldRetry() {
-        // TODOD: implement this.
+    public void handleDuplicateRefreshTokenShouldRetry() throws Exception {
+        List<AccessRequestScope> ars = FixtureFactory.makeAccessRequestScopes();
+
+        Configuration configuration = FixtureFactory.makeConfiguration();
+        when(mockConfigurationRepository.get()).thenReturn(configuration);
+
+        String plainTextToken = "plain-text-token";
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+
+        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+
+        String refreshAccessToken = "refresh-token";
+        when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
+
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+
+        // force a retry.
+        DuplicateKeyException dke = new DuplicateKeyException("test");
+        DuplicateRecordException dre = new DuplicateRecordException("test", dke, Optional.of("access_token"));
+        doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
+        when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
+
+        TokenGraph actual = subject.insertTokenGraph(ars);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
+        assertThat(actual.getToken(), is(token));
+        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getExtension(), is(Extension.IDENTITY));
+
+        // should have updated configuration.
+        verify(mockConfigurationRepository).updateRefreshTokenSize(configuration.getId(), 33);
+
+        // should insert a token
+        verify(mockTokenRepository, times(1)).insert(token);
+        // should insert a refresh token.
+        verify(mockRefreshTokenRepository, times(2)).insert(refreshToken);
+
+        // should insert token scopes.
+        ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
+        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
+
+        List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
+
+        assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
+        assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
+        assertThat(actualTokenScopes.get(0).getScope(), is(ars.get(0).getScope()));
+
+        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
+        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
+        assertThat(actualTokenScopes.get(1).getScope(), is(ars.get(1).getScope()));
     }
 
     @Test
