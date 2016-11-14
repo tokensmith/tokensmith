@@ -83,7 +83,6 @@ public class RequestAccessTokenTest {
         when(mockRandomString.run()).thenReturn(accessToken);
 
         when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
-        when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         ImplicitAccessToken actual = subject.requestToken(inputParams);
         assertThat(actual, is(notNullValue()));
@@ -130,7 +129,6 @@ public class RequestAccessTokenTest {
         when(mockRandomString.run()).thenReturn(accessToken);
 
         when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
-        when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
@@ -180,7 +178,6 @@ public class RequestAccessTokenTest {
         when(mockRandomString.run()).thenReturn(accessToken);
 
         when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, inputParams.getScopes(), accessToken)).thenReturn(token);
-        when(mockIssueTokenImplicitGrant.getSecondsToExpiration()).thenReturn(3600L);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 

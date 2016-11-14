@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
@@ -35,21 +36,19 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private AuthCodeRepository authCodeRepository;
-    private RandomString randomString;
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, RandomString randomString, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
         this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.authCodeRepository = authCodeRepository;
-        this.randomString = randomString;
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
 
-    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException {
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws UnauthorizedException, NotFoundException, BadRequestException, ServerException {
 
         // login in a confidential client.
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
@@ -69,7 +68,6 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         String hashedCode = hashText.run(input.getCode());
         AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
-        String plainTextToken = randomString.run();
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
         List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
 
@@ -79,11 +77,13 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
-                    plainTextToken,
-                    accessRequestScopes
+                    accessRequestScopes,
+                    1
             );
         } catch (CompromisedCodeException e) {
             throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();
+        } catch (ServerException e) {
+            throw e;
         }
 
         return tokenResponse;

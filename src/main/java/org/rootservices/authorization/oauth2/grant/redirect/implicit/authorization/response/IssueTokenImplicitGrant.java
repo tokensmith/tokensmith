@@ -41,7 +41,7 @@ public class IssueTokenImplicitGrant {
     }
 
     public Token run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, String plainTextAccessToken) {
-        Token token = makeBearerToken.run(plainTextAccessToken);
+        Token token = makeBearerToken.run(plainTextAccessToken, 3600L);
         token.setGrantType(GrantType.TOKEN);
 
         try {
@@ -77,9 +77,5 @@ public class IssueTokenImplicitGrant {
         clientTokenRepository.insert(clientToken);
 
         return token;
-    }
-
-    public Long getSecondsToExpiration() {
-        return makeBearerToken.getSecondsToExpiration();
     }
 }

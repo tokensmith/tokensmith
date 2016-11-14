@@ -15,7 +15,6 @@ import java.util.UUID;
  */
 @Component
 public class MakeRefreshToken {
-    private static final Long SECONDS_TO_EXPIRATION = 1209600L;
     private HashTextStaticSalt hashText;
 
     @Autowired
@@ -23,7 +22,7 @@ public class MakeRefreshToken {
         this.hashText = hashText;
     }
 
-    public RefreshToken run(Token token, Token headToken, String plainTextToken) {
+    public RefreshToken run(Token token, Token headToken, String plainTextToken, Long secondsToExpiration) {
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
 
@@ -32,12 +31,8 @@ public class MakeRefreshToken {
         refreshToken.setToken(token);
         refreshToken.setHeadToken(headToken);
         refreshToken.setAccessToken(hashedToken);
-        refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
+        refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
 
         return refreshToken;
-    }
-
-    public Long getSecondsToExpiration() {
-        return SECONDS_TO_EXPIRATION;
     }
 }

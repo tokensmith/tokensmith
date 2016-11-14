@@ -2,6 +2,7 @@ package org.rootservices.authorization.oauth2.grant.token;
 
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
@@ -30,7 +31,7 @@ public class RequestToken {
         this.requestTokenGrantFactory = requestTokenGrantFactory;
     }
 
-    public TokenResponse request(String clientUserName, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException {
+    public TokenResponse request(String clientUserName, String clientPassword, BufferedReader request) throws BadRequestException, UnauthorizedException, NotFoundException, ServerException {
         UUID clientId;
         try {
             clientId = UUID.fromString(clientUserName);
