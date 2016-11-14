@@ -17,7 +17,6 @@ import java.util.UUID;
 @Component
 public class MakeBearerToken {
 
-    private static final Long SECONDS_TO_EXPIRATION = 3600L;
     private static final TokenType TOKEN_TYPE = TokenType.BEARER;
     private HashTextStaticSalt hashText;
 
@@ -27,22 +26,18 @@ public class MakeBearerToken {
     }
 
 
-    public Token run(String plainTextToken) {
+    public Token run(String plainTextToken, Long secondsToExpiration) {
 
         Token token = new Token();
         token.setId(UUID.randomUUID());
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
         token.setToken(hashedToken);
-        token.setExpiresAt(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION));
-        token.setSecondsToExpiration(SECONDS_TO_EXPIRATION);
+        token.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
+        token.setSecondsToExpiration(secondsToExpiration);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
 
         return token;
-    }
-
-    public Long getSecondsToExpiration() {
-        return SECONDS_TO_EXPIRATION;
     }
 
     public TokenType getTokenType() {

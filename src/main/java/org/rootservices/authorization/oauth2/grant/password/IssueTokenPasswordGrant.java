@@ -51,7 +51,7 @@ public class IssueTokenPasswordGrant {
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, String plainTextToken, List<Scope> scopes) {
-        Token token = makeBearerToken.run(plainTextToken);
+        Token token = makeBearerToken.run(plainTextToken, 3600L);
         token.setGrantType(GrantType.PASSWORD);
 
         try {
@@ -61,7 +61,7 @@ public class IssueTokenPasswordGrant {
         }
 
         String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = makeRefreshToken.run(token, token, refreshAccessToken);
+        RefreshToken refreshToken = makeRefreshToken.run(token, token, refreshAccessToken, 1209600L);
 
         try {
             refreshTokenRepository.insert(refreshToken);
@@ -107,7 +107,7 @@ public class IssueTokenPasswordGrant {
                 .setAccessToken(plainTextToken)
                 .setRefreshAccessToken(refreshAccessToken)
                 .setTokenType(TokenType.BEARER)
-                .setExpiresIn(makeBearerToken.getSecondsToExpiration())
+                .setExpiresIn(token.getSecondsToExpiration())
                 .setExtension(extension)
                 .setIssuer(issuer)
                 .setAudience(audience)

@@ -37,22 +37,17 @@ public class MakeBearerTokenTest {
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        Token actual = subject.run(plainTextToken);
+        Token actual = subject.run(plainTextToken, 3600L);
         assertThat(actual.getId(), is(notNullValue()));
 
         assertThat(actual.getToken(), is(notNullValue()));
         assertThat(actual.getToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
-        assertThat(actual.getSecondsToExpiration(), is(subject.getSecondsToExpiration()));
+        assertThat(actual.getSecondsToExpiration(), is(3600L));
     }
 
     @Test
     public void getTokenTypeShouldBeBearer() {
         assertThat(subject.getTokenType(), is(TokenType.BEARER));
-    }
-
-    @Test
-    public void getSecondsToExpirationShouldBeOk() {
-        assertThat(subject.getSecondsToExpiration(), is(3600L));
     }
 }
