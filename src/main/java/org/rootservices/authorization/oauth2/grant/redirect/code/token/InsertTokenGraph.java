@@ -60,11 +60,20 @@ public class InsertTokenGraph {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
-                1, config.getId(), config.getAccessTokenSize(), config.getAccessTokenCodeSecondsToExpiry()
+            1,
+            config.getId(),
+            config.getAccessTokenSize(),
+            config.getAccessTokenCodeSecondsToExpiry()
         );
+
         insertRefreshToken(
-                1, config.getId(), config.getRefreshTokenSize(), config.getRefreshTokenSecondsToExpiry(), tokenGraph
+            1,
+            config.getId(),
+            config.getRefreshTokenSize(),
+            config.getRefreshTokenSecondsToExpiry(),
+            tokenGraph
         );
+
         insertTokenScope(accessRequestScopes, tokenGraph);
 
         return tokenGraph;
@@ -77,7 +86,7 @@ public class InsertTokenGraph {
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
-            handleDuplicateToken(e, attempt+1, configId, atSize, secondsToExpiration);
+            return handleDuplicateToken(e, attempt+1, configId, atSize, secondsToExpiration);
         }
 
         TokenGraph tokenGraph = new TokenGraph();
@@ -95,6 +104,7 @@ public class InsertTokenGraph {
             refreshTokenRepository.insert(refreshToken);
         } catch (DuplicateRecordException e) {
             handleDuplicateRefreshToken(e, attempt+1, configId, atSize, secondsToExpiration, tokenGraph);
+            return;
         }
 
         tokenGraph.setRefreshTokenId(refreshToken.getId());
@@ -121,7 +131,7 @@ public class InsertTokenGraph {
     protected TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
         Boolean isDuplicateToken = e.getKey().isPresent() && TOKEN_KEY.equals(e.getKey().get());
 
-        if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
+        if(isDuplicateToken && attempt <= MAX_ATTEMPTS) {
             logger.warn(e.getMessage(), e);
             configurationRepository.updateAccessTokenSize(configId, atSize+1);
             return insertToken(attempt+1, configId, atSize+1, secondsToExpiration);
@@ -140,7 +150,7 @@ public class InsertTokenGraph {
         tokenRepository.revokeById(tokenGraph.getToken().getId());
         Boolean isDuplicateToken = e.getKey().isPresent() && REFRESH_TOKEN_KEY.equals(e.getKey().get());
 
-        if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
+        if(isDuplicateToken && attempt <= MAX_ATTEMPTS) {
             logger.warn(e.getMessage(), e);
             configurationRepository.updateRefreshTokenSize(configId, atSize+1);
             insertRefreshToken(attempt+1, configId, atSize+1, secondsToExpiration, tokenGraph);
