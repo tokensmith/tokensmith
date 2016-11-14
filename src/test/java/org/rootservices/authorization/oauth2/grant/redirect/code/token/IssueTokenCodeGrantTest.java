@@ -43,8 +43,6 @@ public class IssueTokenCodeGrantTest {
     @Mock
     private InsertTokenGraph mockInsertTokenGraph;
     @Mock
-    private MakeBearerToken mockMakeBearerToken;
-    @Mock
     private TokenRepository mockTokenRepository;
     @Mock
     private RefreshTokenRepository mockRefreshTokenRepository;
@@ -62,7 +60,6 @@ public class IssueTokenCodeGrantTest {
         MockitoAnnotations.initMocks(this);
         subject = new IssueTokenCodeGrant(
                 mockInsertTokenGraph,
-                mockMakeBearerToken,
                 mockTokenRepository,
                 mockRefreshTokenRepository,
                 mockAuthCodeTokenRepository,

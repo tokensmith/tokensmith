@@ -31,10 +31,6 @@ import java.util.UUID;
 public class IssueTokenCodeGrant {
 
     private InsertTokenGraph insertTokenGraph;
-
-    private MakeBearerToken makeBearerToken;
-    // TODO: figure out how to remove this as a dep. ^
-
     private TokenRepository tokenRepository;
     private RefreshTokenRepository refreshTokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
@@ -44,9 +40,8 @@ public class IssueTokenCodeGrant {
     private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraph insertTokenGraph, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraph insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
-        this.makeBearerToken = makeBearerToken;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
