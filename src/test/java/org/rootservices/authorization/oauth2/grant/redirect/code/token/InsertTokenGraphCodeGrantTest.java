@@ -7,7 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
@@ -21,7 +21,6 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,8 +33,8 @@ import static org.mockito.Mockito.*;
 /**
  * Created by tommackenzie on 11/13/16.
  */
-public class InsertTokenGraphTest {
-    private InsertTokenGraph subject;
+public class InsertTokenGraphCodeGrantTest {
+    private InsertTokenGraphCodeGrant subject;
 
     @Mock
     private ConfigurationRepository mockConfigurationRepository;
@@ -55,7 +54,7 @@ public class InsertTokenGraphTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertTokenGraph(
+        subject = new InsertTokenGraphCodeGrant(
                 mockConfigurationRepository,
                 mockRandomString,
                 mockMakeBearerToken,
