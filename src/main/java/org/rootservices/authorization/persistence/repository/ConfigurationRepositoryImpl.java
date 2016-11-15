@@ -12,30 +12,30 @@ import java.util.UUID;
  */
 @Component
 public class ConfigurationRepositoryImpl implements ConfigurationRepository {
-    private ConfigurationMapper tokenSizeMapper;
+    private ConfigurationMapper configurationMapper;
 
     @Autowired
-    public ConfigurationRepositoryImpl(ConfigurationMapper tokenSizeMapper) {
-        this.tokenSizeMapper = tokenSizeMapper;
+    public ConfigurationRepositoryImpl(ConfigurationMapper configurationMapper) {
+        this.configurationMapper = configurationMapper;
     }
 
     @Override
     public Configuration get() {
-        return tokenSizeMapper.get();
+        return configurationMapper.get();
     }
 
     @Override
     public void updateAccessTokenSize(UUID id, Integer size) {
-        tokenSizeMapper.updateAccessTokenSize(id, size);
+        configurationMapper.updateAccessTokenSize(id, size);
     }
 
     @Override
     public void updateAuthorizationCodeSize(UUID id, Integer size) {
-        tokenSizeMapper.updateAuthorizationCodeSize(id, size);
+        configurationMapper.updateAuthorizationCodeSize(id, size);
     }
 
     @Override
     public void updateRefreshTokenSize(UUID id, Integer size) {
-        tokenSizeMapper.updateRefreshTokenSize(id, size);
+        configurationMapper.updateRefreshTokenSize(id, size);
     }
 }

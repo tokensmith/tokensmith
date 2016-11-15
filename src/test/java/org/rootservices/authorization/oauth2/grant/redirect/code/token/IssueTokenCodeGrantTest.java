@@ -7,11 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
@@ -19,13 +16,8 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
-import org.springframework.dao.DuplicateKeyException;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -41,7 +33,7 @@ public class IssueTokenCodeGrantTest {
     private IssueTokenCodeGrant subject;
 
     @Mock
-    private InsertTokenGraph mockInsertTokenGraph;
+    private InsertTokenGraphCodeGrant mockInsertTokenGraph;
     @Mock
     private TokenRepository mockTokenRepository;
     @Mock

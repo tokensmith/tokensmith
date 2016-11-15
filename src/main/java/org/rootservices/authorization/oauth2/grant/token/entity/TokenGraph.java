@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token.entity;
+package org.rootservices.authorization.oauth2.grant.token.entity;
 
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.persistence.entity.Token;
