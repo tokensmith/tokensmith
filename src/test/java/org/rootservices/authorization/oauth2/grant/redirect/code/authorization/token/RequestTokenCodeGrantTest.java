@@ -441,4 +441,9 @@ public class RequestTokenCodeGrantTest {
         AuthCode authCode1 = authCodeRepository.getById(authCode.getId());
         assertThat(authCode1.isRevoked(), is(true));
     }
+
+    @Test
+    public void shouldThrowServerException() {
+        // TODO: 134265229 implement!
+    }
 }

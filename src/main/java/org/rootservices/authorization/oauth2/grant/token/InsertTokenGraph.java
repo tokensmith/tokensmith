@@ -48,25 +48,25 @@ public abstract class InsertTokenGraph {
     protected abstract GrantType getGrantType();
     protected abstract Logger getLogger();
 
-    public TokenGraph insertTokenGraph(List<AccessRequestScope> accessRequestScopes) throws ServerException {
+    public TokenGraph insertTokenGraph(List<Scope> scopes) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
-            1,
-            config.getId(),
-            config.getAccessTokenSize(),
-            config.getAccessTokenCodeSecondsToExpiry()
+                1,
+                config.getId(),
+                config.getAccessTokenSize(),
+                config.getAccessTokenCodeSecondsToExpiry()
         );
 
         insertRefreshToken(
-            1,
-            config.getId(),
-            config.getRefreshTokenSize(),
-            config.getRefreshTokenSecondsToExpiry(),
-            tokenGraph
+                1,
+                config.getId(),
+                config.getRefreshTokenSize(),
+                config.getRefreshTokenSecondsToExpiry(),
+                tokenGraph
         );
 
-        insertTokenScope(accessRequestScopes, tokenGraph);
+        insertTokenScope(scopes, tokenGraph);
 
         return tokenGraph;
     }
@@ -105,14 +105,14 @@ public abstract class InsertTokenGraph {
         tokenGraph.setPlainTextRefreshToken(refreshAccessToken);
     }
 
-    public void insertTokenScope(List<AccessRequestScope> accessRequestScopes, TokenGraph tokenGraph) {
+    public void insertTokenScope(List<Scope> scopes, TokenGraph tokenGraph) {
 
         Extension extension = Extension.NONE;
-        for(AccessRequestScope ars: accessRequestScopes) {
+        for(Scope scope: scopes) {
             TokenScope ts = new TokenScope();
             ts.setId(UUID.randomUUID());
             ts.setTokenId(tokenGraph.getToken().getId());
-            ts.setScope(ars.getScope());
+            ts.setScope(scope);
 
             if (OPENID_SCOPE.equalsIgnoreCase(ts.getScope().getName())) {
                 extension = Extension.IDENTITY;

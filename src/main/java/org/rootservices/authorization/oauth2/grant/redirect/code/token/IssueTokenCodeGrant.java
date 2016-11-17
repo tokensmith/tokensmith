@@ -16,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -45,9 +46,8 @@ public class IssueTokenCodeGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<AccessRequestScope> accessRequestScopes, Integer attempt) throws CompromisedCodeException, ServerException {
-
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(accessRequestScopes);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes) throws CompromisedCodeException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(scopes);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
         List<String> audience = new ArrayList<>();

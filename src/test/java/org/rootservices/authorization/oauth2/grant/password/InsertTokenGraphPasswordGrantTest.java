@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token;
+package org.rootservices.authorization.oauth2.grant.password;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -7,10 +7,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
@@ -28,13 +28,16 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Created by tommackenzie on 11/13/16.
+ * Created by tommackenzie on 11/15/16.
  */
-public class InsertTokenGraphCodeGrantTest {
-    private InsertTokenGraphCodeGrant subject;
+public class InsertTokenGraphPasswordGrantTest {
+    private InsertTokenGraphPasswordGrant subject;
 
     @Mock
     private ConfigurationRepository mockConfigurationRepository;
@@ -54,7 +57,7 @@ public class InsertTokenGraphCodeGrantTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertTokenGraphCodeGrant(
+        subject = new InsertTokenGraphPasswordGrant(
                 mockConfigurationRepository,
                 mockRandomString,
                 mockMakeBearerToken,
@@ -90,7 +93,7 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -141,7 +144,7 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -261,7 +264,7 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -359,4 +362,5 @@ public class InsertTokenGraphCodeGrantTest {
 
         verify(mockTokenRepository, times(1)).revokeById(tokenGraph.getToken().getId());
     }
+
 }

@@ -19,6 +19,7 @@ import org.rootservices.authorization.persistence.repository.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -69,12 +70,12 @@ public class IssueTokenCodeGrantTest {
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
 
-        List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeScopes();
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
-        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -128,10 +129,10 @@ public class IssueTokenCodeGrantTest {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
-        List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeScopes();
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
-        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
@@ -139,7 +140,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
+            subject.run(clientId, authCodeId, resourceOwnerId, scopes);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));
