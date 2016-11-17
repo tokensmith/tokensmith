@@ -92,7 +92,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", client.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -130,7 +130,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -301,6 +301,10 @@ public class RequestTokenPasswordGrantTest {
         assertThat(actual.getError(), is("invalid_scope"));
         assertThat(actual.getDescription(), is("scope is not available for this client"));
         assertThat(actual.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
+    }
 
+    @Test
+    public void shouldThrowServerException() {
+        // TODO: 134265229 implement!
     }
 }
