@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
@@ -440,10 +441,5 @@ public class RequestTokenCodeGrantTest {
         // make sure the authorization code was revoked.
         AuthCode authCode1 = authCodeRepository.getById(authCode.getId());
         assertThat(authCode1.isRevoked(), is(true));
-    }
-
-    @Test
-    public void shouldThrowServerException() {
-        // TODO: 134265229 implement!
     }
 }
