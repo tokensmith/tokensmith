@@ -1,6 +1,6 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;

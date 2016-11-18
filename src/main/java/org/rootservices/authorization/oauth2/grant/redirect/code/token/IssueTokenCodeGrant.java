@@ -1,28 +1,22 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -30,7 +24,7 @@ import java.util.UUID;
 @Component
 public class IssueTokenCodeGrant {
 
-    private InsertTokenGraph insertTokenGraph;
+    private InsertTokenGraphCodeGrant insertTokenGraph;
     private TokenRepository tokenRepository;
     private RefreshTokenRepository refreshTokenRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
@@ -40,7 +34,7 @@ public class IssueTokenCodeGrant {
     private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraph insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -52,9 +46,8 @@ public class IssueTokenCodeGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<AccessRequestScope> accessRequestScopes, Integer attempt) throws CompromisedCodeException, ServerException {
-
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(accessRequestScopes);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes) throws CompromisedCodeException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(scopes);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
         List<String> audience = new ArrayList<>();

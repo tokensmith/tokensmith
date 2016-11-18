@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token;
+package org.rootservices.authorization.oauth2.grant.password;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -7,10 +7,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
@@ -21,7 +21,6 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,13 +28,16 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Created by tommackenzie on 11/13/16.
+ * Created by tommackenzie on 11/15/16.
  */
-public class InsertTokenGraphTest {
-    private InsertTokenGraph subject;
+public class InsertTokenGraphPasswordGrantTest {
+    private InsertTokenGraphPasswordGrant subject;
 
     @Mock
     private ConfigurationRepository mockConfigurationRepository;
@@ -55,7 +57,7 @@ public class InsertTokenGraphTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertTokenGraph(
+        subject = new InsertTokenGraphPasswordGrant(
                 mockConfigurationRepository,
                 mockRandomString,
                 mockMakeBearerToken,
@@ -68,7 +70,7 @@ public class InsertTokenGraphTest {
 
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
-        List<AccessRequestScope> ars = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -86,11 +88,12 @@ public class InsertTokenGraphTest {
 
         when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(ars);
+        TokenGraph actual = subject.insertTokenGraph(scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -102,22 +105,18 @@ public class InsertTokenGraphTest {
 
         // should insert token scopes.
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
-        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
+        verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
 
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
 
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(0).getScope(), is(ars.get(0).getScope()));
-
-        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(1).getScope(), is(ars.get(1).getScope()));
+        assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
     }
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
-        List<AccessRequestScope> ars = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -140,11 +139,12 @@ public class InsertTokenGraphTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(ars);
+        TokenGraph actual = subject.insertTokenGraph(scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -159,17 +159,13 @@ public class InsertTokenGraphTest {
 
         // should insert token scopes.
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
-        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
+        verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
 
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
 
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(0).getScope(), is(ars.get(0).getScope()));
-
-        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(1).getScope(), is(ars.get(1).getScope()));
+        assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
     }
 
     @Test
@@ -240,7 +236,7 @@ public class InsertTokenGraphTest {
 
     @Test
     public void handleDuplicateRefreshTokenShouldRetry() throws Exception {
-        List<AccessRequestScope> ars = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -263,11 +259,12 @@ public class InsertTokenGraphTest {
         doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
         when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
 
-        TokenGraph actual = subject.insertTokenGraph(ars);
+        TokenGraph actual = subject.insertTokenGraph(scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -282,17 +279,13 @@ public class InsertTokenGraphTest {
 
         // should insert token scopes.
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
-        verify(mockTokenScopeRepository, times(2)).insert(tokenScopeCaptor.capture());
+        verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
 
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
 
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(0).getScope(), is(ars.get(0).getScope()));
-
-        assertThat(actualTokenScopes.get(1).getId(), is(notNullValue()));
-        assertThat(actualTokenScopes.get(1).getTokenId(), is(token.getId()));
-        assertThat(actualTokenScopes.get(1).getScope(), is(ars.get(1).getScope()));
+        assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
     }
 
     @Test
@@ -369,4 +362,5 @@ public class InsertTokenGraphTest {
 
         verify(mockTokenRepository, times(1)).revokeById(tokenGraph.getToken().getId());
     }
+
 }

@@ -4,6 +4,7 @@ import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
 import org.rootservices.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
 import org.rootservices.authorization.oauth2.grant.password.factory.TokenInputPasswordGrantFactory;
@@ -47,7 +48,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
     }
 
     @Override
-    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, UnauthorizedException {
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, UnauthorizedException, ServerException {
 
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
 
@@ -66,9 +67,12 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
 
         List<Scope> scopes = matchScopes(cc.getClient().getScopes(), input.getScopes());
 
-        String accessToken = randomString.run();
-
-        TokenResponse tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), accessToken, scopes);
+        TokenResponse tokenResponse;
+        try {
+            tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), scopes);
+        } catch (ServerException e) {
+            throw e;
+        }
         return tokenResponse;
     }
 
