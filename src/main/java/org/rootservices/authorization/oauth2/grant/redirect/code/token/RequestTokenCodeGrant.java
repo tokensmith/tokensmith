@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 5/24/15.
@@ -69,7 +70,8 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
-        List<AccessRequestScope> accessRequestScopes = authCode.getAccessRequest().getAccessRequestScopes();
+        List<Scope> scopes = authCode.getAccessRequest().getAccessRequestScopes().stream()
+                .map(i -> i.getScope()).collect(Collectors.toList());
 
         TokenResponse tokenResponse;
         try {
@@ -77,8 +79,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
-                    accessRequestScopes,
-                    1
+                    scopes
             );
         } catch (CompromisedCodeException e) {
             throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();

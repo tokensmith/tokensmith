@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
 import org.rootservices.authorization.oauth2.grant.password.factory.TokenInputPasswordGrantFactory;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
@@ -92,7 +93,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", client.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -130,7 +131,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), "access-token", openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -301,6 +302,39 @@ public class RequestTokenPasswordGrantTest {
         assertThat(actual.getError(), is("invalid_scope"));
         assertThat(actual.getDescription(), is("scope is not available for this client"));
         assertThat(actual.getCode(), is(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()));
+    }
 
+    @Test(expected = ServerException.class)
+    public void requestShouldThrowServerException() throws Exception {
+        Client openIdClient = FixtureFactory.makePasswordClientWithOpenIdScopes();
+        ConfidentialClient cc = FixtureFactory.makeConfidentialClient(openIdClient);
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+
+        Map<String, String> request =  new HashMap<>();
+        request.put("grant_type", "password");
+        request.put("username", ro.getEmail());
+        request.put("password", FixtureFactory.PLAIN_TEXT_PASSWORD);
+        request.put("scope", "profile openid");
+
+        TokenInputPasswordGrant input = new TokenInputPasswordGrant();
+        input.setScopes(openIdClient.getScopes().stream().map(item -> item.getName()).collect(Collectors.toList()));
+        input.setUserName(ro.getEmail());
+        input.setPassword(FixtureFactory.PLAIN_TEXT_PASSWORD);
+
+        when(mockLoginConfidentialClient.run(cc.getId(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+                .thenReturn(cc);
+
+        when(mockTokenInputPasswordGrantFactory.run(request))
+                .thenReturn(input);
+
+        when(mockLoginResourceOwner.run(input.getUserName(), FixtureFactory.PLAIN_TEXT_PASSWORD))
+                .thenReturn(ro);
+
+        when(mockRandomString.run()).thenReturn("access-token");
+
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes()))
+                .thenThrow(ServerException.class);
+
+        subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
     }
 }

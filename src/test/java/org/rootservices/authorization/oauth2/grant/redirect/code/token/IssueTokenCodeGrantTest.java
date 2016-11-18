@@ -7,11 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.code.token.entity.TokenGraph;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
@@ -19,14 +16,10 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
-import org.springframework.dao.DuplicateKeyException;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -41,7 +34,7 @@ public class IssueTokenCodeGrantTest {
     private IssueTokenCodeGrant subject;
 
     @Mock
-    private InsertTokenGraph mockInsertTokenGraph;
+    private InsertTokenGraphCodeGrant mockInsertTokenGraph;
     @Mock
     private TokenRepository mockTokenRepository;
     @Mock
@@ -77,12 +70,12 @@ public class IssueTokenCodeGrantTest {
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
 
-        List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeScopes();
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
-        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -136,10 +129,10 @@ public class IssueTokenCodeGrantTest {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
-        List<AccessRequestScope> accessRequestScopes = FixtureFactory.makeAccessRequestScopes();
+        List<Scope> scopes = FixtureFactory.makeScopes();
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
-        when(mockInsertTokenGraph.insertTokenGraph(accessRequestScopes)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
@@ -147,7 +140,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, accessRequestScopes, 1);
+            subject.run(clientId, authCodeId, resourceOwnerId, scopes);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));
