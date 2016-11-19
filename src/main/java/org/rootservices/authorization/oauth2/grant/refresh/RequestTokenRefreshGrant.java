@@ -1,8 +1,11 @@
 package org.rootservices.authorization.oauth2.grant.refresh;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.refresh.entity.TokenInputRefreshGrant;
 import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
 import org.rootservices.authorization.oauth2.grant.refresh.factory.TokenInputRefreshGrantFactory;
@@ -27,6 +30,8 @@ import java.util.stream.Stream;
  */
 @Component
 public class RequestTokenRefreshGrant implements RequestTokenGrant {
+    protected static final Logger logger = LogManager.getLogger(RequestTokenRefreshGrant.class);
+
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory;
     private BadRequestExceptionBuilder badRequestExceptionBuilder;
@@ -51,7 +56,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     }
 
     @Override
-    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, NotFoundException, UnauthorizedException {
+    public TokenResponse request(UUID clientId, String clientPassword, Map<String, String> request) throws BadRequestException, NotFoundException, UnauthorizedException, ServerException {
         // login in a confidential client.
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
 
@@ -84,11 +89,13 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
                 scopes
             );
         } catch (CompromisedRefreshTokenException e) {
-            // TODO:
+            logger.warn(e.getMessage(), e);
             throw badRequestExceptionBuilder.CompromisedRefreshToken(
                 ErrorCode.COMPROMISED_REFRESH_TOKEN.getCode(),
                 e
             ).build();
+        } catch (ServerException e) {
+            throw e;
         }
 
         return tokenResponse;
