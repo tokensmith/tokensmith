@@ -94,8 +94,10 @@ public class InsertTokenGraphPasswordGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
@@ -145,8 +147,10 @@ public class InsertTokenGraphPasswordGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.
@@ -265,8 +269,10 @@ public class InsertTokenGraphPasswordGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.

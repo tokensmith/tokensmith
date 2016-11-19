@@ -55,7 +55,7 @@ public class IssueTokenCodeGrant {
 
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
-                .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken())
+                .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken().get())
                 .setTokenType(TokenType.BEARER)
                 .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())

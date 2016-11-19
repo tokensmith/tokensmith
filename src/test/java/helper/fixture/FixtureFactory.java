@@ -502,9 +502,9 @@ public class FixtureFactory {
 
         TokenGraph tokenGraph = new TokenGraph(
                 token,
-                UUID.randomUUID(),
+                Optional.of(UUID.randomUUID()),
                 plainTextToken,
-                refreshAccessToken,
+                Optional.of(refreshAccessToken),
                 Extension.IDENTITY
         );
 
