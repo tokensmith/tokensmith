@@ -79,6 +79,10 @@ public class InsertTokenGraphRefreshGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
+        String headPlainTextToken = "head-plain-text-token";
+        Token headToken = FixtureFactory.makeOpenIdToken(plainTextToken);
+        headToken.setCreatedAt(OffsetDateTime.now());
+
         when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
@@ -86,9 +90,9 @@ public class InsertTokenGraphRefreshGrantTest {
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(scopes);
+        TokenGraph actual = subject.insertTokenGraph(scopes, headToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -301,7 +305,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;
@@ -326,7 +330,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;
@@ -351,7 +355,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;
