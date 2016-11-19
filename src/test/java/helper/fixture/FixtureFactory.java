@@ -512,4 +512,20 @@ public class FixtureFactory {
 
         return tokenGraph;
     }
+
+    public static TokenGraph makeImplicitTokenGraph() {
+        String plainTextToken = "plain-text-token";
+        Token token = makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+
+        TokenGraph tokenGraph = new TokenGraph(
+                token,
+                Optional.empty(),
+                plainTextToken,
+                Optional.empty(),
+                Extension.IDENTITY
+        );
+
+        return tokenGraph;
+    }
 }

@@ -12,6 +12,7 @@ import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -122,6 +123,8 @@ public abstract class InsertTokenGraph {
                 extension = Extension.IDENTITY;
             }
             tokenScopeRepository.insert(ts);
+            tokenGraph.getToken().getTokenScopes().add(ts);
+            // TODO: 134265317: needs a test
         }
         tokenGraph.setExtension(extension);
     }

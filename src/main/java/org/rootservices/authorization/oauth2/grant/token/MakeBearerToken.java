@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -36,6 +37,7 @@ public class MakeBearerToken {
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
         token.setSecondsToExpiration(secondsToExpiration);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
+        token.setTokenScopes(new ArrayList<>());
 
         return token;
     }

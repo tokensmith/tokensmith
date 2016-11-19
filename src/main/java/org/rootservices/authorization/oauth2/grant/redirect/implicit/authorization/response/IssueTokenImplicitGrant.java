@@ -1,9 +1,12 @@
 package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
 
+import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.InsertTokenGraphImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
@@ -23,59 +26,36 @@ import java.util.stream.Collectors;
  */
 @Component
 public class IssueTokenImplicitGrant {
-    private MakeBearerToken makeBearerToken;
-    private TokenRepository tokenRepository;
+    private InsertTokenGraphImplicitGrant insertTokenGraphImplicitGrant;
     private ScopeRepository scopeRepository;
-    private TokenScopeRepository tokenScopeRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private ClientTokenRepository clientTokenRepository;
 
     @Autowired
-    public IssueTokenImplicitGrant(MakeBearerToken makeBearerToken, TokenRepository tokenRepository, ScopeRepository scopeRepository, TokenScopeRepository tokenScopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, ClientTokenRepository clientTokenRepository) {
-        this.makeBearerToken = makeBearerToken;
-        this.tokenRepository = tokenRepository;
+    public IssueTokenImplicitGrant(InsertTokenGraphImplicitGrant insertTokenGraphImplicitGrant, ScopeRepository scopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, ClientTokenRepository clientTokenRepository) {
+        this.insertTokenGraphImplicitGrant = insertTokenGraphImplicitGrant;
         this.scopeRepository = scopeRepository;
-        this.tokenScopeRepository = tokenScopeRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.clientTokenRepository = clientTokenRepository;
     }
 
-    public Token run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, String plainTextAccessToken) {
-        Token token = makeBearerToken.run(plainTextAccessToken, 3600L);
-        token.setGrantType(GrantType.TOKEN);
-
-        try {
-            tokenRepository.insert(token);
-        } catch (DuplicateRecordException e) {
-            // TODO: handle this exception.
-            e.printStackTrace();
-        }
+    public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames) throws ServerException {
 
         List<Scope> scopes = scopeRepository.findByNames(scopeNames);
-        token.setTokenScopes(new ArrayList<>());
-
-        for(Scope scope: scopes) {
-            TokenScope ts = new TokenScope();
-            ts.setId(UUID.randomUUID());
-            ts.setTokenId(token.getId());
-            ts.setScope(scope);
-            tokenScopeRepository.insert(ts);
-
-            token.getTokenScopes().add(ts);
-        }
+        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(scopes);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());
         resourceOwnerToken.setResourceOwner(resourceOwner);
-        resourceOwnerToken.setToken(token);
+        resourceOwnerToken.setToken(tokenGraph.getToken());
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
         ClientToken clientToken = new ClientToken();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
-        clientToken.setTokenId(token.getId());
+        clientToken.setTokenId(tokenGraph.getToken().getId());
         clientTokenRepository.insert(clientToken);
 
-        return token;
+        return tokenGraph;
     }
 }

@@ -21,6 +21,7 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -77,6 +78,8 @@ public class InsertTokenGraphImplicitGrantTest {
 
         String plainTextToken = "plain-text-token";
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        token.setTokenScopes(new ArrayList<>());
+
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
@@ -88,6 +91,10 @@ public class InsertTokenGraphImplicitGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.TOKEN));
+
+        assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().size(), is(1));
+
         assertThat(actual.getRefreshTokenId().isPresent(), is(false));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(false));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
