@@ -3,12 +3,14 @@ package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -30,20 +32,18 @@ import java.util.stream.Collectors;
 public class RequestAccessToken {
     private LoginResourceOwner loginResourceOwner;
     private ValidateParams validateParamsImplicitGrant;
-    private RandomString randomString;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private ClientRepository clientRepository;
 
     @Autowired
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateParamsImplicitGrant = validateParamsImplicitGrant;
-        this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.clientRepository = clientRepository;
     }
 
-    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
+    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException, ServerException {
 
         AuthRequest authRequest = validateParamsImplicitGrant.run(
                 inputParams.getClientIds(),
@@ -54,8 +54,13 @@ public class RequestAccessToken {
         );
         ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
 
-        String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), accessToken);
+        TokenGraph tokenGraph;
+        try {
+            tokenGraph = issueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes());
+        } catch (ServerException e) {
+            // TODO: 134265317: needs a test
+            throw e;
+        }
 
         URI redirectUri;
         if (authRequest.getRedirectURI().isPresent()) {
@@ -64,7 +69,7 @@ public class RequestAccessToken {
             redirectUri = fetchClientRedirectURI(authRequest.getClientId());
         }
 
-        return translate(redirectUri, accessToken, token.getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
+        return translate(redirectUri, tokenGraph.getPlainTextAccessToken(), tokenGraph.getToken().getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
     }
 
     private URI fetchClientRedirectURI(UUID clientId) throws InformResourceOwnerException {
