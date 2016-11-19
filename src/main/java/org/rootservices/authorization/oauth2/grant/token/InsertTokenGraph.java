@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public abstract class InsertTokenGraph {
 
-    private ConfigurationRepository configurationRepository;
+    protected ConfigurationRepository configurationRepository;
     private RandomString randomString;
     private MakeBearerToken makeBearerToken;
     private TokenRepository tokenRepository;
@@ -48,6 +48,7 @@ public abstract class InsertTokenGraph {
 
     protected abstract GrantType getGrantType();
     protected abstract Logger getLogger();
+    protected abstract Long getSecondsToExpiration(Configuration configuration);
 
     public TokenGraph insertTokenGraph(List<Scope> scopes) throws ServerException {
         Configuration config = configurationRepository.get();
@@ -56,7 +57,7 @@ public abstract class InsertTokenGraph {
                 1,
                 config.getId(),
                 config.getAccessTokenSize(),
-                config.getAccessTokenCodeSecondsToExpiry()
+                getSecondsToExpiration(config)
         );
 
         insertRefreshToken(
@@ -87,6 +88,8 @@ public abstract class InsertTokenGraph {
         TokenGraph tokenGraph = new TokenGraph();
         tokenGraph.setToken(token);
         tokenGraph.setPlainTextAccessToken(plainTextToken);
+        tokenGraph.setRefreshTokenId(Optional.empty());
+        tokenGraph.setPlainTextRefreshToken(Optional.empty());
 
         return tokenGraph;
     }

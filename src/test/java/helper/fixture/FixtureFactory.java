@@ -483,11 +483,13 @@ public class FixtureFactory {
         c.setAccessTokenSize(32);
         c.setRefreshTokenSize(32);
         c.setAuthorizationCodeSize(32);
-        c.setAccessTokenTokenSecondsToExpiry(3600L);
-        c.setAccessTokenCodeSecondsToExpiry(3600L);
-        c.setAccessTokenPasswordSecondsToExpiry(3600L);
-        c.setAccessTokenRefreshSecondsToExpiry(3600L);
-        c.setAccessTokenClientSecondsToExpiry(3600L);
+
+        // these are different so I can verify the right expiry is used in tests.
+        c.setAccessTokenTokenSecondsToExpiry(3601L);
+        c.setAccessTokenCodeSecondsToExpiry(3602L);
+        c.setAccessTokenPasswordSecondsToExpiry(3603L);
+        c.setAccessTokenRefreshSecondsToExpiry(3604L);
+        c.setAccessTokenClientSecondsToExpiry(3605L);
         c.setRefreshTokenSecondsToExpiry(1209600L);
         c.setCreatedAt(OffsetDateTime.now());
         c.setUpdatedAt(OffsetDateTime.now());
