@@ -301,7 +301,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;
@@ -326,7 +326,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;
@@ -351,7 +351,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
             );
         } catch (ServerException e) {
             actual = e;

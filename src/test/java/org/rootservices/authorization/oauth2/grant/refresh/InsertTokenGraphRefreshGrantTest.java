@@ -1,4 +1,4 @@
-package org.rootservices.authorization.oauth2.grant.redirect.code.token;
+package org.rootservices.authorization.oauth2.grant.refresh;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -7,10 +7,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
@@ -28,13 +28,16 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Created by tommackenzie on 11/13/16.
+ * Created by tommackenzie on 11/18/16.
  */
-public class InsertTokenGraphCodeGrantTest {
-    private InsertTokenGraphCodeGrant subject;
+public class InsertTokenGraphRefreshGrantTest {
+    private InsertTokenGraphRefreshGrant subject;
 
     @Mock
     private ConfigurationRepository mockConfigurationRepository;
@@ -54,7 +57,7 @@ public class InsertTokenGraphCodeGrantTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertTokenGraphCodeGrant(
+        subject = new InsertTokenGraphRefreshGrant(
                 mockConfigurationRepository,
                 mockRandomString,
                 mockMakeBearerToken,
@@ -76,6 +79,10 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
+        String headPlainTextToken = "head-plain-text-token";
+        Token headToken = FixtureFactory.makeOpenIdToken(plainTextToken);
+        headToken.setCreatedAt(OffsetDateTime.now());
+
         when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
@@ -83,14 +90,14 @@ public class InsertTokenGraphCodeGrantTest {
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(scopes);
+        TokenGraph actual = subject.insertTokenGraph(scopes, headToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -141,7 +148,7 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -261,7 +268,7 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
