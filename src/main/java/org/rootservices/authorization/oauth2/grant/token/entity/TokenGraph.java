@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.token.entity;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.persistence.entity.Token;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -10,14 +11,14 @@ import java.util.UUID;
  */
 public class TokenGraph {
     private Token token;
-    private UUID refreshTokenId;
+    private Optional<UUID> refreshTokenId;
     private String plainTextAccessToken;
-    private String plainTextRefreshToken;
+    private Optional<String> plainTextRefreshToken;
     private Extension extension;
 
     public TokenGraph() {}
 
-    public TokenGraph(Token token, UUID refreshTokenId, String plainTextAccessToken, String plainTextRefreshToken, Extension extension) {
+    public TokenGraph(Token token, Optional<UUID> refreshTokenId, String plainTextAccessToken, Optional<String> plainTextRefreshToken, Extension extension) {
         this.token = token;
         this.refreshTokenId = refreshTokenId;
         this.plainTextAccessToken = plainTextAccessToken;
@@ -33,11 +34,11 @@ public class TokenGraph {
         this.token = token;
     }
 
-    public UUID getRefreshTokenId() {
+    public Optional<UUID> getRefreshTokenId() {
         return refreshTokenId;
     }
 
-    public void setRefreshTokenId(UUID refreshTokenId) {
+    public void setRefreshTokenId(Optional<UUID> refreshTokenId) {
         this.refreshTokenId = refreshTokenId;
     }
 
@@ -49,11 +50,11 @@ public class TokenGraph {
         this.plainTextAccessToken = plainTextAccessToken;
     }
 
-    public String getPlainTextRefreshToken() {
+    public Optional<String> getPlainTextRefreshToken() {
         return plainTextRefreshToken;
     }
 
-    public void setPlainTextRefreshToken(String plainTextRefreshToken) {
+    public void setPlainTextRefreshToken(Optional<String> plainTextRefreshToken) {
         this.plainTextRefreshToken = plainTextRefreshToken;
     }
 

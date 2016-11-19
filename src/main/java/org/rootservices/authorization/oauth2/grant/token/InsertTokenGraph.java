@@ -13,6 +13,7 @@ import org.rootservices.authorization.persistence.repository.TokenScopeRepositor
 import org.rootservices.authorization.security.RandomString;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class InsertTokenGraph {
@@ -101,8 +102,8 @@ public abstract class InsertTokenGraph {
             return;
         }
 
-        tokenGraph.setRefreshTokenId(refreshToken.getId());
-        tokenGraph.setPlainTextRefreshToken(refreshAccessToken);
+        tokenGraph.setRefreshTokenId(Optional.of(refreshToken.getId()));
+        tokenGraph.setPlainTextRefreshToken(Optional.of(refreshAccessToken));
     }
 
     public void insertTokenScope(List<Scope> scopes, TokenGraph tokenGraph) {
