@@ -76,14 +76,14 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         TokenGraph actual = subject.insertTokenGraph(scopes);
 
@@ -124,7 +124,7 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
@@ -246,13 +246,13 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         // force a retry.
         DuplicateKeyException dke = new DuplicateKeyException("test");
