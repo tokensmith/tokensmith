@@ -44,6 +44,28 @@ public class DuplicateRecordExceptionFactoryTest {
     }
 
     @Test
+    public void makeWhenAuthCodeShouldHaveKeyPresent() {
+        String msg =
+                "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"code_unique\"\n" +
+                "Detail: Key (code)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865526546714e525a2e30333071765a6b394c324e305a4451346b714f53616657) already exists.\n" +
+                "### The error may involve defaultParameterMap\n"+
+                "### The error occurred while setting parameters\n"+
+                "### SQL: insert into auth_code (id, code, revoked, access_request_id, expires_at)         values (             ?,             ?,             ?,             ?,             ?         )\n"+
+                "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"code_unique\"\n"+
+                "Detail: Key (code)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865526546714e525a2e30333071765a6b394c324e305a4451346b714f53616657) already exists.\n"+
+                "; SQL []; ERROR: duplicate key value violates unique constraint \"code_unique\"\n"+
+                "Detail: Key (code)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865526546714e525a2e30333071765a6b394c324e305a4451346b714f53616657) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"code_unique\"\n"+
+                "Detail: Key (code)=(\\x243261243130246f424b7059744e4f594c57496c5a484258552f566865526546714e525a2e30333071765a6b394c324e305a4451346b714f53616657) already exists.";
+
+        DuplicateKeyException dke = new DuplicateKeyException(msg);
+
+        DuplicateRecordException actual = subject.make(dke, "auth_code");
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getKey().isPresent(), is(true));
+        assertThat(actual.getKey().get(), is("code"));
+        assertThat(actual.getMessage(), is("Could not insert auth_code record. The key, code, would have caused a duplicate record."));
+    }
+    @Test
     public void makeShouldNotHaveKeyPresent() {
         String msg = "foo";
 
