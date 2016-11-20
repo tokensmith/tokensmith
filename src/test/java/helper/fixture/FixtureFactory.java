@@ -483,11 +483,13 @@ public class FixtureFactory {
         c.setAccessTokenSize(32);
         c.setRefreshTokenSize(32);
         c.setAuthorizationCodeSize(32);
-        c.setAccessTokenTokenSecondsToExpiry(3600L);
-        c.setAccessTokenCodeSecondsToExpiry(3600L);
-        c.setAccessTokenPasswordSecondsToExpiry(3600L);
-        c.setAccessTokenRefreshSecondsToExpiry(3600L);
-        c.setAccessTokenClientSecondsToExpiry(3600L);
+
+        // these are different so I can verify the right expiry is used in tests.
+        c.setAccessTokenTokenSecondsToExpiry(3601L);
+        c.setAccessTokenCodeSecondsToExpiry(3602L);
+        c.setAccessTokenPasswordSecondsToExpiry(3603L);
+        c.setAccessTokenRefreshSecondsToExpiry(3604L);
+        c.setAccessTokenClientSecondsToExpiry(3605L);
         c.setRefreshTokenSecondsToExpiry(1209600L);
         c.setCreatedAt(OffsetDateTime.now());
         c.setUpdatedAt(OffsetDateTime.now());
@@ -502,9 +504,25 @@ public class FixtureFactory {
 
         TokenGraph tokenGraph = new TokenGraph(
                 token,
-                UUID.randomUUID(),
+                Optional.of(UUID.randomUUID()),
                 plainTextToken,
-                refreshAccessToken,
+                Optional.of(refreshAccessToken),
+                Extension.IDENTITY
+        );
+
+        return tokenGraph;
+    }
+
+    public static TokenGraph makeImplicitTokenGraph() {
+        String plainTextToken = "plain-text-token";
+        Token token = makeOpenIdToken(plainTextToken);
+        token.setCreatedAt(OffsetDateTime.now());
+
+        TokenGraph tokenGraph = new TokenGraph(
+                token,
+                Optional.empty(),
+                plainTextToken,
+                Optional.empty(),
                 Extension.IDENTITY
         );
 

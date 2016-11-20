@@ -8,7 +8,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -51,8 +53,6 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
     @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
-    private RandomString mockRandomString;
-    @Mock
     private IssueTokenImplicitGrant mockIssueTokenImplicitGrant;
     @Mock
     private MakeImplicitIdentityToken mockMakeImplicitIdentityToken;
@@ -63,7 +63,6 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         subject = new RequestOpenIdImplicitTokenAndIdentity(
                 mockValidateOpenIdIdImplicitGrant,
                 mockLoginResourceOwner,
-                mockRandomString,
                 mockIssueTokenImplicitGrant,
                 mockMakeImplicitIdentityToken,
                 new OpenIdImplicitAccessTokenBuilder(),
@@ -79,13 +78,11 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
-        token.setCreatedAt(OffsetDateTime.now());
 
-        token.setSecondsToExpiration(3600L);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
-        List<String> scopesForIdToken = token.getTokenScopes().stream()
+        List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -99,17 +96,16 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockLoginResourceOwner.run(
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
-        when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(accessToken), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
         ).thenReturn(idToken);
 
         OpenIdImplicitAccessToken actual = subject.request(input);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getAccessToken(), is(accessToken));
-        assertThat(actual.getExpiresIn(), is(token.getSecondsToExpiration()));
+        assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
+        assertThat(actual.getExpiresIn(), is(tokenGraph.getToken().getSecondsToExpiration()));
         assertThat(actual.getIdToken(), is(idToken));
         assertThat(actual.getRedirectUri(), is(request.getRedirectURI()));
         assertThat(actual.getState(), is(Optional.of("state")));
@@ -121,9 +117,45 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+    }
+
+    @Test
+    public void requestWhenServerErrorShouldThrowInformClientException() throws Exception {
+        String responseType = "token id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+
+        when(mockValidateOpenIdIdImplicitGrant.run(
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
+        )).thenReturn(request);
+
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
+
+        ServerException se = new ServerException("test", null);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenThrow(se);
+
+        InformClientException expected = null;
+        try {
+            subject.request(input);
+        } catch (InformClientException actual) {
+            expected = actual;
+        }
+
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getError(), is("server_error"));
+        assertThat(expected.getDescription(), is(ErrorCode.SERVER_ERROR.getDescription()));
+        assertThat(expected.getCode(), is(ErrorCode.SERVER_ERROR.getCode()));
+        assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
+        assertThat(expected.getState(), is(request.getState()));
+        assertThat(expected.getCause(), instanceOf(ServerException.class));
     }
 
     @Test
@@ -135,12 +167,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken("access-token");
-        token.setCreatedAt(OffsetDateTime.now());
-        token.setSecondsToExpiration(3600L);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
-        List<String> scopesForIdToken = token.getTokenScopes().stream()
+        List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -154,10 +184,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockLoginResourceOwner.run(
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
-        when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(accessToken), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -180,9 +209,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
     }
 
     @Test
@@ -194,12 +223,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken("access-token");
-        token.setCreatedAt(OffsetDateTime.now());
-        token.setSecondsToExpiration(3600L);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
-        List<String> scopesForIdToken = token.getTokenScopes().stream()
+        List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -213,10 +240,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockLoginResourceOwner.run(
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
-        when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(accessToken), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -239,9 +265,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
     }
 
     @Test
@@ -252,12 +278,10 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken("access-token");
-        token.setCreatedAt(OffsetDateTime.now());
-        token.setSecondsToExpiration(3600L);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
-        List<String> scopesForIdToken = token.getTokenScopes().stream()
+        List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -271,10 +295,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockLoginResourceOwner.run(
                 input.getUserName(), input.getPlainTextPassword())
         ).thenReturn(resourceOwner);
-        when(mockRandomString.run()).thenReturn(accessToken);
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), accessToken)).thenReturn(token);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(accessToken), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
         ).thenThrow(ide);
 
 
@@ -298,8 +321,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(notNullValue()));
-        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
     }
 }

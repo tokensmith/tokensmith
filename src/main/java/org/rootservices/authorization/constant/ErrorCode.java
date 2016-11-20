@@ -68,7 +68,9 @@ public enum ErrorCode {
     CLIENT_USERNAME_DATA_TYPE(45, "user name is not a uuid"),
 
     REFRESH_TOKEN_NOT_FOUND (46, "refresh token was not found"),
-    COMPROMISED_REFRESH_TOKEN(47, "refresh token was already used");
+    COMPROMISED_REFRESH_TOKEN(47, "refresh token was already used"),
+
+    SERVER_ERROR (48, "unexpected server error");
 
     private int code;
     private final String description;

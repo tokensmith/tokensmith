@@ -76,14 +76,14 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         TokenGraph actual = subject.insertTokenGraph(scopes);
 
@@ -91,8 +91,10 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
@@ -122,7 +124,7 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
@@ -142,8 +144,10 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.
@@ -242,13 +246,13 @@ public class InsertTokenGraphCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         // force a retry.
         DuplicateKeyException dke = new DuplicateKeyException("test");
@@ -262,8 +266,10 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.

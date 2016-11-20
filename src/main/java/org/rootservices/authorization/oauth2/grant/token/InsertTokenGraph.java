@@ -12,7 +12,9 @@ import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
 import org.rootservices.authorization.security.RandomString;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class InsertTokenGraph {
@@ -47,6 +49,7 @@ public abstract class InsertTokenGraph {
 
     protected abstract GrantType getGrantType();
     protected abstract Logger getLogger();
+    protected abstract Long getSecondsToExpiration(Configuration configuration);
 
     public TokenGraph insertTokenGraph(List<Scope> scopes) throws ServerException {
         Configuration config = configurationRepository.get();
@@ -55,7 +58,7 @@ public abstract class InsertTokenGraph {
                 1,
                 config.getId(),
                 config.getAccessTokenSize(),
-                config.getAccessTokenCodeSecondsToExpiry()
+                getSecondsToExpiration(config)
         );
 
         insertRefreshToken(
@@ -87,6 +90,8 @@ public abstract class InsertTokenGraph {
         TokenGraph tokenGraph = new TokenGraph();
         tokenGraph.setToken(token);
         tokenGraph.setPlainTextAccessToken(plainTextToken);
+        tokenGraph.setRefreshTokenId(Optional.empty());
+        tokenGraph.setPlainTextRefreshToken(Optional.empty());
 
         return tokenGraph;
     }
@@ -102,8 +107,8 @@ public abstract class InsertTokenGraph {
             return;
         }
 
-        tokenGraph.setRefreshTokenId(refreshToken.getId());
-        tokenGraph.setPlainTextRefreshToken(refreshAccessToken);
+        tokenGraph.setRefreshTokenId(Optional.of(refreshToken.getId()));
+        tokenGraph.setPlainTextRefreshToken(Optional.of(refreshAccessToken));
     }
 
     public void insertTokenScope(List<Scope> scopes, TokenGraph tokenGraph) {
@@ -119,6 +124,8 @@ public abstract class InsertTokenGraph {
                 extension = Extension.IDENTITY;
             }
             tokenScopeRepository.insert(ts);
+            tokenGraph.getToken().getTokenScopes().add(ts);
+            // TODO: 134265317: needs a test
         }
         tokenGraph.setExtension(extension);
     }

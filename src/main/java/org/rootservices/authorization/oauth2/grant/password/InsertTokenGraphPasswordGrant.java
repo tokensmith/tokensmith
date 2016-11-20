@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.rootservices.authorization.oauth2.grant.token.InsertTokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
+import org.rootservices.authorization.persistence.entity.Configuration;
 import org.rootservices.authorization.persistence.entity.GrantType;
 import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
 import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
@@ -34,5 +35,10 @@ public class InsertTokenGraphPasswordGrant extends InsertTokenGraph {
     @Override
     protected Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    protected Long getSecondsToExpiration(Configuration configuration) {
+        return configuration.getAccessTokenPasswordSecondsToExpiry();
     }
 }
