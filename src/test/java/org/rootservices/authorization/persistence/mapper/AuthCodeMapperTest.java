@@ -70,7 +70,7 @@ public class AuthCodeMapperTest {
         subject.insert(authCode);
     }
 
-    @Test(expected = DuplicateKeyException.class)
+    @Test
     public void insertDuplicateExpectDuplicateKeyException() throws Exception {
 
         // prepare db for test.
@@ -93,7 +93,15 @@ public class AuthCodeMapperTest {
 
         // insert duplicate.
         authCode.setId(UUID.randomUUID());
-        subject.insert(authCode);
+
+        DuplicateKeyException actual = null;
+        try {
+            subject.insert(authCode);
+        } catch(DuplicateKeyException dke) {
+            actual = dke;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage().contains("Detail: Key (code)"), is(true));
     }
 
     @Test

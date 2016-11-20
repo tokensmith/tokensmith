@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.AuthCodeMapper;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -15,9 +16,7 @@ import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by tommackenzie on 4/10/15.
@@ -26,13 +25,15 @@ public class AuthCodeRepositoryImplTest {
 
     @Mock
     private AuthCodeMapper mockMapper;
+    @Mock
+    private DuplicateRecordExceptionFactory mockDuplicateRecordExceptionFactory;
 
     private AuthCodeRepository subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new AuthCodeRepositoryImpl(mockMapper);
+        subject = new AuthCodeRepositoryImpl(mockDuplicateRecordExceptionFactory, mockMapper);
     }
 
     @Test
@@ -42,11 +43,24 @@ public class AuthCodeRepositoryImplTest {
         verify(mockMapper).insert(authCode);
     }
 
-    @Test(expected = DuplicateRecordException.class)
-    public void testInsertDuplicateExpectDuplicateRecordException() throws DuplicateRecordException {
+    @Test
+    public void testInsertDuplicateExpectDuplicateRecordException() throws Exception {
+
         AuthCode authCode = new AuthCode();
-        Mockito.doThrow(new DuplicateKeyException("message")).when(mockMapper).insert(authCode);
-        subject.insert(authCode);
+        String msg = "some error message from the db.";
+        DuplicateKeyException dke = new DuplicateKeyException(msg);
+        doThrow(dke).when(mockMapper).insert(authCode);
+
+        DuplicateRecordException dre = new DuplicateRecordException("message", dke);
+        when(mockDuplicateRecordExceptionFactory.make(dke, "auth_code")).thenReturn(dre);
+
+        DuplicateRecordException actual = null;
+        try {
+            subject.insert(authCode);
+        } catch (DuplicateRecordException e) {
+            actual = e;
+        }
+        assertThat(actual, is(dre));
     }
 
     @Test
