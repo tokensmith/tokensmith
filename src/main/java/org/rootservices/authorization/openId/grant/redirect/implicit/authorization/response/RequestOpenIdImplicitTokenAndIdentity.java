@@ -1,9 +1,14 @@
 package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
+import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -35,22 +40,23 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestOpenIdImplicitTokenAndIdentity {
+    private static final Logger logger = LogManager.getLogger(RequestOpenIdImplicitTokenAndIdentity.class);
+
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
-    private RandomString randomString;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
     private OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder;
 
     private String issuer;
-    private static String EXCEPTION_MESSAGE = "Failed to create id_token";
+    private static String MSG_ID_TOKEN = "Failed to create id_token";
+    private static String MSG_TOKEN = "Failed to issue token";
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, String issuer) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
-        this.randomString = randomString;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
         this.openIdImplicitAccessTokenBuilder = openIdImplicitAccessTokenBuilder;
@@ -64,10 +70,25 @@ public class RequestOpenIdImplicitTokenAndIdentity {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
 
-        String accessToken = randomString.run();
-        Token token = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(),  accessToken);
+        TokenGraph tokenGraph;
+        try {
+            tokenGraph = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes());
+        } catch (ServerException e) {
+            logger.error(e.getMessage(), e);
 
-        List<String> scopesForIdToken = token.getTokenScopes().stream()
+            ErrorCode ec = ErrorCode.SERVER_ERROR;
+            throw new InformClientExceptionBuilder()
+                    .setMessage(MSG_TOKEN)
+                    .setError(SERVER_ERROR)
+                    .setDescription(ec.getDescription())
+                    .setErrorCode(ec.getCode())
+                    .setRedirectURI(request.getRedirectURI())
+                    .setState(request.getState())
+                    .setCause(e)
+                    .build();
+        }
+
+        List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -77,29 +98,32 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         TokenClaims tc = new TokenClaims();
         tc.setIssuer(issuer);
         tc.setAudience(audience);
-        tc.setIssuedAt(token.getCreatedAt().toEpochSecond());
-        tc.setExpirationTime(token.getExpiresAt().toEpochSecond());
-        tc.setAuthTime(token.getCreatedAt().toEpochSecond());
+        tc.setIssuedAt(tokenGraph.getToken().getCreatedAt().toEpochSecond());
+        tc.setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond());
+        tc.setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond());
 
-        String idToken = null;
+        String idToken;
         try {
             idToken = makeImplicitIdentityToken.makeForAccessToken(
-                accessToken, request.getNonce(), tc, resourceOwner.getId(), scopesForIdToken
+                tokenGraph.getPlainTextAccessToken(), request.getNonce(), tc, resourceOwner.getId(), scopesForIdToken
             );
         } catch (ProfileNotFoundException e) {
+            logger.error(e.getMessage(), e);
             ErrorCode ec = ErrorCode.PROFILE_NOT_FOUND;
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         } catch (KeyNotFoundException e) {
+            logger.error(e.getMessage(), e);
             ErrorCode ec = ErrorCode.SIGN_KEY_NOT_FOUND;
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         } catch (IdTokenException e) {
+            logger.error(e.getMessage(), e);
             ErrorCode ec = ErrorCode.JWT_ENCODING_ERROR;
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         }
 
         OpenIdImplicitAccessToken response = openIdImplicitAccessTokenBuilder
-            .setAccessToken(accessToken)
-            .setExpiresIn(token.getSecondsToExpiration())
+            .setAccessToken(tokenGraph.getPlainTextAccessToken())
+            .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
             .setIdToken(idToken)
             .setRedirectUri(request.getRedirectURI())
             .setState(request.getState())
@@ -111,8 +135,14 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     }
 
     protected InformClientException buildInformClientException(ErrorCode ec, URI redirectURI, Optional<String> state, Throwable cause) {
-        return new InformClientException(
-            EXCEPTION_MESSAGE, SERVER_ERROR, ec.getDescription(), ec.getCode(), redirectURI, state, cause
-        );
+        return new InformClientExceptionBuilder()
+            .setMessage(MSG_ID_TOKEN)
+            .setError(SERVER_ERROR)
+            .setDescription(ec.getDescription())
+            .setErrorCode(ec.getCode())
+            .setRedirectURI(redirectURI)
+            .setState(state)
+            .setCause(cause)
+            .build();
     }
 }

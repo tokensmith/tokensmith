@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,6 +45,8 @@ public class MakeBearerTokenTest {
         assertThat(actual.getToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
         assertThat(actual.getSecondsToExpiration(), is(3600L));
+        assertThat(actual.getTokenScopes(), is(notNullValue()));
+        assertThat(actual.getTokenScopes().size(), is(0));
     }
 
     @Test
