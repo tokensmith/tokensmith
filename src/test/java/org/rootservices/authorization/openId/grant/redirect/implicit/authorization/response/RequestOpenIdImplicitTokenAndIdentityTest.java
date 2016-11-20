@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -119,6 +120,42 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+    }
+
+    @Test
+    public void requestWhenServerErrorShouldThrowInformClientException() throws Exception {
+        String responseType = "token id_token";
+        UUID clientId = UUID.randomUUID();
+        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, responseType);
+        OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+
+        when(mockValidateOpenIdIdImplicitGrant.run(
+                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
+        )).thenReturn(request);
+
+        when(mockLoginResourceOwner.run(
+                input.getUserName(), input.getPlainTextPassword())
+        ).thenReturn(resourceOwner);
+
+        ServerException se = new ServerException("test", null);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenThrow(se);
+
+        InformClientException expected = null;
+        try {
+            subject.request(input);
+        } catch (InformClientException actual) {
+            expected = actual;
+        }
+
+        assertThat(expected, is(notNullValue()));
+        assertThat(expected.getError(), is("server_error"));
+        assertThat(expected.getDescription(), is(ErrorCode.SERVER_ERROR.getDescription()));
+        assertThat(expected.getCode(), is(ErrorCode.SERVER_ERROR.getCode()));
+        assertThat(expected.getRedirectURI(), is(request.getRedirectURI()));
+        assertThat(expected.getState(), is(request.getState()));
+        assertThat(expected.getCause(), instanceOf(ServerException.class));
     }
 
     @Test
