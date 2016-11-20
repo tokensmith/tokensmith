@@ -1,5 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
@@ -9,6 +11,7 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
@@ -30,10 +33,15 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestAccessToken {
+    private static final Logger logger = LogManager.getLogger(RequestAccessToken.class);
+
     private LoginResourceOwner loginResourceOwner;
     private ValidateParams validateParamsImplicitGrant;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private ClientRepository clientRepository;
+
+    private static String MSG_TOKEN = "Failed to issue token";
+    private static String SERVER_ERROR = "server_error";
 
     @Autowired
     public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
@@ -43,7 +51,7 @@ public class RequestAccessToken {
         this.clientRepository = clientRepository;
     }
 
-    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException, ServerException {
+    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
 
         AuthRequest authRequest = validateParamsImplicitGrant.run(
                 inputParams.getClientIds(),
@@ -53,25 +61,37 @@ public class RequestAccessToken {
                 inputParams.getStates()
         );
         ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
+        URI redirectURI = getRedirectURI(authRequest.getRedirectURI(), authRequest.getClientId());
 
         TokenGraph tokenGraph;
         try {
             tokenGraph = issueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes());
         } catch (ServerException e) {
-            // TODO: 134265317: needs a test
-            throw e;
-        }
+            logger.error(e.getMessage(), e);
 
-        URI redirectUri;
-        if (authRequest.getRedirectURI().isPresent()) {
-            redirectUri = authRequest.getRedirectURI().get();
-        } else {
-            redirectUri = fetchClientRedirectURI(authRequest.getClientId());
+            ErrorCode ec = ErrorCode.SERVER_ERROR;
+            throw new InformClientExceptionBuilder()
+                    .setMessage(MSG_TOKEN)
+                    .setError(SERVER_ERROR)
+                    .setDescription(ec.getDescription())
+                    .setErrorCode(ec.getCode())
+                    .setRedirectURI(redirectURI)
+                    .setState(authRequest.getState())
+                    .setCause(e)
+                    .build();
         }
-
-        return translate(redirectUri, tokenGraph.getPlainTextAccessToken(), tokenGraph.getToken().getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
+        return translate(redirectURI, tokenGraph.getPlainTextAccessToken(), tokenGraph.getToken().getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
     }
 
+    private URI getRedirectURI(Optional<URI> requestRedirectURI, UUID clientId) throws InformResourceOwnerException {
+        URI redirectUri;
+        if (requestRedirectURI.isPresent()) {
+            redirectUri = requestRedirectURI.get();
+        } else {
+            redirectUri = fetchClientRedirectURI(clientId);
+        }
+        return redirectUri;
+    }
     private URI fetchClientRedirectURI(UUID clientId) throws InformResourceOwnerException {
 
         try {
