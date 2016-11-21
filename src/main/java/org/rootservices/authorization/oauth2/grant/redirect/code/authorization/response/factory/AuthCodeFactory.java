@@ -22,7 +22,7 @@ public class AuthCodeFactory {
         this.hashText = hashText;
     }
 
-    public AuthCode makeAuthCode(AccessRequest accessRequest, String authorizationCode, int secondsToExpire) {
+    public AuthCode makeAuthCode(AccessRequest accessRequest, String authorizationCode, Long secondsToExpire) {
 
         byte[] hashedAuthorizationCode = hashText.run(authorizationCode).getBytes();;
 

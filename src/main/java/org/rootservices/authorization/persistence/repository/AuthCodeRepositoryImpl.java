@@ -3,6 +3,7 @@ package org.rootservices.authorization.persistence.repository;
 import org.rootservices.authorization.persistence.entity.AuthCode;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.AuthCodeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -15,13 +16,15 @@ import java.util.UUID;
  */
 @Component
 public class AuthCodeRepositoryImpl implements AuthCodeRepository {
-    private static String DUPLICATE_RECORD_MSG = "Could not insert auth_code record.";
+    private static String SCHEMA = "auth_code";
     private static String RECORD_NOT_FOUND_MSG = "AuthCode record was not found.";
 
+    private DuplicateRecordExceptionFactory duplicateRecordExceptionFactory;
     private AuthCodeMapper authCodeMapper;
 
     @Autowired
-    public AuthCodeRepositoryImpl(AuthCodeMapper authCodeMapper) {
+    public AuthCodeRepositoryImpl(DuplicateRecordExceptionFactory duplicateRecordExceptionFactory, AuthCodeMapper authCodeMapper) {
+        this.duplicateRecordExceptionFactory = duplicateRecordExceptionFactory;
         this.authCodeMapper = authCodeMapper;
     }
 
@@ -30,7 +33,7 @@ public class AuthCodeRepositoryImpl implements AuthCodeRepository {
         try {
             authCodeMapper.insert(authCode);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateRecordException(DUPLICATE_RECORD_MSG, e);
+            throw duplicateRecordExceptionFactory.make(e, SCHEMA);
         }
     }
 

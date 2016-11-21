@@ -84,7 +84,7 @@ public abstract class InsertTokenGraph {
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
-            return handleDuplicateToken(e, attempt+1, configId, atSize, secondsToExpiration);
+            return handleDuplicateToken(e, attempt, configId, atSize, secondsToExpiration);
         }
 
         TokenGraph tokenGraph = new TokenGraph();
@@ -103,7 +103,7 @@ public abstract class InsertTokenGraph {
         try {
             refreshTokenRepository.insert(refreshToken);
         } catch (DuplicateRecordException e) {
-            handleDuplicateRefreshToken(e, attempt+1, configId, atSize, secondsToExpiration, tokenGraph, headToken);
+            handleDuplicateRefreshToken(e, attempt, configId, atSize, secondsToExpiration, tokenGraph, headToken);
             return;
         }
 
@@ -133,16 +133,16 @@ public abstract class InsertTokenGraph {
     public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
         Boolean isDuplicateToken = e.getKey().isPresent() && TOKEN_KEY.equals(e.getKey().get());
 
-        if(isDuplicateToken && attempt <= MAX_ATTEMPTS) {
+        if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
             getLogger().warn(e.getMessage(), e);
             configurationRepository.updateAccessTokenSize(configId, atSize+1);
             return insertToken(attempt+1, configId, atSize+1, secondsToExpiration);
         } else if (isDuplicateToken && attempt >= MAX_ATTEMPTS) {
-            String msg = String.format(KEY_KNOWN_FAILED_MSG, TOKEN_SCHEMA, attempt-1, atSize);
+            String msg = String.format(KEY_KNOWN_FAILED_MSG, TOKEN_SCHEMA, attempt, atSize);
             getLogger().error(msg, e);
             throw new ServerException(msg, e);
         } else {
-            String msg = String.format(KEY_UNKNOWN_FAILED_MSG, TOKEN_SCHEMA, e.getKey().orElse(UNKNOWN_KEY), attempt-1, atSize);
+            String msg = String.format(KEY_UNKNOWN_FAILED_MSG, TOKEN_SCHEMA, e.getKey().orElse(UNKNOWN_KEY), attempt, atSize);
             getLogger().error(msg, e);
             throw new ServerException(msg, e);
         }
@@ -152,7 +152,7 @@ public abstract class InsertTokenGraph {
         tokenRepository.revokeById(tokenGraph.getToken().getId());
         Boolean isDuplicateToken = e.getKey().isPresent() && REFRESH_TOKEN_KEY.equals(e.getKey().get());
 
-        if(isDuplicateToken && attempt <= MAX_ATTEMPTS) {
+        if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
             getLogger().warn(e.getMessage(), e);
             configurationRepository.updateRefreshTokenSize(configId, atSize+1);
             insertRefreshToken(attempt+1, configId, atSize+1, secondsToExpiration, tokenGraph, headToken);
