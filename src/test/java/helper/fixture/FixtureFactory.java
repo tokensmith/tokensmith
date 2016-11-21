@@ -490,6 +490,7 @@ public class FixtureFactory {
         c.setAccessTokenPasswordSecondsToExpiry(3603L);
         c.setAccessTokenRefreshSecondsToExpiry(3604L);
         c.setAccessTokenClientSecondsToExpiry(3605L);
+        c.setAuthorizationCodeSecondsToExpiry(120L);
         c.setRefreshTokenSecondsToExpiry(1209600L);
         c.setCreatedAt(OffsetDateTime.now());
         c.setUpdatedAt(OffsetDateTime.now());

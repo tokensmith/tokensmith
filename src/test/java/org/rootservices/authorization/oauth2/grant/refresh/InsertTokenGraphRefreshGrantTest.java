@@ -194,7 +194,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Attempted 2 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Attempted 3 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
@@ -216,7 +216,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, unknown. Did not retry. Attempted 1 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, unknown. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
@@ -238,7 +238,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, foo. Did not retry. Attempted 1 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, foo. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
