@@ -80,8 +80,8 @@ public class InsertAuthCodeWithRetry {
             logger.warn(e.getMessage(), e);
             configurationRepository.updateAuthorizationCodeSize(configId, codeSize+1);
             return insertAuthorizationCode(attempt+1, configId, codeSize+1, secondsToExpiration, accessRequest);
-        } else if (isDuplicateCode && attempt > MAX_RETRY_ATTEMPTS) {
-            String msg = String.format(KEY_KNOWN_FAILED_MSG, attempt-1, codeSize);
+        } else if (isDuplicateCode && attempt >= MAX_RETRY_ATTEMPTS) {
+            String msg = String.format(KEY_KNOWN_FAILED_MSG, attempt, codeSize);
             logger.error(msg);
             logger.error(e.getMessage(), e);
             throw new AuthCodeInsertException(msg, e);

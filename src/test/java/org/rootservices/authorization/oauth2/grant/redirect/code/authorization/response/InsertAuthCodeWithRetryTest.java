@@ -18,6 +18,7 @@ import org.rootservices.authorization.security.RandomString;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -87,9 +88,11 @@ public class InsertAuthCodeWithRetryTest {
         assertThat(actual, is(authorizationCode));
 
         verify(mockAuthCodeRepository, times(2)).insert(authCode);
+
+        verify(mockConfigurationRepository, times(1)).updateAuthorizationCodeSize(configuration.getId(), configuration.getAuthorizationCodeSize()+1);
     }
 
-    @Test(expected = AuthCodeInsertException.class)
+    @Test
     public void testReachesMaxRetries() throws Exception {
         AccessRequest accessRequest = new AccessRequest();
 
@@ -109,6 +112,14 @@ public class InsertAuthCodeWithRetryTest {
         .doThrow(dre)
         .when(mockAuthCodeRepository).insert(authCode);
 
-        subject.run(accessRequest);
+        AuthCodeInsertException actual = null;
+        try {
+            subject.run(accessRequest);
+        } catch (AuthCodeInsertException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+
+        verify(mockConfigurationRepository, times(1)).updateAuthorizationCodeSize(configuration.getId(), configuration.getAuthorizationCodeSize()+1);
     }
 }
