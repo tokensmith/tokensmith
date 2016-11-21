@@ -52,7 +52,7 @@ public class IssueAuthCode {
             }
         }
 
-        String authorizationCode = insertAuthCodeWithRetry.run(accessRequest, 1);
+        String authorizationCode = insertAuthCodeWithRetry.run(accessRequest);
         return authorizationCode;
     }
 }

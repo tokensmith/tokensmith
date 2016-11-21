@@ -69,7 +69,7 @@ public class IssueAuthCodeTest {
         ArgumentCaptor<AccessRequest> ARCaptor = ArgumentCaptor.forClass(AccessRequest.class);
         ArgumentCaptor<AccessRequestScope> ARSCaptor = ArgumentCaptor.forClass(AccessRequestScope.class);
 
-        when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class), anyInt())).thenReturn("randomString");
+        when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class))).thenReturn("randomString");
 
         String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames);
 

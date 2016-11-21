@@ -80,10 +80,10 @@ public class InsertTokenGraphRefreshGrantTest {
         token.setCreatedAt(OffsetDateTime.now());
 
         String headPlainTextToken = "head-plain-text-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headPlainTextToken);
         headToken.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
@@ -98,8 +98,10 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
@@ -129,7 +131,7 @@ public class InsertTokenGraphRefreshGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
@@ -149,8 +151,10 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.
@@ -190,7 +194,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Attempted 2 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Attempted 3 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
@@ -212,7 +216,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, unknown. Did not retry. Attempted 1 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, unknown. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
@@ -234,7 +238,7 @@ public class InsertTokenGraphRefreshGrantTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, foo. Did not retry. Attempted 1 times. Token size is, 32."));
+        assertThat(actual.getMessage(), is("Failed to insert token. Unknown key, foo. Did not retry. Attempted 2 times. Token size is, 32."));
         assertThat(actual.getCause(), is(dre));
     }
 
@@ -249,7 +253,7 @@ public class InsertTokenGraphRefreshGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, 3600L)).thenReturn(token);
+        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
 
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
@@ -269,8 +273,10 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
-        assertThat(actual.getRefreshTokenId(), is(refreshToken.getId()));
-        assertThat(actual.getPlainTextRefreshToken(), is(refreshAccessToken));
+        assertThat(actual.getRefreshTokenId().isPresent(), is(true));
+        assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
+        assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
+        assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should have updated configuration.

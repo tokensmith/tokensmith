@@ -43,6 +43,11 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         return logger;
     }
 
+    @Override
+    protected Long getSecondsToExpiration(Configuration configuration) {
+        return configuration.getAccessTokenRefreshSecondsToExpiry();
+    }
+
     public TokenGraph insertTokenGraph(List<Scope> scopes, Token headToken) throws ServerException {
         Configuration config = configurationRepository.get();
 
@@ -50,7 +55,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
                 1,
                 config.getId(),
                 config.getAccessTokenSize(),
-                config.getAccessTokenCodeSecondsToExpiry()
+                getSecondsToExpiration(config)
         );
 
         insertRefreshToken(

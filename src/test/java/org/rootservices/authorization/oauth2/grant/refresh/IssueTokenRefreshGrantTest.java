@@ -83,7 +83,7 @@ public class IssueTokenRefreshGrantTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
-        assertThat(actual.getRefreshAccessToken(), is(tokenGraph.getPlainTextRefreshToken()));
+        assertThat(actual.getRefreshAccessToken(), is(tokenGraph.getPlainTextRefreshToken().get()));
         assertThat(actual.getExpiresIn(), is(3600L));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
