@@ -37,7 +37,7 @@ public class AuthCodeFactoryTest {
         // parameters to method in test.
         UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
-        int secondsToExpire = 60*10;
+        Long secondsToExpire = 600L;
         String randomString = "randomString";
         String hashedRandomString = "hashedRandomString";
 
