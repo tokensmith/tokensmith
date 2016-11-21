@@ -22,14 +22,13 @@ import java.util.UUID;
 @Component
 public class InsertAuthCodeWithRetry {
     private static final Logger logger = LogManager.getLogger(InsertAuthCodeWithRetry.class);
-    private static final int SECONDS_TO_EXPIRATION = 120;
-    private static final int MAX_RETRY_ATTEMPTS = 2;
 
     private ConfigurationRepository configurationRepository;
     private RandomString randomString;
     private AuthCodeFactory authCodeFactory;
     private AuthCodeRepository authCodeRepository;
 
+    private static final int MAX_RETRY_ATTEMPTS = 2;
     private static String CODE_KEY = "code";
     private static String RETRY_MSG = "Retrying to insert auth_code. Last attempt, %s. Last code size, %s. Next code size, %s.";
     private static String KEY_KNOWN_FAILED_MSG = "Failed to insert auth_code. Attempted %s times. code size is, %s.";
@@ -91,9 +90,5 @@ public class InsertAuthCodeWithRetry {
             logger.error(e.getMessage(), e);
             throw new AuthCodeInsertException(msg, e);
         }
-    }
-
-    public int getSecondsToExpiration() {
-        return SECONDS_TO_EXPIRATION;
     }
 }
