@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
@@ -19,7 +18,6 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.RequestAccessToken;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -194,11 +192,6 @@ public class AppConfig {
                 authRequestFactory(),
                 compareClientToAuthRequest()
         );
-    }
-
-    @Bean
-    public RequestAuthCode requestAuthCode() {
-        return new RequestAuthCode();
     }
 
     @Bean
