@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -48,7 +49,7 @@ public class RequestAuthCodeTest {
     @Mock
     private AuthResponseFactory mockAuthResponseFactory;
     @Mock
-    private GetClientRedirectUri mockGetClientRedirectUri;
+    private GetConfidentialClientRedirectUri mockGetConfidentialClientRedirectUri;
 
     private RequestAuthCode subject;
 
@@ -60,7 +61,7 @@ public class RequestAuthCodeTest {
                 mockLoginResourceOwner,
                 mockIssueAuthCode,
                 mockAuthResponseFactory,
-                mockGetClientRedirectUri
+                mockGetConfidentialClientRedirectUri
         );
     }
 
@@ -219,7 +220,7 @@ public class RequestAuthCodeTest {
                 authRequest.getScopes()))
         .thenThrow(aci);
 
-        when(mockGetClientRedirectUri.run(
+        when(mockGetConfidentialClientRedirectUri.run(
                 clientId,
                 authRequest.getRedirectURI(),
                 aci)
