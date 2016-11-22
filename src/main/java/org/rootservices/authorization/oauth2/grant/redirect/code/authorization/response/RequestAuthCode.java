@@ -1,10 +1,15 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
@@ -25,26 +30,29 @@ import java.util.UUID;
  */
 @Component
 public class RequestAuthCode {
+    private static final Logger logger = LogManager.getLogger(RequestAuthCode.class);
 
-    @Autowired
     private ValidateParams validateParamsCodeGrant;
-    @Autowired
     protected LoginResourceOwner loginResourceOwner;
-    @Autowired
     protected IssueAuthCode issueAuthCode;
-    @Autowired
     protected AuthResponseFactory authResponseFactory;
+    protected GetClientRedirectUri getClientRedirectUri;
+
+    private static String MSG_TOKEN = "Failed to issue authorization code";
+    private static String SERVER_ERROR = "server_error";
 
     public RequestAuthCode() {}
 
-    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory) {
+    @Autowired
+    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetClientRedirectUri getClientRedirectUri) {
         this.validateParamsCodeGrant = validateParamsCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
+        this.getClientRedirectUri = getClientRedirectUri;
     }
 
-    public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+    public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
 
         AuthRequest authRequest = validateParamsCodeGrant.run(
             input.getClientIds(),
@@ -55,25 +63,42 @@ public class RequestAuthCode {
         );
 
         return makeAuthResponse(
-                input.getUserName(),
-                input.getPlainTextPassword(),
-                authRequest.getClientId(),
-                authRequest.getRedirectURI(),
-                authRequest.getScopes(),
-                authRequest.getState()
+            input.getUserName(),
+            input.getPlainTextPassword(),
+            authRequest.getClientId(),
+            authRequest.getRedirectURI(),
+            authRequest.getScopes(),
+            authRequest.getState()
         );
     }
 
-    protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException {
+    protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
-        String authorizationCode = issueAuthCode.run(
-                resourceOwner.getId(),
-                clientId,
-                redirectUri,
-                scopes
-        );
+        String authorizationCode;
+        try {
+            authorizationCode = issueAuthCode.run(
+                    resourceOwner.getId(),
+                    clientId,
+                    redirectUri,
+                    scopes
+            );
+        } catch (AuthCodeInsertException e) {
+            logger.error(e.getMessage(), e);
+
+            URI redirectURI = getClientRedirectUri.run(clientId, redirectUri, e);
+            ErrorCode ec = ErrorCode.SERVER_ERROR;
+            throw new InformClientExceptionBuilder()
+                    .setMessage(MSG_TOKEN)
+                    .setError(SERVER_ERROR)
+                    .setDescription(ec.getDescription())
+                    .setErrorCode(ec.getCode())
+                    .setRedirectURI(redirectURI)
+                    .setState(state)
+                    .setCause(e)
+                    .build();
+        }
 
         return authResponseFactory.makeAuthResponse(
                 clientId,
