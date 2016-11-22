@@ -7,6 +7,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
@@ -26,7 +29,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.never;
@@ -46,6 +48,8 @@ public class RequestAuthCodeTest {
     private IssueAuthCode mockIssueAuthCode;
     @Mock
     private AuthResponseFactory mockAuthResponseFactory;
+    @Mock
+    private GetConfidentialClientRedirectUri mockGetConfidentialClientRedirectUri;
 
     private RequestAuthCode subject;
 
@@ -56,7 +60,8 @@ public class RequestAuthCodeTest {
                 mockValidateParams,
                 mockLoginResourceOwner,
                 mockIssueAuthCode,
-                mockAuthResponseFactory
+                mockAuthResponseFactory,
+                mockGetConfidentialClientRedirectUri
         );
     }
 
@@ -68,7 +73,7 @@ public class RequestAuthCodeTest {
         }
 
         Optional<String> state = Optional.empty();
-        if (input.getStates() != null && input.getStates().get(0) != null) {
+        if (input.getStates() != null && input.getStates().size() > 0 && input.getStates().get(0) != null) {
             state = Optional.of(input.getStates().get(0));
         }
 
@@ -142,7 +147,7 @@ public class RequestAuthCodeTest {
     }
 
     @Test
-    public void failsLoginShouldThrowUnauthorizedException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
+    public void runWhenFailsLoginShouldThrowUnauthorizedException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
         UUID clientId = UUID.randomUUID();
         String scope = "profile";
 
@@ -166,23 +171,76 @@ public class RequestAuthCodeTest {
         )).thenThrow(UnauthorizedException.class);
 
         AuthResponse authResponse = null;
-        UnauthorizedException expectedException = null;
+        UnauthorizedException actual = null;
         try {
             authResponse = subject.run(input);
         } catch (UnauthorizedException e) {
             verify(mockIssueAuthCode, never()).run(
                 any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
             );
-            expectedException = e;
-        } catch (InformResourceOwnerException e) {
-            fail("Expected UnauthorizedException");
-        } catch (InformClientException e) {
-            fail("Expected UnauthorizedException");
-        } catch (AuthCodeInsertException e) {
-            fail("Expected UnauthorizedException");
+            actual = e;
         }
 
         assertThat(authResponse, is(nullValue()));
-        assertThat(expectedException, is(notNullValue()));
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
+    public void runWhenAuthCodeInsertExceptionShouldThrowInformClientException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
+        UUID clientId = UUID.randomUUID();
+        String scope = "profile";
+
+        // parameters to method in test
+        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
+        input.getStates().add("state");
+
+        // response from mockValidateParams
+        AuthRequest authRequest = makeAuthRequest(input);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+
+        when(mockValidateParams.run(
+                input.getClientIds(),
+                input.getResponseTypes(),
+                input.getRedirectUris(),
+                input.getScopes(),
+                input.getStates()
+        )).thenReturn(authRequest);
+
+        when(mockLoginResourceOwner.run(
+                input.getUserName(),
+                input.getPlainTextPassword()
+        )).thenReturn(resourceOwner);
+
+        AuthCodeInsertException aci = new AuthCodeInsertException("test", null);
+        when(mockIssueAuthCode.run(
+                resourceOwner.getId(),
+                clientId,
+                authRequest.getRedirectURI(),
+                authRequest.getScopes()))
+        .thenThrow(aci);
+
+        when(mockGetConfidentialClientRedirectUri.run(
+                clientId,
+                authRequest.getRedirectURI(),
+                aci)
+        ).thenReturn(FixtureFactory.makeSecureRedirectUri());
+
+        InformClientException actual = null;
+        try {
+            subject.run(input);
+        } catch (InformClientException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("Failed to issue authorization code"));
+        assertThat(actual.getError(), is("server_error"));
+        assertThat(actual.getDescription(), is(ErrorCode.SERVER_ERROR.getDescription()));
+        assertThat(actual.getCode(), is(ErrorCode.SERVER_ERROR.getCode()));
+        assertThat(actual.getRedirectURI(), is(FixtureFactory.makeSecureRedirectUri()));
+        assertThat(actual.getState().isPresent(), is(true));
+        assertThat(actual.getState().get(), is("state"));
+        assertThat(actual.getCause(), is(aci));
     }
 }
