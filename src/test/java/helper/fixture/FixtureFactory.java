@@ -337,6 +337,9 @@ public class FixtureFactory {
         scopes.add(scope.toString());
         input.setScopes(scopes);
 
+        List<String> states = new ArrayList<>();
+        input.setStates(states);
+
         return input;
     }
 
