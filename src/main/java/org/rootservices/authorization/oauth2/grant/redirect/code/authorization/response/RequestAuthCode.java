@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
@@ -36,7 +37,7 @@ public class RequestAuthCode {
     protected LoginResourceOwner loginResourceOwner;
     protected IssueAuthCode issueAuthCode;
     protected AuthResponseFactory authResponseFactory;
-    protected GetClientRedirectUri getClientRedirectUri;
+    protected GetConfidentialClientRedirectUri getConfidentialClientRedirectUri;
 
     private static String MSG_TOKEN = "Failed to issue authorization code";
     private static String SERVER_ERROR = "server_error";
@@ -44,12 +45,12 @@ public class RequestAuthCode {
     public RequestAuthCode() {}
 
     @Autowired
-    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetClientRedirectUri getClientRedirectUri) {
+    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetConfidentialClientRedirectUri getConfidentialClientRedirectUri) {
         this.validateParamsCodeGrant = validateParamsCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
-        this.getClientRedirectUri = getClientRedirectUri;
+        this.getConfidentialClientRedirectUri = getConfidentialClientRedirectUri;
     }
 
     public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
@@ -87,7 +88,7 @@ public class RequestAuthCode {
         } catch (AuthCodeInsertException e) {
             logger.error(e.getMessage(), e);
 
-            URI redirectURI = getClientRedirectUri.run(clientId, redirectUri, e);
+            URI redirectURI = getConfidentialClientRedirectUri.run(clientId, redirectUri, e);
             ErrorCode ec = ErrorCode.SERVER_ERROR;
             throw new InformClientExceptionBuilder()
                     .setMessage(MSG_TOKEN)
