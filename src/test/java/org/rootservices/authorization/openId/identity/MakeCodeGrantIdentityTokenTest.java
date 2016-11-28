@@ -71,7 +71,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String hashedAccessToken = "hashedAccessToken";
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         ro.getTokens().add(token);
@@ -100,7 +100,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, ro))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))
@@ -152,7 +152,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String hashedAccessToken = "hashedAccessToken";
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         ro.getTokens().add(token);
@@ -176,7 +176,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String hashedAccessToken = "hashedAccessToken";
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         ro.getTokens().add(token);
@@ -208,7 +208,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String hashedAccessToken = "hashedAccessToken";
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         ro.getTokens().add(token);
@@ -239,7 +239,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String hashedAccessToken = "hashedAccessToken";
 
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
         Token token = FixtureFactory.makeOpenIdToken(accessToken);
         ro.getTokens().add(token);
@@ -266,7 +266,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, ro))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))

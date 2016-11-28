@@ -74,7 +74,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
         List<String> scopesForIdToken = new ArrayList<>();
 
         List<String> audience = new ArrayList<>();
@@ -93,7 +93,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -107,9 +107,10 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenReturn(expected);
 
-        String actual = subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        String actual = subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
 
         assertThat(actual, is(expected));
+        assertThat(resourceOwner.getProfile(), is(profile));
     }
 
     @Test(expected = ProfileNotFoundException.class)
@@ -128,7 +129,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = KeyNotFoundException.class)
@@ -138,7 +139,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
         List<String> scopesForIdToken = new ArrayList<>();
 
         List<String> audience = new ArrayList<>();
@@ -153,13 +154,13 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -169,7 +170,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
         List<String> scopesForIdToken = new ArrayList<>();
 
         List<String> audience = new ArrayList<>();
@@ -186,7 +187,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -197,7 +198,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -207,7 +208,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
         List<String> scopesForIdToken = new ArrayList<>();
 
         List<String> audience = new ArrayList<>();
@@ -224,7 +225,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -235,7 +236,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -244,7 +245,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
         List<String> scopesForIdToken = new ArrayList<>();
 
         List<String> audience = new ArrayList<>();
@@ -262,7 +263,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
                 .thenReturn("accessTokenHash");
 
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -276,7 +277,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test
@@ -284,7 +285,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         List<String> scopesForIdToken = new ArrayList<>();
         List<String> audience = new ArrayList<>();
@@ -300,7 +301,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -314,9 +315,10 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenReturn(expected);
 
-        String actual = subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        String actual = subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
 
         assertThat(actual, is(expected));
+        assertThat(resourceOwner.getProfile(), is(profile));
     }
 
     @Test(expected = ProfileNotFoundException.class)
@@ -334,7 +336,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = KeyNotFoundException.class)
@@ -343,7 +345,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         List<String> scopesForIdToken = new ArrayList<>();
         List<String> audience = new ArrayList<>();
@@ -355,13 +357,13 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(RecordNotFoundException.class);
 
-        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -370,7 +372,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         List<String> scopesForIdToken = new ArrayList<>();
         List<String> audience = new ArrayList<>();
@@ -384,7 +386,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -395,7 +397,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidAlgorithmException.class);
 
-        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -404,7 +406,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         List<String> scopesForIdToken = new ArrayList<>();
         List<String> audience = new ArrayList<>();
@@ -418,7 +420,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -429,7 +431,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenThrow(InvalidJsonWebKeyException.class);
 
-        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }
 
     @Test(expected = IdTokenException.class)
@@ -438,7 +440,7 @@ public class MakeImplicitIdentityTokenTest {
         String nonce = "some-nonce";
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         List<String> scopesForIdToken = new ArrayList<>();
         List<String> audience = new ArrayList<>();
@@ -453,7 +455,7 @@ public class MakeImplicitIdentityTokenTest {
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
 
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
                 .thenReturn(idToken);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
@@ -467,6 +469,6 @@ public class MakeImplicitIdentityTokenTest {
         when(mockSecureJwtEncoder.encode(idToken))
                 .thenThrow(JwtToJsonException.class);
 
-        subject.makeIdentityOnly(nonce, tc, resourceOwner.getId(), scopesForIdToken);
+        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }
 }

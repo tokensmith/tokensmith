@@ -82,7 +82,7 @@ public class MakeCodeGrantIdentityToken {
                 .collect(Collectors.toList());
 
         // NPE - ro.getProfile()
-        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro.getProfile());
+        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro);
 
         SecureJwtEncoder secureJwtEncoder;
         try {

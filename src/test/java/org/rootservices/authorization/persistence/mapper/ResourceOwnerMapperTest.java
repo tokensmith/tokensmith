@@ -145,7 +145,7 @@ public class ResourceOwnerMapperTest {
         resourceOwnerToken.setToken(token);
         resourceOwnerTokenMapper.insert(resourceOwnerToken);
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         profileMapper.insert(profile);
 
         GivenName givenName = FixtureFactory.makeGivenName(profile.getId());

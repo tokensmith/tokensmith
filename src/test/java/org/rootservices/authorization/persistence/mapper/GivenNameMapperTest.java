@@ -36,7 +36,7 @@ public class GivenNameMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         profileMapper.insert(profile);
 
         return profile;

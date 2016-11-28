@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public class Profile {
     private UUID id;
-    private ResourceOwner resourceOwner;
+    private UUID resourceOwnerId;
     private Optional<String> name;
     private Optional<String> middleName;
     private Optional<String> nickName;
@@ -43,12 +43,12 @@ public class Profile {
         this.id = id;
     }
 
-    public ResourceOwner getResourceOwner() {
-        return resourceOwner;
+    public UUID getResourceOwnerId() {
+        return resourceOwnerId;
     }
 
-    public void setResourceOwner(ResourceOwner resourceOwner) {
-        this.resourceOwner = resourceOwner;
+    public void setResourceOwnerId(UUID resourceOwnerId) {
+        this.resourceOwnerId = resourceOwnerId;
     }
 
     public Optional<String> getName() {

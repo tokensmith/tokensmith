@@ -30,7 +30,7 @@ public class ProfileToIdTokenTest {
     @Test
     public void toProfileClaimsShouldAssign() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         profile.setUpdatedAt(OffsetDateTime.now());
 
         FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
