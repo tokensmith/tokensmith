@@ -14,6 +14,8 @@ public class ResourceOwner {
     private String email;
     private byte[] password;
     private Boolean emailVerified;
+    private Profile profile; // optional
+    private List<Token> tokens = new ArrayList<>();
     private OffsetDateTime createdAt;
 
     public ResourceOwner() {}
@@ -62,5 +64,21 @@ public class ResourceOwner {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
 }

@@ -41,15 +41,13 @@ public class MakeCodeGrantIdentityTokenTest {
     @Mock
     private HashTextStaticSalt mockHashText;
     @Mock
-    private RsaPrivateKeyRepository mockRsaPrivateKeyRepository;
+    private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
-    private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
+    private RsaPrivateKeyRepository mockRsaPrivateKeyRepository;
     @Mock
     private PrivateKeyTranslator mockPrivateKeyTranslator;
     @Mock
     private AppFactory mockJwtAppFactory;
-    @Mock
-    private ProfileRepository mockProfileRepository;
     @Mock
     private IdTokenFactory mockIdTokenFactory;
 
@@ -58,11 +56,10 @@ public class MakeCodeGrantIdentityTokenTest {
         MockitoAnnotations.initMocks(this);
         subject = new MakeCodeGrantIdentityToken(
                 mockHashText,
+                mockResourceOwnerRepository,
                 mockRsaPrivateKeyRepository,
-                mockResourceOwnerTokenRepository,
                 mockPrivateKeyTranslator,
                 mockJwtAppFactory,
-                mockProfileRepository,
                 mockIdTokenFactory
         );
     }
@@ -73,12 +70,16 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
+
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
-        List<String> scopesForIdToken = rot.getToken().getTokenScopes().stream()
+        List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -88,11 +89,8 @@ public class MakeCodeGrantIdentityTokenTest {
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenReturn(profile);
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
@@ -102,7 +100,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, ro))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))
@@ -114,16 +112,35 @@ public class MakeCodeGrantIdentityTokenTest {
 
     }
 
-    @Test(expected = RotNotFoundException.class)
-    public void makeShouldThrowRotNotFoundException() throws Exception {
+    @Test(expected = ResourceOwnerNotFoundException.class)
+    public void makeShouldThrowResourceOwnerNotFoundException() throws Exception {
         TokenClaims tc = new TokenClaims();
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
+
+        subject.make(accessToken, tc);
+    }
+
+    @Test(expected = ProfileNotFoundException.class)
+    public void makeShouldThrowProfileNotFoundException() throws Exception {
+        TokenClaims tc = new TokenClaims();
+        String accessToken = "accessToken";
+        String hashedAccessToken = "hashedAccessToken";
+
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ro.setProfile(null);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
+
+        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         subject.make(accessToken, tc);
     }
@@ -134,44 +151,19 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenReturn(profile);
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(KeyNotFoundException.class);
-
-        subject.make(accessToken, tc);
-
-    }
-
-    @Test(expected = ProfileNotFoundException.class)
-    public void makeShouldThrowProfileNotFoundException() throws Exception {
-        TokenClaims tc = new TokenClaims();
-        String accessToken = "accessToken";
-        String hashedAccessToken = "hashedAccessToken";
-
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
-
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenThrow(ProfileNotFoundException.class);
 
         subject.make(accessToken, tc);
 
@@ -183,18 +175,19 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
+
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenReturn(profile);
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
@@ -214,18 +207,19 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
+
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenReturn(profile);
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
@@ -244,12 +238,16 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        ResourceOwnerToken rot = FixtureFactory.makeResourceOwnerToken(accessToken);
-        Profile profile = FixtureFactory.makeProfile(rot.getResourceOwner());
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        ro.getTokens().add(token);
+
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
 
-        List<String> scopesForIdToken = rot.getToken().getTokenScopes().stream()
+        List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
@@ -257,11 +255,8 @@ public class MakeCodeGrantIdentityTokenTest {
         SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
 
-        when(mockResourceOwnerTokenRepository.getByAccessToken(hashedAccessToken))
-                .thenReturn(rot);
-
-        when(mockProfileRepository.getByResourceOwnerId(rot.getResourceOwner().getId()))
-                .thenReturn(profile);
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenReturn(key);
@@ -271,7 +266,7 @@ public class MakeCodeGrantIdentityTokenTest {
         when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
                 .thenReturn(mockSecureJwtEncoder);
 
-        when(mockIdTokenFactory.make(tc, scopesForIdToken, profile))
+        when(mockIdTokenFactory.make(tc, scopesForIdToken, ro))
                 .thenReturn(idToken);
 
         when(mockSecureJwtEncoder.encode(idToken))

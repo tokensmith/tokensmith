@@ -5,10 +5,7 @@ import org.rootservices.authorization.openId.identity.entity.Address;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.translator.AddrToAddrClaims;
 import org.rootservices.authorization.openId.identity.translator.ProfileToIdToken;
-import org.rootservices.authorization.persistence.entity.Profile;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.persistence.entity.TokenScope;
+import org.rootservices.authorization.persistence.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,8 +35,8 @@ public class IdTokenFactory {
     }
 
     // make for implicit grant
-    public IdToken make(String accessTokenHash, String nonce, TokenClaims tokenClaims, List<String> scopes, Profile profile) {
-        IdToken idToken = make(tokenClaims, scopes, profile);
+    public IdToken make(String accessTokenHash, String nonce, TokenClaims tokenClaims, List<String> scopes, ResourceOwner ro) {
+        IdToken idToken = make(tokenClaims, scopes, ro);
         idToken.setNonce(Optional.of(nonce));
         idToken.setAccessTokenHash(Optional.of(accessTokenHash));
 
@@ -47,14 +44,14 @@ public class IdTokenFactory {
     }
 
     // make for open id implicit identity only
-    public IdToken make(String nonce, TokenClaims tokenClaims, List<String> scopes, Profile profile) {
-        IdToken idToken = make(tokenClaims, scopes, profile);
+    public IdToken make(String nonce, TokenClaims tokenClaims, List<String> scopes, ResourceOwner ro) {
+        IdToken idToken = make(tokenClaims, scopes, ro);
         idToken.setNonce(Optional.of(nonce));
 
         return idToken;
     }
 
-    public IdToken make(TokenClaims tokenClaims, List<String> scopes, Profile profile) {
+    public IdToken make(TokenClaims tokenClaims, List<String> scopes, ResourceOwner ro) {
         IdToken idToken = new IdToken();
 
         idToken.setIssuer(Optional.of(tokenClaims.getIssuer()));
@@ -64,23 +61,23 @@ public class IdTokenFactory {
         idToken.setAuthenticationTime(tokenClaims.getAuthTime());
 
         if (scopes.contains(PROFILE)) {
-            profileToIdToken.toProfileClaims(idToken, profile);
+            profileToIdToken.toProfileClaims(idToken, ro.getProfile());
         }
 
         if (scopes.contains(EMAIL)) {
-            profileToIdToken.toEmailClaims(idToken, profile.getResourceOwner().getEmail(), profile.getResourceOwner().isEmailVerified());
+            profileToIdToken.toEmailClaims(idToken, ro.getEmail(), ro.isEmailVerified());
         }
 
         if (scopes.contains(PHONE)) {
             profileToIdToken.toPhoneClaims(
                 idToken,
-                profile.getPhoneNumber(),
-                profile.isPhoneNumberVerified()
+                ro.getProfile().getPhoneNumber(),
+                ro.getProfile().isPhoneNumberVerified()
             );
         }
 
-        if (scopes.contains(ADDR) && profile.getAddresses().size() > 0) {
-            Address address = addrToAddrClaims.to(profile.getAddresses().get(0));
+        if (scopes.contains(ADDR) && ro.getProfile().getAddresses().size() > 0) {
+            Address address = addrToAddrClaims.to(ro.getProfile().getAddresses().get(0));
             idToken.setAddress(Optional.of(address));
         } else {
             idToken.setAddress(Optional.empty());
