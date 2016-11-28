@@ -47,7 +47,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeWhenProfileShouldOnlyAddProfileClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -56,7 +57,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
 
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-        IdToken actual = subject.make(tc, scopes, profile);
+        IdToken actual = subject.make(tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -82,7 +83,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeWhenEmailShouldOnlyAddEmailClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("email");
@@ -91,7 +93,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(tc, scopes, profile);
+        IdToken actual = subject.make(tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -117,7 +119,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeWhenPhoneShouldOnlyAddPhoneClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("phone");
@@ -126,7 +129,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(tc, scopes, profile);
+        IdToken actual = subject.make(tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -152,9 +155,10 @@ public class IdTokenFactoryTest {
     @Test
     public void makeWhenAddressShouldOnlyAddAddressClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         Address address = FixtureFactory.makeAddress(profile.getId());
         profile.getAddresses().add(address);
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("address");
@@ -166,7 +170,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(tc, scopes, profile);
+        IdToken actual = subject.make(tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(true));
@@ -193,7 +197,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeWhenAddressAndProfileHasNoAddressShouldNotAddAddressClaim() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("address");
@@ -202,7 +207,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(tc, scopes, profile);
+        IdToken actual = subject.make(tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAddress().isPresent(), is(false));
@@ -228,7 +233,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeForAccessTokenAndNonceWhenProfileShouldOnlyAddProfileClaims() throws Exception{
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -240,7 +246,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
 
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-        IdToken actual = subject.make(accessTokenHash, nonce, tc, scopes, profile);
+        IdToken actual = subject.make(accessTokenHash, nonce, tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(true));
@@ -271,7 +277,8 @@ public class IdTokenFactoryTest {
     @Test
     public void makeForIdentityOnlyAndNonceWhenProfileShouldOnlyAddProfileClaims() throws Exception{
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("profile");
@@ -281,7 +288,7 @@ public class IdTokenFactoryTest {
         audience.add(UUID.randomUUID().toString());
         TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
 
-        IdToken actual = subject.make(nonce, tc, scopes, profile);
+        IdToken actual = subject.make(nonce, tc, scopes, ro);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessTokenHash().isPresent(), is(false));

@@ -7,10 +7,7 @@ import org.rootservices.authorization.openId.identity.exception.KeyNotFoundExcep
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
-import org.rootservices.authorization.persistence.entity.Profile;
-import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.TokenScope;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
@@ -58,27 +55,19 @@ public class MakeImplicitIdentityToken {
     /**
      * Creates a id token for the implicit grant flow, "token id_token".
      * http://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth
-     *
-     * @param plainTextAccessToken
-     * @param nonce
-     * @param resourceOwnerId
-     * @param scopesForIdToken
-     * @return a secure (signed) and encoded jwt
-     * @throws ProfileNotFoundException
-     * @throws KeyNotFoundException
-     * @throws IdTokenException
      */
-    public String makeForAccessToken(String plainTextAccessToken, String nonce, TokenClaims tokenClaims, UUID resourceOwnerId, List<String> scopesForIdToken) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    public String makeForAccessToken(String plainTextAccessToken, String nonce, TokenClaims tokenClaims, ResourceOwner resourceOwner, List<String> scopesForIdToken) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
-            profile = profileRepository.getByResourceOwnerId(resourceOwnerId);
+            profile = profileRepository.getByResourceOwnerId(resourceOwner.getId());
         } catch (RecordNotFoundException e) {
             throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
+        resourceOwner.setProfile(profile);
 
         String accessTokenHash = makeAccessTokenHash.makeEncodedHash(plainTextAccessToken);
-        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, tokenClaims, scopesForIdToken, profile);
+        IdToken idToken = idTokenFactory.make(accessTokenHash, nonce, tokenClaims, scopesForIdToken, resourceOwner);
 
         RSAPrivateKey key = null;
         try {
@@ -96,25 +85,17 @@ public class MakeImplicitIdentityToken {
     /**
      * Creates a id token for the implicit grant flow, "id_token".
      * http://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth
-     *
-     * @param nonce
-     * @param resourceOwnerId
-     * @param scopes
-     * @return a secure (signed) and encoded jwt
-     * @throws ProfileNotFoundException
-     * @throws KeyNotFoundException
-     * @throws IdTokenException
      */
-    public String makeIdentityOnly(String nonce, TokenClaims tokenClaim, UUID resourceOwnerId, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
+    public String makeIdentityOnly(String nonce, TokenClaims tokenClaim, ResourceOwner resourceOwner, List<String> scopes) throws ProfileNotFoundException, KeyNotFoundException, IdTokenException {
 
         Profile profile = null;
         try {
-            profile = profileRepository.getByResourceOwnerId(resourceOwnerId);
+            profile = profileRepository.getByResourceOwnerId(resourceOwner.getId());
         } catch (RecordNotFoundException e) {
             throw new ProfileNotFoundException(PROFILE_ERROR_MESSAGE, e);
         }
-
-        IdToken idToken = idTokenFactory.make(nonce, tokenClaim, scopes, profile);
+        resourceOwner.setProfile(profile);
+        IdToken idToken = idTokenFactory.make(nonce, tokenClaim, scopes, resourceOwner);
 
         RSAPrivateKey key = null;
         try {

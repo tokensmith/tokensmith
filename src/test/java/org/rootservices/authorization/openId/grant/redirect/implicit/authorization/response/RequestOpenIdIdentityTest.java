@@ -78,7 +78,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro), eq(request.getScopes()))
         ).thenReturn(idToken);
 
         OpenIdImplicitIdentity actual = subject.request(input);
@@ -121,7 +121,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro), eq(request.getScopes()))
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -172,7 +172,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro), eq(request.getScopes()))
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -223,7 +223,7 @@ public class RequestOpenIdIdentityTest {
                 .thenReturn(ro);
 
         when(mockMakeImplicitIdentityToken.makeIdentityOnly(
-                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro.getId()), eq(request.getScopes()))
+                eq(request.getNonce()), tcArgumentCaptor.capture(), eq(ro), eq(request.getScopes()))
         ).thenThrow(ide);
 
         InformClientException expected = null;

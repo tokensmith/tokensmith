@@ -175,11 +175,11 @@ public class FixtureFactory {
         return ro;
     }
 
-    public static Profile makeProfile(ResourceOwner resourceOwner) throws URISyntaxException {
+    public static Profile makeProfile(UUID resourceOwnerId) throws URISyntaxException {
         Profile profile = new Profile();
 
         profile.setId(UUID.randomUUID());
-        profile.setResourceOwner(resourceOwner);
+        profile.setResourceOwnerId(resourceOwnerId);
         profile.setName(Optional.of("Obi-Wan Kenobi"));
         profile.setMiddleName(Optional.empty());
         profile.setNickName(Optional.of("Ben"));
