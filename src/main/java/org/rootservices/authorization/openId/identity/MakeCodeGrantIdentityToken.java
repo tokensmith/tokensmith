@@ -81,7 +81,6 @@ public class MakeCodeGrantIdentityToken {
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
-        // NPE - ro.getProfile()
         IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro);
 
         SecureJwtEncoder secureJwtEncoder;
