@@ -17,7 +17,7 @@ public class ProfileToIdToken {
 
     public void toProfileClaims(IdToken idToken, Profile profile){
 
-        idToken.setLastName(makeFamiyNamesClaim(profile.getFamilyNames()));
+        idToken.setLastName(makeFamilyNamesClaim(profile.getFamilyNames()));
         idToken.setFirstName(makeGivenNamesClaim(profile.getGivenNames()));
         idToken.setMiddleName(profile.getMiddleName());
         idToken.setNickName(profile.getNickName());
@@ -43,7 +43,7 @@ public class ProfileToIdToken {
         idToken.setPhoneNumberVerified(Optional.of(isVerified));
     }
 
-    public Optional<String> makeFamiyNamesClaim(List<FamilyName> familyNames) {
+    public Optional<String> makeFamilyNamesClaim(List<FamilyName> familyNames) {
         String names = null;
         for(FamilyName familyName: familyNames) {
             if (names == null) {
