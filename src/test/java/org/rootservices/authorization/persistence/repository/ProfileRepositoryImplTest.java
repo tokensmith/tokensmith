@@ -38,7 +38,7 @@ public class ProfileRepositoryImplTest {
     @Test
     public void insert() throws URISyntaxException {
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner);
+        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
 
         subject.insert(profile);
         verify(mockProfileMapper, times(1)).insert(profile);
@@ -48,7 +48,7 @@ public class ProfileRepositoryImplTest {
     public void testGetByResourceOwnerIdShouldReturnProfile() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         when(mockProfileMapper.getByResourceId(ro.getId())).thenReturn(profile);
 
         Profile actual = subject.getByResourceOwnerId(ro.getId());

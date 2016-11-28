@@ -1,18 +1,17 @@
 package org.rootservices.authorization.openId.identity;
 
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
-import org.rootservices.authorization.openId.identity.exception.IdTokenException;
-import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
-import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
+import org.rootservices.authorization.openId.identity.exception.*;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
-import org.rootservices.authorization.openId.identity.exception.RotNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
 import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
+import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.entity.ResourceOwnerToken;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
+import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
@@ -37,33 +36,35 @@ import java.util.stream.Collectors;
 @Component
 public class MakeCodeGrantIdentityToken {
     private HashTextStaticSalt hashText;
+    private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
-    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private PrivateKeyTranslator privateKeyTranslator;
     private AppFactory jwtAppFactory;
-    private ProfileRepository profileRepository;
     private IdTokenFactory idTokenFactory;
 
     @Autowired
-    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, RsaPrivateKeyRepository rsaPrivateKeyRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, ProfileRepository profileRepository, IdTokenFactory idTokenFactory) {
+    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
+        this.resourceOwnerRepository = resourceOwnerRepository;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
-        this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.privateKeyTranslator = privateKeyTranslator;
         this.jwtAppFactory = jwtAppFactory;
-        this.profileRepository = profileRepository;
         this.idTokenFactory = idTokenFactory;
     }
 
-    public String make(String accessToken, TokenClaims tokenClaims) throws RotNotFoundException, IdTokenException, KeyNotFoundException, ProfileNotFoundException {
+    public String make(String accessToken, TokenClaims tokenClaims) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
 
         String hashedAccessToken = hashText.run(accessToken);
 
-        ResourceOwnerToken resourceOwnerToken = null;
+        ResourceOwner ro;
         try {
-            resourceOwnerToken = resourceOwnerTokenRepository.getByAccessToken(hashedAccessToken);
+            ro = resourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
         } catch (RecordNotFoundException e) {
-            throw new RotNotFoundException("Could not find resource owner token", e);
+            throw new ResourceOwnerNotFoundException("resource owner was not found", e);
+        }
+
+        if (ro.getProfile() == null) {
+            throw new ProfileNotFoundException("resource owner was not found");
         }
 
         RSAPrivateKey key = null;
@@ -73,20 +74,14 @@ public class MakeCodeGrantIdentityToken {
             throw new KeyNotFoundException("No key available to sign id token", e);
         }
 
-        Profile profile = null;
-        try {
-            profile = profileRepository.getByResourceOwnerId(resourceOwnerToken.getResourceOwner().getId());
-        } catch (RecordNotFoundException e) {
-            throw new ProfileNotFoundException("Profile was not found", e);
-        }
-
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
 
-        List<String> scopesForIdToken = resourceOwnerToken.getToken().getTokenScopes().stream()
+        // NPE - for ro.getTokens()
+        List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
-        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, profile);
+        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro);
 
         SecureJwtEncoder secureJwtEncoder;
         try {

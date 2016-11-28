@@ -30,7 +30,7 @@ public class ProfileToIdTokenTest {
     @Test
     public void toProfileClaimsShouldAssign() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         profile.setUpdatedAt(OffsetDateTime.now());
 
         FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
@@ -185,7 +185,7 @@ public class ProfileToIdTokenTest {
         familyNames.add(firstFamilyName);
         familyNames.add(secondFamilyName);
 
-        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Kenobi Kenobi"));
     }
@@ -197,7 +197,7 @@ public class ProfileToIdTokenTest {
         List<FamilyName> familyNames = new ArrayList<>();
         familyNames.add(familyName);
 
-        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Kenobi"));
     }
@@ -206,7 +206,7 @@ public class ProfileToIdTokenTest {
     public void makeFamilyNamesClaimWhenEmptyShouldAssign() throws Exception {
         List<FamilyName> familyNames = new ArrayList<>();
 
-        Optional<String> actual = subject.makeFamiyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
         assertThat(actual.isPresent(), is(false));
     }
 

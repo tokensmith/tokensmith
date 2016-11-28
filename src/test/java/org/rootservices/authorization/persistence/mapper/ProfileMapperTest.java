@@ -43,7 +43,7 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         subject.insert(profile);
     }
 
@@ -52,14 +52,14 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         subject.insert(profile);
 
         Profile actual = subject.getById(profile.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getResourceOwner(), is(notNullValue()));
+        assertThat(actual.getResourceOwnerId(), is(notNullValue()));
         // TODO: assertions for resource owner
 
         assertThat(actual.getName().isPresent(), is(true));
@@ -98,7 +98,7 @@ public class ProfileMapperTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerMapper.insert(ro);
 
-        Profile profile = FixtureFactory.makeProfile(ro);
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
         subject.insert(profile);
 
         GivenName  givenName = FixtureFactory.makeGivenName(profile.getId());
@@ -114,7 +114,7 @@ public class ProfileMapperTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getResourceOwner(), is(notNullValue()));
+        assertThat(actual.getResourceOwnerId(), is(notNullValue()));
         // TODO: assertions for resource owner
 
         assertThat(actual.getName().isPresent(), is(true));

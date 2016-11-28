@@ -98,7 +98,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenReturn(idToken);
 
         OpenIdImplicitAccessToken actual = subject.request(input);
@@ -186,7 +186,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(pnfe);
 
         InformClientException expected = null;
@@ -242,7 +242,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(knfe);
 
         InformClientException expected = null;
@@ -297,7 +297,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         ).thenReturn(resourceOwner);
         when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes())).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
-                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner.getId()), eq(scopesForIdToken))
+                eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(ide);
 
 
