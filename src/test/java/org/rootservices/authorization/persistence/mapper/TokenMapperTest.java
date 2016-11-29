@@ -36,12 +36,17 @@ public class TokenMapperTest {
     @Autowired
     private AuthCodeTokenRepository authCodeTokenRepository;
     @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
     private TokenMapper subject;
 
     @Test
     public void insert() throws Exception {
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientRepository.insert(client);
+
         String accessToken = "accessToken";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         subject.insert(token);
 
         assertThat(token.getCreatedAt(), is(notNullValue()));
@@ -49,8 +54,11 @@ public class TokenMapperTest {
 
     @Test
     public void insertDuplicateShouldThrowDuplicateKeyException() throws Exception {
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientRepository.insert(client);
+
         String accessToken = "accessToken";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         subject.insert(token);
 
         DuplicateKeyException actual = null;
@@ -71,7 +79,7 @@ public class TokenMapperTest {
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String accessToken = "accessToken";
-        Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken);
+        Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
         subject.insert(tokenToRevoke);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -99,7 +107,7 @@ public class TokenMapperTest {
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
         subject.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -121,9 +129,12 @@ public class TokenMapperTest {
     }
 
     @Test
-    public void revokeByIdShouldBeOk() {
+    public void revokeByIdShouldBeOk() throws Exception {
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientRepository.insert(client);
+
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         subject.insert(token);
 
         assertThat(token.isRevoked(), is(false));
@@ -141,9 +152,12 @@ public class TokenMapperTest {
     }
 
     @Test
-    public void updateExpiresAtByAccessTokenShouldBeOk() {
+    public void updateExpiresAtByAccessTokenShouldBeOk() throws Exception {
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientRepository.insert(client);
+
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         subject.insert(token);
 
         assertThat(token.isRevoked(), is(false));

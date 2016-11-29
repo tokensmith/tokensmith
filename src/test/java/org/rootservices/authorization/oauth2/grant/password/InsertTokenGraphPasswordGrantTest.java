@@ -70,13 +70,14 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
+        UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenPasswordSecondsToExpiry())).thenReturn(token);
@@ -118,13 +119,15 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
+        UUID clientId = UUID.randomUUID();
+
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenPasswordSecondsToExpiry())).thenReturn(token);
@@ -240,13 +243,15 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void handleDuplicateRefreshTokenShouldRetry() throws Exception {
+        UUID clientId = UUID.randomUUID();
+
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenPasswordSecondsToExpiry())).thenReturn(token);
@@ -296,12 +301,14 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void handleDuplicateRefreshTokenWhenKeyIsAccessTokenAttemptIs3ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
+
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("access_token"));
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -321,12 +328,14 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void handleDuplicateRefreshTokenWhenKeyIsEmptyAttemptIs2ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
+
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.empty());
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -346,12 +355,14 @@ public class InsertTokenGraphPasswordGrantTest {
 
     @Test
     public void handleDuplicateRefreshTokenWhenKeyIsNotTokenAttemptIs2ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
+
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("foo"));
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;

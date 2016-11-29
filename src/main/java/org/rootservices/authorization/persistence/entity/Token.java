@@ -12,6 +12,7 @@ public class Token {
     private byte[] token;
     private boolean revoked;
     private GrantType grantType;
+    private UUID clientId;
     private List<TokenScope> tokenScopes;
     private Long secondsToExpiration;
     private OffsetDateTime expiresAt;
@@ -55,6 +56,14 @@ public class Token {
 
     public void setGrantType(GrantType grantType) {
         this.grantType = grantType;
+    }
+
+    public UUID getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
     public List<TokenScope> getTokenScopes() {

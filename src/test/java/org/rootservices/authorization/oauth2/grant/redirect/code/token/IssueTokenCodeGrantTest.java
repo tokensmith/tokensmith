@@ -72,7 +72,7 @@ public class IssueTokenCodeGrantTest {
 
         List<Scope> scopes = FixtureFactory.makeScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
         TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes);
@@ -131,7 +131,7 @@ public class IssueTokenCodeGrantTest {
         UUID resourceOwnerId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         when(mockInsertTokenGraph.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);

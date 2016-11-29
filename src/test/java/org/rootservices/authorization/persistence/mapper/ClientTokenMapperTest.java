@@ -39,8 +39,8 @@ public class ClientTokenMapperTest {
         return client.getId();
     }
 
-    public UUID loadToken(String accessToken) throws Exception {
-        Token token = FixtureFactory.makeOAuthToken(accessToken);
+    public UUID loadToken(String accessToken, UUID clientId) throws Exception {
+        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId);
         token.setGrantType(GrantType.TOKEN);
         tokenMapper.insert(token);
         return token.getId();
@@ -50,7 +50,7 @@ public class ClientTokenMapperTest {
     public void insertShouldBeOk() throws Exception {
         String accessToken = "access-token";
         UUID clientId = loadClient();
-        UUID tokenId = loadToken(accessToken);
+        UUID tokenId = loadToken(accessToken, clientId);
 
         ClientToken clientToken = new ClientToken();
         clientToken.setId(UUID.randomUUID());

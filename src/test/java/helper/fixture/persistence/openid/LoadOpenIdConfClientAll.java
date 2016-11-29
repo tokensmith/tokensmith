@@ -58,7 +58,7 @@ public class LoadOpenIdConfClientAll {
     public RefreshToken loadRefreshTokenForResourceOwner(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
 
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
         token.setExpiresAt(tokenExpiresAt);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         tokenRepository.insert(token);
@@ -94,7 +94,7 @@ public class LoadOpenIdConfClientAll {
         resourceOwnerTokenRepository.insert(rot);
 
         String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
         tokenRepository.insert(headToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
@@ -104,7 +104,7 @@ public class LoadOpenIdConfClientAll {
 
     public RefreshToken loadRefreshTokenForClient(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
         token.setToken(accessToken.getBytes());
         token.setExpiresAt(tokenExpiresAt);
 
@@ -133,7 +133,7 @@ public class LoadOpenIdConfClientAll {
         clientTokenRepository.insert(clientToken);
 
         String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
         tokenRepository.insert(headToken);
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
