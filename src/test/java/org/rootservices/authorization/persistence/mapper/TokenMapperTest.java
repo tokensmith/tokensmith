@@ -124,6 +124,7 @@ public class TokenMapperTest {
         assertThat(actual.getToken(), is(token.getToken()));
         assertThat(actual.isRevoked(), is(false));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getClientId(), is(authCode.getAccessRequest().getClientId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));
     }
@@ -147,6 +148,7 @@ public class TokenMapperTest {
         assertThat(actual.getToken(), is(token.getToken()));
         assertThat(actual.isRevoked(), is(true));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getClientId(), is(client.getId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt(), is(token.getExpiresAt()));
     }
@@ -172,6 +174,7 @@ public class TokenMapperTest {
         assertThat(actual.getToken(), is(token.getToken()));
         assertThat(actual.isRevoked(), is(false));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
+        assertThat(actual.getClientId(), is(client.getId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt(), is(expiresAt));
     }
