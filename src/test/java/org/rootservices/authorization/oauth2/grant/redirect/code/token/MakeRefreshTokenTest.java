@@ -37,8 +37,9 @@ public class MakeRefreshTokenTest {
     public void runShouldBeOk() throws Exception {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        UUID clientId = UUID.randomUUID();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);

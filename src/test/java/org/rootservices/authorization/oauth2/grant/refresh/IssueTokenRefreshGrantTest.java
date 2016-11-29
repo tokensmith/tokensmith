@@ -69,10 +69,10 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         String headAccessToken = "head-access-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
         headToken.setCreatedAt(OffsetDateTime.now().minusDays(1));
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(scopes, headToken)).thenReturn(tokenGraph);
 
         ArgumentCaptor<TokenChain> tokenChainCaptor = ArgumentCaptor.forClass(TokenChain.class);
@@ -129,9 +129,9 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         String headAccessToken = "head-access-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(scopes, headToken)).thenReturn(tokenGraph);
 
         DuplicateRecordException dre = new DuplicateRecordException("", null);

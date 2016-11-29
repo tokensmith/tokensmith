@@ -70,7 +70,7 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
@@ -166,7 +166,7 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Client client = FixtureFactory.makeTokenClientWithScopes();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
@@ -212,7 +212,7 @@ public class RequestAccessTokenTest {
         authRequest.setState(Optional.empty());
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),

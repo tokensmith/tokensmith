@@ -9,6 +9,7 @@
         <result column="token" property="token"/>
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result column="client_id" property="clientId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
@@ -24,6 +25,7 @@
             token.token,
             token.revoked,
             token.grant_type,
+            token.client_id,
             token.expires_at,
             token.created_at
         from token
@@ -37,6 +39,7 @@
             token.token,
             token.revoked,
             token.grant_type,
+            token.client_id,
             token.expires_at,
             token.created_at
         from token
@@ -44,11 +47,12 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
-        insert into token (id, token, grant_type, expires_at)
+        insert into token (id, token, grant_type, client_id, expires_at)
         values (
             #{token.id},
             #{token.token},
             #{token.grantType},
+            #{token.clientId},
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>

@@ -60,7 +60,7 @@ public class IssueTokenPasswordGrantTest {
 
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
         when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(scopes)).thenReturn(tokenGraph);
 
 

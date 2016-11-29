@@ -3,6 +3,7 @@ package org.rootservices.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.Scope;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.entity.TokenScope;
@@ -22,6 +23,8 @@ import java.util.UUID;
 public class TokenScopeMapperTest {
 
     @Autowired
+    private ClientMapper clientMapper;
+    @Autowired
     private TokenMapper tokenMapper;
     @Autowired
     private ScopeMapper scopeMapper;
@@ -31,8 +34,11 @@ public class TokenScopeMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();

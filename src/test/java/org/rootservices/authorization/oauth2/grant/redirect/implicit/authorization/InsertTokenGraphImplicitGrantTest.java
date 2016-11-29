@@ -71,13 +71,14 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
+        UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setTokenScopes(new ArrayList<>());
 
         token.setCreatedAt(OffsetDateTime.now());
@@ -118,13 +119,14 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
+        UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
