@@ -34,12 +34,12 @@ public class LoadOpenIdConfClientAll {
     private TokenRepository tokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
-    private ClientTokenRepository clientTokenRepository;
+    private TokenAudienceRepository clientTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, HashTextStaticSalt hashText, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, ClientTokenRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
+    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, HashTextStaticSalt hashText, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, TokenAudienceRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
         this.loadConfClientOpendIdTokenReady = loadConfClientOpendIdTokenReady;
         this.randomString = randomString;
         this.tokenRepository = tokenRepository;
@@ -77,7 +77,7 @@ public class LoadOpenIdConfClientAll {
         authCodeToken.setAuthCodeId(authCodeId);
         authCodeTokenRepository.insert(authCodeToken);
 
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(token.getId());
@@ -126,7 +126,7 @@ public class LoadOpenIdConfClientAll {
         authCodeToken.setAuthCodeId(authCodeId);
         authCodeTokenRepository.insert(authCodeToken);
 
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(token.getId());

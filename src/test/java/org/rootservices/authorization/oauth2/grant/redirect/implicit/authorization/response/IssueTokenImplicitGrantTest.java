@@ -7,7 +7,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.InsertTokenGraphImplicitGrant;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
@@ -36,7 +35,7 @@ public class IssueTokenImplicitGrantTest {
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
-    private ClientTokenRepository mockClientTokenRepository;
+    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -71,9 +70,9 @@ public class IssueTokenImplicitGrantTest {
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner(), is(resourceOwner));
 
-        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
+        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
         assertThat(actualCt.getId(), is(notNullValue()));
         assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualCt.getClientId(), is(clientId));

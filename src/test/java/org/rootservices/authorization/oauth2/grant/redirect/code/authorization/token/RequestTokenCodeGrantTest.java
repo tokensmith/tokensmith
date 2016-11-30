@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
@@ -67,7 +66,7 @@ public class RequestTokenCodeGrantTest {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    private ClientTokenRepository clientTokenRepository;
+    private TokenAudienceRepository clientTokenRepository;
 
     @Autowired
     private RandomString randomString;
@@ -129,7 +128,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actualAct.getTokenId(), is(actualRot.getToken().getId()));
 
         // token should relate to client
-        ClientToken actualCt = clientTokenRepository.getByTokenId(actualRot.getToken().getId());
+        TokenAudience actualCt = clientTokenRepository.getByTokenId(actualRot.getToken().getId());
         assertThat(actualCt.getId(), is(notNullValue()));
         assertThat(actualCt.getClientId(), is(authCode.getAccessRequest().getClientId()));
         assertThat(actualCt.getTokenId(), is(actualRot.getToken().getId()));

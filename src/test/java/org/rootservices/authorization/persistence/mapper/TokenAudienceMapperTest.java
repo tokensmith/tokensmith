@@ -1,11 +1,10 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
-import helper.fixture.persistence.LoadCodeClientWithScopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ClientToken;
+import org.rootservices.authorization.persistence.entity.TokenAudience;
 import org.rootservices.authorization.persistence.entity.GrantType;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
-public class ClientTokenMapperTest {
+public class TokenAudienceMapperTest {
     @Autowired
-    private ClientTokenMapper subject;
+    private TokenAudienceMapper subject;
     @Autowired
     private ClientMapper clientMapper;
     @Autowired
@@ -52,14 +51,14 @@ public class ClientTokenMapperTest {
         UUID clientId = loadClient();
         UUID tokenId = loadToken(accessToken, clientId);
 
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(tokenId);
 
         subject.insert(clientToken);
 
-        ClientToken actual = subject.getByTokenId(tokenId);
+        TokenAudience actual = subject.getByTokenId(tokenId);
         assertThat(actual.getId(), is(clientToken.getId()));
         assertThat(actual.getClientId(), is(clientId));
         assertThat(actual.getTokenId(), is(tokenId));
