@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 10/2/16.
  */
-public class ClientToken {
+public class TokenAudience {
     private UUID id;
     private UUID clientId;
     private UUID tokenId;
