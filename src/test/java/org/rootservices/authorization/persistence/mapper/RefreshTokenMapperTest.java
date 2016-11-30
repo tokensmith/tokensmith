@@ -30,6 +30,8 @@ public class RefreshTokenMapperTest {
     @Autowired
     private RefreshTokenMapper subject;
     @Autowired
+    private ClientMapper clientMapper;
+    @Autowired
     private TokenMapper tokenMapper;
     @Autowired
     private ScopeMapper scopeMapper;
@@ -44,8 +46,8 @@ public class RefreshTokenMapperTest {
     @Autowired
     private RandomString randomString;
 
-    public Token loadToken(String accessToken, OffsetDateTime expiresAt, boolean revoked) {
-        Token token = FixtureFactory.makeOAuthToken(accessToken);
+    public Token loadToken(String accessToken, OffsetDateTime expiresAt, boolean revoked, UUID clientId) {
+        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId);
         token.setExpiresAt(expiresAt);
         token.setRevoked(revoked);
 
@@ -53,8 +55,8 @@ public class RefreshTokenMapperTest {
         return token;
     }
 
-    public Token loadTokenWithScopes(String accessToken, OffsetDateTime expiresAt, boolean revoked) {
-        Token token = loadToken(accessToken, expiresAt, revoked);
+    public Token loadTokenWithScopes(String accessToken, OffsetDateTime expiresAt, boolean revoked, UUID clientId) {
+        Token token = loadToken(accessToken, expiresAt, revoked, clientId);
         Scope scope = FixtureFactory.makeScope();
         scope.setName("address");
         scopeMapper.insert(scope);
@@ -74,8 +76,11 @@ public class RefreshTokenMapperTest {
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = loadToken(accessToken, OffsetDateTime.now(), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        Token token = loadToken(accessToken, OffsetDateTime.now(), false, client.getId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, client.getId());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
         subject.insert(refreshToken);
@@ -90,8 +95,11 @@ public class RefreshTokenMapperTest {
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = loadToken(accessToken, OffsetDateTime.now(), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        Token token = loadToken(accessToken, OffsetDateTime.now(), false, client.getId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, client.getId());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
         subject.insert(refreshToken);
@@ -106,8 +114,11 @@ public class RefreshTokenMapperTest {
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = loadToken(accessToken, OffsetDateTime.now(), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        Token token = loadToken(accessToken, OffsetDateTime.now(), false, client.getId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, client.getId());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
 
         subject.insert(refreshToken);
@@ -131,8 +142,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
 
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -191,8 +202,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -221,8 +232,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -250,8 +261,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -278,8 +289,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), true);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), true, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -306,8 +317,8 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -334,8 +345,12 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false);
-        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false);
+
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, client.getId());
+        Token headToken = loadToken(headAccessToken, OffsetDateTime.now().minusDays(10), false, client.getId());
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
         subject.insert(refreshToken);

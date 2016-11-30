@@ -10,6 +10,7 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,13 +35,15 @@ public class MakeBearerTokenTest {
 
     @Test
     public void testRun() throws Exception {
+        UUID clientId = UUID.randomUUID();
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        Token actual = subject.run(plainTextToken, 3600L);
+        Token actual = subject.run(clientId, plainTextToken, 3600L);
         assertThat(actual.getId(), is(notNullValue()));
 
+        assertThat(actual.getClientId(), is(clientId));
         assertThat(actual.getToken(), is(notNullValue()));
         assertThat(actual.getToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));

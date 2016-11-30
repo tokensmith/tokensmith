@@ -42,7 +42,7 @@ public class IssueTokenImplicitGrant {
     public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames) throws ServerException {
 
         List<Scope> scopes = scopeRepository.findByNames(scopeNames);
-        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(scopes);
+        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());

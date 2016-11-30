@@ -389,12 +389,12 @@ public class RequestTokenCodeGrantTest {
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
         tokenRepository.insert(token);
 
         // need to insert a head token.
         String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, authCode.getAccessRequest().getClientId());
         tokenRepository.insert(headToken);
 
         String refreshAccessToken = randomString.run();

@@ -75,6 +75,7 @@
             token.id as token_id,
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
+            token.client_id as token_client_id,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
 

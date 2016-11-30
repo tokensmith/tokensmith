@@ -41,7 +41,7 @@ public class IssueTokenPasswordGrant {
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, List<Scope> scopes) throws ServerException {
-        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(scopes);
+        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes);
 
         ResourceOwner resourceOwner = new ResourceOwner();
         resourceOwner.setId(resourceOwnerId);

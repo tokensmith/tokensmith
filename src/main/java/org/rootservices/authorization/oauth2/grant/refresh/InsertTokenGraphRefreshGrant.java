@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 11/18/16.
@@ -48,11 +49,12 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         return configuration.getAccessTokenRefreshSecondsToExpiry();
     }
 
-    public TokenGraph insertTokenGraph(List<Scope> scopes, Token headToken) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token headToken) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
                 1,
+                clientId,
                 config.getId(),
                 config.getAccessTokenSize(),
                 getSecondsToExpiration(config)
