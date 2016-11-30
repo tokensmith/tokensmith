@@ -46,7 +46,7 @@ public class IssueTokenRefreshGrant {
     }
 
     public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token headToken, List<Scope> scopes) throws CompromisedRefreshTokenException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(scopes, headToken);
+        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken);
 
         // make relationships to the token graph.
         TokenChain tokenChain = makeTokenChain(tokenGraph.getToken(), previousTokenId, refreshTokenId);

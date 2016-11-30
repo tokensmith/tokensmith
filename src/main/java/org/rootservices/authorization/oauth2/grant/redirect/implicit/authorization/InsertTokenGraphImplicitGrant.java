@@ -52,11 +52,12 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
     }
 
     @Override
-    public TokenGraph insertTokenGraph(List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
                 1,
+                clientId,
                 config.getId(),
                 config.getAccessTokenSize(),
                 getSecondsToExpiration(config)

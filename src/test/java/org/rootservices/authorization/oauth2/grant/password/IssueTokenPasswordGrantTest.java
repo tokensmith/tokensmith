@@ -61,7 +61,7 @@ public class IssueTokenPasswordGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
-        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(scopes)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
 
 
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
