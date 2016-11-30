@@ -85,7 +85,7 @@ public abstract class InsertTokenGraph {
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
-            return handleDuplicateToken(clientId, e, attempt, configId, atSize, secondsToExpiration);
+            return handleDuplicateToken(e, attempt, clientId, configId, atSize, secondsToExpiration);
         }
 
         TokenGraph tokenGraph = new TokenGraph();
@@ -131,7 +131,7 @@ public abstract class InsertTokenGraph {
         tokenGraph.setExtension(extension);
     }
 
-    public TokenGraph handleDuplicateToken(UUID clientId, DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
+    public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID clientId, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
         Boolean isDuplicateToken = e.getKey().isPresent() && TOKEN_KEY.equals(e.getKey().get());
 
         if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
