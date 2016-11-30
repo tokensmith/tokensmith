@@ -182,7 +182,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    clientId, dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -205,7 +205,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    clientId, dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -228,7 +228,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    clientId, dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
