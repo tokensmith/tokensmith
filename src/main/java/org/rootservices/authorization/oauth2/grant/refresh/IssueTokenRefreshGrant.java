@@ -2,17 +2,13 @@ package org.rootservices.authorization.oauth2.grant.refresh;
 
 import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,14 +25,14 @@ public class IssueTokenRefreshGrant {
     private InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant;
     private TokenChainRepository tokenChainRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private ClientTokenRepository clientTokenRepository;
+    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
     private static String COMPROMISED_MESSAGE = "refresh token was already used";
 
     @Autowired
-    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraphRefreshGrant = insertTokenGraphRefreshGrant;
         this.tokenChainRepository = tokenChainRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
@@ -59,7 +55,7 @@ public class IssueTokenRefreshGrant {
         ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, tokenGraph.getToken());
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
-        ClientToken clientToken = makeClientToken(clientId, tokenGraph.getToken().getId());
+        TokenAudience clientToken = makeClientToken(clientId, tokenGraph.getToken().getId());
         clientTokenRepository.insert(clientToken);
 
         // build the response.
@@ -108,8 +104,8 @@ public class IssueTokenRefreshGrant {
         return resourceOwnerToken;
     }
 
-    protected ClientToken makeClientToken(UUID clientId, UUID tokenId) {
-        ClientToken clientToken = new ClientToken();
+    protected TokenAudience makeClientToken(UUID clientId, UUID tokenId) {
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(tokenId);
