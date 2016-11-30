@@ -51,11 +51,12 @@ public abstract class InsertTokenGraph {
     protected abstract Logger getLogger();
     protected abstract Long getSecondsToExpiration(Configuration configuration);
 
-    public TokenGraph insertTokenGraph(List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
                 1,
+                clientId,
                 config.getId(),
                 config.getAccessTokenSize(),
                 getSecondsToExpiration(config)
@@ -75,16 +76,16 @@ public abstract class InsertTokenGraph {
         return tokenGraph;
     }
 
-    public TokenGraph insertToken(Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
+    public TokenGraph insertToken(Integer attempt, UUID clientId, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
 
         String plainTextToken = randomString.run(atSize);
-        Token token = makeBearerToken.run(plainTextToken, secondsToExpiration);
+        Token token = makeBearerToken.run(clientId, plainTextToken, secondsToExpiration);
         token.setGrantType(getGrantType());
 
         try {
             tokenRepository.insert(token);
         } catch( DuplicateRecordException e) {
-            return handleDuplicateToken(e, attempt, configId, atSize, secondsToExpiration);
+            return handleDuplicateToken(clientId, e, attempt, configId, atSize, secondsToExpiration);
         }
 
         TokenGraph tokenGraph = new TokenGraph();
@@ -130,13 +131,13 @@ public abstract class InsertTokenGraph {
         tokenGraph.setExtension(extension);
     }
 
-    public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
+    public TokenGraph handleDuplicateToken(UUID clientId, DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
         Boolean isDuplicateToken = e.getKey().isPresent() && TOKEN_KEY.equals(e.getKey().get());
 
         if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
             getLogger().warn(e.getMessage(), e);
             configurationRepository.updateAccessTokenSize(configId, atSize+1);
-            return insertToken(attempt+1, configId, atSize+1, secondsToExpiration);
+            return insertToken(attempt+1, clientId, configId, atSize+1, secondsToExpiration);
         } else if (isDuplicateToken && attempt >= MAX_ATTEMPTS) {
             String msg = String.format(KEY_KNOWN_FAILED_MSG, TOKEN_SCHEMA, attempt, atSize);
             getLogger().error(msg, e);

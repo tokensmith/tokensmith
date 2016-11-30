@@ -47,7 +47,7 @@ public class IssueTokenCodeGrant {
     }
 
     public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes) throws CompromisedCodeException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(scopes);
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
         List<String> audience = new ArrayList<>();
