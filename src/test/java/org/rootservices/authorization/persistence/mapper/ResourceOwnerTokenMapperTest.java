@@ -24,7 +24,9 @@ import static org.junit.Assert.*;
 public class ResourceOwnerTokenMapperTest {
 
     @Autowired
-    ResourceOwnerMapper resourceOwnerMapper;
+    private ResourceOwnerMapper resourceOwnerMapper;
+    @Autowired
+    private ClientMapper clientMapper;
     @Autowired
     private TokenMapper tokenMapper;
     @Autowired
@@ -37,8 +39,11 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         // begin prepare db for test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
@@ -73,8 +78,11 @@ public class ResourceOwnerTokenMapperTest {
     @Test
     public void getByAccessTokenShouldBeOk() throws Exception {
         // begin prepare db for test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();

@@ -41,16 +41,18 @@ public class TokenRepositoryImplTest {
 
     @Test
     public void insert() throws DuplicateRecordException {
+        UUID clientId = UUID.randomUUID();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
         subject.insert(token);
         verify(mockTokenMapper, times(1)).insert(token);
     }
 
     @Test
     public void insertDuplicateTokenShouldThrowDuplicateRecordException() throws DuplicateRecordException {
+        UUID clientId = UUID.randomUUID();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
 
         String msg =
         "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +

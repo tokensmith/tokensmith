@@ -79,7 +79,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -167,7 +167,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -223,7 +223,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -278,7 +278,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph();
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()

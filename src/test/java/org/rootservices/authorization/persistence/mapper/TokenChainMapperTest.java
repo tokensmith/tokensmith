@@ -3,6 +3,7 @@ package org.rootservices.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.entity.TokenChain;
@@ -28,12 +29,14 @@ public class TokenChainMapperTest {
     @Autowired
     private TokenChainMapper subject;
     @Autowired
+    private ClientMapper clientMapper;
+    @Autowired
     private TokenMapper tokenMapper;
     @Autowired
     private RefreshTokenMapper refreshTokenMapper;
 
-    public Token loadToken(String accessToken) {
-        Token token = FixtureFactory.makeOAuthToken(accessToken);
+    public Token loadToken(String accessToken, UUID clientId) {
+        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId);
         tokenMapper.insert(token);
         return token;
     }
@@ -45,16 +48,19 @@ public class TokenChainMapperTest {
     }
 
     @Test
-    public void insertShouldBeOk() {
+    public void insertShouldBeOk() throws Exception {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String prevAccessToken = "prev-access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = loadToken(accessToken);
-        Token previousToken = loadToken(prevAccessToken);
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
 
-        Token headToken = loadToken(headAccessToken);
+        Token token = loadToken(accessToken, client.getId());
+        Token previousToken = loadToken(prevAccessToken, client.getId());
+
+        Token headToken = loadToken(headAccessToken, client.getId());
         RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken, headToken);
 
         TokenChain tokenChain = new TokenChain();
@@ -91,16 +97,19 @@ public class TokenChainMapperTest {
     }
 
     @Test(expected = DuplicateKeyException.class)
-    public void insertShouldThrowDuplicateKeyException() {
+    public void insertShouldThrowDuplicateKeyException() throws Exception {
         String accessToken = "access-token";
         String headAccessToken = "head-access-token";
         String prevAccessToken = "prev-access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token1 = loadToken(accessToken);
-        Token previousToken1 = loadToken(prevAccessToken);
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
 
-        Token headToken = loadToken(headAccessToken);
+        Token token1 = loadToken(accessToken, client.getId());
+        Token previousToken1 = loadToken(prevAccessToken, client.getId());
+
+        Token headToken = loadToken(headAccessToken, client.getId());
         RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken1, headToken);
 
         TokenChain tokenChain1 = new TokenChain();
@@ -113,8 +122,8 @@ public class TokenChainMapperTest {
 
         String accessToken2 = "access-token";
         String prevAccessToken2 = "prev-access-token";
-        Token token2 = loadToken(accessToken2);
-        Token previousToken2 = loadToken(prevAccessToken2);
+        Token token2 = loadToken(accessToken2, client.getId());
+        Token previousToken2 = loadToken(prevAccessToken2, client.getId());
 
         TokenChain tokenChain2 = new TokenChain();
         tokenChain2.setId(UUID.randomUUID());

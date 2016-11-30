@@ -29,6 +29,8 @@ public class ResourceOwnerMapperTest {
     @Autowired
     private ResourceOwnerMapper subject;
     @Autowired
+    private ClientMapper clientMapper;
+    @Autowired
     private ResourceOwnerTokenMapper resourceOwnerTokenMapper;
     @Autowired
     private TokenMapper tokenMapper;
@@ -96,10 +98,13 @@ public class ResourceOwnerMapperTest {
     @Test
     public void getByAccessToken() throws Exception {
         // prepare data for test.
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
         ResourceOwner expectedUser = insertResourceOwner();
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         tokenMapper.insert(token);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
@@ -117,16 +122,22 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getPassword(), is(expectedUser.getPassword()));
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile(), is(nullValue()));
+        assertThat(actual.getTokens(), is(notNullValue()));
+        assertThat(actual.getTokens().size(), is(0));
     }
 
     @Test
     public void getByAccessTokenWithProfileAndTokensShouldBeOk() throws Exception {
 
         // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
         ResourceOwner ro = insertResourceOwner();
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();
@@ -172,6 +183,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getId(), is(token.getId()));
         assertThat(actual.getTokens().get(0).isRevoked(), is(false));
         assertThat(actual.getTokens().get(0).getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getTokens().get(0).getClientId(), is(client.getId()));
         assertThat(actual.getTokens().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getExpiresAt(), is(notNullValue()));
 

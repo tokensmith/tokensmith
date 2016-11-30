@@ -27,7 +27,7 @@ public class MakeBearerToken {
     }
 
 
-    public Token run(String plainTextToken, Long secondsToExpiration) {
+    public Token run(UUID clientId, String plainTextToken, Long secondsToExpiration) {
 
         Token token = new Token();
         token.setId(UUID.randomUUID());
@@ -37,6 +37,7 @@ public class MakeBearerToken {
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
         token.setSecondsToExpiration(secondsToExpiration);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
+        token.setClientId(clientId);
         token.setTokenScopes(new ArrayList<>());
 
         return token;

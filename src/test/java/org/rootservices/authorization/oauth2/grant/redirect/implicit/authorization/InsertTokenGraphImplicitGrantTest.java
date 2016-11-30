@@ -71,21 +71,22 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
+        UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setTokenScopes(new ArrayList<>());
 
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
+        when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
         when(mockRandomString.run(32)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -118,16 +119,17 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
+        UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
-        when(mockMakeBearerToken.run(plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
+        when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
 
         when(mockRandomString.run(32)).thenReturn(plainTextToken);
 
@@ -137,7 +139,7 @@ public class InsertTokenGraphImplicitGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -169,6 +171,7 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void handleDuplicateTokenWhenKeyIsTokenAttemptIs3ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("token"));
         Integer attempt = 3;
@@ -179,7 +182,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -191,6 +194,7 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void handleDuplicateTokenWhenKeyIsEmptyAttemptIs2ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.empty());
         Integer attempt = 2;
@@ -201,7 +205,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -213,6 +217,7 @@ public class InsertTokenGraphImplicitGrantTest {
 
     @Test
     public void handleDuplicateTokenWhenKeyIsNotTokenAttemptIs2ShouldThrowServerException() throws Exception {
+        UUID clientId = UUID.randomUUID();
         DuplicateKeyException dke = new DuplicateKeyException("msg");
         DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("foo"));
         Integer attempt = 2;
@@ -223,7 +228,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
