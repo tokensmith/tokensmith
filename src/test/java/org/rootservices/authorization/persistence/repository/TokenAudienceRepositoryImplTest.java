@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.persistence.entity.ClientToken;
+import org.rootservices.authorization.persistence.entity.TokenAudience;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.mapper.ClientTokenMapper;
+import org.rootservices.authorization.persistence.mapper.TokenAudienceMapper;
 
 import java.util.UUID;
 
@@ -19,21 +19,21 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 10/2/16.
  */
-public class ClientTokenRepositoryImplTest {
-    private ClientTokenRepository subject;
+public class TokenAudienceRepositoryImplTest {
+    private TokenAudienceRepository subject;
     @Mock
-    private ClientTokenMapper mockClientTokenMapper;
+    private TokenAudienceMapper mockClientTokenMapper;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new ClientTokenRepositoryImpl(mockClientTokenMapper);
+        subject = new TokenAudienceRepositoryImpl(mockClientTokenMapper);
 
     }
 
     @Test
     public void insertShouldBeOk() throws Exception {
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         subject.insert(clientToken);
         verify(mockClientTokenMapper, times(1)).insert(clientToken);
     }
@@ -41,11 +41,11 @@ public class ClientTokenRepositoryImplTest {
     @Test
     public void getByTokenIdShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
 
         when(mockClientTokenMapper.getByTokenId(clientId)).thenReturn(clientToken);
 
-        ClientToken actual = subject.getByTokenId(clientId);
+        TokenAudience actual = subject.getByTokenId(clientId);
 
         assertThat(actual, is(clientToken));
     }

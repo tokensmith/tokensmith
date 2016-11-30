@@ -1,18 +1,12 @@
 package org.rootservices.authorization.oauth2.grant.password;
 
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
@@ -27,12 +21,12 @@ import java.util.UUID;
 public class IssueTokenPasswordGrant {
     private InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private ClientTokenRepository clientTokenRepository;
+    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
 
-    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraphPasswordGrant = insertTokenGraphPasswordGrant;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.clientTokenRepository = clientTokenRepository;
@@ -52,7 +46,7 @@ public class IssueTokenPasswordGrant {
 
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(tokenGraph.getToken().getId());

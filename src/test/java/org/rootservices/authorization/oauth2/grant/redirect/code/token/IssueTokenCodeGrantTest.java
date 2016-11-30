@@ -19,7 +19,6 @@ import org.rootservices.authorization.persistence.repository.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -46,7 +45,7 @@ public class IssueTokenCodeGrantTest {
     @Mock
     private AuthCodeRepository mockAuthCodeRepository;
     @Mock
-    private ClientTokenRepository mockClientTokenRepository;
+    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -115,9 +114,9 @@ public class IssueTokenCodeGrantTest {
         assertThat(actualROT.getToken(), is(tokenGraph.getToken()));
 
         // should insert a client token record.
-        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
+        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
         assertThat(actualCt.getId(), is(notNullValue()));
         assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualCt.getClientId(), is(clientId));
@@ -170,6 +169,6 @@ public class IssueTokenCodeGrantTest {
 
         // should never insert anything else!
         verify(mockResourceOwnerTokenRepository, never()).insert(any(ResourceOwnerToken.class));
-        verify(mockClientTokenRepository, never()).insert(any(ClientToken.class));
+        verify(mockClientTokenRepository, never()).insert(any(TokenAudience.class));
     }
 }

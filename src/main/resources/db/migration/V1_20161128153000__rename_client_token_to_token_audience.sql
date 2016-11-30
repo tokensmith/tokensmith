@@ -1,0 +1,1 @@
+ALTER TABLE client_token RENAME TO token_audience;

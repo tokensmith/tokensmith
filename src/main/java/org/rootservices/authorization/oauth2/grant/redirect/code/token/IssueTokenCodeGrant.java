@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -30,11 +29,11 @@ public class IssueTokenCodeGrant {
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private AuthCodeRepository authCodeRepository;
-    private ClientTokenRepository clientTokenRepository;
+    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, ClientTokenRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -83,7 +82,7 @@ public class IssueTokenCodeGrant {
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
         // insert client_token. Associate token with client.
-        ClientToken clientToken = makeClientToken(clientId, token.getId());
+        TokenAudience clientToken = makeClientToken(clientId, token.getId());
         clientTokenRepository.insert(clientToken);
     }
 
@@ -106,8 +105,8 @@ public class IssueTokenCodeGrant {
         return resourceOwnerToken;
     }
 
-    protected ClientToken makeClientToken(UUID clientId, UUID tokenId) {
-        ClientToken clientToken = new ClientToken();
+    protected TokenAudience makeClientToken(UUID clientId, UUID tokenId) {
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(tokenId);

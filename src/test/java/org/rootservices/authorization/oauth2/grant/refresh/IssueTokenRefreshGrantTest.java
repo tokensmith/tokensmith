@@ -7,8 +7,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
-import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
-import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
@@ -17,13 +15,11 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.RandomString;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -43,7 +39,7 @@ public class IssueTokenRefreshGrantTest {
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
-    private ClientTokenRepository mockClientTokenRepository;
+    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -77,7 +73,7 @@ public class IssueTokenRefreshGrantTest {
 
         ArgumentCaptor<TokenChain> tokenChainCaptor = ArgumentCaptor.forClass(TokenChain.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
-        ArgumentCaptor<ClientToken> clientTokenArgumentCaptor = ArgumentCaptor.forClass(ClientToken.class);
+        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
 
         TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
 
@@ -113,7 +109,7 @@ public class IssueTokenRefreshGrantTest {
         assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
 
         verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        ClientToken actualCt = clientTokenArgumentCaptor.getValue();
+        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
         assertThat(actualCt.getId(), is(notNullValue()));
         assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
         assertThat(actualCt.getClientId(), is(clientId));

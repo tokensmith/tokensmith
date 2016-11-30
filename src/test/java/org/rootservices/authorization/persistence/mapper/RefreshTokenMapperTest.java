@@ -38,7 +38,7 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenScopeMapper tokenScopeMapper;
     @Autowired
-    private ClientTokenMapper clientTokenMapper;
+    private TokenAudienceMapper clientTokenMapper;
     @Autowired
     private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
@@ -152,7 +152,7 @@ public class RefreshTokenMapperTest {
         authCodeTokenMapper.insert(authCodeToken);
 
         UUID clientId = authCode.getAccessRequest().getClientId();
-        ClientToken clientToken = new ClientToken();
+        TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
         clientToken.setTokenId(token.getId());
