@@ -16,7 +16,7 @@
                      columnPrefix="profile_"/>
 
         <association property="tokens"
-                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
+                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.tokenWithLeadToken"
                      columnPrefix="token_"/>
     </resultMap>
 
@@ -140,8 +140,8 @@
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
 
-        left join token_lead_token on token_lead_token.id = token.id
-        left join token lead_token on lead_token.id = token_lead_token.id
+        left join token_lead_token tlt on tlt.token_id = token.id
+        left join token lead_token on lead_token.id = tlt.lead_token_id
 
         left join resource_owner_profile profile on profile.resource_owner_id = resource_owner.id
         left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
