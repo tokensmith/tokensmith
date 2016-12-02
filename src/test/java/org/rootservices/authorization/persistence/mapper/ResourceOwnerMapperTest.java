@@ -140,12 +140,17 @@ public class ResourceOwnerMapperTest {
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        token.setGrantType(GrantType.REFRESSH);
         tokenMapper.insert(token);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId());
+        tokenMapper.insert(leadToken);
 
         TokenLeadToken tlt = new TokenLeadToken();
         tlt.setId(UUID.randomUUID());
         tlt.setTokenId(token.getId());
-        tlt.setLeadTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
         tokenLeadTokenMapper.insert(tlt);
 
         Scope scope = FixtureFactory.makeScope();
@@ -190,13 +195,13 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().size(), is(1));
         assertThat(actual.getTokens().get(0).getId(), is(token.getId()));
         assertThat(actual.getTokens().get(0).isRevoked(), is(false));
-        assertThat(actual.getTokens().get(0).getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getTokens().get(0).getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getTokens().get(0).getClientId(), is(client.getId()));
         assertThat(actual.getTokens().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getExpiresAt(), is(notNullValue()));
 
         assertThat(actual.getTokens().get(0).getLeadToken(), is(notNullValue()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getId(), is(token.getId()));
+        assertThat(actual.getTokens().get(0).getLeadToken().getId(), is(leadToken.getId()));
         assertThat(actual.getTokens().get(0).getLeadToken().isRevoked(), is(false));
         assertThat(actual.getTokens().get(0).getLeadToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
         assertThat(actual.getTokens().get(0).getLeadToken().getClientId(), is(client.getId()));

@@ -15,7 +15,7 @@
                      resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
                      columnPrefix="head_token_"/>
         <association property="token"
-                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.token"
+                     resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.tokenWithLeadToken"
                      columnPrefix="token_"/>
     </resultMap>
 
@@ -67,6 +67,13 @@
             scope.name as token_ts_scope_name,
             scope.created_at as token_ts_scope_created_at,
 
+            lead_token.id as token_lead_token_id,
+            lead_token.revoked as token_lead_token_revoked,
+            lead_token.grant_type as token_lead_token_grant_type,
+            lead_token.client_id as token_lead_token_client_id,
+            lead_token.expires_at as token_lead_token_expires_at,
+            lead_token.created_at as token_lead_token_created_at,
+
             head_token.id as head_token_id,
             head_token.token as head_token_token,
             head_token.revoked as head_token_revoked,
@@ -79,6 +86,10 @@
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
         join token as head_token on head_token.id = refresh_token.head_token_id
+
+        left join token_lead_token tlt on tlt.token_id = token.id
+        left join token lead_token on lead_token.id = tlt.lead_token_id
+
         where refresh_token.access_token = decode(#{accessToken}, 'escape')
         and refresh_token.revoked = FALSE
         and refresh_token.expires_at > current_timestamp
