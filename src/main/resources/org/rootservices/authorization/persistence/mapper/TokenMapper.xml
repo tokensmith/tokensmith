@@ -13,10 +13,16 @@
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
+        <association property="leadToken"
+                     resultMap="token"
+                     columnPrefix="lead_token_"
+        />
+
         <collection property="tokenScopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
                     columnPrefix="ts_"
                     javaType="ArrayList"/>
+
     </resultMap>
 
     <select id="getByAuthCodeId" resultMap="token">
