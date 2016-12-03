@@ -11,6 +11,6 @@ import java.util.UUID;
  */
 @Repository
 public interface TokenAudienceMapper {
-    void insert(@Param("clientToken") TokenAudience clientToken);
+    void insert(@Param("tokenAudience") TokenAudience tokenAudience);
     TokenAudience getByTokenId(@Param("tokenId") UUID tokenId);
 }

@@ -132,7 +132,12 @@
             family_name.resource_owner_profile_id as profile_family_name_resource_owner_profile_id,
             family_name.family_name as profile_family_name_family_name,
             family_name.created_at as profile_family_name_created_at,
-            family_name.updated_at as profile_family_name_updated_at
+            family_name.updated_at as profile_family_name_updated_at,
+
+            audience.id as token_audience_id,
+            audience.redirect_uri as token_audience_redirect_uri,
+            audience.created_at as token_audience_created_at
+
         from resource_owner
 
         join resource_owner_token on resource_owner_token.resource_owner_id = resource_owner.id
@@ -147,6 +152,9 @@
         left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
         left join resource_owner_profile_given_name given_name on given_name.resource_owner_profile_id = profile.id
         left join resource_owner_profile_family_name family_name on family_name.resource_owner_profile_id = profile.id
+
+        join token_audience on token_audience.token_id = token.id
+        join client audience on audience.id = token_audience.client_id
 
         where token.token = decode(#{accessToken}, 'escape')
     </select>
