@@ -36,6 +36,8 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenMapper tokenMapper;
     @Autowired
+    private TokenAudienceMapper tokenAudienceMapper;
+    @Autowired
     private TokenLeadTokenMapper tokenLeadTokenMapper;
     @Autowired
     private ScopeMapper scopeMapper;
@@ -142,8 +144,9 @@ public class RefreshTokenMapperTest {
         String accessToken = "access-token";
         String leadAccessToken = "lead-access-token";
 
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
-        Token leadToken = loadToken(leadAccessToken, OffsetDateTime.now().minusDays(10), false, authCode.getAccessRequest().getClientId());
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
+        Token leadToken = loadToken(leadAccessToken, OffsetDateTime.now().minusDays(10), false, clientId);
 
         TokenLeadToken tlt = new TokenLeadToken();
         tlt.setId(UUID.randomUUID());
@@ -151,13 +154,18 @@ public class RefreshTokenMapperTest {
         tlt.setLeadTokenId(leadToken.getId());
         tokenLeadTokenMapper.insert(tlt);
 
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
+
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
         authCodeToken.setAuthCodeId(authCode.getId());
         authCodeToken.setTokenId(token.getId());
         authCodeTokenMapper.insert(authCodeToken);
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
         TokenAudience clientToken = new TokenAudience();
         clientToken.setId(UUID.randomUUID());
         clientToken.setClientId(clientId);
@@ -183,6 +191,13 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getToken().getId(), is(token.getId()));
         assertThat(actual.getToken().getToken(), is(notNullValue()));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience().size(), is(1));
+        assertThat(actual.getToken().getAudience().get(0).getId(), is(clientId));
+        assertThat(actual.getToken().getAudience().get(0).getRedirectURI(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience().get(0).getCreatedAt(), is(notNullValue()));
+
         assertThat(actual.getToken().getExpiresAt(), is(notNullValue()));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
 
@@ -212,10 +227,16 @@ public class RefreshTokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
-
+        UUID clientId = authCode.getAccessRequest().getClientId();
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -229,7 +250,6 @@ public class RefreshTokenMapperTest {
         subject.revokeByTokenId(token.getId());
         // end prepare db for test.
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
         RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
 
         assertThat(actual, is(nullValue()));
@@ -241,9 +261,16 @@ public class RefreshTokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
+        UUID clientId = authCode.getAccessRequest().getClientId();
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -256,7 +283,6 @@ public class RefreshTokenMapperTest {
         subject.insert(refreshToken);
         // end prepare db for test.
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
         RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
 
         assertThat(actual, is(nullValue()));
@@ -268,9 +294,16 @@ public class RefreshTokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
+        UUID clientId = authCode.getAccessRequest().getClientId();
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -282,7 +315,6 @@ public class RefreshTokenMapperTest {
         subject.insert(refreshToken);
         // end prepare db for test.
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
         RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
 
         assertThat(actual, is(nullValue()));
@@ -294,9 +326,16 @@ public class RefreshTokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
+        UUID clientId = authCode.getAccessRequest().getClientId();
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), true, authCode.getAccessRequest().getClientId());
+        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), true, clientId);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
         authCodeToken.setId(UUID.randomUUID());
@@ -308,7 +347,6 @@ public class RefreshTokenMapperTest {
         subject.insert(refreshToken);
         // end prepare db for test.
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
         RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
 
         assertThat(actual, is(nullValue()));

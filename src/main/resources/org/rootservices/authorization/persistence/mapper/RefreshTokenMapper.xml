@@ -63,6 +63,10 @@
             scope.name as token_ts_scope_name,
             scope.created_at as token_ts_scope_created_at,
 
+            audience.id as token_audience_id,
+            audience.redirect_uri as token_audience_redirect_uri,
+            audience.created_at as token_audience_created_at,
+
             lead_token.id as token_lead_token_id,
             lead_token.revoked as token_lead_token_revoked,
             lead_token.grant_type as token_lead_token_grant_type,
@@ -74,6 +78,9 @@
         join token on token.id = refresh_token.token_id
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
+
+        join token_audience on token_audience.token_id = token.id
+        join client audience on audience.id = token_audience.client_id
 
         left join token_lead_token tlt on tlt.token_id = token.id
         left join token lead_token on lead_token.id = tlt.lead_token_id

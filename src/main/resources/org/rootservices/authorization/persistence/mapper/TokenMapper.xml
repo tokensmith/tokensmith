@@ -16,6 +16,9 @@
                     resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
                     columnPrefix="ts_"
                     javaType="ArrayList"/>
+        <collection property="audience"
+                    resultMap="org.rootservices.authorization.persistence.mapper.ClientMapper.client"
+                    columnPrefix="audience_"/>
     </resultMap>
 
     <resultMap id="tokenWithLeadToken" extends="token" type="org.rootservices.authorization.persistence.entity.Token">
