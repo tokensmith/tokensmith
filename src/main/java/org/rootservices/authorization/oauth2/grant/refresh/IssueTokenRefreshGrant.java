@@ -41,8 +41,8 @@ public class IssueTokenRefreshGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token headToken, List<Scope> scopes) throws CompromisedRefreshTokenException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken);
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token leadToken, List<Scope> scopes) throws CompromisedRefreshTokenException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, leadToken);
 
         // make relationships to the token graph.
         TokenChain tokenChain = makeTokenChain(tokenGraph.getToken(), previousTokenId, refreshTokenId);
@@ -72,7 +72,7 @@ public class IssueTokenRefreshGrant {
                 .setAudience(audience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
-                .setAuthTime(headToken.getCreatedAt().toEpochSecond())
+                .setAuthTime(leadToken.getCreatedAt().toEpochSecond())
                 .build();
         return tr;
     }

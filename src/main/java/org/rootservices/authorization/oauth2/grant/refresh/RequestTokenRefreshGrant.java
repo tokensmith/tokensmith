@@ -78,6 +78,13 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         String accessToken = new String(refreshToken.getToken().getToken());
         UUID resourceOwnerId = getResourceOwnerId(accessToken);
 
+        Token leadToken;
+        if (refreshToken.getToken().getLeadToken() == null) {
+            leadToken = refreshToken.getToken();
+        } else {
+            leadToken = refreshToken.getToken().getLeadToken();
+        }
+
         TokenResponse tokenResponse = null;
         try {
             tokenResponse = issueTokenRefreshGrant.run(
@@ -85,7 +92,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
                 resourceOwnerId,
                 refreshToken.getToken().getId(),
                 refreshToken.getId(),
-                refreshToken.getHeadToken(),
+                leadToken,
                 scopes
             );
         } catch (CompromisedRefreshTokenException e) {
