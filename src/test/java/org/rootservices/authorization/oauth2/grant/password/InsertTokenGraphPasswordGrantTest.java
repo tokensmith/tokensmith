@@ -13,10 +13,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
-import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -85,9 +82,9 @@ public class InsertTokenGraphPasswordGrantTest {
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
 
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
 
@@ -103,6 +100,7 @@ public class InsertTokenGraphPasswordGrantTest {
 
         // should insert a token
         verify(mockTokenRepository).insert(token);
+
         // should insert a refresh token.
         verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
 
@@ -135,8 +133,8 @@ public class InsertTokenGraphPasswordGrantTest {
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
+        when(mockMakeRefreshToken.run(token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         // force a retry.
         DuplicateKeyException dke = new DuplicateKeyException("test");
@@ -262,8 +260,8 @@ public class InsertTokenGraphPasswordGrantTest {
         String refreshAccessToken = "refresh-token";
         when(mockRandomString.run(32)).thenReturn(plainTextToken, refreshAccessToken);
 
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
-        when(mockMakeRefreshToken.run(token, token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
+        when(mockMakeRefreshToken.run(token, refreshAccessToken, configuration.getRefreshTokenSecondsToExpiry())).thenReturn(refreshToken);
 
         // force a retry.
         DuplicateKeyException dke = new DuplicateKeyException("test");
@@ -317,7 +315,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;
@@ -344,7 +342,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;
@@ -371,7 +369,7 @@ public class InsertTokenGraphPasswordGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateRefreshToken(
-                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph, tokenGraph.getToken()
+                    dre, attempt, configId, tokenSize, secondsToExpiration, tokenGraph
             );
         } catch (ServerException e) {
             actual = e;

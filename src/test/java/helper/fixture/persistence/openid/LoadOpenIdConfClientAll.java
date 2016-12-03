@@ -30,7 +30,6 @@ import java.util.UUID;
 public class LoadOpenIdConfClientAll {
     private LoadConfClientTokenReady loadConfClientOpendIdTokenReady;
     private RandomString randomString;
-    private HashTextStaticSalt hashText;
     private TokenRepository tokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
@@ -93,11 +92,7 @@ public class LoadOpenIdConfClientAll {
         rot.setResourceOwner(resourceOwner);
         resourceOwnerTokenRepository.insert(rot);
 
-        String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
-        tokenRepository.insert(headToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }
@@ -132,11 +127,7 @@ public class LoadOpenIdConfClientAll {
         clientToken.setTokenId(token.getId());
         clientTokenRepository.insert(clientToken);
 
-        String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
-        tokenRepository.insert(headToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
         refreshTokenRepository.insert(refreshToken);
         return refreshToken;
     }

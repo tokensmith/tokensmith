@@ -12,11 +12,17 @@
         <result column="client_id" property="clientId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
-
         <collection property="tokenScopes"
                     resultMap="org.rootservices.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
                     columnPrefix="ts_"
                     javaType="ArrayList"/>
+    </resultMap>
+
+    <resultMap id="tokenWithLeadToken" extends="token" type="org.rootservices.authorization.persistence.entity.Token">
+        <association property="leadToken"
+                     resultMap="token"
+                     columnPrefix="lead_token_"
+        />
     </resultMap>
 
     <select id="getByAuthCodeId" resultMap="token">

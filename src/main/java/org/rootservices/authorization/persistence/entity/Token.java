@@ -15,6 +15,7 @@ public class Token {
     private UUID clientId;
     private List<TokenScope> tokenScopes;
     private Long secondsToExpiration;
+    private Token leadToken; // optional
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
@@ -88,6 +89,14 @@ public class Token {
 
     public void setSecondsToExpiration(Long secondsToExpiration) {
         this.secondsToExpiration = secondsToExpiration;
+    }
+
+    public Token getLeadToken() {
+        return leadToken;
+    }
+
+    public void setLeadToken(Token leadToken) {
+        this.leadToken = leadToken;
     }
 
     public OffsetDateTime getCreatedAt() {

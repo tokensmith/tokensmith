@@ -36,20 +36,17 @@ public class MakeRefreshTokenTest {
     @Test
     public void runShouldBeOk() throws Exception {
         String accessToken = "access-token";
-        String headAccessToken = "head-access-token";
         UUID clientId = UUID.randomUUID();
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
 
-        RefreshToken actual = subject.run(token, headToken, plainTextToken, 1209600L);
+        RefreshToken actual = subject.run(token, plainTextToken, 1209600L);
 
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getHeadToken(), is(headToken));
         assertThat(actual.getAccessToken(), is(hashedToken.getBytes()));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
     }

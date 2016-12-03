@@ -6,13 +6,9 @@ import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
-import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,8 +63,7 @@ public abstract class InsertTokenGraph {
                 config.getId(),
                 config.getRefreshTokenSize(),
                 config.getRefreshTokenSecondsToExpiry(),
-                tokenGraph,
-                tokenGraph.getToken()
+                tokenGraph
         );
 
         insertTokenScope(scopes, tokenGraph);
@@ -97,14 +92,14 @@ public abstract class InsertTokenGraph {
         return tokenGraph;
     }
 
-    public void insertRefreshToken(Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration, TokenGraph tokenGraph, Token headToken) throws ServerException {
+    public void insertRefreshToken(Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration, TokenGraph tokenGraph) throws ServerException {
 
         String refreshAccessToken = randomString.run(atSize);
-        RefreshToken refreshToken = makeRefreshToken.run(tokenGraph.getToken(), headToken, refreshAccessToken, secondsToExpiration);
+        RefreshToken refreshToken = makeRefreshToken.run(tokenGraph.getToken(), refreshAccessToken, secondsToExpiration);
         try {
             refreshTokenRepository.insert(refreshToken);
         } catch (DuplicateRecordException e) {
-            handleDuplicateRefreshToken(e, attempt, configId, atSize, secondsToExpiration, tokenGraph, headToken);
+            handleDuplicateRefreshToken(e, attempt, configId, atSize, secondsToExpiration, tokenGraph);
             return;
         }
 
@@ -149,14 +144,14 @@ public abstract class InsertTokenGraph {
         }
     }
 
-    public void handleDuplicateRefreshToken(DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration, TokenGraph tokenGraph, Token headToken) throws ServerException {
+    public void handleDuplicateRefreshToken(DuplicateRecordException e, Integer attempt, UUID configId, Integer atSize, Long secondsToExpiration, TokenGraph tokenGraph) throws ServerException {
         tokenRepository.revokeById(tokenGraph.getToken().getId());
         Boolean isDuplicateToken = e.getKey().isPresent() && REFRESH_TOKEN_KEY.equals(e.getKey().get());
 
         if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
             getLogger().warn(e.getMessage(), e);
             configurationRepository.updateRefreshTokenSize(configId, atSize+1);
-            insertRefreshToken(attempt+1, configId, atSize+1, secondsToExpiration, tokenGraph, headToken);
+            insertRefreshToken(attempt+1, configId, atSize+1, secondsToExpiration, tokenGraph);
         } else if (isDuplicateToken && attempt >= MAX_ATTEMPTS) {
             String msg = String.format(KEY_KNOWN_FAILED_MSG, REFRESH_TOKEN_SCHEMA, attempt-1, atSize);
             getLogger().error(msg, e);
