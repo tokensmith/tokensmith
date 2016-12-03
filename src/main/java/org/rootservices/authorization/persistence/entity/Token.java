@@ -14,6 +14,7 @@ public class Token {
     private GrantType grantType;
     private UUID clientId;
     private List<TokenScope> tokenScopes;
+    private List<Client> audience;
     private Long secondsToExpiration;
     private Token leadToken; // optional
     private OffsetDateTime expiresAt;
@@ -73,6 +74,14 @@ public class Token {
 
     public void setTokenScopes(List<TokenScope> tokenScopes) {
         this.tokenScopes = tokenScopes;
+    }
+
+    public List<Client> getAudience() {
+        return audience;
+    }
+
+    public void setAudience(List<Client> audience) {
+        this.audience = audience;
     }
 
     public OffsetDateTime getExpiresAt() {

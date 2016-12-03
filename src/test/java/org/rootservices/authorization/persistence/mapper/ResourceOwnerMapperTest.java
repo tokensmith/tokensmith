@@ -48,6 +48,8 @@ public class ResourceOwnerMapperTest {
     private GivenNameMapper givenNameMapper;
     @Autowired
     private FamilyNameMapper familyNameMapper;
+    @Autowired
+    private TokenAudienceMapper tokenAudienceMapper;
 
     public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
@@ -143,6 +145,12 @@ public class ResourceOwnerMapperTest {
         token.setGrantType(GrantType.REFRESSH);
         tokenMapper.insert(token);
 
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
         String leadAccessToken = "lead-access-token";
         Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId());
         tokenMapper.insert(leadToken);
@@ -191,6 +199,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
 
+
         assertThat(actual.getTokens(), is(notNullValue()));
         assertThat(actual.getTokens().size(), is(1));
         assertThat(actual.getTokens().get(0).getId(), is(token.getId()));
@@ -199,6 +208,13 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getClientId(), is(client.getId()));
         assertThat(actual.getTokens().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getExpiresAt(), is(notNullValue()));
+
+        assertThat(actual.getTokens().get(0).getAudience(), is(notNullValue()));
+        assertThat(actual.getTokens().get(0).getAudience().size(), is(1));
+        assertThat(actual.getTokens().get(0).getAudience().get(0), is(notNullValue()));
+        assertThat(actual.getTokens().get(0).getAudience().get(0).getId(), is(client.getId()));
+        assertThat(actual.getTokens().get(0).getAudience().get(0).getRedirectURI(), is(client.getRedirectURI()));
+        assertThat(actual.getTokens().get(0).getAudience().get(0).getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getTokens().get(0).getLeadToken(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getLeadToken().getId(), is(leadToken.getId()));
