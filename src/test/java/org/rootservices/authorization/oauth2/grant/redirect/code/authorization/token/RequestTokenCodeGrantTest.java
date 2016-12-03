@@ -391,13 +391,8 @@ public class RequestTokenCodeGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
         tokenRepository.insert(token);
 
-        // need to insert a head token.
-        String headAccessToken = randomString.run();
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, authCode.getAccessRequest().getClientId());
-        tokenRepository.insert(headToken);
-
         String refreshAccessToken = randomString.run();
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
         refreshTokenRepository.insert(refreshToken);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();

@@ -22,14 +22,13 @@ public class MakeRefreshToken {
         this.hashText = hashText;
     }
 
-    public RefreshToken run(Token token, Token headToken, String plainTextToken, Long secondsToExpiration) {
+    public RefreshToken run(Token token, String plainTextToken, Long secondsToExpiration) {
 
         byte[] hashedToken = hashText.run(plainTextToken).getBytes();
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setToken(token);
-        refreshToken.setHeadToken(headToken);
         refreshToken.setAccessToken(hashedToken);
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
 

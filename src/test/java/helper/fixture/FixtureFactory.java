@@ -297,7 +297,7 @@ public class FixtureFactory {
         return token;
     }
 
-    public static RefreshToken makeRefreshToken(String refreshAccessToken, Token token, Token headToken) {
+    public static RefreshToken makeRefreshToken(String refreshAccessToken, Token token) {
         AppConfig config = new AppConfig();
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
         String hashedRefreshAccessToken = textHasher.run(refreshAccessToken);
@@ -306,7 +306,6 @@ public class FixtureFactory {
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setTokenId(token.getId());
         refreshToken.setToken(token);
-        refreshToken.setHeadToken(headToken);
         refreshToken.setAccessToken(hashedRefreshAccessToken.getBytes());
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
         refreshToken.setRevoked(false);
