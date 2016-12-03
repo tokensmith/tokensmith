@@ -7,14 +7,8 @@ import org.rootservices.authorization.oauth2.grant.token.InsertTokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.persistence.entity.Configuration;
-import org.rootservices.authorization.persistence.entity.GrantType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
-import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,9 +23,12 @@ import java.util.UUID;
 public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
     protected static final Logger logger = LogManager.getLogger(InsertTokenGraphRefreshGrant.class);
 
+    private TokenLeadTokenRepository tokenLeadTokenRepository;
+
     @Autowired
-    public InsertTokenGraphRefreshGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository) {
+    public InsertTokenGraphRefreshGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenLeadTokenRepository tokenLeadTokenRepository) {
         super(configurationRepository, randomString, makeBearerToken, tokenRepository, makeRefreshToken, refreshTokenRepository, tokenScopeRepository);
+        this.tokenLeadTokenRepository = tokenLeadTokenRepository;
     }
 
     @Override
@@ -49,7 +46,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         return configuration.getAccessTokenRefreshSecondsToExpiry();
     }
 
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token headToken) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token leadToken) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
@@ -60,17 +57,29 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
                 getSecondsToExpiration(config)
         );
 
+        UUID tokenId = tokenGraph.getToken().getId();
+        insertTokenLeadToken(tokenId, leadToken.getId());
+
         insertRefreshToken(
                 1,
                 config.getId(),
                 config.getRefreshTokenSize(),
                 config.getRefreshTokenSecondsToExpiry(),
                 tokenGraph,
-                headToken
+                leadToken
         );
 
         insertTokenScope(scopes, tokenGraph);
 
         return tokenGraph;
+    }
+
+    public void insertTokenLeadToken(UUID tokenId, UUID leadTokenId) {
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(tokenId);
+        tlt.setLeadTokenId(leadTokenId);
+
+        tokenLeadTokenRepository.insert(tlt);
     }
 }

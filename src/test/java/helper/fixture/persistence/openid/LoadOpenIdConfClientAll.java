@@ -30,7 +30,6 @@ import java.util.UUID;
 public class LoadOpenIdConfClientAll {
     private LoadConfClientTokenReady loadConfClientOpendIdTokenReady;
     private RandomString randomString;
-    private HashTextStaticSalt hashText;
     private TokenRepository tokenRepository;
     private TokenScopeRepository tokenScopeRepository;
     private AuthCodeTokenRepository authCodeTokenRepository;
