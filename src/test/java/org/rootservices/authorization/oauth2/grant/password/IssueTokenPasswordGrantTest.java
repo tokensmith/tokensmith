@@ -33,8 +33,6 @@ public class IssueTokenPasswordGrantTest {
     private InsertTokenGraphPasswordGrant mockInsertTokenGraphPasswordGrant;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -43,7 +41,6 @@ public class IssueTokenPasswordGrantTest {
         subject = new IssueTokenPasswordGrant(
                 mockInsertTokenGraphPasswordGrant,
                 mockResourceOwnerTokenRepository,
-                mockClientTokenRepository,
                 new TokenResponseBuilder(),
                 "https://sso.rootservices.org"
         );
@@ -88,11 +85,5 @@ public class IssueTokenPasswordGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
-
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
     }
 }

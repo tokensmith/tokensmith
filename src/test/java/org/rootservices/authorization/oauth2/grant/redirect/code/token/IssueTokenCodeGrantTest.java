@@ -44,8 +44,6 @@ public class IssueTokenCodeGrantTest {
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
     @Mock
     private AuthCodeRepository mockAuthCodeRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -57,7 +55,6 @@ public class IssueTokenCodeGrantTest {
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
                 mockAuthCodeRepository,
-                mockClientTokenRepository,
                 new TokenResponseBuilder(),
                 "https://sso.rootservices.org"
         );
@@ -112,15 +109,6 @@ public class IssueTokenCodeGrantTest {
 
         assertThat(actualROT.getId(), is(notNullValue()));
         assertThat(actualROT.getToken(), is(tokenGraph.getToken()));
-
-        // should insert a client token record.
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
-
     }
 
     @Test
@@ -166,9 +154,5 @@ public class IssueTokenCodeGrantTest {
         // should have rejected tokens just inserted.
         verify(mockTokenRepository).revokeById(tokenGraph.getToken().getId());
         verify(mockRefreshTokenRepository).revokeByTokenId(tokenGraph.getToken().getId());
-
-        // should never insert anything else!
-        verify(mockResourceOwnerTokenRepository, never()).insert(any(ResourceOwnerToken.class));
-        verify(mockClientTokenRepository, never()).insert(any(TokenAudience.class));
     }
 }

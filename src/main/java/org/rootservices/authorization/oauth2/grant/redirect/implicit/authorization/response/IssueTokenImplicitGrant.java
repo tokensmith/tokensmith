@@ -20,14 +20,12 @@ public class IssueTokenImplicitGrant {
     private InsertTokenGraphImplicitGrant insertTokenGraphImplicitGrant;
     private ScopeRepository scopeRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenAudienceRepository clientTokenRepository;
 
     @Autowired
-    public IssueTokenImplicitGrant(InsertTokenGraphImplicitGrant insertTokenGraphImplicitGrant, ScopeRepository scopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository) {
+    public IssueTokenImplicitGrant(InsertTokenGraphImplicitGrant insertTokenGraphImplicitGrant, ScopeRepository scopeRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository) {
         this.insertTokenGraphImplicitGrant = insertTokenGraphImplicitGrant;
         this.scopeRepository = scopeRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.clientTokenRepository = clientTokenRepository;
     }
 
     public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames) throws ServerException {
@@ -40,12 +38,6 @@ public class IssueTokenImplicitGrant {
         resourceOwnerToken.setResourceOwner(resourceOwner);
         resourceOwnerToken.setToken(tokenGraph.getToken());
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenGraph.getToken().getId());
-        clientTokenRepository.insert(clientToken);
 
         return tokenGraph;
     }

@@ -25,18 +25,16 @@ public class IssueTokenRefreshGrant {
     private InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant;
     private TokenChainRepository tokenChainRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
     private static String COMPROMISED_MESSAGE = "refresh token was already used";
 
     @Autowired
-    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraphRefreshGrant = insertTokenGraphRefreshGrant;
         this.tokenChainRepository = tokenChainRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
@@ -54,9 +52,6 @@ public class IssueTokenRefreshGrant {
 
         ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, tokenGraph.getToken());
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
-        TokenAudience clientToken = makeClientToken(clientId, tokenGraph.getToken().getId());
-        clientTokenRepository.insert(clientToken);
 
         // build the response.
         List<String> audience = new ArrayList<>();
@@ -102,14 +97,5 @@ public class IssueTokenRefreshGrant {
         resourceOwnerToken.setToken(token);
 
         return resourceOwnerToken;
-    }
-
-    protected TokenAudience makeClientToken(UUID clientId, UUID tokenId) {
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenId);
-
-        return clientToken;
     }
 }

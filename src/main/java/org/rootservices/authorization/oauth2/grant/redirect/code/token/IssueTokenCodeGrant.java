@@ -29,18 +29,16 @@ public class IssueTokenCodeGrant {
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private AuthCodeRepository authCodeRepository;
-    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.authCodeRepository = authCodeRepository;
-        this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
@@ -80,10 +78,6 @@ public class IssueTokenCodeGrant {
         // insert resource_owner_token. Associate token with resource owner.
         ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, token);
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
-        // insert client_token. Associate token with client.
-        TokenAudience clientToken = makeClientToken(clientId, token.getId());
-        clientTokenRepository.insert(clientToken);
     }
 
     protected AuthCodeToken makeAuthCodeToken(UUID tokenId, UUID authCodeId) {
@@ -103,14 +97,6 @@ public class IssueTokenCodeGrant {
         resourceOwnerToken.setResourceOwner(resourceOwner);
         resourceOwnerToken.setToken(token);
         return resourceOwnerToken;
-    }
-
-    protected TokenAudience makeClientToken(UUID clientId, UUID tokenId) {
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenId);
-        return clientToken;
     }
 
     protected void handleDuplicateAuthCodeToken(DuplicateRecordException e, UUID authCodeId, UUID tokenId) throws CompromisedCodeException {

@@ -47,6 +47,8 @@ public class InsertTokenGraphCodeGrantTest {
     private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private TokenScopeRepository mockTokenScopeRepository;
+    @Mock
+    private TokenAudienceRepository mockTokenAudienceRepository;
 
     @Before
     public void setUp() {
@@ -58,7 +60,8 @@ public class InsertTokenGraphCodeGrantTest {
                 mockTokenRepository,
                 mockMakeRefreshToken,
                 mockRefreshTokenRepository,
-                mockTokenScopeRepository
+                mockTokenScopeRepository,
+                mockTokenAudienceRepository
         );
     }
 

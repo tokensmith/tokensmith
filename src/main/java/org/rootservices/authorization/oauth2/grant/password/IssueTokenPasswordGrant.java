@@ -21,15 +21,13 @@ import java.util.UUID;
 public class IssueTokenPasswordGrant {
     private InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
 
-    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraphPasswordGrant = insertTokenGraphPasswordGrant;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
@@ -45,13 +43,6 @@ public class IssueTokenPasswordGrant {
         resourceOwnerToken.setToken(tokenGraph.getToken());
 
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenGraph.getToken().getId());
-
-        clientTokenRepository.insert(clientToken);
 
         // build the response.
         List<String> audience = new ArrayList<>();
