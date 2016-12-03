@@ -13,10 +13,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
-import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -53,6 +50,8 @@ public class InsertTokenGraphRefreshGrantTest {
     private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private TokenScopeRepository mockTokenScopeRepository;
+    @Mock
+    private TokenLeadTokenRepository mockTokenLeadTokenRepository;
 
     @Before
     public void setUp() {
@@ -64,7 +63,8 @@ public class InsertTokenGraphRefreshGrantTest {
                 mockTokenRepository,
                 mockMakeRefreshToken,
                 mockRefreshTokenRepository,
-                mockTokenScopeRepository
+                mockTokenScopeRepository,
+                mockTokenLeadTokenRepository
         );
     }
 
@@ -81,9 +81,9 @@ public class InsertTokenGraphRefreshGrantTest {
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
         token.setCreatedAt(OffsetDateTime.now());
 
-        String headPlainTextToken = "head-plain-text-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(headPlainTextToken, clientId);
-        headToken.setCreatedAt(OffsetDateTime.now());
+        String leadPlainTextToken = "lead-plain-text-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadPlainTextToken, clientId);
+        leadToken.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
 
@@ -92,9 +92,9 @@ public class InsertTokenGraphRefreshGrantTest {
 
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, token);
 
-        when(mockMakeRefreshToken.run(token, headToken, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
+        when(mockMakeRefreshToken.run(token, leadToken, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, headToken);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, leadToken);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -108,6 +108,14 @@ public class InsertTokenGraphRefreshGrantTest {
 
         // should insert a token
         verify(mockTokenRepository).insert(token);
+
+        // should insert a token lead token
+        ArgumentCaptor<TokenLeadToken> tltArgumentCaptor = ArgumentCaptor.forClass(TokenLeadToken.class);
+        verify(mockTokenLeadTokenRepository, times(1)).insert(tltArgumentCaptor.capture());
+        assertThat(tltArgumentCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tltArgumentCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tltArgumentCaptor.getValue().getLeadTokenId(), is(leadToken.getId()));
+
         // should insert a refresh token.
         verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
 

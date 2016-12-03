@@ -13,10 +13,7 @@ import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ConfigurationRepository;
-import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenRepository;
-import org.rootservices.authorization.persistence.repository.TokenScopeRepository;
+import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -100,6 +97,7 @@ public class InsertTokenGraphCodeGrantTest {
 
         // should insert a token
         verify(mockTokenRepository).insert(token);
+
         // should insert a refresh token.
         verify(mockRefreshTokenRepository, times(1)).insert(refreshToken);
 
