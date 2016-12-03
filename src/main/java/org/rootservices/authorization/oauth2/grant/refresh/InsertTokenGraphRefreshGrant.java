@@ -65,8 +65,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
                 config.getId(),
                 config.getRefreshTokenSize(),
                 config.getRefreshTokenSecondsToExpiry(),
-                tokenGraph,
-                leadToken
+                tokenGraph
         );
 
         insertTokenScope(scopes, tokenGraph);

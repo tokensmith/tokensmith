@@ -41,8 +41,8 @@ public class TokenChainMapperTest {
         return token;
     }
 
-    public RefreshToken loadRefreshToken(String refreshAccessToken, Token token, Token headToken) {
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token, headToken);
+    public RefreshToken loadRefreshToken(String refreshAccessToken, Token token) {
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
         refreshTokenMapper.insert(refreshToken);
         return refreshToken;
     }
@@ -50,7 +50,6 @@ public class TokenChainMapperTest {
     @Test
     public void insertShouldBeOk() throws Exception {
         String accessToken = "access-token";
-        String headAccessToken = "head-access-token";
         String prevAccessToken = "prev-access-token";
         String refreshAccessToken = "refresh-access-token";
 
@@ -60,8 +59,7 @@ public class TokenChainMapperTest {
         Token token = loadToken(accessToken, client.getId());
         Token previousToken = loadToken(prevAccessToken, client.getId());
 
-        Token headToken = loadToken(headAccessToken, client.getId());
-        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken, headToken);
+        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken);
 
         TokenChain tokenChain = new TokenChain();
         tokenChain.setId(UUID.randomUUID());
@@ -99,7 +97,6 @@ public class TokenChainMapperTest {
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() throws Exception {
         String accessToken = "access-token";
-        String headAccessToken = "head-access-token";
         String prevAccessToken = "prev-access-token";
         String refreshAccessToken = "refresh-access-token";
 
@@ -109,8 +106,7 @@ public class TokenChainMapperTest {
         Token token1 = loadToken(accessToken, client.getId());
         Token previousToken1 = loadToken(prevAccessToken, client.getId());
 
-        Token headToken = loadToken(headAccessToken, client.getId());
-        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken1, headToken);
+        RefreshToken refreshToken = loadRefreshToken(refreshAccessToken, previousToken1);
 
         TokenChain tokenChain1 = new TokenChain();
         tokenChain1.setId(UUID.randomUUID());
