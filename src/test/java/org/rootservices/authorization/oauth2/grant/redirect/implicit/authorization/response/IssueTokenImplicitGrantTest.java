@@ -34,13 +34,12 @@ public class IssueTokenImplicitGrantTest {
     private ScopeRepository mockScopeRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
+
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new IssueTokenImplicitGrant(mockInsertTokenGraphImplicitGrant, mockScopeRepository, mockResourceOwnerTokenRepository, mockClientTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockInsertTokenGraphImplicitGrant, mockScopeRepository, mockResourceOwnerTokenRepository);
     }
 
     @Test
@@ -69,13 +68,5 @@ public class IssueTokenImplicitGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner(), is(resourceOwner));
-
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
-
     }
 }

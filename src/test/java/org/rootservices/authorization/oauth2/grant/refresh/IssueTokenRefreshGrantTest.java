@@ -38,8 +38,6 @@ public class IssueTokenRefreshGrantTest {
     private TokenChainRepository mockTokenChainRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -49,7 +47,6 @@ public class IssueTokenRefreshGrantTest {
                 mockInsertTokenGraphRefreshGrant,
                 mockTokenChainRepository,
                 mockResourceOwnerTokenRepository,
-                mockClientTokenRepository,
                 new TokenResponseBuilder(),
                 "https://sso.rootservices.org"
         );
@@ -107,12 +104,6 @@ public class IssueTokenRefreshGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
-
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
     }
 
     @Test

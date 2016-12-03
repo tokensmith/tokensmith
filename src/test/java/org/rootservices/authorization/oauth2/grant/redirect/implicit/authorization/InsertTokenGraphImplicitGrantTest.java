@@ -51,6 +51,8 @@ public class InsertTokenGraphImplicitGrantTest {
     private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private TokenScopeRepository mockTokenScopeRepository;
+    @Mock
+    private TokenAudienceRepository mockTokenAudienceRepository;
 
     @Before
     public void setUp() {
@@ -62,7 +64,8 @@ public class InsertTokenGraphImplicitGrantTest {
                 mockTokenRepository,
                 mockMakeRefreshToken,
                 mockRefreshTokenRepository,
-                mockTokenScopeRepository
+                mockTokenScopeRepository,
+                mockTokenAudienceRepository
         );
     }
 
