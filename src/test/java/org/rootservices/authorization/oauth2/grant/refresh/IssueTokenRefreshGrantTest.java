@@ -17,6 +17,7 @@ import org.rootservices.authorization.persistence.exceptions.DuplicateRecordExce
 import org.rootservices.authorization.persistence.repository.*;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,10 +63,10 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         String headAccessToken = "head-access-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId, new ArrayList<>());
         headToken.setCreatedAt(OffsetDateTime.now().minusDays(1));
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken)).thenReturn(tokenGraph);
 
         ArgumentCaptor<TokenChain> tokenChainCaptor = ArgumentCaptor.forClass(TokenChain.class);
@@ -116,9 +117,9 @@ public class IssueTokenRefreshGrantTest {
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
         String headAccessToken = "head-access-token";
-        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId);
+        Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId, new ArrayList<>());
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken)).thenReturn(tokenGraph);
 
         DuplicateRecordException dre = new DuplicateRecordException("", null);

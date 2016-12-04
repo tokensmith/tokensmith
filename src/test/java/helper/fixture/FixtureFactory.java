@@ -256,7 +256,7 @@ public class FixtureFactory {
         return accessRequest;
     }
 
-    public static Token makeOAuthToken(String accessToken, UUID clientId) {
+    public static Token makeOAuthToken(String accessToken, UUID clientId, List<Client> audience) {
         AppConfig config = new AppConfig();
         HashTextStaticSalt textHasher = new HashTextStaticSaltImpl(config.salt());
         String hashedAccessToken = textHasher.run(accessToken);
@@ -278,12 +278,13 @@ public class FixtureFactory {
         ts1.setScope(profile);
 
         token.getTokenScopes().add(ts1);
+        token.setAudience(audience);
 
         return token;
     }
 
-    public static Token makeOpenIdToken(String accessToken, UUID clientId) {
-        Token token = makeOAuthToken(accessToken, clientId);
+    public static Token makeOpenIdToken(String accessToken, UUID clientId, List<Client> audience) {
+        Token token = makeOAuthToken(accessToken, clientId, audience);
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -312,11 +313,11 @@ public class FixtureFactory {
         return refreshToken;
     }
 
-    public static ResourceOwnerToken makeResourceOwnerToken(String accessToken, UUID clientId) {
+    public static ResourceOwnerToken makeResourceOwnerToken(String accessToken, UUID clientId, List<Client> audience) {
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setResourceOwner(makeResourceOwner());
-        resourceOwnerToken.setToken(makeOpenIdToken(accessToken, clientId));
+        resourceOwnerToken.setToken(makeOpenIdToken(accessToken, clientId, audience));
         return resourceOwnerToken;
     }
 
@@ -500,9 +501,9 @@ public class FixtureFactory {
         return c;
     }
 
-    public static TokenGraph makeTokenGraph(UUID clientId) {
+    public static TokenGraph makeTokenGraph(UUID clientId, List<Client> audience) {
         String plainTextToken = "plain-text-token";
-        Token token = makeOpenIdToken(plainTextToken, clientId);
+        Token token = makeOpenIdToken(plainTextToken, clientId, audience);
         token.setCreatedAt(OffsetDateTime.now());
         String refreshAccessToken = "refresh-token";
 
@@ -517,9 +518,9 @@ public class FixtureFactory {
         return tokenGraph;
     }
 
-    public static TokenGraph makeImplicitTokenGraph(UUID clientId) {
+    public static TokenGraph makeImplicitTokenGraph(UUID clientId, List<Client> audience) {
         String plainTextToken = "plain-text-token";
-        Token token = makeOpenIdToken(plainTextToken, clientId);
+        Token token = makeOpenIdToken(plainTextToken, clientId, audience);
         token.setCreatedAt(OffsetDateTime.now());
 
         TokenGraph tokenGraph = new TokenGraph(

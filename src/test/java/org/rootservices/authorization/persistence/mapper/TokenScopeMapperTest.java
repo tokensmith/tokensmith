@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -38,7 +39,7 @@ public class TokenScopeMapperTest {
         clientMapper.insert(client);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         tokenMapper.insert(token);
 
         Scope scope = FixtureFactory.makeScope();

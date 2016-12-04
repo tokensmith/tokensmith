@@ -13,6 +13,7 @@ import org.rootservices.authorization.persistence.factory.DuplicateRecordExcepti
 import org.rootservices.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -44,7 +45,7 @@ public class RefreshTokenRepositoryImplTest {
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
 
         subject.insert(refreshToken);
@@ -57,7 +58,7 @@ public class RefreshTokenRepositoryImplTest {
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
 
         DuplicateKeyException dke = new DuplicateKeyException("");
@@ -83,7 +84,7 @@ public class RefreshTokenRepositoryImplTest {
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
 
         String hashedAccessToken = new String(refreshToken.getAccessToken());
@@ -110,7 +111,7 @@ public class RefreshTokenRepositoryImplTest {
         String accessToken = "access-token";
         String refreshAccessToken = "refresh-access-token";
 
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
 
         when(mockRefreshTokenMapper.getByTokenId(token.getId())).thenReturn(refreshToken);

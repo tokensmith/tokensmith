@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -53,7 +54,7 @@ public class RefreshTokenMapperTest {
     private RandomString randomString;
 
     public Token loadToken(String accessToken, OffsetDateTime expiresAt, boolean revoked, UUID clientId) {
-        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId, new ArrayList<>());
         token.setExpiresAt(expiresAt);
         token.setRevoked(revoked);
 

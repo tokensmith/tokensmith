@@ -14,6 +14,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public class IssueTokenPasswordGrantTest {
 
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
 
 
