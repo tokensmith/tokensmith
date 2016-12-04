@@ -28,6 +28,7 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.RandomString;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -79,7 +80,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -167,7 +168,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -223,7 +224,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()
@@ -278,7 +279,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         OpenIdImplicitAuthRequest request = FixtureFactory.makeOpenIdImplicitAuthRequest(clientId);
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
         tokenGraph.getToken().setCreatedAt(OffsetDateTime.now());
 
         List<String> scopesForIdToken = tokenGraph.getToken().getTokenScopes().stream()

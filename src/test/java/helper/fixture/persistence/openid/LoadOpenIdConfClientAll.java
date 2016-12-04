@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +58,7 @@ public class LoadOpenIdConfClientAll {
     public RefreshToken loadRefreshTokenForResourceOwner(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, UUID resourceOwnerId, List<Scope> scopesForToken) throws DuplicateRecordException {
 
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         token.setExpiresAt(tokenExpiresAt);
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         tokenRepository.insert(token);
@@ -99,7 +100,7 @@ public class LoadOpenIdConfClientAll {
 
     public RefreshToken loadRefreshTokenForClient(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         token.setToken(accessToken.getBytes());
         token.setExpiresAt(tokenExpiresAt);
 

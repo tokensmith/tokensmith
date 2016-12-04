@@ -78,7 +78,7 @@ public class InsertTokenGraphImplicitGrantTest {
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setTokenScopes(new ArrayList<>());
 
         token.setCreatedAt(OffsetDateTime.now());
@@ -126,7 +126,7 @@ public class InsertTokenGraphImplicitGrantTest {
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);

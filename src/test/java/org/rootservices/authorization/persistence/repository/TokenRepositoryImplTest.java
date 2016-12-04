@@ -14,6 +14,7 @@ import org.rootservices.authorization.persistence.mapper.TokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -43,7 +44,7 @@ public class TokenRepositoryImplTest {
     public void insert() throws DuplicateRecordException {
         UUID clientId = UUID.randomUUID();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         subject.insert(token);
         verify(mockTokenMapper, times(1)).insert(token);
     }
@@ -52,7 +53,7 @@ public class TokenRepositoryImplTest {
     public void insertDuplicateTokenShouldThrowDuplicateRecordException() throws DuplicateRecordException {
         UUID clientId = UUID.randomUUID();
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
 
         String msg =
         "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"token_unique\"\n" +

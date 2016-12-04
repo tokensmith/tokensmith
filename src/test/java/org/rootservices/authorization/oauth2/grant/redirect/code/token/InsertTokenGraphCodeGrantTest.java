@@ -18,6 +18,7 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,7 +75,7 @@ public class InsertTokenGraphCodeGrantTest {
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
@@ -124,7 +125,7 @@ public class InsertTokenGraphCodeGrantTest {
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
@@ -250,7 +251,7 @@ public class InsertTokenGraphCodeGrantTest {
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenCodeSecondsToExpiry())).thenReturn(token);
@@ -306,7 +307,7 @@ public class InsertTokenGraphCodeGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -332,7 +333,7 @@ public class InsertTokenGraphCodeGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -358,7 +359,7 @@ public class InsertTokenGraphCodeGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;

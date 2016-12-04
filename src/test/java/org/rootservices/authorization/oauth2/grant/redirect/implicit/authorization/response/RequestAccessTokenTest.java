@@ -21,6 +21,7 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.security.RandomString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,7 +71,7 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
@@ -166,7 +167,7 @@ public class RequestAccessTokenTest {
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         Client client = FixtureFactory.makeTokenClientWithScopes();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
@@ -212,7 +213,7 @@ public class RequestAccessTokenTest {
         authRequest.setState(Optional.empty());
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
 
         when(mockValidateParamsTokenResponseType.run(
                 inputParams.getClientIds(),
