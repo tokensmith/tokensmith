@@ -68,6 +68,7 @@ public class RequestTokenPasswordGrantTest {
         Client client = FixtureFactory.makePasswordClientWithScopes();
         ConfidentialClient cc = FixtureFactory.makeConfidentialClient(client);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        List<Client> audience = FixtureFactory.makeAudience(client);
 
         Map<String, String> request =  new HashMap<>();
         request.put("grant_type", "password");
@@ -93,7 +94,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes(), audience))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -106,6 +107,7 @@ public class RequestTokenPasswordGrantTest {
         Client openIdClient = FixtureFactory.makePasswordClientWithOpenIdScopes();
         ConfidentialClient cc = FixtureFactory.makeConfidentialClient(openIdClient);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        List<Client> audience = FixtureFactory.makeAudience(openIdClient);
 
         Map<String, String> request =  new HashMap<>();
         request.put("grant_type", "password");
@@ -131,7 +133,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -309,6 +311,7 @@ public class RequestTokenPasswordGrantTest {
         Client openIdClient = FixtureFactory.makePasswordClientWithOpenIdScopes();
         ConfidentialClient cc = FixtureFactory.makeConfidentialClient(openIdClient);
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        List<Client> audience = FixtureFactory.makeAudience(openIdClient);
 
         Map<String, String> request =  new HashMap<>();
         request.put("grant_type", "password");
@@ -332,7 +335,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes()))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience))
                 .thenThrow(ServerException.class);
 
         subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);

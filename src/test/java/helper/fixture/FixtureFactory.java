@@ -533,4 +533,21 @@ public class FixtureFactory {
 
         return tokenGraph;
     }
+
+    public static List<Client> makeAudience(UUID clientId) throws Exception {
+        Client client = makeCodeClientWithOpenIdScopes();
+        client.setId(clientId);
+
+        List<Client> audience = new ArrayList<>();
+        audience.add(client);
+
+        return audience;
+    }
+
+    public static List<Client> makeAudience(Client client) throws Exception {
+        List<Client> audience = new ArrayList<>();
+        audience.add(client);
+
+        return audience;
+    }
 }

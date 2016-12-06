@@ -51,18 +51,15 @@ public class IssueTokenPasswordGrantTest {
     public void runShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
-
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
+        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
 
-
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));

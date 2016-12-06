@@ -16,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -43,12 +44,14 @@ public class IssueTokenCodeGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes) throws CompromisedCodeException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience) throws CompromisedCodeException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes, audience);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
-        List<String> audience = new ArrayList<>();
-        audience.add(clientId.toString());
+        List<String> responseAudience = tokenGraph.getToken().getAudience()
+                .stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
 
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
@@ -57,7 +60,7 @@ public class IssueTokenCodeGrant {
                 .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())
                 .setIssuer(issuer)
-                .setAudience(audience)
+                .setAudience(responseAudience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond())

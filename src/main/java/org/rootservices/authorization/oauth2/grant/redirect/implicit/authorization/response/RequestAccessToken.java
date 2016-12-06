@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,10 +63,16 @@ public class RequestAccessToken {
         );
         ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
         URI redirectURI = getRedirectURI(authRequest.getRedirectURI(), authRequest.getClientId());
+        List<Client> audience = makeAudience(authRequest.getClientId());
 
         TokenGraph tokenGraph;
         try {
-            tokenGraph = issueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes());
+            tokenGraph = issueTokenImplicitGrant.run(
+                    authRequest.getClientId(),
+                    resourceOwner,
+                    authRequest.getScopes(),
+                    audience
+            );
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
 
@@ -92,6 +99,7 @@ public class RequestAccessToken {
         }
         return redirectUri;
     }
+
     private URI fetchClientRedirectURI(UUID clientId) throws InformResourceOwnerException {
 
         try {
@@ -103,6 +111,22 @@ public class RequestAccessToken {
             );
         }
     }
+
+    private List<Client> makeAudience(UUID clientId) throws InformResourceOwnerException {
+        List<Client> audience = new ArrayList<>();
+
+        Client client;
+        try {
+            client = clientRepository.getById(clientId);
+        } catch (RecordNotFoundException e) {
+            throw new InformResourceOwnerException(
+                    ErrorCode.CLIENT_NOT_FOUND.getDescription(), e, ErrorCode.CLIENT_NOT_FOUND.getCode()
+            );
+        }
+        audience.add(client);
+        return audience;
+    }
+
     private ImplicitAccessToken translate(URI redirectUri, String accessToken, Long secondsToExpiration, List<String> scopes, Optional<String> state) {
 
         Optional<String> scopesForToken = Optional.empty();

@@ -137,8 +137,8 @@ public class InsertTokenGraphRefreshGrantTest {
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -161,7 +161,7 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -264,8 +264,8 @@ public class InsertTokenGraphRefreshGrantTest {
     @Test
     public void handleDuplicateRefreshTokenShouldRetry() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -288,7 +288,7 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
         when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
