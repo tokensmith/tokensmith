@@ -7,10 +7,7 @@ import org.rootservices.authorization.oauth2.grant.token.InsertTokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.persistence.entity.Configuration;
-import org.rootservices.authorization.persistence.entity.GrantType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
@@ -49,7 +46,7 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
     }
 
     @Override
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(

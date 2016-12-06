@@ -49,7 +49,7 @@ public abstract class InsertTokenGraph {
     protected abstract Logger getLogger();
     protected abstract Long getSecondsToExpiration(Configuration configuration);
 
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(

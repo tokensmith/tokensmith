@@ -28,10 +28,10 @@ public class IssueTokenImplicitGrant {
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
     }
 
-    public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames) throws ServerException {
+    public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, List<Client> audience) throws ServerException {
 
         List<Scope> scopes = scopeRepository.findByNames(scopeNames);
-        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes);
+        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());

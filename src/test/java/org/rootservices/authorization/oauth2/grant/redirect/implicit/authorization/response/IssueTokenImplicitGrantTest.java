@@ -55,10 +55,11 @@ public class IssueTokenImplicitGrantTest {
         List<Scope> scopes = FixtureFactory.makeScopes();
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, audience);
+        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
-        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames);
+        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(tokenGraph));

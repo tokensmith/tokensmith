@@ -50,6 +50,8 @@ public class MakeBearerTokenTest {
         assertThat(actual.getSecondsToExpiration(), is(3600L));
         assertThat(actual.getTokenScopes(), is(notNullValue()));
         assertThat(actual.getTokenScopes().size(), is(0));
+        assertThat(actual.getAudience(), is(notNullValue()));
+        assertThat(actual.getAudience().size(), is(0));
     }
 
     @Test

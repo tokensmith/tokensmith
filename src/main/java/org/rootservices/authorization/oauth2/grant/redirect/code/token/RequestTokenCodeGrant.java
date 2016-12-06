@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,13 +70,17 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         List<Scope> scopes = authCode.getAccessRequest().getAccessRequestScopes().stream()
                 .map(i -> i.getScope()).collect(Collectors.toList());
 
+        List<Client> audience = new ArrayList<>();
+        audience.add(cc.getClient());
+
         TokenResponse tokenResponse;
         try {
             tokenResponse = issueTokenCodeGrant.run(
                     cc.getClient().getId(),
                     authCode.getId(),
                     resourceOwnerId,
-                    scopes
+                    scopes,
+                    audience
             );
         } catch (CompromisedCodeException e) {
             throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();

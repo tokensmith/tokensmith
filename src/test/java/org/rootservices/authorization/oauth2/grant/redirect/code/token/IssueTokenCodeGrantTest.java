@@ -69,10 +69,11 @@ public class IssueTokenCodeGrantTest {
 
         List<Scope> scopes = FixtureFactory.makeScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
+        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes,audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -119,8 +120,9 @@ public class IssueTokenCodeGrantTest {
         UUID resourceOwnerId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeScopes();
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
+        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
@@ -128,7 +130,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, scopes);
+            subject.run(clientId, authCodeId, resourceOwnerId, scopes, audience);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));

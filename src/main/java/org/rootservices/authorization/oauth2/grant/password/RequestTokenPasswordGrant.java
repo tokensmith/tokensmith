@@ -67,9 +67,12 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
 
         List<Scope> scopes = matchScopes(cc.getClient().getScopes(), input.getScopes());
 
+        List<Client> audience = new ArrayList<>();
+        audience.add(cc.getClient());
+
         TokenResponse tokenResponse;
         try {
-            tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), scopes);
+            tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), scopes, audience);
         } catch (ServerException e) {
             throw e;
         }
