@@ -56,6 +56,7 @@ public class IssueTokenRefreshGrantTest {
     @Test
     public void runShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         UUID previousTokenId = UUID.randomUUID();
         UUID refreshTokenId = UUID.randomUUID();
@@ -66,14 +67,13 @@ public class IssueTokenRefreshGrantTest {
         Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId, new ArrayList<>());
         headToken.setCreatedAt(OffsetDateTime.now().minusDays(1));
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken)).thenReturn(tokenGraph);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
+        when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken, audience)).thenReturn(tokenGraph);
 
         ArgumentCaptor<TokenChain> tokenChainCaptor = ArgumentCaptor.forClass(TokenChain.class);
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
 
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -110,6 +110,7 @@ public class IssueTokenRefreshGrantTest {
     @Test
     public void runWhenRefreshTokenUsedShouldThrowCompromisedRefreshTokenException() throws Exception {
         UUID clientId = UUID.randomUUID();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
         UUID previousTokenId = UUID.randomUUID();
         UUID refreshTokenId = UUID.randomUUID();
@@ -120,14 +121,14 @@ public class IssueTokenRefreshGrantTest {
         Token headToken = FixtureFactory.makeOpenIdToken(headAccessToken, clientId, new ArrayList<>());
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
-        when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, headToken, audience)).thenReturn(tokenGraph);
 
         DuplicateRecordException dre = new DuplicateRecordException("", null);
         doThrow(dre).when(mockTokenChainRepository).insert(any(TokenChain.class));
 
         CompromisedRefreshTokenException actual = null;
         try {
-            subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes);
+            subject.run(clientId, resourceOwner.getId(), previousTokenId, refreshTokenId, headToken, scopes, audience);
         } catch (CompromisedRefreshTokenException e) {
             actual = e;
         }

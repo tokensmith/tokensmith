@@ -75,8 +75,8 @@ public class InsertTokenGraphRefreshGrantTest {
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
@@ -98,7 +98,7 @@ public class InsertTokenGraphRefreshGrantTest {
 
         when(mockMakeRefreshToken.run(token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, leadToken);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, leadToken, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
