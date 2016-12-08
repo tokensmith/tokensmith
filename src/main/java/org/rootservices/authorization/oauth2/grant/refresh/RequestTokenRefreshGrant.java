@@ -93,7 +93,8 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
                 refreshToken.getToken().getId(),
                 refreshToken.getId(),
                 leadToken,
-                scopes
+                scopes,
+                refreshToken.getToken().getAudience()
             );
         } catch (CompromisedRefreshTokenException e) {
             logger.warn(e.getMessage(), e);

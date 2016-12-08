@@ -16,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 10/7/16.
@@ -39,8 +40,8 @@ public class IssueTokenRefreshGrant {
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token leadToken, List<Scope> scopes) throws CompromisedRefreshTokenException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, leadToken);
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, UUID previousTokenId, UUID refreshTokenId, Token leadToken, List<Scope> scopes, List<Client> audience) throws CompromisedRefreshTokenException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraphRefreshGrant.insertTokenGraph(clientId, scopes, leadToken, audience);
 
         // make relationships to the token graph.
         TokenChain tokenChain = makeTokenChain(tokenGraph.getToken(), previousTokenId, refreshTokenId);
@@ -53,9 +54,10 @@ public class IssueTokenRefreshGrant {
         ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, tokenGraph.getToken());
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
-        // build the response.
-        List<String> audience = new ArrayList<>();
-        audience.add(clientId.toString());
+        List<String> responseAudience = tokenGraph.getToken().getAudience()
+                .stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
 
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
@@ -64,7 +66,7 @@ public class IssueTokenRefreshGrant {
                 .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())
                 .setIssuer(issuer)
-                .setAudience(audience)
+                .setAudience(responseAudience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(leadToken.getCreatedAt().toEpochSecond())

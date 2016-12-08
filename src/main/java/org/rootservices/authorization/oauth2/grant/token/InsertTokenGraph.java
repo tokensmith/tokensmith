@@ -70,7 +70,8 @@ public abstract class InsertTokenGraph {
 
         insertTokenScope(scopes, tokenGraph);
 
-        insertTokenAudience(tokenGraph.getToken().getId(), clientId);
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }
@@ -138,10 +139,11 @@ public abstract class InsertTokenGraph {
         return clientToken;
     }
 
-    // TODO: 135471711 should this return a list of clients?
-    public void insertTokenAudience(UUID tokenId, UUID clientId) {
-        TokenAudience clientToken = makeTokenAudience(clientId, tokenId);
-        tokenAudienceRepository.insert(clientToken);
+    public void insertTokenAudience(UUID tokenId, List<Client> audience) {
+        for(Client client: audience) {
+            TokenAudience clientToken = makeTokenAudience(client.getId(), tokenId);
+            tokenAudienceRepository.insert(clientToken);
+        }
     }
 
     public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID clientId, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {

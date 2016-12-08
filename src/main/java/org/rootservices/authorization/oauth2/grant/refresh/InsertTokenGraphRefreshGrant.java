@@ -46,7 +46,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         return configuration.getAccessTokenRefreshSecondsToExpiry();
     }
 
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token leadToken) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token leadToken, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
@@ -69,7 +69,8 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         );
 
         insertTokenScope(scopes, tokenGraph);
-        insertTokenAudience(tokenGraph.getToken().getId(), clientId);
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }
