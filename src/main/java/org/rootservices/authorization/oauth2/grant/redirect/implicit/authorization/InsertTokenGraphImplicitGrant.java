@@ -58,6 +58,8 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
         );
 
         insertTokenScope(scopes, tokenGraph);
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }
