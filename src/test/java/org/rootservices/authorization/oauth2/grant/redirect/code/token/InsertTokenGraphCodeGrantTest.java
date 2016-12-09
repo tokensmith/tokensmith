@@ -94,6 +94,8 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -115,6 +117,14 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
@@ -150,6 +160,8 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -173,6 +185,14 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
@@ -277,6 +297,8 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -300,6 +322,14 @@ public class InsertTokenGraphCodeGrantTest {
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
