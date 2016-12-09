@@ -39,6 +39,7 @@ public class MakeBearerToken {
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         token.setClientId(clientId);
         token.setTokenScopes(new ArrayList<>());
+        token.setAudience(new ArrayList<>());
 
         return token;
     }

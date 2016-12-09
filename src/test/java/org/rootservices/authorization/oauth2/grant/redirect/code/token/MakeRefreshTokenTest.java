@@ -11,6 +11,7 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -37,7 +38,7 @@ public class MakeRefreshTokenTest {
     public void runShouldBeOk() throws Exception {
         String accessToken = "access-token";
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
         when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);

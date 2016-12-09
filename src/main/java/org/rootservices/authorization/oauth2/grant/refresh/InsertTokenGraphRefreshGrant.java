@@ -26,8 +26,8 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
     private TokenLeadTokenRepository tokenLeadTokenRepository;
 
     @Autowired
-    public InsertTokenGraphRefreshGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenLeadTokenRepository tokenLeadTokenRepository) {
-        super(configurationRepository, randomString, makeBearerToken, tokenRepository, makeRefreshToken, refreshTokenRepository, tokenScopeRepository);
+    public InsertTokenGraphRefreshGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenLeadTokenRepository tokenLeadTokenRepository, TokenAudienceRepository tokenAudienceRepository) {
+        super(configurationRepository, randomString, makeBearerToken, tokenRepository, makeRefreshToken, refreshTokenRepository, tokenScopeRepository, tokenAudienceRepository);
         this.tokenLeadTokenRepository = tokenLeadTokenRepository;
     }
 
@@ -46,7 +46,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         return configuration.getAccessTokenRefreshSecondsToExpiry();
     }
 
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token leadToken) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, Token leadToken, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
@@ -69,6 +69,8 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         );
 
         insertTokenScope(scopes, tokenGraph);
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }

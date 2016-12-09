@@ -22,6 +22,7 @@ public abstract class InsertTokenGraph {
     private MakeRefreshToken makeRefreshToken;
     private RefreshTokenRepository refreshTokenRepository;
     private TokenScopeRepository tokenScopeRepository;
+    private TokenAudienceRepository tokenAudienceRepository;
 
     private static String OPENID_SCOPE = "openid";
     private static String TOKEN_SCHEMA = "token";
@@ -33,7 +34,7 @@ public abstract class InsertTokenGraph {
     private static String KEY_UNKNOWN_FAILED_MSG = "Failed to insert %s. Unknown key, %s. Did not retry. Attempted %s times. Token size is, %s.";
     private static String UNKNOWN_KEY = "unknown";
 
-    public InsertTokenGraph(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository) {
+    public InsertTokenGraph(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenAudienceRepository tokenAudienceRepository) {
         this.configurationRepository = configurationRepository;
         this.randomString = randomString;
         this.makeBearerToken = makeBearerToken;
@@ -41,13 +42,14 @@ public abstract class InsertTokenGraph {
         this.makeRefreshToken = makeRefreshToken;
         this.refreshTokenRepository = refreshTokenRepository;
         this.tokenScopeRepository = tokenScopeRepository;
+        this.tokenAudienceRepository = tokenAudienceRepository;
     }
 
     protected abstract GrantType getGrantType();
     protected abstract Logger getLogger();
     protected abstract Long getSecondsToExpiration(Configuration configuration);
 
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
@@ -67,6 +69,9 @@ public abstract class InsertTokenGraph {
         );
 
         insertTokenScope(scopes, tokenGraph);
+
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }
@@ -124,6 +129,21 @@ public abstract class InsertTokenGraph {
             // TODO: 134265317: needs a test
         }
         tokenGraph.setExtension(extension);
+    }
+
+    protected TokenAudience makeTokenAudience(UUID clientId, UUID tokenId) {
+        TokenAudience clientToken = new TokenAudience();
+        clientToken.setId(UUID.randomUUID());
+        clientToken.setClientId(clientId);
+        clientToken.setTokenId(tokenId);
+        return clientToken;
+    }
+
+    public void insertTokenAudience(UUID tokenId, List<Client> audience) {
+        for(Client client: audience) {
+            TokenAudience clientToken = makeTokenAudience(client.getId(), tokenId);
+            tokenAudienceRepository.insert(clientToken);
+        }
     }
 
     public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID clientId, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {

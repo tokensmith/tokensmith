@@ -7,10 +7,7 @@ import org.rootservices.authorization.oauth2.grant.token.InsertTokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.MakeBearerToken;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.persistence.entity.Configuration;
-import org.rootservices.authorization.persistence.entity.GrantType;
-import org.rootservices.authorization.persistence.entity.Scope;
-import org.rootservices.authorization.persistence.entity.Token;
+import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
 import org.rootservices.authorization.security.RandomString;
@@ -29,8 +26,8 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
     protected static final Logger logger = LogManager.getLogger(InsertTokenGraphImplicitGrant.class);
 
     @Autowired
-    public InsertTokenGraphImplicitGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository) {
-        super(configurationRepository, randomString, makeBearerToken, tokenRepository, makeRefreshToken, refreshTokenRepository, tokenScopeRepository);
+    public InsertTokenGraphImplicitGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenAudienceRepository tokenAudienceRepository) {
+        super(configurationRepository, randomString, makeBearerToken, tokenRepository, makeRefreshToken, refreshTokenRepository, tokenScopeRepository, tokenAudienceRepository);
     }
 
     @Override
@@ -49,7 +46,7 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
     }
 
     @Override
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
@@ -61,6 +58,8 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
         );
 
         insertTokenScope(scopes, tokenGraph);
+        insertTokenAudience(tokenGraph.getToken().getId(), audience);
+        tokenGraph.getToken().setAudience(audience);
 
         return tokenGraph;
     }

@@ -18,10 +18,12 @@ import org.rootservices.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -52,6 +54,8 @@ public class InsertTokenGraphRefreshGrantTest {
     private TokenScopeRepository mockTokenScopeRepository;
     @Mock
     private TokenLeadTokenRepository mockTokenLeadTokenRepository;
+    @Mock
+    private TokenAudienceRepository mockTokenAudienceRepository;
 
     @Before
     public void setUp() {
@@ -64,25 +68,26 @@ public class InsertTokenGraphRefreshGrantTest {
                 mockMakeRefreshToken,
                 mockRefreshTokenRepository,
                 mockTokenScopeRepository,
-                mockTokenLeadTokenRepository
+                mockTokenLeadTokenRepository,
+                mockTokenAudienceRepository
         );
     }
 
     @Test
     public void insertTokenGraphShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         String leadPlainTextToken = "lead-plain-text-token";
-        Token leadToken = FixtureFactory.makeOpenIdToken(leadPlainTextToken, clientId);
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadPlainTextToken, clientId, new ArrayList<>());
         leadToken.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
@@ -94,12 +99,14 @@ public class InsertTokenGraphRefreshGrantTest {
 
         when(mockMakeRefreshToken.run(token, refreshAccessToken, 1209600L)).thenReturn(refreshToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, leadToken);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, leadToken, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -124,23 +131,30 @@ public class InsertTokenGraphRefreshGrantTest {
         verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
 
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
-
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
@@ -157,12 +171,14 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -180,12 +196,19 @@ public class InsertTokenGraphRefreshGrantTest {
         // should insert token scopes.
         ArgumentCaptor<TokenScope> tokenScopeCaptor = ArgumentCaptor.forClass(TokenScope.class);
         verify(mockTokenScopeRepository, times(1)).insert(tokenScopeCaptor.capture());
-
         List<TokenScope> actualTokenScopes = tokenScopeCaptor.getAllValues();
 
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
@@ -260,14 +283,14 @@ public class InsertTokenGraphRefreshGrantTest {
     @Test
     public void handleDuplicateRefreshTokenShouldRetry() throws Exception {
         UUID clientId = UUID.randomUUID();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenRefreshSecondsToExpiry())).thenReturn(token);
@@ -284,12 +307,14 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
         when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -324,7 +349,7 @@ public class InsertTokenGraphRefreshGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -351,7 +376,7 @@ public class InsertTokenGraphRefreshGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;
@@ -378,7 +403,7 @@ public class InsertTokenGraphRefreshGrantTest {
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, new ArrayList<>());
         Long secondsToExpiration = 1209600L;
 
         ServerException actual = null;

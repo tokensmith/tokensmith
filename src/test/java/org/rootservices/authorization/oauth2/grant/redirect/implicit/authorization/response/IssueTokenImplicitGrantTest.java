@@ -34,13 +34,12 @@ public class IssueTokenImplicitGrantTest {
     private ScopeRepository mockScopeRepository;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
+
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new IssueTokenImplicitGrant(mockInsertTokenGraphImplicitGrant, mockScopeRepository, mockResourceOwnerTokenRepository, mockClientTokenRepository);
+        subject = new IssueTokenImplicitGrant(mockInsertTokenGraphImplicitGrant, mockScopeRepository, mockResourceOwnerTokenRepository);
     }
 
     @Test
@@ -56,10 +55,11 @@ public class IssueTokenImplicitGrantTest {
         List<Scope> scopes = FixtureFactory.makeScopes();
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
 
-        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId);
-        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
+        TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, audience);
+        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
-        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames);
+        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(tokenGraph));
@@ -69,13 +69,5 @@ public class IssueTokenImplicitGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner(), is(resourceOwner));
-
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
-
     }
 }

@@ -51,6 +51,8 @@ public class InsertTokenGraphImplicitGrantTest {
     private RefreshTokenRepository mockRefreshTokenRepository;
     @Mock
     private TokenScopeRepository mockTokenScopeRepository;
+    @Mock
+    private TokenAudienceRepository mockTokenAudienceRepository;
 
     @Before
     public void setUp() {
@@ -62,7 +64,8 @@ public class InsertTokenGraphImplicitGrantTest {
                 mockTokenRepository,
                 mockMakeRefreshToken,
                 mockRefreshTokenRepository,
-                mockTokenScopeRepository
+                mockTokenScopeRepository,
+                mockTokenAudienceRepository
         );
     }
 
@@ -70,12 +73,13 @@ public class InsertTokenGraphImplicitGrantTest {
     public void insertTokenGraphShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, audience);
         token.setTokenScopes(new ArrayList<>());
 
         token.setCreatedAt(OffsetDateTime.now());
@@ -83,12 +87,15 @@ public class InsertTokenGraphImplicitGrantTest {
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
         when(mockRandomString.run(32)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.TOKEN));
+
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
 
         assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
         assertThat(actual.getToken().getTokenScopes().size(), is(1));
@@ -112,18 +119,27 @@ public class InsertTokenGraphImplicitGrantTest {
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test
     public void handleDuplicateTokenShouldRetry() throws Exception {
         UUID clientId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         Configuration configuration = FixtureFactory.makeConfiguration();
         when(mockConfigurationRepository.get()).thenReturn(configuration);
 
         String plainTextToken = "plain-text-token";
-        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, audience);
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
@@ -136,12 +152,14 @@ public class InsertTokenGraphImplicitGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
         assertThat(actual.getToken(), is(token));
         assertThat(actual.getToken().getGrantType(), is(GrantType.TOKEN));
+        assertThat(actual.getToken().getAudience(), is(notNullValue()));
+        assertThat(actual.getToken().getAudience(), is(audience));
         assertThat(actual.getRefreshTokenId().isPresent(), is(false));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(false));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
@@ -164,6 +182,14 @@ public class InsertTokenGraphImplicitGrantTest {
         assertThat(actualTokenScopes.get(0).getId(), is(notNullValue()));
         assertThat(actualTokenScopes.get(0).getTokenId(), is(token.getId()));
         assertThat(actualTokenScopes.get(0).getScope(), is(scopes.get(0)));
+
+        // should insert a token_audience
+        ArgumentCaptor<TokenAudience> tokenAudienceCaptor = ArgumentCaptor.forClass(TokenAudience.class);
+        verify(mockTokenAudienceRepository, times(1)).insert(tokenAudienceCaptor.capture());
+
+        assertThat(tokenAudienceCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(tokenAudienceCaptor.getValue().getTokenId(), is(token.getId()));
+        assertThat(tokenAudienceCaptor.getValue().getClientId(), is(clientId));
     }
 
     @Test

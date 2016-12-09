@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -387,8 +388,9 @@ public class RequestTokenCodeGrantTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
+        UUID clientId = authCode.getAccessRequest().getClientId();
         String accessToken = randomString.run();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         tokenRepository.insert(token);
 
         String refreshAccessToken = randomString.run();

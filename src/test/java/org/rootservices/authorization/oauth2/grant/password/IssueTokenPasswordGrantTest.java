@@ -14,6 +14,7 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +34,6 @@ public class IssueTokenPasswordGrantTest {
     private InsertTokenGraphPasswordGrant mockInsertTokenGraphPasswordGrant;
     @Mock
     private ResourceOwnerTokenRepository mockResourceOwnerTokenRepository;
-    @Mock
-    private TokenAudienceRepository mockClientTokenRepository;
 
     @Before
     public void setUp() {
@@ -43,7 +42,6 @@ public class IssueTokenPasswordGrantTest {
         subject = new IssueTokenPasswordGrant(
                 mockInsertTokenGraphPasswordGrant,
                 mockResourceOwnerTokenRepository,
-                mockClientTokenRepository,
                 new TokenResponseBuilder(),
                 "https://sso.rootservices.org"
         );
@@ -53,18 +51,15 @@ public class IssueTokenPasswordGrantTest {
     public void runShouldBeOk() throws Exception {
         UUID clientId = UUID.randomUUID();
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-
         List<Scope> scopes = FixtureFactory.makeOpenIdScopes();
+        List<Client> audience = FixtureFactory.makeAudience(clientId);
 
-        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId);
-        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes)).thenReturn(tokenGraph);
-
+        TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
+        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
 
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
-        ArgumentCaptor<TokenAudience> clientTokenArgumentCaptor = ArgumentCaptor.forClass(TokenAudience.class);
 
-
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes, audience);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -88,11 +83,5 @@ public class IssueTokenPasswordGrantTest {
         assertThat(actualRot.getId(), is(notNullValue()));
         assertThat(actualRot.getToken(), is(tokenGraph.getToken()));
         assertThat(actualRot.getResourceOwner().getId(), is(resourceOwner.getId()));
-
-        verify(mockClientTokenRepository, times(1)).insert(clientTokenArgumentCaptor.capture());
-        TokenAudience actualCt = clientTokenArgumentCaptor.getValue();
-        assertThat(actualCt.getId(), is(notNullValue()));
-        assertThat(actualCt.getTokenId(), is(tokenGraph.getToken().getId()));
-        assertThat(actualCt.getClientId(), is(clientId));
     }
 }

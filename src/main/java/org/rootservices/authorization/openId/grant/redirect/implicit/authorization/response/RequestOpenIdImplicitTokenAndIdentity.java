@@ -23,6 +23,8 @@ import org.rootservices.authorization.openId.identity.exception.IdTokenException
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.persistence.entity.*;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,6 +49,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
     private OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder;
+    private ClientRepository clientRepository;
 
     private String issuer;
     private static String MSG_ID_TOKEN = "Failed to create id_token";
@@ -54,12 +57,13 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, String issuer) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, ClientRepository clientRepository, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
         this.openIdImplicitAccessTokenBuilder = openIdImplicitAccessTokenBuilder;
+        this.clientRepository = clientRepository;
         this.issuer = issuer;
     }
 
@@ -69,10 +73,11 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         );
 
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
+        List<Client> audience = makeAudience(request.getClientId());
 
         TokenGraph tokenGraph;
         try {
-            tokenGraph = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes());
+            tokenGraph = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience);
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
 
@@ -92,12 +97,14 @@ public class RequestOpenIdImplicitTokenAndIdentity {
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
-        List<String> audience = new ArrayList<>();
-        audience.add(request.getClientId().toString());
+        List<String> audienceForClaim = tokenGraph.getToken().getAudience()
+                .stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
 
         TokenClaims tc = new TokenClaims();
         tc.setIssuer(issuer);
-        tc.setAudience(audience);
+        tc.setAudience(audienceForClaim);
         tc.setIssuedAt(tokenGraph.getToken().getCreatedAt().toEpochSecond());
         tc.setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond());
         tc.setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond());
@@ -144,5 +151,20 @@ public class RequestOpenIdImplicitTokenAndIdentity {
             .setState(state)
             .setCause(cause)
             .build();
+    }
+
+    private List<Client> makeAudience(UUID clientId) throws InformResourceOwnerException {
+        List<Client> audience = new ArrayList<>();
+
+        Client client;
+        try {
+            client = clientRepository.getById(clientId);
+        } catch (RecordNotFoundException e) {
+            throw new InformResourceOwnerException(
+                    ErrorCode.CLIENT_NOT_FOUND.getDescription(), e, ErrorCode.CLIENT_NOT_FOUND.getCode()
+            );
+        }
+        audience.add(client);
+        return audience;
     }
 }
