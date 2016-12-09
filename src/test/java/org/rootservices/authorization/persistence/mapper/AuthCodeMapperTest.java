@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -177,7 +178,7 @@ public class AuthCodeMapperTest {
         AuthCode authCode = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId(), new ArrayList<>());
         tokenRepository.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();

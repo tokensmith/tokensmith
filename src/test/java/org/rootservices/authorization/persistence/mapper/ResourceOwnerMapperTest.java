@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -108,7 +109,7 @@ public class ResourceOwnerMapperTest {
         ResourceOwner expectedUser = insertResourceOwner();
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         tokenMapper.insert(token);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
@@ -141,7 +142,7 @@ public class ResourceOwnerMapperTest {
         ResourceOwner ro = insertResourceOwner();
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         token.setGrantType(GrantType.REFRESSH);
         tokenMapper.insert(token);
 
@@ -152,7 +153,7 @@ public class ResourceOwnerMapperTest {
         tokenAudienceMapper.insert(tokenAudience);
 
         String leadAccessToken = "lead-access-token";
-        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId());
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
         tokenMapper.insert(leadToken);
 
         TokenLeadToken tlt = new TokenLeadToken();

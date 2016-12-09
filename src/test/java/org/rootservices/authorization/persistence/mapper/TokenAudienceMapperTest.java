@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -39,7 +40,7 @@ public class TokenAudienceMapperTest {
     }
 
     public UUID loadToken(String accessToken, UUID clientId) throws Exception {
-        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOAuthToken(accessToken, clientId, new ArrayList<>());
         token.setGrantType(GrantType.TOKEN);
         tokenMapper.insert(token);
         return token.getId();

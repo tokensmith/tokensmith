@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -46,7 +47,7 @@ public class TokenMapperTest {
         clientRepository.insert(client);
 
         String accessToken = "accessToken";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         subject.insert(token);
 
         assertThat(token.getCreatedAt(), is(notNullValue()));
@@ -58,7 +59,7 @@ public class TokenMapperTest {
         clientRepository.insert(client);
 
         String accessToken = "accessToken";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         subject.insert(token);
 
         DuplicateKeyException actual = null;
@@ -79,7 +80,7 @@ public class TokenMapperTest {
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String accessToken = "accessToken";
-        Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
+        Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId(), new ArrayList<>());
         subject.insert(tokenToRevoke);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -107,7 +108,7 @@ public class TokenMapperTest {
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId(), new ArrayList<>());
         subject.insert(token);
 
         AuthCodeToken authCodeToken = new AuthCodeToken();
@@ -135,7 +136,7 @@ public class TokenMapperTest {
         clientRepository.insert(client);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         subject.insert(token);
 
         assertThat(token.isRevoked(), is(false));
@@ -159,7 +160,7 @@ public class TokenMapperTest {
         clientRepository.insert(client);
 
         String accessToken = "access-token";
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId());
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
         subject.insert(token);
 
         assertThat(token.isRevoked(), is(false));

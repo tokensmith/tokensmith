@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 9/18/16.
@@ -21,21 +22,19 @@ import java.util.UUID;
 public class IssueTokenPasswordGrant {
     private InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
 
-    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraphPasswordGrant = insertTokenGraphPasswordGrant;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, List<Scope> scopes) throws ServerException {
-        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes);
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience) throws ServerException {
+        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience);
 
         ResourceOwner resourceOwner = new ResourceOwner();
         resourceOwner.setId(resourceOwnerId);
@@ -46,16 +45,11 @@ public class IssueTokenPasswordGrant {
 
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
 
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenGraph.getToken().getId());
-
-        clientTokenRepository.insert(clientToken);
-
         // build the response.
-        List<String> audience = new ArrayList<>();
-        audience.add(clientId.toString());
+        List<String> responseAudience = tokenGraph.getToken().getAudience()
+                .stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
 
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
@@ -64,7 +58,7 @@ public class IssueTokenPasswordGrant {
                 .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())
                 .setIssuer(issuer)
-                .setAudience(audience)
+                .setAudience(responseAudience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond())

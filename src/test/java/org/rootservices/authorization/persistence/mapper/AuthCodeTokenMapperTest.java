@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -67,7 +68,7 @@ public class AuthCodeTokenMapperTest {
     }
 
     public Token insertTokenForTest(String accessToken, UUID issuedForClientId) throws DuplicateRecordException {
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, issuedForClientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, issuedForClientId, new ArrayList<>());
         tokenRepository.insert(token);
 
         return token;

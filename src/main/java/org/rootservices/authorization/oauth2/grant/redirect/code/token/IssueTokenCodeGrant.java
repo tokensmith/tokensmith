@@ -16,6 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 8/28/16.
@@ -29,28 +30,28 @@ public class IssueTokenCodeGrant {
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private AuthCodeRepository authCodeRepository;
-    private TokenAudienceRepository clientTokenRepository;
     private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenAudienceRepository clientTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.authCodeRepository = authCodeRepository;
-        this.clientTokenRepository = clientTokenRepository;
         this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes) throws CompromisedCodeException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience) throws CompromisedCodeException, ServerException {
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes, audience);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
-        List<String> audience = new ArrayList<>();
-        audience.add(clientId.toString());
+        List<String> responseAudience = tokenGraph.getToken().getAudience()
+                .stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
 
         TokenResponse tr = tokenResponseBuilder
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
@@ -59,7 +60,7 @@ public class IssueTokenCodeGrant {
                 .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
                 .setExtension(tokenGraph.getExtension())
                 .setIssuer(issuer)
-                .setAudience(audience)
+                .setAudience(responseAudience)
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond())
@@ -80,10 +81,6 @@ public class IssueTokenCodeGrant {
         // insert resource_owner_token. Associate token with resource owner.
         ResourceOwnerToken resourceOwnerToken = makeResourceOwnerToken(resourceOwnerId, token);
         resourceOwnerTokenRepository.insert(resourceOwnerToken);
-
-        // insert client_token. Associate token with client.
-        TokenAudience clientToken = makeClientToken(clientId, token.getId());
-        clientTokenRepository.insert(clientToken);
     }
 
     protected AuthCodeToken makeAuthCodeToken(UUID tokenId, UUID authCodeId) {
@@ -103,14 +100,6 @@ public class IssueTokenCodeGrant {
         resourceOwnerToken.setResourceOwner(resourceOwner);
         resourceOwnerToken.setToken(token);
         return resourceOwnerToken;
-    }
-
-    protected TokenAudience makeClientToken(UUID clientId, UUID tokenId) {
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(tokenId);
-        return clientToken;
     }
 
     protected void handleDuplicateAuthCodeToken(DuplicateRecordException e, UUID authCodeId, UUID tokenId) throws CompromisedCodeException {

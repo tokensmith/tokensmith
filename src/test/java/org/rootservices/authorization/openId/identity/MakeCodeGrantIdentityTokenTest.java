@@ -22,6 +22,7 @@ import org.rootservices.jwt.serializer.exception.JwtToJsonException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
 import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,7 +77,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(profile);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
@@ -139,7 +140,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(null);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
@@ -161,7 +162,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(profile);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
@@ -187,7 +188,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(profile);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
@@ -221,7 +222,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(profile);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
@@ -254,7 +255,7 @@ public class MakeCodeGrantIdentityTokenTest {
         ro.setProfile(profile);
 
         UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId);
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
