@@ -42,6 +42,12 @@ public class MakeCodeGrantIdentityToken {
     private AppFactory jwtAppFactory;
     private IdTokenFactory idTokenFactory;
 
+    private static String RESOURCE_OWNER_NOT_FOUND = "resource owner was not found";
+    private static String KEY_NOT_FOUND = "No key available to sign id token";
+    private static String ALG_INVALID = "Algorithm to sign with is invalid";
+    private static String KEY_INVALID = "key is invalid";
+    private static String SERIALIZE_ERROR = "Could not serialize id token";
+
     @Autowired
     public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
@@ -60,18 +66,18 @@ public class MakeCodeGrantIdentityToken {
         try {
             ro = resourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
         } catch (RecordNotFoundException e) {
-            throw new ResourceOwnerNotFoundException("resource owner was not found", e);
+            throw new ResourceOwnerNotFoundException(RESOURCE_OWNER_NOT_FOUND, e);
         }
 
         if (ro.getProfile() == null) {
-            throw new ProfileNotFoundException("resource owner was not found");
+            throw new ProfileNotFoundException(RESOURCE_OWNER_NOT_FOUND);
         }
 
-        RSAPrivateKey key = null;
+        RSAPrivateKey key;
         try {
             key = rsaPrivateKeyRepository.getMostRecentAndActiveForSigning();
         } catch (RecordNotFoundException e) {
-            throw new KeyNotFoundException("No key available to sign id token", e);
+            throw new KeyNotFoundException(KEY_NOT_FOUND, e);
         }
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
@@ -87,16 +93,16 @@ public class MakeCodeGrantIdentityToken {
         try {
             secureJwtEncoder = jwtAppFactory.secureJwtEncoder(Algorithm.RS256, rsaKeyPair);
         } catch (InvalidAlgorithmException e) {
-            throw new IdTokenException("Algorithm to sign with is invalid", e);
+            throw new IdTokenException(ALG_INVALID, e);
         } catch (InvalidJsonWebKeyException e) {
-            throw new IdTokenException("key is invalid", e);
+            throw new IdTokenException(KEY_INVALID, e);
         }
 
-        String encodedJwt = null;
+        String encodedJwt;
         try {
             encodedJwt = secureJwtEncoder.encode(idToken);
         } catch (JwtToJsonException e) {
-            throw new IdTokenException("Could not serialize id token", e);
+            throw new IdTokenException(SERIALIZE_ERROR, e);
         }
 
         return encodedJwt;
