@@ -1,5 +1,7 @@
 package org.rootservices.authorization.openId.identity;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
@@ -25,6 +27,7 @@ import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKey
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MakeUserInfoIdentityToken {
+    private static final Logger logger = LogManager.getLogger(MakeUserInfoIdentityToken.class);
+
     private HashTextStaticSalt hashText;
     private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
@@ -61,7 +66,6 @@ public class MakeUserInfoIdentityToken {
     }
 
     public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
-
         String hashedAccessToken = hashText.run(accessToken);
 
         ResourceOwner ro;
