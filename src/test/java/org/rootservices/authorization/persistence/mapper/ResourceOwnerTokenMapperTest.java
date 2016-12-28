@@ -132,4 +132,5 @@ public class ResourceOwnerTokenMapperTest {
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
     }
+
 }
