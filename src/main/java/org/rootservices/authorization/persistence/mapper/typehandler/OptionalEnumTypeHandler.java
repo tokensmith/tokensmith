@@ -23,7 +23,11 @@ public class OptionalEnumTypeHandler<T extends Enum> extends OptionalTypeHandler
 
     @Override
     public Optional<T> makeT(String value) {
-        return Optional.of(Enum.valueOf(type, value));
+        if (value == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(Enum.valueOf(type, value));
+        }
     }
 
     @Override
