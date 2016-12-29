@@ -77,7 +77,7 @@ public class MakeUserInfoIdentityTokenTest {
     }
 
     @Test
-    public void makeShouldReturnEncodedJwt() throws Exception {
+    public void makeWhenNoLeadTokenShouldReturnEncodedJwt() throws Exception {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
@@ -132,6 +132,73 @@ public class MakeUserInfoIdentityTokenTest {
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is(FixtureFactory.makeSecureRedirectUri().toString()));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(expectedAudience));
         assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
+
+    }
+
+    @Test
+    public void makeWhenLeadTokenShouldReturnEncodedJwt() throws Exception {
+        String accessToken = "accessToken";
+        String hashedAccessToken = "hashedAccessToken";
+
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        ro.setProfile(profile);
+
+        UUID clientId = UUID.randomUUID();
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
+        token.setCreatedAt(OffsetDateTime.now());
+        ro.getTokens().add(token);
+
+        // lead token
+        Token leadToken = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
+        leadToken.setCreatedAt(token.getCreatedAt().minusSeconds(1));
+
+        token.setLeadToken(leadToken);
+
+        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
+        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
+
+        List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
+                .map(item -> item.getScope().getName())
+                .collect(Collectors.toList());
+
+        IdToken idToken = new IdToken();
+        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
+        String expected = "some-compact-jwt";
+
+        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+
+        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
+                .thenReturn(ro);
+
+        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
+                .thenReturn(key);
+
+        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
+
+        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
+                .thenReturn(mockSecureJwtEncoder);
+
+        ArgumentCaptor<TokenClaims> tcArgumentCaptor = ArgumentCaptor.forClass(TokenClaims.class);
+        when(mockIdTokenFactory.make(tcArgumentCaptor.capture(), eq(scopesForIdToken), eq(ro)))
+                .thenReturn(idToken);
+
+        when(mockSecureJwtEncoder.encode(idToken))
+                .thenReturn("some-compact-jwt");
+
+        String actual = subject.make(accessToken);
+
+        assertThat(actual, is(expected));
+
+        List<String> expectedAudience = token.getAudience().stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
+
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is(FixtureFactory.makeSecureRedirectUri().toString()));
+        assertThat(tcArgumentCaptor.getValue().getAudience(), is(expectedAudience));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(leadToken.getCreatedAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
 
