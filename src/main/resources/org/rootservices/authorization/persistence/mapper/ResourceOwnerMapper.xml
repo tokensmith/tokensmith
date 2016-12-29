@@ -166,5 +166,7 @@
         join client audience on audience.id = token_audience.client_id
 
         where token.token = decode(#{accessToken}, 'escape')
+        and token.expires_at > current_timestamp
+        and token.revoked = false
     </select>
 </mapper>
