@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -367,5 +368,115 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getTokenScopes().get(0).getScope().getName(), is("address"));
 
         assertThat(actual.getProfile(), is(nullValue()));
+    }
+
+    @Test
+    public void getByAccessTokenWithProfileAndTokensWhenTokenExpiredShouldBeNull() throws Exception {
+
+        // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        ResourceOwner ro = insertResourceOwner();
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
+        token.setGrantType(GrantType.REFRESSH);
+        token.setExpiresAt(OffsetDateTime.now().minusSeconds(1));
+        // Expired! ^
+        tokenMapper.insert(token);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
+        tokenMapper.insert(leadToken);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getId());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+        // end: prepare database for the test
+
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwner actual = subject.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByAccessTokenWithProfileAndTokensWhenTokenRevokedShouldBeNull() throws Exception {
+
+        // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        ResourceOwner ro = insertResourceOwner();
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
+        token.setGrantType(GrantType.REFRESSH);
+        token.setRevoked(true);
+        // Revoked! ^
+        tokenMapper.insert(token);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
+        tokenMapper.insert(leadToken);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getId());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+        // end: prepare database for the test
+
+        String hashedAccessToken = new String(token.getToken());
+        ResourceOwner actual = subject.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
+
+        assertThat(actual, is(nullValue()));
     }
 }
