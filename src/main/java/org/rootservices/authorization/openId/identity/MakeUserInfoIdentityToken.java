@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 1/24/16.
- *
- * // add indexes.
  */
 @Component
 public class MakeUserInfoIdentityToken {
@@ -49,6 +47,7 @@ public class MakeUserInfoIdentityToken {
     private String issuer;
 
     private static String RESOURCE_OWNER_NOT_FOUND = "resource owner was not found";
+    private static String PROFILE_NOT_FOUND = "resource owner does not have a profile";
     private static String KEY_NOT_FOUND = "No key available to sign id token";
     private static String ALG_INVALID = "Algorithm to sign with is invalid";
     private static String KEY_INVALID = "key is invalid";
@@ -76,7 +75,7 @@ public class MakeUserInfoIdentityToken {
         }
 
         if (ro.getProfile() == null) {
-            throw new ProfileNotFoundException(RESOURCE_OWNER_NOT_FOUND);
+            throw new ProfileNotFoundException(PROFILE_NOT_FOUND);
         }
 
         RSAPrivateKey key;
