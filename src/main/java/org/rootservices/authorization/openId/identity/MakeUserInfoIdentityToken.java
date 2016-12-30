@@ -1,18 +1,20 @@
 package org.rootservices.authorization.openId.identity;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
-import org.rootservices.authorization.openId.identity.exception.*;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
+import org.rootservices.authorization.openId.identity.exception.IdTokenException;
+import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
+import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
+import org.rootservices.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
-import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.entity.ResourceOwnerToken;
+import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.rootservices.jwt.SecureJwtEncoder;
@@ -25,22 +27,24 @@ import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKey
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 1/24/16.
- *
- * // add indexes.
  */
 @Component
-public class MakeCodeGrantIdentityToken {
+public class MakeUserInfoIdentityToken {
+    private static final Logger logger = LogManager.getLogger(MakeUserInfoIdentityToken.class);
+
     private HashTextStaticSalt hashText;
     private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private PrivateKeyTranslator privateKeyTranslator;
     private AppFactory jwtAppFactory;
     private IdTokenFactory idTokenFactory;
+    private String issuer;
 
     private static String RESOURCE_OWNER_NOT_FOUND = "resource owner was not found";
     private static String PROFILE_NOT_FOUND = "resource owner does not have a profile";
@@ -50,17 +54,17 @@ public class MakeCodeGrantIdentityToken {
     private static String SERIALIZE_ERROR = "Could not serialize id token";
 
     @Autowired
-    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
+    public MakeUserInfoIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, IdTokenFactory idTokenFactory, String issuer) {
         this.hashText = hashText;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
         this.privateKeyTranslator = privateKeyTranslator;
         this.jwtAppFactory = jwtAppFactory;
         this.idTokenFactory = idTokenFactory;
+        this.issuer = issuer;
     }
 
-    public String make(String accessToken, TokenClaims tokenClaims) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
-
+    public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
         String hashedAccessToken = hashText.run(accessToken);
 
         ResourceOwner ro;
@@ -83,12 +87,18 @@ public class MakeCodeGrantIdentityToken {
 
         RSAKeyPair rsaKeyPair = privateKeyTranslator.from(key);
 
-        // NPE - for ro.getTokens()
+        TokenClaims tc = makeTokenClaims(ro.getTokens().get(0));
+
+        // TODO: NPE - for ro.getTokens()
         List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
 
-        IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro);
+        /*
+         TODO: remove Token Claims and rely on token.
+         https://www.pivotaltracker.com/story/show/136181907
+          */
+        IdToken idToken = idTokenFactory.make(tc, scopesForIdToken, ro);
 
         SecureJwtEncoder secureJwtEncoder;
         try {
@@ -107,5 +117,24 @@ public class MakeCodeGrantIdentityToken {
         }
 
         return encodedJwt;
+    }
+
+    protected TokenClaims makeTokenClaims(Token token) {
+        List<String> audience = token.getAudience().stream()
+                .map(i->i.getId().toString())
+                .collect(Collectors.toList());
+
+        TokenClaims tc = new TokenClaims();
+        tc.setAudience(audience);
+        tc.setIssuer(issuer);
+        tc.setExpirationTime(token.getExpiresAt().toEpochSecond());
+        tc.setIssuedAt(token.getCreatedAt().toEpochSecond());
+
+        if (token.getLeadToken() != null) {
+            tc.setAuthTime(token.getLeadToken().getCreatedAt().toEpochSecond());
+        } else {
+            tc.setAuthTime(token.getCreatedAt().toEpochSecond());
+        }
+        return tc;
     }
 }
