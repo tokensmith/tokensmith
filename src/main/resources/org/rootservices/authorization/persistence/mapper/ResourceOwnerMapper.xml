@@ -10,10 +10,19 @@
         <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
         <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <resultMap id="resourceOwnerWithProfileAndToken" type="org.rootservices.authorization.persistence.entity.ResourceOwner">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="email_verified" property="emailVerified"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
         <association property="profile"
                      resultMap="org.rootservices.authorization.persistence.mapper.ProfileMapper.profile"
-                     columnPrefix="profile_"/>
+                     columnPrefix="profile_"
+                     notNullColumn="id"/>
 
         <association property="tokens"
                      resultMap="org.rootservices.authorization.persistence.mapper.TokenMapper.tokenWithLeadToken"
@@ -64,7 +73,7 @@
         where token.token = decode(#{accessToken}, 'escape')
     </select>
 
-    <select id="getByAccessTokenWithProfileAndTokens" resultMap="resourceOwner">
+    <select id="getByAccessTokenWithProfileAndTokens" resultMap="resourceOwnerWithProfileAndToken">
         select
             resource_owner.id,
             resource_owner.email,
@@ -157,5 +166,7 @@
         join client audience on audience.id = token_audience.client_id
 
         where token.token = decode(#{accessToken}, 'escape')
+        and token.expires_at > current_timestamp
+        and token.revoked = false
     </select>
 </mapper>

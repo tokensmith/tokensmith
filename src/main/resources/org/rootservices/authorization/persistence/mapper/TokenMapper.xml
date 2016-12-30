@@ -56,12 +56,13 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
-        insert into token (id, token, grant_type, client_id, expires_at)
+        insert into token (id, token, grant_type, client_id, revoked, expires_at)
         values (
             #{token.id},
             #{token.token},
             #{token.grantType},
             #{token.clientId},
+            #{token.revoked},
             #{token.expiresAt, typeHandler=org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>
