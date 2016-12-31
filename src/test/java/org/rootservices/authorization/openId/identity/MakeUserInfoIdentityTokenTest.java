@@ -217,26 +217,6 @@ public class MakeUserInfoIdentityTokenTest {
         subject.make(accessToken);
     }
 
-    @Test(expected = ProfileNotFoundException.class)
-    public void makeShouldThrowProfileNotFoundException() throws Exception {
-        String accessToken = "accessToken";
-        String hashedAccessToken = "hashedAccessToken";
-
-        ResourceOwner ro = FixtureFactory.makeResourceOwner();
-        ro.setProfile(null);
-
-        UUID clientId = UUID.randomUUID();
-        Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
-        ro.getTokens().add(token);
-
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
-
-        when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
-                .thenReturn(ro);
-
-        subject.make(accessToken);
-    }
-
     @Test(expected = KeyNotFoundException.class)
     public void makeShouldThrowKeyNotFoundException() throws Exception {
         String accessToken = "accessToken";
