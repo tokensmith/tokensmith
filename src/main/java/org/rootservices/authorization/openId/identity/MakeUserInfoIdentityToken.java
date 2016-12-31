@@ -47,7 +47,6 @@ public class MakeUserInfoIdentityToken {
     private String issuer;
 
     private static String RESOURCE_OWNER_NOT_FOUND = "resource owner was not found";
-    private static String PROFILE_NOT_FOUND = "resource owner does not have a profile";
     private static String KEY_NOT_FOUND = "No key available to sign id token";
     private static String ALG_INVALID = "Algorithm to sign with is invalid";
     private static String KEY_INVALID = "key is invalid";
@@ -64,7 +63,7 @@ public class MakeUserInfoIdentityToken {
         this.issuer = issuer;
     }
 
-    public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
+    public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ResourceOwnerNotFoundException {
         String hashedAccessToken = hashText.run(accessToken);
 
         ResourceOwner ro;
@@ -72,10 +71,6 @@ public class MakeUserInfoIdentityToken {
             ro = resourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
         } catch (RecordNotFoundException e) {
             throw new ResourceOwnerNotFoundException(RESOURCE_OWNER_NOT_FOUND, e);
-        }
-
-        if (ro.getProfile() == null) {
-            throw new ProfileNotFoundException(PROFILE_NOT_FOUND);
         }
 
         RSAPrivateKey key;

@@ -60,7 +60,7 @@ public class IdTokenFactory {
         idToken.setExpirationTime(Optional.of(tokenClaims.getExpirationTime()));
         idToken.setAuthenticationTime(tokenClaims.getAuthTime());
 
-        if (scopes.contains(PROFILE)) {
+        if (shouldIncludeProfile(scopes, ro)) {
             profileToIdToken.toProfileClaims(idToken, ro.getProfile());
         }
 
@@ -68,7 +68,7 @@ public class IdTokenFactory {
             profileToIdToken.toEmailClaims(idToken, ro.getEmail(), ro.isEmailVerified());
         }
 
-        if (scopes.contains(PHONE)) {
+        if (shouldIncludePhone(scopes, ro)) {
             profileToIdToken.toPhoneClaims(
                 idToken,
                 ro.getProfile().getPhoneNumber(),
@@ -76,7 +76,7 @@ public class IdTokenFactory {
             );
         }
 
-        if (scopes.contains(ADDR) && ro.getProfile().getAddresses().size() > 0) {
+        if (shouldIncludeAddress(scopes, ro)) {
             Address address = addrToAddrClaims.to(ro.getProfile().getAddresses().get(0));
             idToken.setAddress(Optional.of(address));
         } else {
@@ -84,5 +84,17 @@ public class IdTokenFactory {
         }
 
         return idToken;
+    }
+
+    protected Boolean shouldIncludeProfile(List<String> scopes, ResourceOwner ro) {
+        return scopes.contains(PROFILE) && ro.getProfile() != null;
+    }
+
+    protected Boolean shouldIncludePhone(List<String> scopes, ResourceOwner ro) {
+        return scopes.contains(PHONE) && ro.getProfile() != null;
+    }
+
+    protected Boolean shouldIncludeAddress(List<String> scopes, ResourceOwner ro) {
+        return scopes.contains(ADDR) && ro.getProfile() != null && ro.getProfile().getAddresses() != null && ro.getProfile().getAddresses().size() > 0;
     }
 }
