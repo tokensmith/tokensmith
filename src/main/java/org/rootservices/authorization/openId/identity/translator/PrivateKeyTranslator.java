@@ -15,7 +15,6 @@ import java.util.Optional;
 @Component
 public class PrivateKeyTranslator {
 
-
     public RSAPrivateKey to(RSAKeyPair rsaKeyPair) {
         RSAPrivateKey privateKey = new RSAPrivateKey();
 
