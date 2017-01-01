@@ -1,4 +1,4 @@
-package org.rootservices.authorization.openId.identity.entity;
+package org.rootservices.authorization.openId.jwk.entity;
 
 import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
 
