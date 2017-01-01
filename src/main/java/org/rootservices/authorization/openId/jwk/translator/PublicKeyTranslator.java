@@ -1,6 +1,6 @@
-package org.rootservices.authorization.openId.identity.translator;
+package org.rootservices.authorization.openId.jwk.translator;
 
-import org.rootservices.authorization.openId.identity.entity.RSAPublicKey;
+import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.springframework.stereotype.Component;
 

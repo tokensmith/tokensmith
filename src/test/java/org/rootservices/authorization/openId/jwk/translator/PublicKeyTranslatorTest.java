@@ -1,9 +1,10 @@
-package org.rootservices.authorization.openId.identity.translator;
+package org.rootservices.authorization.openId.jwk.translator;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.rootservices.authorization.openId.identity.entity.RSAPublicKey;
+import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
+import org.rootservices.authorization.openId.jwk.translator.PublicKeyTranslator;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 
 import static org.hamcrest.core.Is.is;
