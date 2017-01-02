@@ -6,6 +6,8 @@ import org.rootservices.authorization.persistence.mapper.RSAPrivateKeyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by tommackenzie on 1/28/16.
  */
@@ -32,5 +34,10 @@ public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository {
             throw new RecordNotFoundException("Couldn't find RSAPrivateKey");
         }
         return rsaPrivateKey;
+    }
+
+    @Override
+    public List<RSAPrivateKey> getWhereActiveAndUseIsSign(Integer limit, Integer offset) {
+        return rsaPrivateKeyMapper.getWhereActiveAndUseIsSign(limit, offset);
     }
 }
