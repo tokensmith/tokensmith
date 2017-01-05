@@ -15,4 +15,5 @@ public interface RSAPrivateKeyMapper {
     RSAPrivateKey getMostRecentAndActiveForSigning();
     RSAPrivateKey getById(@Param("id") UUID id);
     List<RSAPrivateKey> getWhereActiveAndUseIsSign(@Param("limit") Integer limit, @Param("offset") Integer offset);
+    RSAPrivateKey getByIdActiveSign(@Param("id") UUID id);
 }

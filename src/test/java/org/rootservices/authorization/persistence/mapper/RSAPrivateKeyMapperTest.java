@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -91,4 +92,49 @@ public class RSAPrivateKeyMapperTest {
         }
     }
 
+    @Test
+    public void getByIdActiveSignShouldReturnKey() throws Exception {
+        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        subject.insert(rsaPrivateKey);
+
+        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getUpdatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByIdActiveSignWhenNotActiveShouldReturnNull() throws Exception {
+        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        rsaPrivateKey.setActive(false);
+        subject.insert(rsaPrivateKey);
+
+        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByIdActiveSignWhenNotSignShouldReturnNull() throws Exception {
+        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        rsaPrivateKey.setUse(PrivateKeyUse.ENCRYPTION);
+        subject.insert(rsaPrivateKey);
+
+        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByIdActiveSignWhenNotSignNotActiveShouldReturnNull() throws Exception {
+        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        rsaPrivateKey.setUse(PrivateKeyUse.ENCRYPTION);
+        rsaPrivateKey.setActive(false);
+        subject.insert(rsaPrivateKey);
+
+        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+
+        assertThat(actual, is(nullValue()));
+    }
 }

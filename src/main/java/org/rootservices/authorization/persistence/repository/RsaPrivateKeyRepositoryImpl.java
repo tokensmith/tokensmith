@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 1/28/16.
@@ -39,5 +40,14 @@ public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository {
     @Override
     public List<RSAPrivateKey> getWhereActiveAndUseIsSign(Integer limit, Integer offset) {
         return rsaPrivateKeyMapper.getWhereActiveAndUseIsSign(limit, offset);
+    }
+
+    @Override
+    public RSAPrivateKey getByIdActiveSign(UUID id) throws RecordNotFoundException {
+        RSAPrivateKey rsaPrivateKey = rsaPrivateKeyMapper.getByIdActiveSign(id);
+        if (rsaPrivateKey == null) {
+            throw new RecordNotFoundException("RSAPrivateKey was not found");
+        }
+        return rsaPrivateKey;
     }
 }
