@@ -4,10 +4,9 @@ import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.jwt.entity.jwk.KeyType;
-import org.rootservices.jwt.entity.jwk.RSAPublicKey;
-import org.rootservices.jwt.entity.jwk.Use;
+
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -29,10 +28,8 @@ public class RSAPublicKeyTranslatorTest {
 
         RSAPublicKey actual = subject.to(rsaPrivateKey);
 
-        assertThat(actual.getKeyId().isPresent(), is(true));
-        assertThat(actual.getKeyId().get(), is(rsaPrivateKey.getId().toString()));
-        assertThat(actual.getKeyType(), is(KeyType.RSA));
-        assertThat(actual.getUse(), is(Use.SIGNATURE));
+        assertThat(actual.getKeyId(), is(rsaPrivateKey.getId()));
+        assertThat(actual.getUse(), is(rsaPrivateKey.getUse()));
         assertThat(actual.getN(), is(rsaPrivateKey.getModulus()));
         assertThat(actual.getE(), is(rsaPrivateKey.getPublicExponent()));
     }

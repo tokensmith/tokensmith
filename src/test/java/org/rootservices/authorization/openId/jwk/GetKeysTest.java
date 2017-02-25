@@ -5,19 +5,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.openId.jwk.exception.NotFoundException;
 import org.rootservices.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
-import org.rootservices.jwt.entity.jwk.KeyType;
-import org.rootservices.jwt.entity.jwk.RSAPublicKey;
-import org.rootservices.jwt.entity.jwk.Use;
+
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -48,7 +47,7 @@ public class GetKeysTest {
 
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
         when(mockRsaPrivateKeyRepository.getByIdActiveSign(id)).thenReturn(rsaPrivateKey);
-        RSAPublicKey rsaPublicKey = new RSAPublicKey(Optional.of("test"), KeyType.RSA, Use.SIGNATURE, new BigInteger("1"), new BigInteger("1"));
+        RSAPublicKey rsaPublicKey = new RSAPublicKey(UUID.randomUUID(), KeyUse.SIGNATURE, new BigInteger("1"), new BigInteger("1"));
         when(mockRsaPublicKeyTranslator.to(rsaPrivateKey)).thenReturn(rsaPublicKey);
 
         RSAPublicKey actual = subject.getPublicKeyById(id);
@@ -73,7 +72,7 @@ public class GetKeysTest {
         for(int i = 0; i < 20; i++) {
             rsaPrivateKeys.add(FixtureFactory.makeRSAPrivateKey());
         }
-        RSAPublicKey rsaPublicKey = new RSAPublicKey(Optional.of("test"), KeyType.RSA, Use.SIGNATURE, new BigInteger("1"), new BigInteger("1"));
+        RSAPublicKey rsaPublicKey = new RSAPublicKey(UUID.randomUUID(), KeyUse.SIGNATURE, new BigInteger("1"), new BigInteger("1"));
 
         when(mockRsaPrivateKeyRepository.getWhereActiveAndUseIsSign(20, 0)).thenReturn(rsaPrivateKeys);
         when(mockRsaPublicKeyTranslator.to(any(RSAPrivateKey.class))).thenReturn(rsaPublicKey);

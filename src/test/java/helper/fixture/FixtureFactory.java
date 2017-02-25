@@ -402,7 +402,7 @@ public class FixtureFactory {
     public static RSAPrivateKey makeRSAPrivateKey() {
         RSAPrivateKey rsaPrivateKey = new RSAPrivateKey();
         rsaPrivateKey.setId(UUID.randomUUID());
-        rsaPrivateKey.setUse(PrivateKeyUse.SIGNATURE);
+        rsaPrivateKey.setUse(KeyUse.SIGNATURE);
         rsaPrivateKey.setModulus(new BigInteger("1"));
         rsaPrivateKey.setPublicExponent(new BigInteger("2"));
         rsaPrivateKey.setPrivateExponent(new BigInteger("3"));

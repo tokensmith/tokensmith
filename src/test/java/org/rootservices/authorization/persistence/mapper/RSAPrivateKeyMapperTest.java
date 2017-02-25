@@ -3,9 +3,8 @@ package org.rootservices.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.jwt.entity.jwk.Use;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -87,7 +86,7 @@ public class RSAPrivateKeyMapperTest {
         assertThat(actual.size(), is(10));
 
         for(RSAPrivateKey key: actual) {
-            assertThat(key.getUse(), is(PrivateKeyUse.SIGNATURE));
+            assertThat(key.getUse(), is(KeyUse.SIGNATURE));
             assertThat(key.isActive(), is(true));
         }
     }
@@ -118,7 +117,7 @@ public class RSAPrivateKeyMapperTest {
     @Test
     public void getByIdActiveSignWhenNotSignShouldReturnNull() throws Exception {
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
-        rsaPrivateKey.setUse(PrivateKeyUse.ENCRYPTION);
+        rsaPrivateKey.setUse(KeyUse.ENCRYPTION);
         subject.insert(rsaPrivateKey);
 
         RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
@@ -129,7 +128,7 @@ public class RSAPrivateKeyMapperTest {
     @Test
     public void getByIdActiveSignWhenNotSignNotActiveShouldReturnNull() throws Exception {
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
-        rsaPrivateKey.setUse(PrivateKeyUse.ENCRYPTION);
+        rsaPrivateKey.setUse(KeyUse.ENCRYPTION);
         rsaPrivateKey.setActive(false);
         subject.insert(rsaPrivateKey);
 
