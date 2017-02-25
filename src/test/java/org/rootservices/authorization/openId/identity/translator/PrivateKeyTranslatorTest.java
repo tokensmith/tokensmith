@@ -3,7 +3,7 @@ package org.rootservices.authorization.openId.identity.translator;
 import org.junit.Before;
 import org.junit.Test;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.jwt.entity.jwk.KeyType;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -47,7 +47,7 @@ public class PrivateKeyTranslatorTest {
         RSAPrivateKey actual = subject.to(keyPair);
 
         assertThat(actual.getId(), is(nullValue()));
-        assertThat(actual.getUse(), is(PrivateKeyUse.SIGNATURE));
+        assertThat(actual.getUse(), is(KeyUse.SIGNATURE));
         assertThat(actual.getModulus(), is(keyPair.getN()));
         assertThat(actual.getPublicExponent(), is(keyPair.getE()));
         assertThat(actual.getPrivateExponent(), is(keyPair.getD()));
@@ -63,7 +63,7 @@ public class PrivateKeyTranslatorTest {
 
         RSAPrivateKey privateKey = new RSAPrivateKey();
         privateKey.setId(UUID.randomUUID());
-        privateKey.setUse(PrivateKeyUse.SIGNATURE);
+        privateKey.setUse(KeyUse.SIGNATURE);
         privateKey.setModulus(new BigInteger("1"));
         privateKey.setPublicExponent(new BigInteger("2"));
         privateKey.setPrivateExponent(new BigInteger("3"));

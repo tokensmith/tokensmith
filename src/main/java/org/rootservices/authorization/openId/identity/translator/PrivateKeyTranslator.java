@@ -1,7 +1,7 @@
 package org.rootservices.authorization.openId.identity.translator;
 
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
-import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.jwt.entity.jwk.KeyType;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
 import org.rootservices.jwt.entity.jwk.Use;
@@ -15,11 +15,10 @@ import java.util.Optional;
 @Component
 public class PrivateKeyTranslator {
 
-
     public RSAPrivateKey to(RSAKeyPair rsaKeyPair) {
         RSAPrivateKey privateKey = new RSAPrivateKey();
 
-        privateKey.setUse(PrivateKeyUse.SIGNATURE);
+        privateKey.setUse(KeyUse.SIGNATURE);
         privateKey.setModulus(rsaKeyPair.getN());
         privateKey.setPublicExponent(rsaKeyPair.getE());
         privateKey.setPrivateExponent(rsaKeyPair.getD());
