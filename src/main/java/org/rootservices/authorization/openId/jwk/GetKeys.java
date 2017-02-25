@@ -1,11 +1,11 @@
 package org.rootservices.authorization.openId.jwk;
 
+import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.openId.jwk.exception.NotFoundException;
 import org.rootservices.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
-import org.rootservices.jwt.entity.jwk.RSAPublicKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
