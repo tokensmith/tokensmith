@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 
 import java.math.BigInteger;
@@ -53,7 +53,7 @@ public class GenerateRSAPrivateKeyImplTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getUse(), is(PrivateKeyUse.SIGNATURE));
+        assertThat(actual.getUse(), is(KeyUse.SIGNATURE));
         assertThat(actual.getModulus(), is(new BigInteger("1")));
         assertThat(actual.getPublicExponent(), is(new BigInteger("2")));
         assertThat(actual.getPrivateExponent(), is(new BigInteger("3")));

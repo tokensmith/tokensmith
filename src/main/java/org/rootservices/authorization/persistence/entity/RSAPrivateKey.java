@@ -9,7 +9,7 @@ import java.util.UUID;
  */
 public class RSAPrivateKey {
     private UUID id;
-    private PrivateKeyUse use;
+    private KeyUse use;
     private BigInteger modulus;
     private BigInteger publicExponent;
     private BigInteger privateExponent;
@@ -30,11 +30,11 @@ public class RSAPrivateKey {
         this.id = id;
     }
 
-    public PrivateKeyUse getUse() {
+    public KeyUse getUse() {
         return use;
     }
 
-    public void setUse(PrivateKeyUse use) {
+    public void setUse(KeyUse use) {
         this.use = use;
     }
 

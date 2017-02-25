@@ -1,6 +1,6 @@
 package org.rootservices.authorization.security;
 
-import org.rootservices.authorization.persistence.entity.PrivateKeyUse;
+import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class GenerateRSAPrivateKey {
         RSAPrivateKey rsaPrivateKey = new RSAPrivateKey();
 
         rsaPrivateKey.setId(UUID.randomUUID());
-        rsaPrivateKey.setUse(PrivateKeyUse.SIGNATURE);
+        rsaPrivateKey.setUse(KeyUse.SIGNATURE);
         rsaPrivateKey.setModulus(rsaPrivateCrtKey.getModulus());
         rsaPrivateKey.setPublicExponent(rsaPrivateCrtKey.getPublicExponent());
         rsaPrivateKey.setPrivateExponent(rsaPrivateCrtKey.getPrivateExponent());

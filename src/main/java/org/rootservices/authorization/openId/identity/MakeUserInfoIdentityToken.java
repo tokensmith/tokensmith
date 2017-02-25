@@ -6,7 +6,6 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
-import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
 import org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslator;
@@ -27,7 +26,6 @@ import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKey
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
