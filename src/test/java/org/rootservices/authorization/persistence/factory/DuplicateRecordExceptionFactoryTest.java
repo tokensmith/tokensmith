@@ -65,6 +65,30 @@ public class DuplicateRecordExceptionFactoryTest {
         assertThat(actual.getKey().get(), is("code"));
         assertThat(actual.getMessage(), is("Could not insert auth_code record. The key, code, would have caused a duplicate record."));
     }
+
+    @Test
+    public void makeWhenResourceOwnerShouldHaveKeyPresent() {
+        String msg =
+            "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "### The error may involve defaultParameterMap\n" +
+            "### The error occurred while setting parameters\n" +
+            "### SQL: insert into resource_owner (id, email, password)         values (             ?,             ?,             ?         )\n" +
+            "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "; SQL []; ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists\n";
+
+        DuplicateKeyException dke = new DuplicateKeyException(msg);
+
+        DuplicateRecordException actual = subject.make(dke, "resource_owner");
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getKey().isPresent(), is(true));
+        assertThat(actual.getKey().get(), is("email"));
+        assertThat(actual.getMessage(), is("Could not insert resource_owner record. The key, email, would have caused a duplicate record."));
+    }
+
     @Test
     public void makeShouldNotHaveKeyPresent() {
         String msg = "foo";

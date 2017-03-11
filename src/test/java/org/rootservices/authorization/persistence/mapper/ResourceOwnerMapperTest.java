@@ -7,6 +7,7 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +70,20 @@ public class ResourceOwnerMapperTest {
         ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
         subject.insert(user);
     }
+
+    @Test(expected = DuplicateKeyException.class)
+    public void insertShouldThrowDuplicateKeyException() {
+        UUID id = UUID.randomUUID();
+        byte [] password = "plainTextPassword".getBytes();
+        ResourceOwner user = new ResourceOwner(id, "test@rootservices.com", password);
+        subject.insert(user);
+
+        UUID id2 = UUID.randomUUID();
+        ResourceOwner user2 = new ResourceOwner(id2, "test@rootservices.com", password);
+
+        subject.insert(user2);
+    }
+
 
     @Test
     public void getById() {

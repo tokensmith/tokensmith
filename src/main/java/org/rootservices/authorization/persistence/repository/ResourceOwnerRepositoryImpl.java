@@ -2,9 +2,12 @@ package org.rootservices.authorization.persistence.repository;
 
 
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -14,14 +17,15 @@ import java.util.UUID;
  */
 @Component
 public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
+    private static String SCHEMA = "resource_owner";
+    private DuplicateRecordExceptionFactory duplicateRecordExceptionFactory;
+
+    private ResourceOwnerMapper resourceOwnerMapper;
 
     @Autowired
-    ResourceOwnerMapper resourceOwnerMapper;
-
-    public ResourceOwnerRepositoryImpl() {}
-
-    public ResourceOwnerRepositoryImpl(ResourceOwnerMapper authUserMapper){
-        this.resourceOwnerMapper = authUserMapper;
+    public ResourceOwnerRepositoryImpl(ResourceOwnerMapper resourceOwnerMapper, DuplicateRecordExceptionFactory duplicateRecordExceptionFactory){
+        this.resourceOwnerMapper = resourceOwnerMapper;
+        this.duplicateRecordExceptionFactory = duplicateRecordExceptionFactory;
     }
 
     public ResourceOwner getById(UUID id) throws RecordNotFoundException {
@@ -62,7 +66,11 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
         throw new RecordNotFoundException("Resource Owner was not found");
     }
 
-    public void insert(ResourceOwner resourceOwner) {
-        resourceOwnerMapper.insert(resourceOwner);
+    public void insert(ResourceOwner resourceOwner) throws DuplicateRecordException {
+        try {
+            resourceOwnerMapper.insert(resourceOwner);
+        } catch (DuplicateKeyException e) {
+            throw duplicateRecordExceptionFactory.make(e, SCHEMA);
+        }
     }
 }
