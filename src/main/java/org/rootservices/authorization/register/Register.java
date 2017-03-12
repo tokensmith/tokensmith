@@ -1,36 +1,45 @@
-package org.rootservices.authorization.openId;
+package org.rootservices.authorization.register;
 
-import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.HashTextRandomSalt;
-import org.rootservices.authorization.security.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
-public class MakeResourceOwner {
+public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
     private HashTextRandomSalt hashTextRandomSalt;
 
     @Autowired
-    public MakeResourceOwner(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
     }
 
-    public ResourceOwner make(String email, String password) throws DuplicateRecordException {
+    public ResourceOwner make(String email, String password, String repeatPassword) throws RegisterException {
+        if (!password.equals(repeatPassword)) {
+            throw new RegisterException("Passwords do not match", RegisterError.PASSWORD_MISMATCH);
+        }
+
         ResourceOwner ro = new ResourceOwner(
                 UUID.randomUUID(),
                 email,
                 hashTextRandomSalt.run(password).getBytes()
         );
-        // this could cause duplicate record.
-        resourceOwnerRepository.insert(ro);
+
+        try {
+            resourceOwnerRepository.insert(ro);
+        } catch (DuplicateRecordException e) {
+            RegisterError registerError = RegisterError.UNKNOWN;
+            if (e.getKey().isPresent() && e.getKey().get().equals("email")) {
+                registerError = RegisterError.EMAIL_TAKEN;
+            }
+            throw new RegisterException("Could not insert resource_owner", registerError, e);
+        }
 
         // TODO: send off the welcome/confirmation email.
 
