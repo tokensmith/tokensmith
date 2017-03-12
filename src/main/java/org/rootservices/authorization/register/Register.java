@@ -20,7 +20,7 @@ public class Register {
         this.hashTextRandomSalt = hashTextRandomSalt;
     }
 
-    public ResourceOwner make(String email, String password, String repeatPassword) throws RegisterException {
+    public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException {
         if (!password.equals(repeatPassword)) {
             throw new RegisterException("Passwords do not match", RegisterError.PASSWORD_MISMATCH);
         }
