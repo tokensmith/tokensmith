@@ -45,7 +45,7 @@ public class RegisterTest {
         String hashedPassword = "hashedPassword";
         when(mockHashTextRandomSalt.run(password)).thenReturn(hashedPassword);
 
-        ResourceOwner actual = subject.make(email, password, repeatPassword);
+        ResourceOwner actual = subject.run(email, password, repeatPassword);
 
         verify(mockResourceOwnerRepository).insert(any(ResourceOwner.class));
 
@@ -70,7 +70,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.make(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -85,10 +85,9 @@ public class RegisterTest {
         String password = "password";
         String repeatPassword = "mismatchPassword";
 
-
         RegisterException actual = null;
         try {
-            subject.make(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -96,5 +95,4 @@ public class RegisterTest {
         assertThat(actual.getCause(), is(nullValue()));
         assertThat(actual.getRegisterError(), is(RegisterError.PASSWORD_MISMATCH));
     }
-
 }
