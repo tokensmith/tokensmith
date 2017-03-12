@@ -21,9 +21,8 @@ public class Register {
     }
 
     public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException {
-        if (!password.equals(repeatPassword)) {
-            throw new RegisterException("Passwords do not match", RegisterError.PASSWORD_MISMATCH);
-        }
+
+        validate(email, password, repeatPassword);
 
         ResourceOwner ro = new ResourceOwner(
                 UUID.randomUUID(),
@@ -44,5 +43,30 @@ public class Register {
         // TODO: send off the welcome/confirmation email.
 
         return ro;
+    }
+
+    protected void validate(String email, String password, String repeatPassword) throws RegisterException {
+        if (!hasValue(email)) {
+            throw new RegisterException("Email is empty or null", RegisterError.EMAIL_MISSING);
+        }
+
+        if (!hasValue(password)) {
+            throw new RegisterException("Password is empty or null", RegisterError.PASSWORD_MISSING);
+        }
+
+        if (!hasValue(repeatPassword)) {
+            throw new RegisterException("Repeat password is empty or null", RegisterError.REPEAT_PASSWORD_MISSING);
+        }
+
+        if (!password.equals(repeatPassword)) {
+            throw new RegisterException("Passwords do not match", RegisterError.PASSWORD_MISMATCH);
+        }
+    }
+
+    protected Boolean hasValue(String value) {
+        if (value == null || "".equals(value)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -55,6 +55,108 @@ public class RegisterTest {
     }
 
     @Test
+    public void makeWhenEmailBlankShouldThrowRegisterException() throws Exception {
+        String email = "";
+        String password = "password";
+        String repeatPassword = "password";
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.EMAIL_MISSING));
+    }
+
+    @Test
+    public void makeWhenEmailNullShouldThrowRegisterException() throws Exception {
+        String email = null;
+        String password = "password";
+        String repeatPassword = "password";
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.EMAIL_MISSING));
+    }
+
+    @Test
+    public void makeWhenPasswordBlankShouldThrowRegisterException() throws Exception {
+        String email = "obi-wan@rootservices.org";
+        String password = "";
+        String repeatPassword = "password";
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.PASSWORD_MISSING));
+    }
+
+    @Test
+    public void makeWhenPasswordNullShouldThrowRegisterException() throws Exception {
+        String email = "obi-wan@rootservices.org";
+        String password = null;
+        String repeatPassword = "password";
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.PASSWORD_MISSING));
+    }
+
+    @Test
+    public void makeWhenRepeatPasswordBlankShouldThrowRegisterException() throws Exception {
+        String email = "obi-wan@rootservices.org";
+        String password = "password";
+        String repeatPassword = "";
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.REPEAT_PASSWORD_MISSING));
+    }
+
+    @Test
+    public void makeWhenRepeatPasswordNullShouldThrowRegisterException() throws Exception {
+        String email = "obi-wan@rootservices.org";
+        String password = "password";
+        String repeatPassword = null;
+
+        RegisterException actual = null;
+        try {
+            subject.run(email, password, repeatPassword);
+        } catch (RegisterException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getCause(), is(nullValue()));
+        assertThat(actual.getRegisterError(), is(RegisterError.REPEAT_PASSWORD_MISSING));
+    }
+
+    @Test
     public void makeWhenEmailAlreadyUsedShouldThrowRegisterException() throws Exception {
         String email = "obi-wan@rootservices.org";
         String password = "password";
