@@ -61,8 +61,8 @@ public class ClientFoundTest extends BaseTest {
         Map<String, List<String>> p = makeParams(c.getId(), c.getRedirectURI());
         p.get("response_type").add("invalid-response-type");
 
-        Exception cause = null;
-        int expectedErrorCode = ErrorCode.RESPONSE_TYPE_DATA_TYPE.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.RESPONSE_TYPE_DATA_TYPE.getDescription();
         String expectedError = "unsupported_response_type";
 

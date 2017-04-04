@@ -7,10 +7,7 @@ import org.rootservices.authorization.openId.grant.redirect.code.authorization.r
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.parse.ParamEntity;
 import org.rootservices.authorization.parse.Parser;
-import org.rootservices.authorization.parse.exception.DataTypeException;
-import org.rootservices.authorization.parse.exception.OptionalException;
-import org.rootservices.authorization.parse.exception.ParseException;
-import org.rootservices.authorization.parse.exception.RequiredException;
+import org.rootservices.authorization.parse.exception.*;
 import org.rootservices.authorization.parse.validator.excpeption.EmptyValueError;
 import org.rootservices.authorization.parse.validator.excpeption.MoreThanOneItemError;
 import org.rootservices.authorization.parse.validator.excpeption.NoItemsError;
@@ -134,6 +131,8 @@ public class ValidateOpenIdCodeResponseType {
         String error = null;
         if ("scope".equals(param) && t instanceof EmptyValueError) {
             error = "invalid_scope";
+        } else if ("response_type".equals(param) && t instanceof ValueException) {
+            error = "unsupported_response_type";
         } else if ("response_type".equals(param) || "state".equals(param) || "scope".equals(param)) {
             error = "invalid_request";
         }
@@ -150,6 +149,8 @@ public class ValidateOpenIdCodeResponseType {
             description = param + " is null";
         } else if (t instanceof NoItemsError) {
             description = param + " is blank or missing";
+        } else if (t instanceof ValueException) {
+            description = param + " is invalid";
         }
         return description;
     }
