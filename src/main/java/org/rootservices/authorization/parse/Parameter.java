@@ -9,4 +9,5 @@ import java.lang.annotation.*;
 public @interface Parameter {
     String name();
     boolean required() default true;
+    String[] values() default {};
 }

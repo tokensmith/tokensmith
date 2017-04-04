@@ -18,6 +18,10 @@ public class BaseInformException extends Exception {
         this.code = code;
     }
 
+    public BaseInformException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public int getCode() {
         return code;
     }

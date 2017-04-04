@@ -9,7 +9,7 @@ import java.util.UUID;
  * Class used to test injecting values into annotated fields.
  */
 public class Dummy {
-    @Parameter(name="string")
+    @Parameter(name="string", values = {"string1"})
     private String string;
 
     @Parameter(name="uuid")
@@ -35,6 +35,9 @@ public class Dummy {
 
     @Parameter(name="opt_uri", required = false)
     private Optional<URI> optUri;
+
+    @Parameter(name="opt_list", required = false)
+    private List<String> optList;
 
     private String notAnnotated;
 
@@ -108,6 +111,14 @@ public class Dummy {
 
     public void setOptUri(Optional<URI> optUri) {
         this.optUri = optUri;
+    }
+
+    public List<String> getOptList() {
+        return optList;
+    }
+
+    public void setOptList(List<String> optList) {
+        this.optList = optList;
     }
 
     public String getNotAnnotated() {

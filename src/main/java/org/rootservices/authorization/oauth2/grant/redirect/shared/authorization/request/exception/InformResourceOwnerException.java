@@ -14,4 +14,8 @@ public class InformResourceOwnerException extends BaseInformException {
     public InformResourceOwnerException(String message, Throwable domainCause, int code) {
         super(message, domainCause, code);
     }
+
+    public InformResourceOwnerException(String message, Throwable domainCause) {
+        super(message, domainCause);
+    }
 }

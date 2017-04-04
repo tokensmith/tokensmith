@@ -3,14 +3,19 @@ package org.rootservices.authorization.parse;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.parse.exception.DataTypeException;
 import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.parse.exception.RequiredException;
+import org.rootservices.authorization.parse.exception.ValueException;
 import org.rootservices.authorization.parse.validator.OptionalParam;
 import org.rootservices.authorization.parse.validator.RequiredParam;
+import org.rootservices.authorization.parse.validator.excpeption.ParamIsNullError;
 
 import java.net.URI;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -25,7 +30,8 @@ public class ParserTest {
     private List<String> names = Arrays.asList(
             "string", "id", "uri",
             "strings", "ids", "uris",
-            "optString", "optId", "optUri"
+            "optString", "optId", "optUri",
+            "optList"
     );
 
     @Before
@@ -56,6 +62,8 @@ public class ParserTest {
         parameters.put("uris", uris);
         parameters.put("opt_uri", uris);
 
+        parameters.put("opt_list",Arrays.asList("opt_list1"));
+
         return parameters;
     }
 
@@ -69,6 +77,12 @@ public class ParserTest {
             boolean found = names.contains(actual.getField().getName());
             assertTrue("could not find field: " + actual.getField().getName(), found);
         }
+    }
+    @Test
+    public void reflectWhenExtendsShouldFindAllFields() throws Exception {
+        List<ParamEntity> actuals = subject.reflect(OpenIdAuthRequest.class);
+        assertThat(actuals, is(notNullValue()));
+        assertThat(actuals.size(), is(6));
     }
 
     @Test
@@ -121,8 +135,40 @@ public class ParserTest {
         assertThat(actual.getOptUri().isPresent(), is(true));
         assertThat(actual.getOptUri().get(), is(expectedUri));
 
+        assertThat(actual.getOptList(), is(notNullValue()));
+        assertThat(actual.getOptList().size(), is(1));
+        assertThat(actual.getOptList().get(0), is("opt_list1"));
+
         // not annotated field - should not have been assigned.
         assertThat(actual.getNotAnnotated(), is(nullValue()));
+    }
+
+    @Test
+    public void toWhenTypeOptionalEmptyListShouldTranslate() throws Exception {
+        List<ParamEntity> fields = subject.reflect(Dummy.class);
+        Map<String, List<String>> params = makeParameters();
+        params.put("opt_uuid", new ArrayList<>());
+
+        Dummy actual = (Dummy) subject.to(Dummy.class, fields, params);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getOptId(), is(notNullValue()));
+        assertThat(actual.getOptId().isPresent(), is(false));
+
+    }
+
+    @Test
+    public void toWhenTypeListEmptyListShouldTranslate() throws Exception {
+        List<ParamEntity> fields = subject.reflect(Dummy.class);
+        Map<String, List<String>> params = makeParameters();
+        params.put("opt_list", new ArrayList<>());
+
+        Dummy actual = (Dummy) subject.to(Dummy.class, fields, params);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getOptList(), is(notNullValue()));
+        assertThat(actual.getOptList().size(), is(0));
+
     }
 
     @Test
@@ -140,7 +186,7 @@ public class ParserTest {
         assertThat(actual.getOptId().isPresent(), is(false));
     }
 
-    @Test(expected = RequiredException.class)
+    @Test
     public void toWhenMissingReqFieldShouldThrowRequiredException() throws Exception {
         List<ParamEntity> fields = subject.reflect(Dummy.class);
 
@@ -148,7 +194,50 @@ public class ParserTest {
         Map<String, List<String>> params = makeParameters();
         params.remove("string");
 
-        subject.to(Dummy.class, fields, params);
+        RequiredException actualException = null;
+        try {
+            subject.to(Dummy.class, fields, params);
+        } catch (RequiredException e) {
+            actualException = e;
+        }
+
+        assertThat(actualException, is(notNullValue()));
+        assertThat(actualException.getField(), is("string"));
+        assertThat(actualException.getParam(), is("string"));
+        assertThat(actualException.getCause(), instanceOf(ParamIsNullError.class));
+        Dummy actual = (Dummy) actualException.getTarget();
+
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
+    public void toWhenReqFieldHasInvalidValueThrowRequiredException() throws Exception {
+        List<ParamEntity> fields = subject.reflect(Dummy.class);
+
+        // remove the key, string
+        Map<String, List<String>> params = makeParameters();
+        params.put("string", Arrays.asList("string2"));
+
+        RequiredException actualException = null;
+        try {
+            subject.to(Dummy.class, fields, params);
+        } catch (RequiredException e) {
+            actualException = e;
+        }
+
+        assertThat(actualException, is(notNullValue()));
+        assertThat(actualException.getField(), is("string"));
+        assertThat(actualException.getParam(), is("string"));
+        assertThat(actualException.getCause(), instanceOf(ValueException.class));
+
+        ValueException actualVE =  (ValueException) actualException.getCause();
+        assertThat(actualVE.getParam(), is("string"));
+        assertThat(actualVE.getField(), is("string"));
+        assertThat(actualVE.getValue(), is("string2"));
+
+        Dummy actual = (Dummy) actualException.getTarget();
+
+        assertThat(actual, is(notNullValue()));
     }
 
     @Test
@@ -212,5 +301,67 @@ public class ParserTest {
 
         // not annotated field - should not have been assigned.
         assertThat(actual.getNotAnnotated(), is(nullValue()));
+    }
+
+    @Test
+    public void toWhenReqFieldInvalidValueShouldThrowRequiredException() throws Exception {
+        List<ParamEntity> fields = subject.reflect(Dummy.class);
+        Map<String, List<String>> params = makeParameters();
+        params.put("uuid", Arrays.asList("invalid-uuid"));
+
+        RequiredException actualException = null;
+        try {
+            subject.to(Dummy.class, fields, params);
+        } catch (RequiredException e) {
+            actualException = e;
+        }
+
+        assertThat(actualException, is(notNullValue()));
+        assertThat(actualException.getCause(), instanceOf(DataTypeException.class));
+        assertThat(actualException.getField(), is("id"));
+        assertThat(actualException.getParam(), is("uuid"));
+
+        // inspect the DataTypeException
+        DataTypeException actualCause = (DataTypeException) actualException.getCause();
+        assertThat(actualCause, is(notNullValue()));
+        assertThat(actualCause.getField(), is("id"));
+        assertThat(actualCause.getParam(), is("uuid"));
+        assertThat(actualCause.getValue(), is("invalid-uuid"));
+        assertThat(actualCause.getCause(), instanceOf(IllegalArgumentException.class));
+
+        Dummy actual = (Dummy) actualException.getTarget();
+
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
+    public void toWhenOptFieldInvalidValueShouldThrowOptionalException() throws Exception {
+        List<ParamEntity> fields = subject.reflect(Dummy.class);
+        Map<String, List<String>> params = makeParameters();
+        params.put("opt_uuid", Arrays.asList("invalid-uuid"));
+
+        OptionalException actualException = null;
+        try {
+            subject.to(Dummy.class, fields, params);
+        } catch (OptionalException e) {
+            actualException = e;
+        }
+
+        assertThat(actualException, is(notNullValue()));
+        assertThat(actualException.getCause(), instanceOf(DataTypeException.class));
+        assertThat(actualException.getField(), is("optId"));
+        assertThat(actualException.getParam(), is("opt_uuid"));
+
+        // inspect the DataTypeException
+        DataTypeException actualCause = (DataTypeException) actualException.getCause();
+        assertThat(actualCause, is(notNullValue()));
+        assertThat(actualCause.getField(), is("optId"));
+        assertThat(actualCause.getParam(), is("opt_uuid"));
+        assertThat(actualCause.getValue(), is("invalid-uuid"));
+        assertThat(actualCause.getCause(), instanceOf(IllegalArgumentException.class));
+
+        Dummy actual = (Dummy) actualException.getTarget();
+
+        assertThat(actual, is(notNullValue()));
     }
 }

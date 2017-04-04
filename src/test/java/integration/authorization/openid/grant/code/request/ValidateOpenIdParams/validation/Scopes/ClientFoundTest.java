@@ -1,27 +1,28 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.Scopes;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
+
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ClientFoundTest extends BaseTest {
 
-    public ValidateParamsAttributes makeValidateParamsAttributes(Client client) {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
+    public Map<String, List<String>> makeParams(UUID clientId, URI redirectUri) {
+        Map<String, List<String>> p = super.makeParams();
 
-        p.clientIds.add(client.getId().toString());
-        p.redirectUris.add(client.getRedirectURI().toString());
-        p.states.add("some-state");
-
-        for(ResponseType responseType: client.getResponseTypes()) {
-            p.responseTypes.add(responseType.getName());
-        }
-
+        p.get("client_id").add(clientId.toString());
+        p.get("redirect_uri").add(redirectUri.toString());
+        p.get("state").add("some-state");
+        p.get("response_type").add("CODE");
 
         return p;
     }
@@ -30,8 +31,8 @@ public class ClientFoundTest extends BaseTest {
     public void scopeIsInvalidShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
-        p.scopes.add("invalid-scope");
+        Map<String, List<String>> p = makeParams(c.getId(), c.getRedirectURI());
+        p.get("scope").add("invalid-scope");
 
         int expectedErrorCode = ErrorCode.SCOPES_NOT_SUPPORTED.getCode();
         String expectedDescription = ErrorCode.SCOPES_NOT_SUPPORTED.getDescription();
@@ -44,32 +45,30 @@ public class ClientFoundTest extends BaseTest {
     public void scopesHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        Map<String, List<String>> p = makeParams(c.getId(), c.getRedirectURI());
+        p.get("scope").add("profile");
+        p.get("scope").add("profile");
 
-        p.scopes.add("profile");
-        p.scopes.add("profile");
-
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getCode();
+        Exception cause = new OptionalException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.SCOPES_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
     public void scopeIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c);
+        Map<String, List<String>> p = makeParams(c.getId(), c.getRedirectURI());
+        p.get("scope").add("");
 
-        p.scopes.add("");
-
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.SCOPES_EMPTY_VALUE.getCode();
+        Exception cause = new OptionalException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.SCOPES_EMPTY_VALUE.getDescription();
         String expectedError = "invalid_scope";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 }
