@@ -2,24 +2,45 @@ package org.rootservices.authorization.openId.grant.redirect.code.authorization.
 
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.factory.OpenIdCodeAuthRequestFactory;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import org.rootservices.authorization.parse.ParamEntity;
+import org.rootservices.authorization.parse.Parser;
+import org.rootservices.authorization.parse.exception.DataTypeException;
+import org.rootservices.authorization.parse.exception.OptionalException;
+import org.rootservices.authorization.parse.exception.ParseException;
+import org.rootservices.authorization.parse.exception.RequiredException;
+import org.rootservices.authorization.parse.validator.excpeption.EmptyValueError;
+import org.rootservices.authorization.parse.validator.excpeption.MoreThanOneItemError;
+import org.rootservices.authorization.parse.validator.excpeption.NoItemsError;
+import org.rootservices.authorization.parse.validator.excpeption.ParamIsNullError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 10/10/15.
  */
 @Component
 public class ValidateOpenIdCodeResponseType {
+    private static String CLIENT_ID = "client_id";
+    private static String REDIRECT_URI = "redirect_uri";
 
+    private Parser parser;
+    private GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri;
     private OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory;
     private CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdCodeResponseType(OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
+    public ValidateOpenIdCodeResponseType(Parser parser, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
+        this.parser = parser;
+        this.getOpenIdConfidentialClientRedirectUri = getOpenIdConfidentialClientRedirectUri;
         this.openIdCodeAuthRequestFactory = openIdCodeAuthRequestFactory;
         this.compareConfidentialClientToOpenIdAuthRequest = compareConfidentialClientToOpenIdAuthRequest;
     }
@@ -29,5 +50,107 @@ public class ValidateOpenIdCodeResponseType {
         compareConfidentialClientToOpenIdAuthRequest.run(openIdAuthRequest);
 
         return openIdAuthRequest;
+    }
+
+    public OpenIdAuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException {
+
+        List<ParamEntity> fields = parser.reflect(OpenIdAuthRequest.class);
+        OpenIdAuthRequest request = null;
+        try {
+            request = (OpenIdAuthRequest) parser.to(OpenIdAuthRequest.class, fields, parameters);
+        } catch (RequiredException e) {
+            handleRequired(e);
+        } catch (OptionalException e) {
+            handleOptional(e);
+        } catch (ParseException e) {
+            // TODO: unexpected thing occurred.
+        }
+
+        compareConfidentialClientToOpenIdAuthRequest.run(request);
+
+        return request;
+    }
+
+    /**
+     * Throw a InformResourceOwnerException if the failed param is:
+     * - client_id
+     * - redirect_uri
+     *
+     * Throw a InformResourceOwnerException if the values of client_id and redirect_uri
+     * do NOT match values in the database.
+     *
+     * Throw a InformClientException if the value of client_id and redirect_uri
+     * matches values in the database.
+     *
+     * @param e
+     * @throws InformClientException
+     * @throws InformResourceOwnerException
+     */
+    protected void handleRequired(RequiredException e) throws InformClientException, InformResourceOwnerException {
+        if (CLIENT_ID.equals(e.getParam()) || REDIRECT_URI.equals(e.getParam())) {
+            throw new InformResourceOwnerException("", e);
+        }
+        OpenIdAuthRequest request = (OpenIdAuthRequest) e.getTarget();
+        getOpenIdConfidentialClientRedirectUri.run(request.getClientId(), request.getRedirectURI(), e);
+
+        throw new InformClientException(
+                "",
+                errorFromParamAndCause(e.getParam(), e.getCause()),
+                descFromCause(e.getParam(), e.getCause()),
+                1,
+                request.getRedirectURI(),
+                request.getState(),
+                e
+        );
+    }
+
+    /**
+     * Throw a InformResourceOwnerException if the values of client_id and redirect_uri
+     * do NOT match values in the database.
+     *
+     * Throw a InformClientException if the value of client_id and redirect_uri
+     * matches values in the database.
+     *
+     * @param e
+     * @throws InformClientException
+     * @throws InformResourceOwnerException
+     */
+    protected void handleOptional(OptionalException e) throws InformClientException, InformResourceOwnerException {
+        OpenIdAuthRequest request = (OpenIdAuthRequest) e.getTarget();
+        getOpenIdConfidentialClientRedirectUri.run(request.getClientId(), request.getRedirectURI(), e);
+
+        throw new InformClientException(
+                "",
+                errorFromParamAndCause(e.getParam(), e.getCause()),
+                descFromCause(e.getParam(), e.getCause()),
+                1,
+                request.getRedirectURI(),
+                request.getState(),
+                e
+        );
+    }
+
+    protected String errorFromParamAndCause(String param, Throwable t) {
+        String error = null;
+        if ("scope".equals(param) && t instanceof EmptyValueError) {
+            error = "invalid_scope";
+        } else if ("response_type".equals(param) || "state".equals(param) || "scope".equals(param)) {
+            error = "invalid_request";
+        }
+        return error;
+    }
+
+    protected String descFromCause(String param, Throwable t) {
+        String description = null;
+        if (t instanceof EmptyValueError) {
+            description = param + " is blank or missing";
+        } else if (t instanceof MoreThanOneItemError) {
+            description = param + " has more than one value.";
+        } else if (t instanceof ParamIsNullError) {
+            description = param + " is null";
+        } else if (t instanceof NoItemsError) {
+            description = param + " is blank or missing";
+        }
+        return description;
     }
 }

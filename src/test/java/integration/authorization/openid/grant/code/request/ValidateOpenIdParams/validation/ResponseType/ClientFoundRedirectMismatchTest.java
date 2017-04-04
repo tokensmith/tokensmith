@@ -1,25 +1,23 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ResponseType;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
-import java.util.UUID;
+
+import java.util.*;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsAttributes makeValidateParamsAttributes(UUID clientId) {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-
-        p.clientIds.add(clientId.toString());
-        p.redirectUris.add(REDIRECT_URI);
+    public Map<String, List<String>> makeParams(UUID clientId) {
+        Map<String, List<String>> p = super.makeParams();
+        p.get("client_id").add(clientId.toString());
+        p.get("redirect_uri").add(REDIRECT_URI);
 
         return p;
     }
@@ -28,25 +26,23 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.responseTypes = null;
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.put("response_type", null);
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        Exception cause = new RequiredException();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
+        Map<String, List<String>> p = makeParams(c.getId());
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        Exception cause = new RequiredException();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
 
     }
 
@@ -54,39 +50,35 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.responseTypes.add("invalid-response-type");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("response_type").add("invalid-response-type");
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
-
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerExceptionNoCause(p);
     }
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.responseTypes.add("CODE");
-        p.responseTypes.add("CODE");
+        Map<String, List<String>> p = makeParams(c.getId());
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        p.get("response_type").add("CODE");
+        p.get("response_type").add("CODE");
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.responseTypes.add("");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("response_type").add("");
 
-        Exception expectedDomainCause = new ResponseTypeException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        Exception cause = new RequiredException();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 }

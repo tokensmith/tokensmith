@@ -6,10 +6,19 @@ public class OptionalException extends Exception{
     private String param;
     private Object target;
 
+    public OptionalException() {}
+
     public OptionalException(String message, Throwable cause, String field, String param) {
         super(message, cause);
         this.field = field;
         this.param = param;
+    }
+
+    public OptionalException(String message, Throwable cause, String field, String param, Object target) {
+        super(message, cause);
+        this.field = field;
+        this.param = param;
+        this.target = target;
     }
 
     public String getField() {

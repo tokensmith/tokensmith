@@ -1,9 +1,7 @@
 package org.rootservices.authorization.parse;
 
 
-import org.rootservices.authorization.parse.exception.OptionalException;
-import org.rootservices.authorization.parse.exception.ParseException;
-import org.rootservices.authorization.parse.exception.RequiredException;
+import org.rootservices.authorization.parse.exception.*;
 import org.rootservices.authorization.parse.validator.OptionalParam;
 import org.rootservices.authorization.parse.validator.RawType;
 import org.rootservices.authorization.parse.validator.RequiredParam;
@@ -12,6 +10,8 @@ import org.rootservices.authorization.parse.validator.excpeption.EmptyValueError
 import org.rootservices.authorization.parse.validator.excpeption.MoreThanOneItemError;
 import org.rootservices.authorization.parse.validator.excpeption.NoItemsError;
 import org.rootservices.authorization.parse.validator.excpeption.ParamIsNullError;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -19,7 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
-
+@Component
 public class Parser {
     private static String TO_OBJ_ERROR = "Could not construct to object";
     private static String FIELD_ERROR = "Could not set field value";
@@ -28,9 +28,11 @@ public class Parser {
     private static String REQ_ERROR="Required field failed validation";
     private static String OPT_ERROR="Optional field failed validation";
     private static String DELIMITTER = " ";
+    private static String UNSUPPORTED_ERROR = "input value is not supported";
     private OptionalParam optionalParam;
     private RequiredParam requiredParam;
 
+    @Autowired
     public Parser(OptionalParam optionalParam, RequiredParam requiredParam) {
         this.optionalParam = optionalParam;
         this.requiredParam = requiredParam;
@@ -59,11 +61,15 @@ public class Parser {
         for(ParamEntity field: fields) {
             Field f = field.getField();
             Parameter p = field.getParameter();
+            String[] expectedValues = p.values();
+            List<String> from = params.get(p.name());
 
-            List<String> values = params.get(p.name());
             try {
-                validate(f.getName(), p.name(), values, p.required());
+                validate(f.getName(), p.name(), from, p.required());
             } catch (OptionalException e) {
+                e.setTarget(o);
+                throw e;
+            } catch (RequiredException e) {
                 e.setTarget(o);
                 throw e;
             }
@@ -72,30 +78,53 @@ public class Parser {
                 if (f.getGenericType() instanceof ParameterizedType) {
                     ParameterizedType pt = (ParameterizedType) f.getGenericType();
                     String rawType = pt.getRawType().getTypeName();
+                    String argType = pt.getActualTypeArguments()[0].getTypeName();
 
-                    if (RawType.LIST.getTypeName().equals(rawType) && values == null) {
-                        ArrayList arrayList = new ArrayList();
-                        f.set(o, arrayList);
-                    } else if (RawType.LIST.getTypeName().equals(rawType)) {
-                        ArrayList arrayList = new ArrayList();
-                        List<String> parsedValues = stringToList(values.get(0));
-                        for(String parsedValue: parsedValues) {
-                            Object item = make(pt.getActualTypeArguments()[0].getTypeName(), parsedValue);
-                            arrayList.add(item);
+                    if (from == null || from.size() == 0) {
+                        if (RawType.LIST.getTypeName().equals(rawType)) {
+                            ArrayList arrayList = new ArrayList();
+                            f.set(o, arrayList);
+                        } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
+                            f.set(o, Optional.empty());
                         }
-                        f.set(o, arrayList);
-                    } else if (RawType.OPTIONAL.getTypeName().equals(rawType) && values == null) {
-                        f.set(o, Optional.empty());
-                    } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
-                        Object item = make(pt.getActualTypeArguments()[0].getTypeName(), values.get(0));
-                        f.set(o, Optional.of(item));
+                    } else if (isExpected(from.get(0), expectedValues)){
+                        if (RawType.LIST.getTypeName().equals(rawType)) {
+                            ArrayList arrayList = new ArrayList();
+                            List<String> parsedValues = stringToList(from.get(0));
+                            for (String parsedValue : parsedValues) {
+                                Object item = make(argType, parsedValue);
+                                arrayList.add(item);
+                            }
+                            f.set(o, arrayList);
+                        } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
+                            Object item = make(argType, from.get(0));
+                            f.set(o, Optional.of(item));
+                        }
+                    } else {
+                        ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
+                        throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
                     }
-                } else {
-                    Object item = make(f.getGenericType().getTypeName(), values.get(0));
+                } else if (isExpected(from.get(0), expectedValues)){
+                    Object item = make(f.getGenericType().getTypeName(), from.get(0));
                     f.set(o, item);
+                } else {
+                    ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
+                    throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
                 }
+
+
             } catch (IllegalAccessException e) {
+                // is thrown when setting field from, f.set(o, X)
                 throw new ParseException(FIELD_ERROR, e);
+            } catch (DataTypeException e) {
+                // is thrown from, make(className, input)
+                e.setField(f.getName());
+                e.setParam(p.name());
+
+                if (p.required()) {
+                    throw new RequiredException(REQ_ERROR, e, f.getName(), p.name(), o);
+                }
+                throw new OptionalException(OPT_ERROR, e, f.getName(), p.name(), o);
             }
         }
         return o;
@@ -134,14 +163,31 @@ public class Parser {
         }
         return list;
     }
+
+
+    public Boolean isExpected(String item, String[] expectedValues) {
+        if (expectedValues.length == 0) {
+            return true;
+        }
+
+        for(String expected: expectedValues) {
+            if (expected.toLowerCase().equals(item.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Attempts to translate a String, input, to the desired object type, className.
      *
      * @param className
      * @param input
      * @return a new Object with the type of, className
+     * @throws DataTypeException
+     * @throws ParseException
      */
-    public Object make(String className, String input) throws ParseException {
+    public Object make(String className, String input) throws ParseException, DataTypeException {
         Object item;
         Class target;
         try {
@@ -162,13 +208,17 @@ public class Parser {
         return item;
     }
 
-    public Object makeFromListOfTypes(String className, String input) throws ParseException {
+    public Object makeFromListOfTypes(String className, String input) throws ParseException, DataTypeException {
         Object item;
 
-        if (SupportedTypes.UUID.getType().equals(className)) {
-            item = UUID.fromString(input);
-        } else {
-            throw new ParseException(CONSTRUCT_ERROR);
+        try {
+            if (SupportedTypes.UUID.getType().equals(className)) {
+                item = UUID.fromString(input);
+            } else {
+                throw new ParseException(CONSTRUCT_ERROR);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new DataTypeException(CONSTRUCT_ERROR, e, input);
         }
 
         return item;
@@ -176,6 +226,11 @@ public class Parser {
 
     public List<ParamEntity> reflect(Class clazz) {
         List<ParamEntity> fields = new ArrayList<>();
+
+        if (clazz.getSuperclass() != null) {
+            fields = reflect(clazz.getSuperclass());
+        }
+
         for(Field field: clazz.getDeclaredFields()) {
             Parameter p = field.getAnnotation(Parameter.class);
             if (p != null) {
@@ -183,6 +238,7 @@ public class Parser {
                 fields.add(new ParamEntity(field, p));
             }
         }
+
         return fields;
     }
 }

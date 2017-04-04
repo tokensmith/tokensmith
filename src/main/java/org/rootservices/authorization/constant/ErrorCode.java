@@ -27,7 +27,7 @@ public enum ErrorCode {
     REDIRECT_URI_NULL (15, "redirect_uri is null"),
 
     // client or resource owner -- needs feedback from db.
-    SCOPES_EMPTY_VALUE (16, "scope is blank"),
+    SCOPES_EMPTY_VALUE (16, "scope is blank or missing"),
     SCOPES_MORE_THAN_ONE_ITEM (17, "scope has more than one value."),
     SCOPES_DATA_TYPE (18, "scope is not valid"),
     SCOPES_NOT_SUPPORTED (19, "scope is not available for this client"),
