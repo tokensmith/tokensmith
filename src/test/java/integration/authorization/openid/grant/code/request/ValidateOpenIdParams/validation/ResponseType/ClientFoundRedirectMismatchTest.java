@@ -53,7 +53,9 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Map<String, List<String>> p = makeParams(c.getId());
         p.get("response_type").add("invalid-response-type");
 
-        runExpectInformResourceOwnerExceptionNoCause(p);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test

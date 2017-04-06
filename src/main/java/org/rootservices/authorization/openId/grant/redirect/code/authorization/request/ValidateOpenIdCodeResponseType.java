@@ -1,5 +1,6 @@
 package org.rootservices.authorization.openId.grant.redirect.code.authorization.request;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
@@ -26,18 +27,21 @@ import java.util.UUID;
  */
 @Component
 public class ValidateOpenIdCodeResponseType {
+    private static String INFORM_CLIENT_MSG = "Authorization Request did not pass validation - client should be informed.";
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
 
     private Parser parser;
+    private UrlValidator urlValidator;
     private GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri;
     private OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory;
     private CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdCodeResponseType(Parser parser, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
+    public ValidateOpenIdCodeResponseType(Parser parser, UrlValidator urlValidator, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
         this.parser = parser;
         this.getOpenIdConfidentialClientRedirectUri = getOpenIdConfidentialClientRedirectUri;
+        this.urlValidator = urlValidator;
         this.openIdCodeAuthRequestFactory = openIdCodeAuthRequestFactory;
         this.compareConfidentialClientToOpenIdAuthRequest = compareConfidentialClientToOpenIdAuthRequest;
     }
@@ -61,6 +65,10 @@ public class ValidateOpenIdCodeResponseType {
             handleOptional(e);
         } catch (ParseException e) {
             // TODO: unexpected thing occurred.
+        }
+
+        if (!urlValidator.isValid(request.getRedirectURI().toString())) {
+            throw new InformResourceOwnerException("redirect_uri is not valid", 1);
         }
 
         compareConfidentialClientToOpenIdAuthRequest.run(request);
@@ -91,7 +99,7 @@ public class ValidateOpenIdCodeResponseType {
         getOpenIdConfidentialClientRedirectUri.run(request.getClientId(), request.getRedirectURI(), e);
 
         throw new InformClientException(
-                "",
+                INFORM_CLIENT_MSG,
                 errorFromParamAndCause(e.getParam(), e.getCause()),
                 descFromCause(e.getParam(), e.getCause()),
                 1,
@@ -117,7 +125,7 @@ public class ValidateOpenIdCodeResponseType {
         getOpenIdConfidentialClientRedirectUri.run(request.getClientId(), request.getRedirectURI(), e);
 
         throw new InformClientException(
-                "",
+                INFORM_CLIENT_MSG,
                 errorFromParamAndCause(e.getParam(), e.getCause()),
                 descFromCause(e.getParam(), e.getCause()),
                 1,
