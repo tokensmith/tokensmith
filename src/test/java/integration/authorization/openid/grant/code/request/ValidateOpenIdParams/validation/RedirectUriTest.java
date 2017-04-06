@@ -1,13 +1,11 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.RedirectUriException;
 import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
+
 
 import java.util.List;
 import java.util.Map;
@@ -66,6 +64,7 @@ public class RedirectUriTest extends BaseTest {
 
         Map<String, List<String>> p = makeParams(c.getId());
         p.get("redirect_uri").add(c.getRedirectURI().toString());
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
 
         Exception cause = new RequiredException();
 
@@ -79,9 +78,7 @@ public class RedirectUriTest extends BaseTest {
         Map<String, List<String>> p = makeParams(c.getId());
         p.get("redirect_uri").add("invalid-uri");
 
-        Exception cause = new RequiredException();
-
-        runExpectInformResourceOwnerException(p, cause);
+        runExpectInformResourceOwnerExceptionNoCause(p);
     }
 
     public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws Exception {
@@ -90,9 +87,7 @@ public class RedirectUriTest extends BaseTest {
         Map<String, List<String>> p = makeParams(c.getId());
         p.get("redirect_uri").add("http://rootservices.org");
 
-        Exception cause = new RequiredException();
-
-        runExpectInformResourceOwnerException(p, cause);
+        runExpectInformResourceOwnerExceptionNoCause(p);
     }
 
     @Test
@@ -102,8 +97,6 @@ public class RedirectUriTest extends BaseTest {
         Map<String, List<String>> p = makeParams(c.getId());
         p.get("redirect_uri").add("https://rootservices.org/continue");
 
-        Exception cause = new RequiredException();
-
-        runExpectInformResourceOwnerException(p, cause);
+        runExpectInformResourceOwnerExceptionNoCause(p);
     }
 }

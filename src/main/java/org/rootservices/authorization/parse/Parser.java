@@ -61,7 +61,7 @@ public class Parser {
         for(ParamEntity field: fields) {
             Field f = field.getField();
             Parameter p = field.getParameter();
-            String[] expectedValues = p.values();
+            String[] expected = p.expected();
             List<String> from = params.get(p.name());
 
             try {
@@ -87,7 +87,7 @@ public class Parser {
                         } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
                             f.set(o, Optional.empty());
                         }
-                    } else if (isExpected(from.get(0), expectedValues)){
+                    } else if (isExpected(from.get(0), expected)){
                         if (RawType.LIST.getTypeName().equals(rawType)) {
                             ArrayList arrayList = new ArrayList();
                             List<String> parsedValues = stringToList(from.get(0));
@@ -104,7 +104,7 @@ public class Parser {
                         ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
                         throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
                     }
-                } else if (isExpected(from.get(0), expectedValues)){
+                } else if (isExpected(from.get(0), expected)){
                     Object item = make(f.getGenericType().getTypeName(), from.get(0));
                     f.set(o, item);
                 } else {

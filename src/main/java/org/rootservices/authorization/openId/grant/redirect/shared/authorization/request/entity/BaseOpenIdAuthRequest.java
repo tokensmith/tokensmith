@@ -20,7 +20,7 @@ public class BaseOpenIdAuthRequest {
     @Parameter(name = "state", required = false)
     protected Optional<String> state = Optional.empty(); // TODO: parser is this right?
 
-    @Parameter(name = "response_type", values = {"CODE", "TOKEN", "ID_TOKEN"})
+    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"})
     protected List<String> responseTypes;
 
     @Parameter(name = "scope", required = false)

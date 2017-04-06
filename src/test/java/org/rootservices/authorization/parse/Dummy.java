@@ -9,7 +9,7 @@ import java.util.UUID;
  * Class used to test injecting values into annotated fields.
  */
 public class Dummy {
-    @Parameter(name="string", values = {"string1"})
+    @Parameter(name="string", expected = {"string1"})
     private String string;
 
     @Parameter(name="uuid")
