@@ -14,7 +14,7 @@ public enum ErrorCode {
 
     // client or resource owner -- needs feedback from db.
     RESPONSE_TYPE_EMPTY_VALUE (6, "response_type is blank or missing"),
-    RESPONSE_TYPE_MORE_THAN_ONE_ITEM (7, "response_type has more than one value."),
+    RESPONSE_TYPE_MORE_THAN_ONE_ITEM (7, "response_type has more than one value"),
     RESPONSE_TYPE_EMPTY_LIST (8, "response_type is blank or missing"),
     RESPONSE_TYPE_NULL (9, "response_type is null"),
     RESPONSE_TYPE_DATA_TYPE (10, "response_type is invalid"),
@@ -28,7 +28,7 @@ public enum ErrorCode {
 
     // client or resource owner -- needs feedback from db.
     SCOPES_EMPTY_VALUE (16, "scope is blank or missing"),
-    SCOPES_MORE_THAN_ONE_ITEM (17, "scope has more than one value."),
+    SCOPES_MORE_THAN_ONE_ITEM (17, "scope has more than one value"),
     SCOPES_DATA_TYPE (18, "scope is not valid"),
     SCOPES_NOT_SUPPORTED (19, "scope is not available for this client"),
 
