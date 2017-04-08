@@ -30,6 +30,7 @@ public class ValidateOpenIdCodeResponseType {
     private static String INFORM_CLIENT_MSG = "Authorization Request did not pass validation - client should be informed.";
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
+    private List<ParamEntity> fields;
 
     private Parser parser;
     private UrlValidator urlValidator;
@@ -46,7 +47,9 @@ public class ValidateOpenIdCodeResponseType {
 
     public OpenIdAuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException {
 
-        List<ParamEntity> fields = parser.reflect(OpenIdAuthRequest.class);
+        if (fields == null) {
+            fields = parser.reflect(OpenIdAuthRequest.class);
+        }
         OpenIdAuthRequest request = null;
         try {
             request = (OpenIdAuthRequest) parser.to(OpenIdAuthRequest.class, fields, parameters);
