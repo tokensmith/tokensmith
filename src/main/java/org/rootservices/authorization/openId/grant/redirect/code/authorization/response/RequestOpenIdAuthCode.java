@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,18 +42,12 @@ public class RequestOpenIdAuthCode {
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(OpenIdInputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
-        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        );
+    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(parameters);
 
         return makeAuthResponse(
-                input.getUserName(),
-                input.getPlainTextPassword(),
+                userName,
+                password,
                 authRequest.getClientId(),
                 Optional.of(authRequest.getRedirectURI()),
                 authRequest.getScopes(),

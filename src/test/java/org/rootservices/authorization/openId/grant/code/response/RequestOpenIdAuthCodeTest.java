@@ -17,10 +17,7 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -53,36 +50,17 @@ public class RequestOpenIdAuthCodeTest {
         );
     }
 
-    public OpenIdAuthRequest makeOpenIdAuthRequest(OpenIdInputParams input) throws URISyntaxException {
-
-        UUID clientId = UUID.fromString(input.getClientIds().get(0));
-        URI redirectUri = new URI(input.getRedirectUris().get(0));
-
-        Optional<String> state = Optional.empty();
-        if (input.getStates() != null && input.getStates().get(0) != null) {
-            state = Optional.of(input.getStates().get(0));
-        }
-
-        OpenIdAuthRequest authRequest = new OpenIdAuthRequest(
-                clientId,
-                input.getResponseTypes(),
-                redirectUri,
-                input.getScopes(),
-                state
-        );
-
-        return authRequest;
-    }
-
     @Test
     public void testRun() throws Exception {
 
         // parameter to pass into method in test
         UUID clientId = UUID.randomUUID();
-        OpenIdInputParams input = FixtureFactory.makeOpenIdInputParams(clientId, "CODE");
+        Map<String, List<String>> params = FixtureFactory.makeOpenIdParameters(clientId, "CODE");
+        String userName = FixtureFactory.makeRandomEmail();
+        String password = FixtureFactory.PLAIN_TEXT_PASSWORD;
 
         // response from mockValidateParams.
-        OpenIdAuthRequest authRequest = makeOpenIdAuthRequest(input);
+        OpenIdAuthRequest authRequest = FixtureFactory.makeOpenIdAuthRequest(clientId, "CODE");
 
         // response from mockLoginResourceOwner.
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
@@ -96,18 +74,8 @@ public class RequestOpenIdAuthCodeTest {
         expectedAuthResponse.setState(authRequest.getState());
         expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
 
-        when(mockValidateOpenIdCodeResponseType.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        )).thenReturn(authRequest);
-
-        when(mockLoginResourceOwner.run(
-                        input.getUserName(),
-                        input.getPlainTextPassword())
-        ).thenReturn(resourceOwner);
+        when(mockValidateOpenIdCodeResponseType.run(params)).thenReturn(authRequest);
+        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
                         resourceOwner.getId(),
@@ -123,7 +91,7 @@ public class RequestOpenIdAuthCodeTest {
                 Optional.of(authRequest.getRedirectURI())
         )).thenReturn(expectedAuthResponse);
 
-        AuthResponse actual = subject.run(input);
+        AuthResponse actual = subject.run(userName, password, params);
 
         assertThat(actual.getCode(), is(expectedAuthResponse.getCode()));
         assertThat(actual.getRedirectUri(), is(expectedAuthResponse.getRedirectUri()));
