@@ -143,7 +143,7 @@ public class ValidateOpenIdCodeResponseType {
         if (t instanceof EmptyValueError) {
             description = param + " is blank or missing";
         } else if (t instanceof MoreThanOneItemError) {
-            description = param + " has more than one value.";
+            description = param + " has more than one value";
         } else if (t instanceof ParamIsNullError) {
             description = param + " is null";
         } else if (t instanceof NoItemsError) {
