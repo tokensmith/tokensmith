@@ -34,23 +34,14 @@ public class ValidateOpenIdCodeResponseType {
     private Parser parser;
     private UrlValidator urlValidator;
     private GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri;
-    private OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory;
     private CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdCodeResponseType(Parser parser, UrlValidator urlValidator, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, OpenIdCodeAuthRequestFactory openIdCodeAuthRequestFactory, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
+    public ValidateOpenIdCodeResponseType(Parser parser, UrlValidator urlValidator, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
         this.parser = parser;
         this.getOpenIdConfidentialClientRedirectUri = getOpenIdConfidentialClientRedirectUri;
         this.urlValidator = urlValidator;
-        this.openIdCodeAuthRequestFactory = openIdCodeAuthRequestFactory;
         this.compareConfidentialClientToOpenIdAuthRequest = compareConfidentialClientToOpenIdAuthRequest;
-    }
-
-    public OpenIdAuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states) throws InformResourceOwnerException, InformClientException {
-        OpenIdAuthRequest openIdAuthRequest = openIdCodeAuthRequestFactory.make(clientIds, responseTypes, redirectUris, scopes, states);
-        compareConfidentialClientToOpenIdAuthRequest.run(openIdAuthRequest);
-
-        return openIdAuthRequest;
     }
 
     public OpenIdAuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException {
