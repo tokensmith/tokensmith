@@ -18,7 +18,7 @@ public class Dummy {
     @Parameter(name="uri")
     private URI uri;
 
-    @Parameter(name="strings")
+    @Parameter(name="strings", expected = {"string1", "string2", "string3"})
     private List<String> strings;
 
     @Parameter(name="uuids")
