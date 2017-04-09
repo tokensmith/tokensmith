@@ -81,28 +81,34 @@ public class Parser {
                     String argType = pt.getActualTypeArguments()[0].getTypeName();
 
                     if (from == null || from.size() == 0) {
+                        // these will be optional parameters.
                         if (RawType.LIST.getTypeName().equals(rawType)) {
                             ArrayList arrayList = new ArrayList();
                             f.set(o, arrayList);
                         } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
                             f.set(o, Optional.empty());
                         }
-                    } else if (isExpected(from.get(0), expected)){
-                        if (RawType.LIST.getTypeName().equals(rawType)) {
-                            ArrayList arrayList = new ArrayList();
-                            List<String> parsedValues = stringToList(from.get(0));
-                            for (String parsedValue : parsedValues) {
-                                Object item = make(argType, parsedValue);
-                                arrayList.add(item);
-                            }
-                            f.set(o, arrayList);
-                        } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
-                            Object item = make(argType, from.get(0));
-                            f.set(o, Optional.of(item));
-                        }
                     } else {
-                        ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
-                        throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
+
+                        // there maybe multiple values in from since it could be a list.
+                        List<String> parsedValues = stringToList(from.get(0));
+
+                        if (isExpected(parsedValues, expected)){
+                            if (RawType.LIST.getTypeName().equals(rawType)) {
+                                ArrayList arrayList = new ArrayList();
+                                for (String parsedValue : parsedValues) {
+                                    Object item = make(argType, parsedValue);
+                                    arrayList.add(item);
+                                }
+                                f.set(o, arrayList);
+                            } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
+                                Object item = make(argType, from.get(0));
+                                f.set(o, Optional.of(item));
+                            }
+                        } else {
+                            ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
+                            throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
+                        }
                     }
                 } else if (isExpected(from.get(0), expected)){
                     Object item = make(f.getGenericType().getTypeName(), from.get(0));
@@ -111,8 +117,6 @@ public class Parser {
                     ValueException ve = new ValueException(UNSUPPORTED_ERROR, f.getName(), p.name(), from.get(0));
                     throw new RequiredException(UNSUPPORTED_ERROR, ve, f.getName(), p.name(), o);
                 }
-
-
             } catch (IllegalAccessException e) {
                 // is thrown when setting field from, f.set(o, X)
                 throw new ParseException(FIELD_ERROR, e);
@@ -164,6 +168,14 @@ public class Parser {
         return list;
     }
 
+    public Boolean isExpected(List<String> items, String[] expectedValues) {
+        for(String item: items) {
+            if (!isExpected(item, expectedValues)) {
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
+    }
 
     public Boolean isExpected(String item, String[] expectedValues) {
         if (expectedValues.length == 0) {
