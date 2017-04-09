@@ -12,11 +12,9 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;

@@ -6,7 +6,6 @@ import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
@@ -382,38 +381,6 @@ public class FixtureFactory {
         request.setState(Optional.of("some-state"));
         request.setNonce(Optional.of("some-nonce"));
         return request;
-    }
-
-    public static OpenIdInputParams makeOpenIdInputParams(UUID clientId, String responseType) {
-        OpenIdInputParams input = new OpenIdInputParams();
-        input.setUserName(makeRandomEmail());
-        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
-
-        List<String> clientIds = new ArrayList<>();
-        clientIds.add(clientId.toString());
-        input.setClientIds(clientIds);
-
-        List<String> redirectUris = new ArrayList();
-        redirectUris.add(SECURE_REDIRECT_URI);
-        input.setRedirectUris(redirectUris);
-
-        List<String> responseTypes = new ArrayList<>();
-        responseTypes.add(responseType);
-        input.setResponseTypes(responseTypes);
-
-        List<String> scopes = new ArrayList<>();
-        scopes.add("openid profile");
-        input.setScopes(scopes);
-
-        List<String> states = new ArrayList<>();
-        states.add("some-state");
-        input.setStates(states);
-
-        List<String> nonces = new ArrayList<>();
-        nonces.add("some-nonce");
-        input.setNonces(nonces);
-
-        return input;
     }
 
     public static InputParams makeEmptyGrantInput() {
