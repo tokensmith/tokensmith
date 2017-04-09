@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -43,51 +43,72 @@ public abstract class BaseTest {
         return c;
     }
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client client) {
-        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
-        p.clientIds.add(client.getId().toString());
+    public Map<String, List<String>> makeParams() {
+        Map<String, List<String>> parameters = new HashMap<>();
 
+        List<String> clientIds = new ArrayList();
+        List<String> responseTypes = new ArrayList<>();
+        List<String> redirectUris = new ArrayList<>();
+        List<String> scopes = new ArrayList<>();
+        List<String> states = new ArrayList<>();
+        List<String> nonces = new ArrayList<>();
+
+        parameters.put("client_id", clientIds);
+        parameters.put("response_type", responseTypes);
+        parameters.put("redirect_uri", redirectUris);
+        parameters.put("scope", scopes);
+        parameters.put("state", states);
+        parameters.put("nonce", nonces);
+
+
+        return parameters;
+    }
+
+    public Map<String, List<String>> makeParamsWithNonce(Client client) {
+        Map<String, List<String>> params = makeParams();
+
+        params.get("client_id").add(client.getId().toString());
         for(ResponseType responseType: client.getResponseTypes()) {
-            p.responseTypes.add(responseType.getName());
+            params.get("response_type").add(responseType.getName());
         }
 
-        p.redirectUris.add(client.getRedirectURI().toString());
-        p.scopes.add(client.getScopes().get(0).getName());
-        p.states.add("some-state");
-        p.nonces.add("some-nonce");
-
-        return p;
+        params.get("redirect_uri").add(client.getRedirectURI().toString());
+        params.get("scope").add(client.getScopes().get(0).getName());
+        params.get("state").add("some-state");
+        params.get("nonce").add("some-nonce");
+        return params;
     }
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonceRequiredOnly(Client client) {
-        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
+    public Map<String, List<String>> makeParamsWithNonceRequiredOnly(Client client) {
+        Map<String, List<String>> params = makeParams();
 
-        p.clientIds.add(client.getId().toString());
-        p.redirectUris.add(client.getRedirectURI().toString());
+        params.get("client_id").add(client.getId().toString());
         for(ResponseType responseType: client.getResponseTypes()) {
-            p.responseTypes.add(responseType.getName());
+            params.get("response_type").add(responseType.getName());
         }
-        p.nonces.add("some-nonce");
 
-        return p;
+        params.get("redirect_uri").add(client.getRedirectURI().toString());
+
+        List<String> nonces = new ArrayList<>();
+        params.get("nonce").add("some-nonce");
+        return params;
     }
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce() {
-        ValidateParamsWithNonce p = new ValidateParamsWithNonce();
+    public Map<String, List<String>> makeParamsWithNonce() {
+        Map<String, List<String>> params = makeParams();
 
-        p.clientIds.add(UUID.randomUUID().toString());
-        p.redirectUris.add("https://rootservices.org");
-        p.responseTypes.add("TOKEN");
-        p.nonces.add("some-nonce");
+        params.get("client_id").add(UUID.randomUUID().toString());
+        params.get("response_type").add("TOKEN");
+        params.get("redirect_uri").add("https://rootservices.org");
+        params.get("nonce").add("some-nonce");
 
-        return p;
-
+        return params;
     }
 
-    public void runExpectInformResourceOwnerException(ValidateParamsWithNonce p, Exception expectedDomainCause, int expectedErrorCode) {
+    public void runExpectInformResourceOwnerException(Map<String, List<String>> p, Exception expectedDomainCause, int expectedErrorCode) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+            subject.run(p);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
@@ -97,10 +118,10 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformResourceOwnerExceptionNoCause(ValidateParamsWithNonce p, int expectedErrorCode) {
+    public void runExpectInformResourceOwnerExceptionNoCause(Map<String, List<String>> p, int expectedErrorCode) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+            subject.run(p);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCause(), is(nullValue()));
@@ -110,27 +131,28 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientExceptionWithState(ValidateParamsWithNonce p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
+    public void runExpectInformClientExceptionWithState(Map<String, List<String>> p, Exception cause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+            subject.run(p);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
-            assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
+            assertThat(e.getCause(), instanceOf(cause.getClass()));
             assertThat(e.getCode(), is(expectedErrorCode));
             assertThat(e.getError(), is(expectedError));
             assertThat(e.getRedirectURI(), is(expectedRedirect));
             assertThat(e.getState().isPresent(), is(true));
-            assertThat(e.getState().get(), is(p.states.get(0)));
+            assertThat(e.getState().get(), is(p.get("state").get(0)));
+            assertThat(e.getDescription(), is(expectedDescription));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
         }
     }
 
-    public void runExpectInformClientException(ValidateParamsWithNonce p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
+    public void runExpectInformClientException(Map<String, List<String>> p, Exception expectedDomainCause, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+            subject.run(p);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
             assertThat(e.getCause(), instanceOf(expectedDomainCause.getClass()));
@@ -143,10 +165,10 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientExceptionWithStateNoCause(ValidateParamsWithNonce p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
 
         try {
-            subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+            subject.run(p);
             fail("expected InformResourceOwnerException to be thrown");
         } catch (InformClientException e) {
             assertThat(e.getCause(), is(nullValue()));
@@ -155,7 +177,7 @@ public abstract class BaseTest {
             assertThat(e.getDescription(), is(expectedDescription));
             assertThat(e.getRedirectURI(), is(expectedRedirect));
             assertThat(e.getState().isPresent(), is(true));
-            assertThat(e.getState().get(), is(p.states.get(0)));
+            assertThat(e.getState().get(), is(p.get("state").get(0)));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
         }

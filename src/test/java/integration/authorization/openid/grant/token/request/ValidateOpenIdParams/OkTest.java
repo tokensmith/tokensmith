@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -19,9 +22,9 @@ public class OkTest extends BaseTest {
     public void requiredParamsShouldBeOK() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonceRequiredOnly(c);
+        Map<String, List<String>> p = makeParamsWithNonceRequiredOnly(c);
 
-        OpenIdImplicitAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+        OpenIdImplicitAuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
@@ -35,9 +38,9 @@ public class OkTest extends BaseTest {
     public void requiredAndOptionalParamsShouldBeOK() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
+        Map<String, List<String>> p = makeParamsWithNonce(c);
 
-        OpenIdImplicitAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states, p.nonces);
+        OpenIdImplicitAuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));

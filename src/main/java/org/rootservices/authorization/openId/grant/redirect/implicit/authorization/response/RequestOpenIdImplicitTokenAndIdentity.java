@@ -31,10 +31,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,12 +64,10 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         this.issuer = issuer;
     }
 
-    public OpenIdImplicitAccessToken request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
-        OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(
-                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
-        );
+    public OpenIdImplicitAccessToken request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+        OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(parameters);
 
-        ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
+        ResourceOwner resourceOwner = loginResourceOwner.run(username, password);
         List<Client> audience = makeAudience(request.getClientId());
 
         TokenGraph tokenGraph;
