@@ -1,11 +1,14 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation.Nonce;
 
-import helper.ValidateParamsWithNonce;
+
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.factory.exception.NonceException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class ClientFoundTest extends BaseTest {
@@ -14,62 +17,62 @@ public class ClientFoundTest extends BaseTest {
     public void noncesIsNullShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces = null;
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.put("nonce", null);
 
-        Exception expectedDomainCause = new NonceException();
-        int expectedErrorCode = ErrorCode.NONCE_NULL.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.NONCE_NULL.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
     public void noncesIsEmptyListShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces.clear();
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("nonce").clear();
 
-        Exception expectedDomainCause = new NonceException();
-        int expectedErrorCode = ErrorCode.NONCE_EMPTY_LIST.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.NONCE_EMPTY_LIST.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
     public void noncesHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces.clear();
-        p.nonces.add("some-nonce");
-        p.nonces.add("some-nonce");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("nonce").clear();
+        p.get("nonce").add("some-nonce");
+        p.get("nonce").add("some-nonce");
 
-        Exception expectedDomainCause = new NonceException();
-        int expectedErrorCode = ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.NONCE_MORE_THAN_ONE_ITEM.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 
     @Test
     public void noncesIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces.clear();
-        p.nonces.add("");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("nonce").clear();
+        p.get("nonce").add("");
 
-        Exception expectedDomainCause = new NonceException();
-        int expectedErrorCode = ErrorCode.NONCE_EMPTY_VALUE.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
         String expectedDescription = ErrorCode.NONCE_EMPTY_VALUE.getDescription();
         String expectedError = "invalid_request";
 
-        runExpectInformClientExceptionWithState(p, expectedDomainCause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
+        runExpectInformClientExceptionWithState(p, cause, expectedErrorCode, expectedError, expectedDescription, c.getRedirectURI());
     }
 }
