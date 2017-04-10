@@ -4,8 +4,8 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
+import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.security.*;
 import org.rootservices.config.AppConfig;
@@ -17,10 +17,7 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by tommackenzie on 3/1/15.
@@ -344,36 +341,46 @@ public class FixtureFactory {
         return input;
     }
 
-    public static OpenIdInputParams makeOpenIdInputParams(UUID clientId, String responseType) {
-        OpenIdInputParams input = new OpenIdInputParams();
-        input.setUserName(makeRandomEmail());
-        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
+    public static Map<String, List<String>> makeOpenIdParameters(UUID clientId, String responseType) {
+        Map<String, List<String>> parameters = new HashMap<>();
 
-        List<String> clientIds = new ArrayList<>();
+        List<String> clientIds = new ArrayList();
         clientIds.add(clientId.toString());
-        input.setClientIds(clientIds);
-
-        List<String> redirectUris = new ArrayList();
-        redirectUris.add(SECURE_REDIRECT_URI);
-        input.setRedirectUris(redirectUris);
 
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(responseType);
-        input.setResponseTypes(responseTypes);
+
+        List<String> redirectUris = new ArrayList<>();
+        redirectUris.add(SECURE_REDIRECT_URI);
 
         List<String> scopes = new ArrayList<>();
         scopes.add("openid profile");
-        input.setScopes(scopes);
 
         List<String> states = new ArrayList<>();
         states.add("some-state");
-        input.setStates(states);
 
         List<String> nonces = new ArrayList<>();
         nonces.add("some-nonce");
-        input.setNonces(nonces);
 
-        return input;
+        parameters.put("client_id", clientIds);
+        parameters.put("response_type", responseTypes);
+        parameters.put("redirect_uri", redirectUris);
+        parameters.put("scope", scopes);
+        parameters.put("state", states);
+        parameters.put("nonce", states);
+
+        return parameters;
+    }
+
+    public static OpenIdAuthRequest makeOpenIdAuthRequest(UUID clientId, String responseType) throws Exception {
+        OpenIdAuthRequest request = new OpenIdAuthRequest();
+        request.setClientId(clientId);
+        request.setRedirectURI(new URI(SECURE_REDIRECT_URI));
+        request.setResponseTypes(Arrays.asList(responseType));
+        request.setScopes(Arrays.asList("openid profile"));
+        request.setState(Optional.of("some-state"));
+        request.setNonce(Optional.of("some-nonce"));
+        return request;
     }
 
     public static InputParams makeEmptyGrantInput() {

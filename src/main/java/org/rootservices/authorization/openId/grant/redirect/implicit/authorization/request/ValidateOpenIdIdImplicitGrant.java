@@ -1,32 +1,23 @@
 package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request;
 
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.factory.OpenIdTokenAuthRequestFactory;
+import org.apache.commons.validator.routines.UrlValidator;
+import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.context.GetOpenIdPublicClientRedirectUri;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.ValidateOpenIdRequest;
+import org.rootservices.authorization.parse.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 /**
  * Created by tommackenzie on 7/23/16.
  */
 @Component
-public class ValidateOpenIdIdImplicitGrant {
-    private OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory;
-    private ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest;
+public class ValidateOpenIdIdImplicitGrant extends ValidateOpenIdRequest<OpenIdImplicitAuthRequest> {
 
     @Autowired
-    public ValidateOpenIdIdImplicitGrant(OpenIdTokenAuthRequestFactory openIdTokenAuthRequestFactory, ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest) {
-        this.openIdTokenAuthRequestFactory = openIdTokenAuthRequestFactory;
-        this.comparePublicClientToOpenIdAuthRequest = comparePublicClientToOpenIdAuthRequest;
+    public ValidateOpenIdIdImplicitGrant(Parser parser, UrlValidator urlValidator, GetOpenIdPublicClientRedirectUri getOpenIdPublicClientRedirectUri, ComparePublicClientToOpenIdAuthRequest comparePublicClientToOpenIdAuthRequest) {
+        super(parser, urlValidator, getOpenIdPublicClientRedirectUri, comparePublicClientToOpenIdAuthRequest);
     }
 
-    public OpenIdImplicitAuthRequest run(List<String> clientIds, List<String> responseTypes, List<String> redirectUris, List<String> scopes, List<String> states, List<String> nonces) throws InformResourceOwnerException, InformClientException {
-        OpenIdImplicitAuthRequest authRequest = openIdTokenAuthRequestFactory.make(clientIds, responseTypes, redirectUris, scopes, states, nonces);
-        comparePublicClientToOpenIdAuthRequest.run(authRequest);
-
-        return authRequest;
-    }
 }
