@@ -1,4 +1,4 @@
-package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.factory;
+package org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -9,7 +9,6 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ComparePublicClientToOpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.ResponseType;

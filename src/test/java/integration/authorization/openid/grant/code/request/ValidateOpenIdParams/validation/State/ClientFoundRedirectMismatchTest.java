@@ -1,23 +1,26 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.State;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
-    public ValidateParamsAttributes makeValidateParamsAttributes(UUID uuid) {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(uuid.toString());
-        p.responseTypes.add("CODE");
-        p.redirectUris.add("https://rootservices.org/continue");
+    private static String REDIRECT_URI = "https://rootservices.org/continue";
+
+    public Map<String, List<String>> makeParams(UUID clientId) {
+        Map<String, List<String>> p = super.makeParams();
+
+        p.get("client_id").add(clientId.toString());
+        p.get("redirect_uri").add(REDIRECT_URI);
+        p.get("response_type").add("CODE");
 
         return p;
     }
@@ -26,26 +29,24 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void stateHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.states.add("some-state");
-        p.states.add("some-state");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("state").add("some-state");
+        p.get("state").add("some-state");
 
-        Exception expectedDomainCause = new StateException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        Exception cause = new OptionalException();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void stateIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.states.add("");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("state").add("");
 
-        Exception expectedDomainCause = new StateException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
+        Exception cause = new OptionalException();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 }

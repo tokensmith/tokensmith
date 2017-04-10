@@ -1,22 +1,29 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation.Nonce;
 
-import helper.ValidateParamsWithNonce;
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.factory.exception.NonceException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
+import org.rootservices.authorization.persistence.entity.ResponseType;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client c) {
-        ValidateParamsWithNonce p = super.makeValidateParamsWithNonce(c);
-        p.redirectUris.clear();
-        p.redirectUris.add(REDIRECT_URI);
-        p.nonces.clear();
+    public Map<String, List<String>> makeParams(Client c) {
+        Map<String, List<String>> p = super.makeParams();
+        p.get("client_id").add(c.getId().toString());
+
+        for(ResponseType responseType: c.getResponseTypes()) {
+            p.get("response_type").add(responseType.getName());
+        }
+
+        p.get("redirect_uri").add(REDIRECT_URI);
 
         return p;
     }
@@ -25,25 +32,25 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void noncesIsNullShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces = null;
+        Map<String, List<String>> p = makeParams(c);
+        p.put("nonce", null);
 
-        Exception expectedDomainCause = new NonceException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void noncesIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
+        Map<String, List<String>> p = makeParams(c);
 
-        Exception expectedDomainCause = new NonceException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
 
     }
 
@@ -51,26 +58,26 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void noncesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces.add("some-nonce");
-        p.nonces.add("some-nonce");
+        Map<String, List<String>> p = makeParams(c);
+        p.get("nonce").add("some-nonce");
+        p.get("nonce").add("some-nonce");
 
-        Exception expectedDomainCause = new NonceException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void noncesIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.nonces.add("");
+        Map<String, List<String>> p = makeParams(c);
+        p.get("nonce").add("");
 
-        Exception expectedDomainCause = new NonceException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 }

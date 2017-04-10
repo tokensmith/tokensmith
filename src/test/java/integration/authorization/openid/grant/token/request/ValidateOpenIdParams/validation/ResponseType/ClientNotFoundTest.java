@@ -1,62 +1,66 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation.ResponseType;
 
-import helper.ValidateParamsAttributes;
-import helper.ValidateParamsWithNonce;
+
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
+
 
 
 public class ClientNotFoundTest extends BaseTest {
 
     @Test
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes = null;
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParamsWithNonce();
+        p.put("response_type", null);
+
+        Exception cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
+        Map<String, List<String>> p = makeParamsWithNonce();
 
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Exception cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("invalid-response-type");
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParamsWithNonce();
+        p.get("response_type").add("invalid-response-type");
+
+        Exception cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("TOKEN");
-        p.responseTypes.add("TOKEN");
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParamsWithNonce();
+        p.get("response_type").add("TOKEN");
+        p.get("response_type").add("TOKEN");
+
+        Exception cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce();
-        p.responseTypes.add("");
+        Map<String, List<String>> p = makeParamsWithNonce();
+        p.get("response_type").add("");
         RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
