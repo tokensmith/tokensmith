@@ -8,19 +8,17 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class RequestAuthCodeTest {
 
     @Mock
-    private ValidateParams mockValidateParams;
+    private ValidateCodeGrant mockValidateCodeGrant;
     @Mock
     private LoginResourceOwner mockLoginResourceOwner;
     @Mock
@@ -57,7 +55,7 @@ public class RequestAuthCodeTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new RequestAuthCode(
-                mockValidateParams,
+                mockValidateCodeGrant,
                 mockLoginResourceOwner,
                 mockIssueAuthCode,
                 mockAuthResponseFactory,
@@ -65,39 +63,15 @@ public class RequestAuthCodeTest {
         );
     }
 
-    public AuthRequest makeAuthRequest(InputParams input) throws URISyntaxException {
-
-        Optional<URI> redirectUri = Optional.empty();
-        if (input.getRedirectUris() != null && input.getRedirectUris().get(0) != null ) {
-            redirectUri = Optional.of(new URI(input.getRedirectUris().get(0)));
-        }
-
-        Optional<String> state = Optional.empty();
-        if (input.getStates() != null && input.getStates().size() > 0 && input.getStates().get(0) != null) {
-            state = Optional.of(input.getStates().get(0));
-        }
-
-        AuthRequest authRequest = new AuthRequest(
-                UUID.fromString(input.getClientIds().get(0)),
-                input.getResponseTypes(),
-                redirectUri,
-                input.getScopes(),
-                state
-        );
-
-        return authRequest;
-    }
 
     @Test
     public void testRun() throws Exception {
+        String userName = FixtureFactory.makeRandomEmail();
+        String password = FixtureFactory.PLAIN_TEXT_PASSWORD;
         UUID clientId = UUID.randomUUID();
-        String scope = "profile";
-
-        // parameter to pass into method in test
-        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
 
         // response from mockValidateParams.
-        AuthRequest authRequest = makeAuthRequest(input);
+        AuthRequest authRequest = FixtureFactory.makeAuthRequest(clientId, "CODE");
 
         // response from mockLoginResourceOwner.
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
@@ -111,19 +85,12 @@ public class RequestAuthCodeTest {
         expectedAuthResponse.setState(authRequest.getState());
         expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
 
-        // stubbing
-        when(mockValidateParams.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        )).thenReturn(authRequest);
+        Map<String, List<String>> params = FixtureFactory.makeOAuthParameters(clientId, "CODE");
 
-        when(mockLoginResourceOwner.run(
-                        input.getUserName(),
-                        input.getPlainTextPassword())
-        ).thenReturn(resourceOwner);
+        // stubbing
+        when(mockValidateCodeGrant.run(params)).thenReturn(authRequest);
+
+        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
                         resourceOwner.getId(),
@@ -139,7 +106,7 @@ public class RequestAuthCodeTest {
                 authRequest.getRedirectURI()
         )).thenReturn(expectedAuthResponse);
 
-        AuthResponse actual = subject.run(input);
+        AuthResponse actual = subject.run(userName, password, params);
 
         assertThat(actual.getCode(), is(expectedAuthResponse.getCode()));
         assertThat(actual.getRedirectUri(), is(expectedAuthResponse.getRedirectUri()));
@@ -147,33 +114,24 @@ public class RequestAuthCodeTest {
     }
 
     @Test
-    public void runWhenFailsLoginShouldThrowUnauthorizedException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
+    public void runWhenFailsLoginShouldThrowUnauthorizedException() throws Exception {
+        String userName = FixtureFactory.makeRandomEmail();
+        String password = FixtureFactory.PLAIN_TEXT_PASSWORD;
         UUID clientId = UUID.randomUUID();
-        String scope = "profile";
 
-        // parameters to method in test
-        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
+        Map<String, List<String>> params = FixtureFactory.makeOAuthParameters(clientId, "CODE");
 
         // response from mockValidateParams
-        AuthRequest authRequest = makeAuthRequest(input);
+        AuthRequest authRequest = FixtureFactory.makeAuthRequest(clientId, "CODE");
 
-        when(mockValidateParams.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        )).thenReturn(authRequest);
+        when(mockValidateCodeGrant.run(params)).thenReturn(authRequest);
 
-        when(mockLoginResourceOwner.run(
-                input.getUserName(),
-                input.getPlainTextPassword()
-        )).thenThrow(UnauthorizedException.class);
+        when(mockLoginResourceOwner.run(userName, password)).thenThrow(UnauthorizedException.class);
 
         AuthResponse authResponse = null;
         UnauthorizedException actual = null;
         try {
-            authResponse = subject.run(input);
+            authResponse = subject.run(userName, password, params);
         } catch (UnauthorizedException e) {
             verify(mockIssueAuthCode, never()).run(
                 any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
@@ -186,31 +144,20 @@ public class RequestAuthCodeTest {
     }
 
     @Test
-    public void runWhenAuthCodeInsertExceptionShouldThrowInformClientException() throws URISyntaxException, UnauthorizedException, InformClientException, InformResourceOwnerException, AuthCodeInsertException {
+    public void runWhenAuthCodeInsertExceptionShouldThrowInformClientException() throws Exception {
+        String userName = FixtureFactory.makeRandomEmail();
+        String password = FixtureFactory.PLAIN_TEXT_PASSWORD;
         UUID clientId = UUID.randomUUID();
-        String scope = "profile";
-
-        // parameters to method in test
-        InputParams input = FixtureFactory.makeInputParams(clientId, "CODE", scope);
-        input.getStates().add("state");
 
         // response from mockValidateParams
-        AuthRequest authRequest = makeAuthRequest(input);
+        AuthRequest authRequest = FixtureFactory.makeAuthRequest(clientId, "CODE");
 
         ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
 
-        when(mockValidateParams.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        )).thenReturn(authRequest);
+        Map<String, List<String>> params = FixtureFactory.makeOAuthParameters(clientId, "CODE");
+        when(mockValidateCodeGrant.run(params)).thenReturn(authRequest);
 
-        when(mockLoginResourceOwner.run(
-                input.getUserName(),
-                input.getPlainTextPassword()
-        )).thenReturn(resourceOwner);
+        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
         AuthCodeInsertException aci = new AuthCodeInsertException("test", null);
         when(mockIssueAuthCode.run(
@@ -228,7 +175,7 @@ public class RequestAuthCodeTest {
 
         InformClientException actual = null;
         try {
-            subject.run(input);
+            subject.run(userName, password, params);
         } catch (InformClientException e) {
             actual = e;
         }
@@ -240,7 +187,7 @@ public class RequestAuthCodeTest {
         assertThat(actual.getCode(), is(ErrorCode.SERVER_ERROR.getCode()));
         assertThat(actual.getRedirectURI(), is(FixtureFactory.makeSecureRedirectUri()));
         assertThat(actual.getState().isPresent(), is(true));
-        assertThat(actual.getState().get(), is("state"));
+        assertThat(actual.getState().get(), is("some-state"));
         assertThat(actual.getCause(), is(aci));
     }
 }

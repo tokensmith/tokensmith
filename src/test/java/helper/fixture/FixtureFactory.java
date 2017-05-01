@@ -1,7 +1,7 @@
 package helper.fixture;
 
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
@@ -29,7 +29,7 @@ public class FixtureFactory {
     public static String REDIRECT_URI = "http://www.rootservices.org";
 
     public static URI makeSecureRedirectUri() throws URISyntaxException {
-        return new URI(REDIRECT_URI);
+        return new URI(SECURE_REDIRECT_URI);
     }
 
     public static Client makeTokenClientWithScopes() throws URISyntaxException {
@@ -318,27 +318,35 @@ public class FixtureFactory {
         return resourceOwnerToken;
     }
 
-    public static InputParams makeInputParams(UUID clientId, String responseType, String scope) {
-        InputParams input = new InputParams();
-        input.setUserName(makeRandomEmail());
-        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
+    public static Map<String, List<String>> makeOAuthParameters(UUID clientId, String responseType) {
+        Map<String, List<String>> parameters = new HashMap<>();
 
-        List<String> clientIds = new ArrayList<>();
+        List<String> clientIds = new ArrayList();
         clientIds.add(clientId.toString());
-        input.setClientIds(clientIds);
 
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(responseType);
-        input.setResponseTypes(responseTypes);
+
+        List<String> redirectUris = new ArrayList<>();
+        redirectUris.add(SECURE_REDIRECT_URI);
 
         List<String> scopes = new ArrayList<>();
-        scopes.add(scope.toString());
-        input.setScopes(scopes);
+        scopes.add("openid profile");
 
         List<String> states = new ArrayList<>();
-        input.setStates(states);
+        states.add("some-state");
 
-        return input;
+        List<String> nonces = new ArrayList<>();
+        nonces.add("some-nonce");
+
+        parameters.put("client_id", clientIds);
+        parameters.put("response_type", responseTypes);
+        parameters.put("redirect_uri", redirectUris);
+        parameters.put("scope", scopes);
+        parameters.put("state", states);
+        parameters.put("nonce", states);
+
+        return parameters;
     }
 
     public static Map<String, List<String>> makeOpenIdParameters(UUID clientId, String responseType) {
@@ -372,6 +380,17 @@ public class FixtureFactory {
         return parameters;
     }
 
+    public static AuthRequest makeAuthRequest(UUID clientId, String responseType) throws Exception {
+        AuthRequest request = new AuthRequest();
+        request.setClientId(clientId);
+        request.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
+        request.setResponseTypes(Arrays.asList(responseType));
+        request.setScopes(Arrays.asList("profile"));
+        request.setState(Optional.of("some-state"));
+
+        return request;
+    }
+
     public static OpenIdAuthRequest makeOpenIdAuthRequest(UUID clientId, String responseType) throws Exception {
         OpenIdAuthRequest request = new OpenIdAuthRequest();
         request.setClientId(clientId);
@@ -381,29 +400,6 @@ public class FixtureFactory {
         request.setState(Optional.of("some-state"));
         request.setNonce(Optional.of("some-nonce"));
         return request;
-    }
-
-    public static InputParams makeEmptyGrantInput() {
-        InputParams input = new InputParams();
-        input.setUserName(makeRandomEmail());
-        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
-
-        List<String> clientIds = new ArrayList<>();
-        input.setClientIds(clientIds);
-
-        List<String> redirectUris = new ArrayList<>();
-        input.setRedirectUris(redirectUris);
-
-        List<String> responseTypes = new ArrayList<>();
-        input.setResponseTypes(responseTypes);
-
-        List<String> scopes = new ArrayList<>();
-        input.setScopes(scopes);
-
-        List<String> states = new ArrayList<>();
-        input.setStates(states);
-
-        return input;
     }
 
     public static RSAPrivateKey makeRSAPrivateKey() {

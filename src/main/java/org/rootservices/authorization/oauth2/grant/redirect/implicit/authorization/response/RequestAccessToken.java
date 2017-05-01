@@ -6,27 +6,22 @@ import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
-import org.rootservices.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +32,7 @@ public class RequestAccessToken {
     private static final Logger logger = LogManager.getLogger(RequestAccessToken.class);
 
     private LoginResourceOwner loginResourceOwner;
-    private ValidateParams validateParamsImplicitGrant;
+    private ValidateImplicitGrant validateImplicitGrant;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private ClientRepository clientRepository;
 
@@ -45,23 +40,17 @@ public class RequestAccessToken {
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateParams validateParamsImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateImplicitGrant validateImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
-        this.validateParamsImplicitGrant = validateParamsImplicitGrant;
+        this.validateImplicitGrant = validateImplicitGrant;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.clientRepository = clientRepository;
     }
 
-    public ImplicitAccessToken requestToken(InputParams inputParams) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
+    public ImplicitAccessToken requestToken(String userName, String password, Map<String, List<String>> parameters) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
 
-        AuthRequest authRequest = validateParamsImplicitGrant.run(
-                inputParams.getClientIds(),
-                inputParams.getResponseTypes(),
-                inputParams.getRedirectUris(),
-                inputParams.getScopes(),
-                inputParams.getStates()
-        );
-        ResourceOwner resourceOwner = loginResourceOwner.run(inputParams.getUserName(), inputParams.getPlainTextPassword());
+        AuthRequest authRequest = validateImplicitGrant.run(parameters);
+        ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
         URI redirectURI = getRedirectURI(authRequest.getRedirectURI(), authRequest.getClientId());
         List<Client> audience = makeAudience(authRequest.getClientId());
 
