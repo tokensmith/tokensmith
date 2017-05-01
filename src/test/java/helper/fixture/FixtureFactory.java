@@ -2,7 +2,6 @@ package helper.fixture;
 
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
@@ -30,7 +29,7 @@ public class FixtureFactory {
     public static String REDIRECT_URI = "http://www.rootservices.org";
 
     public static URI makeSecureRedirectUri() throws URISyntaxException {
-        return new URI(REDIRECT_URI);
+        return new URI(SECURE_REDIRECT_URI);
     }
 
     public static Client makeTokenClientWithScopes() throws URISyntaxException {
@@ -401,29 +400,6 @@ public class FixtureFactory {
         request.setState(Optional.of("some-state"));
         request.setNonce(Optional.of("some-nonce"));
         return request;
-    }
-
-    public static InputParams makeEmptyGrantInput() {
-        InputParams input = new InputParams();
-        input.setUserName(makeRandomEmail());
-        input.setPlainTextPassword(PLAIN_TEXT_PASSWORD);
-
-        List<String> clientIds = new ArrayList<>();
-        input.setClientIds(clientIds);
-
-        List<String> redirectUris = new ArrayList<>();
-        input.setRedirectUris(redirectUris);
-
-        List<String> responseTypes = new ArrayList<>();
-        input.setResponseTypes(responseTypes);
-
-        List<String> scopes = new ArrayList<>();
-        input.setScopes(scopes);
-
-        List<String> states = new ArrayList<>();
-        input.setStates(states);
-
-        return input;
     }
 
     public static RSAPrivateKey makeRSAPrivateKey() {

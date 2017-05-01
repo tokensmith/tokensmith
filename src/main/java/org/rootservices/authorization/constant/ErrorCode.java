@@ -32,7 +32,7 @@ public enum ErrorCode {
     SCOPES_DATA_TYPE (18, "scope is not valid"),
     SCOPES_NOT_SUPPORTED (19, "scope is not available for this client"),
 
-    STATE_EMPTY_VALUE (20, "state is blank"),
+    STATE_EMPTY_VALUE (20, "state is blank or missing"),
     STATE_MORE_THAN_ONE_ITEM (21, "state has more than one value"),
 
     CLIENT_NOT_FOUND (22, "client was not found"),
