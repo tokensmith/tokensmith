@@ -4,7 +4,6 @@ package integration.authorization.oauth2.grant.token.request.ValidateParams;
 import helper.fixture.persistence.LoadTokenClientWithScopes;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.persistence.entity.Client;
@@ -129,7 +128,7 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws Exception {
 
         try {
             validateImplicitGrant.run(p);
