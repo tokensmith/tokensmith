@@ -8,8 +8,8 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -39,14 +39,14 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
     }
 
     @Test
-    public void clientFoundRedirectMatchesShouldBeOK() throws URISyntaxException, RecordNotFoundException, InformClientException, InformResourceOwnerException {
+    public void clientFoundRedirectMatchesShouldBeOK() throws Exception {
 
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
         when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         boolean actual = subject.run(client.getId(), client.getRedirectURI(), rootCause);
         assertThat(actual, is(true));
@@ -56,7 +56,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
     public void clientNotFoundShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
         URI redirectURI = new URI("https://rootservices.org");
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         when(mockConfidentialClientRepository.getByClientId(clientId)).thenThrow(RecordNotFoundException.class);
 
@@ -75,7 +75,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
 
         URI redirectURI = new URI("https://rootservices.org/mismatch");
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
@@ -88,7 +88,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getCause() instanceof ResponseTypeException, is(true));
+            assertThat(e.getCause() instanceof OptionalException, is(true));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }

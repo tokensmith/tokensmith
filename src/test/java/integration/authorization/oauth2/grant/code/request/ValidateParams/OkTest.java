@@ -1,10 +1,9 @@
 package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
-import helper.ValidateParamsAttributes;
+
 import org.junit.Test;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -31,7 +30,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredParamsShouldBeOK() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c);
@@ -47,7 +46,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredAndOptionalParamsShouldBeOK() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c);
