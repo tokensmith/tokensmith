@@ -4,11 +4,9 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -67,7 +65,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -82,7 +80,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypeIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -96,7 +94,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void responseTypesDontMatchShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void responseTypesDontMatchShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());

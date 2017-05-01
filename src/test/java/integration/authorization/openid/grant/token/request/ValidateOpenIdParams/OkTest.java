@@ -1,6 +1,5 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams;
 
-import helper.ValidateParamsWithNonce;
 import org.junit.Test;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;

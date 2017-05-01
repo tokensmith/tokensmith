@@ -4,7 +4,6 @@ package integration.authorization.oauth2.grant.token.request.ValidateParams.vali
 import integration.authorization.oauth2.grant.token.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
 
@@ -40,7 +39,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -53,7 +52,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -66,7 +65,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -80,7 +79,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     }
 
     @Test
-    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
