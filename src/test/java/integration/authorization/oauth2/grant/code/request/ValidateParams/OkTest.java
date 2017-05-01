@@ -10,6 +10,8 @@ import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -18,18 +20,23 @@ import static org.junit.Assert.assertThat;
 
 public class OkTest extends BaseTest {
 
+    public Map<String, List<String>> makeParams(Client c) {
+        Map<String, List<String>> p = super.makeParams();
+        p.get("client_id").add(c.getId().toString());
+
+        for(ResponseType rt: c.getResponseTypes()) {
+            p.get("response_type").add(rt.getName());
+        }
+        return p;
+    }
+
     @Test
     public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
+        Map<String, List<String>> p = makeParams(c);
 
-        for(ResponseType rt: c.getResponseTypes()) {
-            p.responseTypes.add(rt.getName());
-        }
-
-        AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        AuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(),is(1));
@@ -43,18 +50,13 @@ public class OkTest extends BaseTest {
     public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
+        Map<String, List<String>> p = makeParams(c);
 
-        for(ResponseType rt: c.getResponseTypes()) {
-            p.responseTypes.add(rt.getName());
-        }
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
+        p.get("scope").add("profile");
+        p.get("state").add("some-state");
 
-        p.redirectUris.add(c.getRedirectURI().toString());
-        p.scopes.add("profile");
-        p.states.add("some-state");
-
-        AuthRequest actual = validateParamsCodeResponseType.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        AuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
