@@ -6,12 +6,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
@@ -102,49 +98,10 @@ public class AppConfig {
         return new AppFactory();
     }
 
-    @Bean
-    public ClientIdFactory clientIdFactory() {
-        return new ClientIdFactory();
-    }
-
-    @Bean
-    public ResponseTypesFactory responseTypesFactory() {
-        return new ResponseTypesFactory();
-    }
-
-    @Bean
-    public RedirectUriFactory redirectUriFactory() {
-        return new RedirectUriFactory();
-    }
-
-    @Bean
-    public ScopesFactory scopesFactory() {
-        return new ScopesFactory();
-    }
-
-    @Bean
-    public StateFactory stateFactory() {
-        return new StateFactory();
-    }
-
     // TOKEN Response Type
     @Bean
     public GetClientRedirectUri getPublicClientRedirectUri() {
         return new GetPublicClientRedirectUri();
-    }
-
-    @Bean
-    public AuthRequestFactory authRequestFactoryTokenResponseType() {
-        AuthRequestFactory authRequestBuilder = new AuthRequestFactory(
-                clientIdFactory(),
-                responseTypesFactory(),
-                redirectUriFactory(),
-                scopesFactory(),
-                stateFactory(),
-                getPublicClientRedirectUri()
-        );
-
-        return authRequestBuilder;
     }
 
     @Bean
@@ -156,18 +113,6 @@ public class AppConfig {
     @Bean
     public GetClientRedirectUri getConfidentialClientRedirectUri() {
         return new GetConfidentialClientRedirectUri();
-    }
-
-    @Bean
-    public AuthRequestFactory authRequestFactory() {
-        return new AuthRequestFactory(
-                clientIdFactory(),
-                responseTypesFactory(),
-                redirectUriFactory(),
-                scopesFactory(),
-                stateFactory(),
-                getConfidentialClientRedirectUri()
-        );
     }
 
     @Bean

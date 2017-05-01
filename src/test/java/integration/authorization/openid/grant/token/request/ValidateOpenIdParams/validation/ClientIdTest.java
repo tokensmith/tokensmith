@@ -3,8 +3,6 @@ package integration.authorization.openid.grant.token.request.ValidateOpenIdParam
 
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ClientIdException;
 import org.rootservices.authorization.parse.exception.RequiredException;
 
 

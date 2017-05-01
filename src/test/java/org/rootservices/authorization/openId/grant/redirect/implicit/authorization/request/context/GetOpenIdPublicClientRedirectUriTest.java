@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -42,7 +42,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
 
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         boolean actual = subject.run(client.getId(), client.getRedirectURI(), rootCause);
         assertThat(actual, is(true));
@@ -52,7 +52,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
     public void clientNotFoundShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
         URI redirectURI = new URI("https://rootservices.org");
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         when(mockClientRepository.getById(clientId)).thenThrow(RecordNotFoundException.class);
 
@@ -71,7 +71,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
 
         URI redirectURI = new URI("https://rootservices.org/mismatch");
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         Client client = FixtureFactory.makeTokenClientWithOpenIdScopes();
 
@@ -83,7 +83,7 @@ public class GetOpenIdPublicClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getCause() instanceof ResponseTypeException, is(true));
+            assertThat(e.getCause() instanceof OptionalException, is(true));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }

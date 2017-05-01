@@ -4,7 +4,6 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.net.URISyntaxException;
@@ -24,7 +23,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
 
         Map<String, List<String>> p = makeParams();
         p.get("scope").add("invalid-scope");
@@ -36,7 +35,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Map<String, List<String>> p = makeParams();
         p.get("scope").add("profile");
         p.get("scope").add("profile");
@@ -48,7 +47,7 @@ public class ClientNotFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Map<String, List<String>> p = makeParams();
         p.get("scope").add("");
 

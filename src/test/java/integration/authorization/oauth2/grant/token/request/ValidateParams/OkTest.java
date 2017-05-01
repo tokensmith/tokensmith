@@ -1,7 +1,6 @@
 package integration.authorization.oauth2.grant.token.request.ValidateParams;
 
 import org.junit.Test;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -32,7 +31,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void requiredParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredParamsShouldBeOK() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>>  p = makeParams(c);
@@ -48,7 +47,7 @@ public class OkTest extends BaseTest {
     }
 
     @Test
-    public void requiredAndOptionalParamsShouldBeOK() throws URISyntaxException, StateException, InformResourceOwnerException, InformClientException {
+    public void requiredAndOptionalParamsShouldBeOK() throws Exception {
         Client c = loadClient();
 
         Map<String, List<String>>  p = makeParams(c);

@@ -4,12 +4,10 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +27,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsInvalidShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopeIsInvalidShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c);
@@ -43,7 +41,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopesHasTwoItemsShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopesHasTwoItemsShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c);
@@ -58,7 +56,7 @@ public class ClientFoundTest extends BaseTest {
     }
 
     @Test
-    public void scopeIsBlankStringShouldThrowInformClientException() throws URISyntaxException, StateException {
+    public void scopeIsBlankStringShouldThrowInformClientException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c);

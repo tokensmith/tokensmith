@@ -4,7 +4,6 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 
@@ -25,7 +24,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -37,7 +36,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -50,7 +49,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -59,7 +58,7 @@ public class RedirectUriTest extends BaseTest {
         runExpectInformResourceOwnerExceptionNoCause(p, 1);
     }
 
-    public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
@@ -71,7 +70,7 @@ public class RedirectUriTest extends BaseTest {
     }
 
     @Test
-    public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
+    public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());

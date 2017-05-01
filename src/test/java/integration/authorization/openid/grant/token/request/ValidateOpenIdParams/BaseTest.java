@@ -1,11 +1,10 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams;
 
-import helper.ValidateParamsWithNonce;
+
 import helper.fixture.persistence.openid.LoadTokenClientWithOpenIdScope;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
@@ -165,7 +164,7 @@ public abstract class BaseTest {
         }
     }
 
-    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws StateException {
+    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws Exception {
 
         try {
             subject.run(p);
