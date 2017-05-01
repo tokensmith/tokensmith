@@ -6,17 +6,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.optional.*;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ClientIdFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.required.ResponseTypesFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateParamsCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.AuthRequestFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateParamsImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.jwt.config.AppFactory;
 import org.springframework.context.annotation.Bean;
@@ -155,14 +152,6 @@ public class AppConfig {
         return new ComparePublicClientToAuthRequest();
     }
 
-    @Bean
-    public ValidateParams validateParamsTokenResponseType() {
-        return new ValidateParamsImplicitGrant(
-                authRequestFactoryTokenResponseType(),
-                comparePublicClientToAuthRequest()
-        );
-    }
-
     // CODE Response Type. Rename these!
     @Bean
     public GetClientRedirectUri getConfidentialClientRedirectUri() {
@@ -184,14 +173,6 @@ public class AppConfig {
     @Bean
     public CompareClientToAuthRequest compareClientToAuthRequest() {
         return new CompareConfidentialClientToAuthRequest();
-    }
-
-    @Bean
-    public ValidateParams validateParamsCodeResponseType() {
-        return new ValidateParamsCodeGrant(
-                authRequestFactory(),
-                compareClientToAuthRequest()
-        );
     }
 
     @Bean

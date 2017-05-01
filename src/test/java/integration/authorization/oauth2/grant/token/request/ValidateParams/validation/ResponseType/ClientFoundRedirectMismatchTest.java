@@ -1,48 +1,54 @@
 package integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.oauth2.grant.token.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
 
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
+    public Map<String, List<String>> makeParams(UUID clientId) {
+        Map<String, List<String>> p = super.makeParams();
+        p.get("client_id").add(clientId.toString());
+        p.get("redirect_uri").add(REDIRECT_URI);
+
+        return p;
+    }
+
     @Test
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(REDIRECT_URI);
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.put("response_type", null);
 
-        p.responseTypes = null;
-
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(REDIRECT_URI);
+        Map<String, List<String>> p = makeParams(c.getId());
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
 
     }
 
@@ -50,45 +56,39 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add("invalid-response-type");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("response_type").add("invalid-response-type");
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add("CODE");
-        p.responseTypes.add("CODE");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("response_type").add("TOKEN");
+        p.get("response_type").add("TOKEN");
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws URISyntaxException, StateException {
         Client c = loadClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add("");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("response_type").add("");
 
-        Exception expectedDomainCause = new ResponseTypeException();
+        Exception cause = new RequiredException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 }
