@@ -1,13 +1,13 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.Scopes;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -15,12 +15,12 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsAttributes makeValidateParamsAttributes(UUID clientId) {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
+    public Map<String, List<String>> makeParams(UUID clientId) {
+        Map<String, List<String>> p = super.makeParams();
 
-        p.clientIds.add(clientId.toString());
-        p.redirectUris.add(REDIRECT_URI);
-        p.responseTypes.add("CODE");
+        p.get("client_id").add(clientId.toString());
+        p.get("redirect_uri").add(REDIRECT_URI);
+        p.get("response_type").add("CODE");
 
         return p;
     }
@@ -29,41 +29,35 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
-        p.scopes.add("invalid-scope");
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("scope").add("invalid-scope");
 
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
-
-        runExpectInformResourceOwnerExceptionNoCause(p, expectedErrorCode);
+        runExpectInformResourceOwnerExceptionNoCause(p);
     }
 
     @Test
     public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("scope").add("profile");
+        p.get("scope").add("profile");
 
-        p.scopes.add("profile");
-        p.scopes.add("profile");
+        Exception cause = new OptionalException();
 
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
-
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = makeValidateParamsAttributes(c.getId());
+        Map<String, List<String>> p = makeParams(c.getId());
+        p.get("scope").add("");
 
-        p.scopes.add("");
+        Exception cause = new OptionalException();
 
-        Exception expectedDomainCause = new ScopesException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
-
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause);
     }
 
 }

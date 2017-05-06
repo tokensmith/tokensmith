@@ -1,18 +1,21 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation;
 
-import helper.ValidateParamsWithNonce;
+
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.RedirectUriException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 import org.rootservices.authorization.persistence.entity.Client;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class RedirectUriTest extends BaseTest {
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client c) {
-        ValidateParamsWithNonce p = super.makeValidateParamsWithNonce(c);
-        p.redirectUris.clear();
+    public Map<String, List<String>> makeParamsWithNonce(Client c) {
+        Map<String, List<String>> p = super.makeParamsWithNonce(c);
+        p.get("redirect_uri").clear();
 
         return p;
     }
@@ -21,85 +24,84 @@ public class RedirectUriTest extends BaseTest {
     public void redirectUrisIsNullShouldThrowInformResourceOwner() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris = null;
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.put("redirect_uri", null);
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_NULL.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void redirectUriIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
+        Map<String, List<String>> p = makeParamsWithNonce(c);
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_EMPTY_LIST.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void redirectUrisIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris.add("");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("redirect_uri").add("");
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_EMPTY_VALUE.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void redirectUrisHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris.add(c.getRedirectURI().toString());
-        p.redirectUris.add(c.getRedirectURI().toString());
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_MORE_THAN_ONE_ITEM.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void redirectUriIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris.add("invalid-uri");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("redirect_uri").add("invalid-uri");
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_DATA_TYPE.getCode();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
+        runExpectInformResourceOwnerExceptionNoCause(p, expectedErrorCode);
     }
 
     public void redirectUriIsNotHttpsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris.add("http://rootservices.org");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("redirect_uri").add("http://rootservices.org");
 
-        Exception expectedDomainCause = new RedirectUriException();
-        int expectedErrorCode = ErrorCode.REDIRECT_URI_DATA_TYPE.getCode();
+        Exception cause = new RequiredException();
+        int expectedErrorCode = 1;
 
-        runExpectInformResourceOwnerException(p,expectedDomainCause,expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void redirectUriDoesNotMatchClientShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.redirectUris.add("https://rootservices.org/continue");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("redirect_uri").add("https://rootservices.org/continue");
 
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 

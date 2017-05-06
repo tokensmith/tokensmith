@@ -61,7 +61,7 @@ public abstract class CompareClientToOpenIdAuthRequest {
     private boolean hasResponseTypes(List<String> requestedResponseTypes, List<ResponseType> clientResponseTypes) {
         boolean hasScopes = true;
         for(String responseType: requestedResponseTypes) {
-            if (! clientResponseTypes.stream().filter(o -> o.getName().equals(responseType)).findFirst().isPresent()) {
+            if (! clientResponseTypes.stream().filter(o -> o.getName().equalsIgnoreCase(responseType)).findFirst().isPresent()) {
                 hasScopes = false;
                 break;
             }
@@ -72,7 +72,7 @@ public abstract class CompareClientToOpenIdAuthRequest {
     private boolean hasScopes(List<String> requestedScopes, List<Scope> clientScopes) {
         boolean hasScopes = true;
         for(String scope: requestedScopes) {
-            if (! clientScopes.stream().filter(o -> o.getName().equals(scope)).findFirst().isPresent()) {
+            if (! clientScopes.stream().filter(o -> o.getName().equalsIgnoreCase(scope)).findFirst().isPresent()) {
                 hasScopes = false;
                 break;
             }
