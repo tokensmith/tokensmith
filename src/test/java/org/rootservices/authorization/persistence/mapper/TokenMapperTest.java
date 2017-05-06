@@ -177,6 +177,6 @@ public class TokenMapperTest {
         assertThat(actual.getGrantType(), is(token.getGrantType()));
         assertThat(actual.getClientId(), is(client.getId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getExpiresAt(), is(expiresAt));
+        assertThat(actual.getExpiresAt().toEpochSecond(), is(expiresAt.toEpochSecond()));
     }
 }

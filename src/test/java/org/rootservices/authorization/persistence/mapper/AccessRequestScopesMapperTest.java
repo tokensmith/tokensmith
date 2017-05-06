@@ -36,7 +36,7 @@ public class AccessRequestScopesMapperTest {
     @Autowired
     private AccessRequestScopesMapper subject;
 
-    public AccessRequest persistAccessReqeust() throws URISyntaxException {
+    public AccessRequest persistAccessReqeust() throws Exception {
         // create client to be used as the fk constraint.
         UUID clientUUID = UUID.randomUUID();
         URI redirectURI = new URI("https://rootservices.org");
@@ -69,7 +69,7 @@ public class AccessRequestScopesMapperTest {
     }
 
     @Test
-    public void insert() throws URISyntaxException {
+    public void insert() throws Exception {
         AccessRequest accessRequest = persistAccessReqeust();
         Scope scope = persistScope();
 

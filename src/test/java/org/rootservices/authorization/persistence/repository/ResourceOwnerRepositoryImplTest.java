@@ -1,13 +1,17 @@
 package org.rootservices.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import org.hamcrest.core.Is;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import org.rootservices.authorization.persistence.mapper.ResourceOwnerMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
@@ -22,13 +26,15 @@ public class ResourceOwnerRepositoryImplTest {
 
     @Mock
     private ResourceOwnerMapper mockMapper;
+    @Mock
+    private DuplicateRecordExceptionFactory mockDuplicateRecordExceptionFactory;
 
     private ResourceOwnerRepositoryImpl subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new ResourceOwnerRepositoryImpl(mockMapper);
+        subject = new ResourceOwnerRepositoryImpl(mockMapper, mockDuplicateRecordExceptionFactory);
     }
 
 
@@ -114,9 +120,41 @@ public class ResourceOwnerRepositoryImplTest {
     }
 
     @Test
-    public void insert() {
+    public void insert() throws Exception {
         ResourceOwner authUser = FixtureFactory.makeResourceOwner();
         subject.insert(authUser);
         verify(mockMapper, times(1)).insert(authUser);
+    }
+
+
+    @Test
+    public void insertShouldThrowDuplicateRecordException() throws Exception {
+        ResourceOwner user = FixtureFactory.makeResourceOwner();
+
+        String msg =
+            "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "### The error may involve defaultParameterMap\n" +
+            "### The error occurred while setting parameters\n" +
+            "### SQL: insert into resource_owner (id, email, password)         values (             ?,             ?,             ?         )\n" +
+            "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "; SQL []; ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@rootservices.com) already exists\n";
+
+        DuplicateKeyException dke = new DuplicateKeyException(msg);
+        doThrow(dke).when(mockMapper).insert(user);
+
+        DuplicateRecordException dre = new DuplicateRecordException(msg, dke);
+        when(mockDuplicateRecordExceptionFactory.make(dke, "resource_owner")).thenReturn(dre);
+
+        DuplicateRecordException actual = null;
+        try {
+            subject.insert(user);
+        } catch (DuplicateRecordException e) {
+            actual = e;
+        }
+        assertThat(actual, Is.is(dre));
     }
 }

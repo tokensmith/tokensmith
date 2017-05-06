@@ -36,7 +36,7 @@ public class LoginResourceOwnerImplTest {
     private LoginResourceOwner subject;
 
     @Test
-    public void run() throws UnauthorizedException {
+    public void run() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
@@ -64,7 +64,7 @@ public class LoginResourceOwnerImplTest {
     }
 
     @Test
-    public void passwordIncorrect() {
+    public void passwordIncorrect() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         resourceOwnerRepository.insert(ro);
 
