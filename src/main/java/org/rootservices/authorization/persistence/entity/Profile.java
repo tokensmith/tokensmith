@@ -35,6 +35,14 @@ public class Profile {
     private OffsetDateTime updatedAt;
     private OffsetDateTime createdAt;
 
+    public Profile() {
+    }
+
+    public Profile(UUID id, UUID resourceOwnerId) {
+        this.id = id;
+        this.resourceOwnerId = resourceOwnerId;
+    }
+
     public UUID getId() {
         return id;
     }
