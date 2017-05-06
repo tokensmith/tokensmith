@@ -9,7 +9,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -43,7 +43,7 @@ public class GetConfidentialClientRedirectUriTest {
     public void clientNotFound() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         when(mockConfidentialClientRepository.getByClientId(clientId)).thenThrow(RecordNotFoundException.class);
 
@@ -66,7 +66,7 @@ public class GetConfidentialClientRedirectUriTest {
         when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
         Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org/will/not/match"));
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         try {
             subject.run(client.getId(), redirectURI, rootCause);
@@ -74,7 +74,7 @@ public class GetConfidentialClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getCause(), instanceOf(ResponseTypeException.class));
+            assertThat(e.getCause(), instanceOf(OptionalException.class));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }
@@ -88,7 +88,7 @@ public class GetConfidentialClientRedirectUriTest {
         when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
         Optional<URI> redirectURI = Optional.empty();
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         URI actual = null;
         try {
@@ -109,7 +109,7 @@ public class GetConfidentialClientRedirectUriTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
         Optional<URI> redirectUri = Optional.of(client.getRedirectURI());
 
         URI actual = null;

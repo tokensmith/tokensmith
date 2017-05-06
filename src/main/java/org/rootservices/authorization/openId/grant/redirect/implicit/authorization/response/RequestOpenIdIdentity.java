@@ -9,7 +9,6 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.openId.identity.MakeImplicitIdentityToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -22,6 +21,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -46,12 +46,10 @@ public class RequestOpenIdIdentity {
         this.issuer = issuer;
     }
 
-    public OpenIdImplicitIdentity request(OpenIdInputParams input) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
-        OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(
-                input.getClientIds(), input.getResponseTypes(), input.getRedirectUris(), input.getScopes(), input.getStates(), input.getNonces()
-        );
+    public OpenIdImplicitIdentity request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+        OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(parameters);
 
-        ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPlainTextPassword());
+        ResourceOwner resourceOwner = loginResourceOwner.run(username, password);
 
         // TODO: should it fetch scopes from the database?
 

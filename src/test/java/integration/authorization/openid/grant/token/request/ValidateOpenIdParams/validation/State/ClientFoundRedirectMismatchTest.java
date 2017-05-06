@@ -1,21 +1,22 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation.State;
 
-import helper.ValidateParamsWithNonce;
+
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.StateException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client c) {
-        ValidateParamsWithNonce p = super.makeValidateParamsWithNonce(c);
-        p.redirectUris.clear();
-        p.redirectUris.add("https://rootservices.org/continue");
+    public Map<String, List<String>> makeValidateParamsWithNonce(Client c) {
+        Map<String, List<String>> p = super.makeParamsWithNonce(c);
+        p.get("redirect_uri").clear();
+        p.get("redirect_uri").add("https://rootservices.org/continue");
 
         return p;
     }
@@ -24,26 +25,26 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void stateHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.states.add("some-state");
-        p.states.add("some-state");
+        Map<String, List<String>> p = makeValidateParamsWithNonce(c);
+        p.get("state").add("some-state");
+        p.get("state").add("some-state");
 
-        Exception expectedDomainCause = new StateException();
+        Exception cause = new OptionalException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void stateIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.states.add("");
+        Map<String, List<String>> p = makeValidateParamsWithNonce(c);
+        p.get("state").add("");
 
-        Exception expectedDomainCause = new StateException();
+        Exception cause = new OptionalException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 }

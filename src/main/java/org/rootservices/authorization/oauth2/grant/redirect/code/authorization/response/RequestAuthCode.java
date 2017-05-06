@@ -3,15 +3,13 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.ValidateParams;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.response.entity.InputParams;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ import java.util.UUID;
 public class RequestAuthCode {
     private static final Logger logger = LogManager.getLogger(RequestAuthCode.class);
 
-    private ValidateParams validateParamsCodeGrant;
+    private ValidateCodeGrant validateCodeGrant;
     protected LoginResourceOwner loginResourceOwner;
     protected IssueAuthCode issueAuthCode;
     protected AuthResponseFactory authResponseFactory;
@@ -45,27 +44,21 @@ public class RequestAuthCode {
     public RequestAuthCode() {}
 
     @Autowired
-    public RequestAuthCode(ValidateParams validateParamsCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetConfidentialClientRedirectUri getConfidentialClientRedirectUri) {
-        this.validateParamsCodeGrant = validateParamsCodeResponseType;
+    public RequestAuthCode(ValidateCodeGrant validateCodeGrant, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetConfidentialClientRedirectUri getConfidentialClientRedirectUri) {
+        this.validateCodeGrant = validateCodeGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
         this.authResponseFactory = authResponseFactory;
         this.getConfidentialClientRedirectUri = getConfidentialClientRedirectUri;
     }
 
-    public AuthResponse run(InputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
+    public AuthResponse run(String username, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
 
-        AuthRequest authRequest = validateParamsCodeGrant.run(
-            input.getClientIds(),
-            input.getResponseTypes(),
-            input.getRedirectUris(),
-            input.getScopes(),
-            input.getStates()
-        );
+        AuthRequest authRequest = validateCodeGrant.run(parameters);
 
         return makeAuthResponse(
-            input.getUserName(),
-            input.getPlainTextPassword(),
+            username,
+            password,
             authRequest.getClientId(),
             authRequest.getRedirectURI(),
             authRequest.getScopes(),

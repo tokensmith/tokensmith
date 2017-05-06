@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ResponseTypeException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
@@ -43,7 +43,7 @@ public class GetPublicClientRedirectUriTest {
     public void clientNotFound() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         when(mockClientRepository.getById(clientId)).thenThrow(RecordNotFoundException.class);
 
@@ -65,7 +65,7 @@ public class GetPublicClientRedirectUriTest {
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org/will/not/match"));
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         try {
             subject.run(client.getId(), redirectURI, rootCause);
@@ -73,7 +73,7 @@ public class GetPublicClientRedirectUriTest {
         } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
-            assertThat(e.getCause(), instanceOf(ResponseTypeException.class));
+            assertThat(e.getCause(), instanceOf(OptionalException.class));
             assertThat(e.getCode(), is(ErrorCode.REDIRECT_URI_MISMATCH.getCode()));
         }
     }
@@ -86,7 +86,7 @@ public class GetPublicClientRedirectUriTest {
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
         Optional<URI> redirectURI = Optional.empty();
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
 
         URI actual = null;
         try {
@@ -106,7 +106,7 @@ public class GetPublicClientRedirectUriTest {
         Client client = FixtureFactory.makeCodeClientWithScopes();
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
-        ResponseTypeException rootCause = new ResponseTypeException("");
+        Exception rootCause = new OptionalException();
         Optional<URI> redirectUri = Optional.of(client.getRedirectURI());
 
         URI actual = null;

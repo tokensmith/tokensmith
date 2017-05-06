@@ -1,6 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity;
 
-import org.rootservices.authorization.persistence.entity.ResponseType;
+
+import org.rootservices.authorization.parse.Parameter;
 
 import java.net.URI;
 import java.util.List;
@@ -11,11 +12,20 @@ import java.util.UUID;
  * Created by tommackenzie on 11/19/14.
  */
 public class AuthRequest {
+    @Parameter(name = "client_id")
     private UUID clientId;
+
+    @Parameter(name = "redirect_uri", required = false)
+    private Optional<URI> redirectURI = Optional.empty();
+
+    @Parameter(name = "state", required = false)
+    private Optional<String> state = Optional.empty();
+
+    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"})
     private List<String> responseTypes;
-    private Optional<URI> redirectURI;
+
+    @Parameter(name = "scope", required = false)
     private List<String> scopes;
-    private Optional<String> state;
 
     public AuthRequest() {}
 

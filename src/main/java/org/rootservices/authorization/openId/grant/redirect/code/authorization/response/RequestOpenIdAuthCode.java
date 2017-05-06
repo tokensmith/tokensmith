@@ -10,13 +10,13 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.OpenIdInputParams;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,18 +41,12 @@ public class RequestOpenIdAuthCode {
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(OpenIdInputParams input) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
-        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(
-                input.getClientIds(),
-                input.getResponseTypes(),
-                input.getRedirectUris(),
-                input.getScopes(),
-                input.getStates()
-        );
+    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+        OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(parameters);
 
         return makeAuthResponse(
-                input.getUserName(),
-                input.getPlainTextPassword(),
+                userName,
+                password,
                 authRequest.getClientId(),
                 Optional.of(authRequest.getRedirectURI()),
                 authRequest.getScopes(),

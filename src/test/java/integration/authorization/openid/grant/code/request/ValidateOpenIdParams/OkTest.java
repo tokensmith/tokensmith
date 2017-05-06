@@ -1,11 +1,13 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams;
 
-import helper.ValidateParamsAttributes;
 import org.junit.Test;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 
+
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -21,14 +23,15 @@ public class OkTest extends BaseTest {
     public void requiredParamsShouldBeOK() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
-        p.redirectUris.add(c.getRedirectURI().toString());
+        Map<String, List<String>> p = makeParams();
+        p.get("client_id").add(c.getId().toString());
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
+
         for(ResponseType responseType: c.getResponseTypes()) {
-            p.responseTypes.add(responseType.getName());
+            p.get("response_type").add(responseType.getName());
         }
 
-        OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        OpenIdAuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));
@@ -42,18 +45,18 @@ public class OkTest extends BaseTest {
     public void requiredAndOptionalParamsShouldBeOK() throws Exception {
         Client c = loadConfidentialClient();
 
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(c.getId().toString());
+        Map<String, List<String>> p = makeParams();
+        p.get("client_id").add(c.getId().toString());
+        p.get("redirect_uri").add(c.getRedirectURI().toString());
 
         for(ResponseType responseType: c.getResponseTypes()) {
-            p.responseTypes.add(responseType.getName());
+            p.get("response_type").add(responseType.getName());
         }
 
-        p.redirectUris.add(c.getRedirectURI().toString());
-        p.scopes.add(c.getScopes().get(0).getName());
-        p.states.add("some-state");
+        p.get("scope").add(c.getScopes().get(0).getName());
+        p.get("state").add("some-state");
 
-        OpenIdAuthRequest actual = subject.run(p.clientIds, p.responseTypes, p.redirectUris, p.scopes, p.states);
+        OpenIdAuthRequest actual = subject.run(p);
 
         assertThat(actual.getClientId(), is(c.getId()));
         assertThat(actual.getResponseTypes().size(), is(1));

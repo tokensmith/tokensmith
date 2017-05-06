@@ -1,71 +1,76 @@
 package integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType;
 
-import helper.ValidateParamsAttributes;
 import integration.authorization.oauth2.grant.token.request.ValidateParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
 public class ClientNotFoundTest extends BaseTest {
 
-    public ValidateParamsAttributes makeValidateParamsAttributes() {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds.add(UUID.randomUUID().toString());
+    public Map<String, List<String>> makeParams() {
+        Map<String, List<String>> p = super.makeParams();
+        p.get("client_id").add(UUID.randomUUID().toString());
 
         return p;
     }
 
     @Test
     public void responseTypeIsNullShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.responseTypes = null;
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParams();
+        p.put("response_type", null);
+
+        RecordNotFoundException cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParams();
+
+        RecordNotFoundException cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.responseTypes.add("invalid-response-type");
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParams();
+        p.get("response_type").add("invalid-response-type");
+
+        RecordNotFoundException cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeHasTwoItemsShouldThrowInformResourceException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.responseTypes.add("CODE");
-        p.responseTypes.add("CODE");
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParams();
+        p.get("response_type").add("TOKEN");
+        p.get("response_type").add("TOKEN");
+
+        RecordNotFoundException cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 
     @Test
     public void responseTypeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = makeValidateParamsAttributes();
-        p.responseTypes.add("");
-        RecordNotFoundException expectedDomainCause = new RecordNotFoundException();
+        Map<String, List<String>> p = makeParams();
+        p.get("response_type").add("");
+
+        RecordNotFoundException cause = new RecordNotFoundException();
         int errorCode = ErrorCode.CLIENT_NOT_FOUND.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        runExpectInformResourceOwnerException(p, cause, errorCode);
     }
 }

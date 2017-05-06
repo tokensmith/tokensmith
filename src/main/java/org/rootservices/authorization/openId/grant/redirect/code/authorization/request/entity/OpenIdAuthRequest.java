@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity;
 
 import org.rootservices.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
+import org.rootservices.authorization.parse.Parameter;
 
 import java.net.URI;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
  */
 public class OpenIdAuthRequest extends BaseOpenIdAuthRequest {
 
+    @Parameter(name = "nonce", required = false)
     private Optional<String> nonce;
 
     public OpenIdAuthRequest() {}

@@ -1,11 +1,12 @@
 package integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation;
 
-import helper.ValidateParamsAttributes;
+
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ClientIdException;
+import org.rootservices.authorization.parse.exception.RequiredException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -15,51 +16,51 @@ public class ClientIdTest extends BaseTest {
 
     @Test
     public void clientIdIsNullShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        p.clientIds = null;
-        ClientIdException expectedDomainCause = new ClientIdException();
-        int errorCode = ErrorCode.CLIENT_ID_NULL.getCode();
+        Map<String, List<String>> p = makeParams();
+        p.put("client_id", null);
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void clientIdIsEmptyListShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        ClientIdException expectedDomainCause = new ClientIdException();
-        int errorCode = ErrorCode.CLIENT_ID_EMPTY_LIST.getCode();
+        Map<String, List<String>> p = makeParams();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void clientIdIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        ClientIdException expectedDomainCause = new ClientIdException();
-        p.clientIds.add("invalid");
-        int errorCode = ErrorCode.CLIENT_ID_DATA_TYPE.getCode();
+        Map<String, List<String>> p = makeParams();
+        p.get("client_id").add("invalid");
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void clientIdsHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        ClientIdException expectedDomainCause = new ClientIdException();
-        p.clientIds.add(UUID.randomUUID().toString());
-        p.clientIds.add(UUID.randomUUID().toString());
-        int errorCode = ErrorCode.CLIENT_ID_MORE_THAN_ONE_ITEM.getCode();
+        Map<String, List<String>> p = makeParams();
+        p.get("client_id").add(UUID.randomUUID().toString());
+        p.get("client_id").add(UUID.randomUUID().toString());
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 
     @Test
     public void clientIdIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
-        ValidateParamsAttributes p = new ValidateParamsAttributes();
-        ClientIdException expectedDomainCause = new ClientIdException();
-        p.clientIds.add("");
-        int errorCode = ErrorCode.CLIENT_ID_EMPTY_VALUE.getCode();
+        Map<String, List<String>> p = makeParams();
+        p.get("client_id").add("");
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, errorCode);
+        Exception cause = new RequiredException();
+
+        runExpectInformResourceOwnerException(p, cause);
     }
 }

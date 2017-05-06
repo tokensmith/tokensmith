@@ -1,24 +1,25 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams.validation.Scopes;
 
-import helper.ValidateParamsWithNonce;
+
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.factory.exception.ScopesException;
+import org.rootservices.authorization.parse.exception.OptionalException;
 import org.rootservices.authorization.persistence.entity.Client;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
     public static String REDIRECT_URI = "https://rootservices.org/continue";
 
-    public ValidateParamsWithNonce makeValidateParamsWithNonce(Client c) {
-        ValidateParamsWithNonce p = super.makeValidateParamsWithNonce(c);
-        p.redirectUris.clear();
-        p.redirectUris.add(REDIRECT_URI);
-        p.scopes.clear();
+    public Map<String, List<String>> makeParamsWithNonce(Client c) {
+        Map<String, List<String>> p = super.makeParamsWithNonce(c);
+        p.get("redirect_uri").clear();
+        p.get("redirect_uri").add(REDIRECT_URI);
+        p.get("scope").clear();
 
         return p;
     }
@@ -27,8 +28,8 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void scopeIsInvalidShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.scopes.add("invalid-scope");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("scope").add("invalid-scope");
 
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
@@ -39,27 +40,27 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public void scopesHasTwoItemsShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.scopes.add("profile");
-        p.scopes.add("profile");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("scope").add("profile");
+        p.get("scope").add("profile");
 
-        Exception expectedDomainCause = new ScopesException();
+        Exception cause = new OptionalException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
     @Test
     public void scopeIsBlankStringShouldThrowInformResourceOwnerException() throws Exception {
         Client c = loadClient();
 
-        ValidateParamsWithNonce p = makeValidateParamsWithNonce(c);
-        p.scopes.add("");
+        Map<String, List<String>> p = makeParamsWithNonce(c);
+        p.get("scope").add("");
 
-        Exception expectedDomainCause = new ScopesException();
+        Exception cause = new OptionalException();
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 
-        runExpectInformResourceOwnerException(p, expectedDomainCause, expectedErrorCode);
+        runExpectInformResourceOwnerException(p, cause, expectedErrorCode);
     }
 
 }
