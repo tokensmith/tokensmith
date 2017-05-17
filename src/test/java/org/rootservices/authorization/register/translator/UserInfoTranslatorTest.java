@@ -6,6 +6,7 @@ import org.rootservices.authorization.persistence.entity.Gender;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.register.request.Address;
 import org.rootservices.authorization.register.request.UserInfo;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.time.OffsetDateTime;

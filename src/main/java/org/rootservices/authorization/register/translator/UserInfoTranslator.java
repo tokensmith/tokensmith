@@ -2,15 +2,15 @@ package org.rootservices.authorization.register.translator;
 
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.register.request.UserInfo;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 5/11/17.
- */
+
+@Component
 public class UserInfoTranslator {
 
     public ResourceOwner from(UserInfo userInfo) {
