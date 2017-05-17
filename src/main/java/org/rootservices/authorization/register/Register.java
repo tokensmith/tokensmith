@@ -14,6 +14,14 @@ public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
     private HashTextRandomSalt hashTextRandomSalt;
 
+    private static String REGISTER_ERROR = "Could not insert resource_owner";
+    private static String EMAIL_REQUIRED = "Email is empty or null";
+    private static String PASSWORD_REQUIRED = "Password is empty or null";
+    private static String REPEAT_PASSWORD_REQUIRED = "Repeat password is empty or null";
+    private static String PASSWORD_MISMATCH = "Passwords do not match";
+    private static String EMAIL_FIELD = "email";
+    private static String EMPTY = "";
+
     @Autowired
     public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt) {
         this.resourceOwnerRepository = resourceOwnerRepository;
@@ -24,20 +32,14 @@ public class Register {
 
         validate(email, password, repeatPassword);
 
-        ResourceOwner ro = new ResourceOwner(
-                UUID.randomUUID(),
-                email,
-                hashTextRandomSalt.run(password).getBytes()
-        );
+        byte[] hashedPassword = hashTextRandomSalt.run(password).getBytes();
+        ResourceOwner ro = new ResourceOwner(UUID.randomUUID(), email, hashedPassword);
 
         try {
             resourceOwnerRepository.insert(ro);
         } catch (DuplicateRecordException e) {
-            RegisterError registerError = RegisterError.UNKNOWN;
-            if (e.getKey().isPresent() && e.getKey().get().equals("email")) {
-                registerError = RegisterError.EMAIL_TAKEN;
-            }
-            throw new RegisterException("Could not insert resource_owner", registerError, e);
+            RegisterError registerError = makeRegisterError(e);
+            throw new RegisterException(REGISTER_ERROR, registerError, e);
         }
 
         // TODO: send off the welcome/confirmation email.
@@ -45,26 +47,34 @@ public class Register {
         return ro;
     }
 
+    protected RegisterError makeRegisterError(DuplicateRecordException e) {
+        RegisterError registerError = RegisterError.UNKNOWN;
+        if (e.getKey().isPresent() && EMAIL_FIELD.equals(e.getKey().get())) {
+            registerError = RegisterError.EMAIL_TAKEN;
+        }
+        return registerError;
+    }
+
     protected void validate(String email, String password, String repeatPassword) throws RegisterException {
         if (!hasValue(email)) {
-            throw new RegisterException("Email is empty or null", RegisterError.EMAIL_MISSING);
+            throw new RegisterException(EMAIL_REQUIRED, RegisterError.EMAIL_MISSING);
         }
 
         if (!hasValue(password)) {
-            throw new RegisterException("Password is empty or null", RegisterError.PASSWORD_MISSING);
+            throw new RegisterException(PASSWORD_REQUIRED, RegisterError.PASSWORD_MISSING);
         }
 
         if (!hasValue(repeatPassword)) {
-            throw new RegisterException("Repeat password is empty or null", RegisterError.REPEAT_PASSWORD_MISSING);
+            throw new RegisterException(REPEAT_PASSWORD_REQUIRED, RegisterError.REPEAT_PASSWORD_MISSING);
         }
 
         if (!password.equals(repeatPassword)) {
-            throw new RegisterException("Passwords do not match", RegisterError.PASSWORD_MISMATCH);
+            throw new RegisterException(PASSWORD_MISMATCH, RegisterError.PASSWORD_MISMATCH);
         }
     }
 
     protected Boolean hasValue(String value) {
-        if (value == null || "".equals(value)) {
+        if (value == null || EMPTY.equals(value)) {
             return false;
         }
         return true;

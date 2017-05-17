@@ -159,6 +159,16 @@ public class FixtureFactory {
         return "test-" + UUID.randomUUID().toString() + "@rootservices.org";
     }
 
+    public static ResourceOwner makeOpenIdResourceOwner() throws Exception {
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        ro.setProfile(FixtureFactory.makeProfile(ro.getId()));
+        ro.getProfile().getAddresses().add(FixtureFactory.makeAddress(ro.getProfile().getId()));
+        ro.getProfile().getGivenNames().add(FixtureFactory.makeGivenName(ro.getProfile().getId()));
+        ro.getProfile().getFamilyNames().add(FixtureFactory.makeFamilyName(ro.getProfile().getId()));
+
+        return ro;
+    }
+
     public static ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
         ro.setId(UUID.randomUUID());
