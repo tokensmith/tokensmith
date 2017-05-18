@@ -67,7 +67,7 @@ public class JsonToMapTranslator {
     // TODO: see if jackson can throw a specific exception for duplicates.
     protected Optional<String> getJsonParseExceptionDuplicateKey(JsonParseException e) {
         Optional<String> key = Optional.empty();
-        Matcher m = duplicateFieldPattern.matcher(e.getMessage());
+        Matcher m = duplicateFieldPattern.matcher(e.getOriginalMessage());
         if (m.matches()) {
             key = Optional.of(m.group(1));
         }
