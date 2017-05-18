@@ -4,6 +4,9 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.register.request.UserInfo;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +67,10 @@ public class UserInfoTranslator {
             gender = Optional.of(Gender.valueOf(g));
         }
         profile.setGender(gender);
-        profile.setBirthDate(userInfo.getBirthDate());
+        profile.setBirthDate(Optional.empty());
+        if (userInfo.getBirthDate().isPresent()) {
+            profile.setBirthDate(Optional.of(OffsetDateTime.of(userInfo.getBirthDate().get(), LocalTime.MIDNIGHT, ZoneOffset.UTC)));
+        }
         profile.setZoneInfo(userInfo.getZoneInfo());
         profile.setLocale(userInfo.getLocale());
         profile.setPhoneNumber(userInfo.getPhoneNumber());

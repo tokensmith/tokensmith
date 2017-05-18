@@ -1,7 +1,12 @@
 package org.rootservices.authorization.register.request;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -20,7 +25,9 @@ public class UserInfo {
     private Optional<URI> picture;
     private Optional<URI> website;
     private Optional<String> gender;
-    private Optional<OffsetDateTime> birthDate;
+    @JsonProperty(value="birthdate")
+    private Optional<LocalDate> birthDate;
+    @JsonProperty(value="zoneinfo")
     private Optional<String> zoneInfo;
     private Optional<String> locale;
     private Optional<String> phoneNumber;
@@ -122,11 +129,11 @@ public class UserInfo {
         this.gender = gender;
     }
 
-    public Optional<OffsetDateTime> getBirthDate() {
+    public Optional<LocalDate> getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Optional<OffsetDateTime> birthDate) {
+    public void setBirthDate(Optional<LocalDate> birthDate) {
         this.birthDate = birthDate;
     }
 
