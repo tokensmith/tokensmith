@@ -58,6 +58,12 @@
             <version>1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.rootservices</groupId>
+            <artifactId>otter-translatable</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Database Drivers -->
         <dependency>
             <groupId>org.postgresql</groupId>
