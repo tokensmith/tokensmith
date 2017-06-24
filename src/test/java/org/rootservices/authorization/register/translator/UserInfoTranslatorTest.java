@@ -9,6 +9,7 @@ import org.rootservices.authorization.register.request.UserInfo;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
@@ -104,7 +105,7 @@ public class UserInfoTranslatorTest {
         userInfo.setPicture(Optional.of(new URI("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039")));
         userInfo.setWebsite(Optional.of(new URI("http://starwars.wikia.com")));
         userInfo.setGender(Optional.of("male"));
-        userInfo.setBirthDate(Optional.of(OffsetDateTime.of(3220, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)));
+        userInfo.setBirthDate(Optional.of(LocalDate.of(3220, 1, 1)));
         userInfo.setZoneInfo(Optional.of("America/Chicago"));
         userInfo.setLocale(Optional.of("en-US"));
         userInfo.setPhoneNumber(Optional.of("123-456-7891"));

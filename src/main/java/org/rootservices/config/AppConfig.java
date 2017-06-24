@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
@@ -39,7 +40,8 @@ public class AppConfig {
                 PropertyNamingStrategy.SNAKE_CASE
             )
             .configure(JsonParser.Feature.STRICT_DUPLICATE_DETECTION, true)
-            .registerModule(new Jdk8Module());
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
         return om;
     }
 
@@ -102,11 +104,6 @@ public class AppConfig {
     @Bean
     public GetClientRedirectUri getPublicClientRedirectUri() {
         return new GetPublicClientRedirectUri();
-    }
-
-    @Bean
-    public CompareClientToAuthRequest comparePublicClientToAuthRequest() {
-        return new ComparePublicClientToAuthRequest();
     }
 
     // CODE Response Type. Rename these!

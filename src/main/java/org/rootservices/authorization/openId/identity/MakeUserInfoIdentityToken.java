@@ -61,6 +61,7 @@ public class MakeUserInfoIdentityToken {
         this.issuer = issuer;
     }
 
+
     public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ResourceOwnerNotFoundException {
         String hashedAccessToken = hashText.run(accessToken);
 

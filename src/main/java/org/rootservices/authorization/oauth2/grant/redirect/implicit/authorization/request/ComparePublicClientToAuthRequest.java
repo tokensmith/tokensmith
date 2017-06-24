@@ -14,12 +14,10 @@ import java.util.UUID;
  */
 @Component
 public class ComparePublicClientToAuthRequest extends CompareClientToAuthRequest {
-    @Autowired
+
     private ClientRepository clientRepository;
 
-    public ComparePublicClientToAuthRequest() {
-    }
-
+    @Autowired
     public ComparePublicClientToAuthRequest(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
