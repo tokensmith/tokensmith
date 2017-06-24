@@ -26,7 +26,6 @@ public class UserInfoTranslator {
 
         // intentionally do not set password since it needs to be encrypted.
 
-
         Profile profile = new Profile();
         profile.setId(UUID.randomUUID());
         profile.setResourceOwnerId(ro.getId());
