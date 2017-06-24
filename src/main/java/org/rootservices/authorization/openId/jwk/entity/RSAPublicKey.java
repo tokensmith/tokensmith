@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.jwk.entity;
 
 import org.rootservices.authorization.persistence.entity.KeyUse;
+import org.rootservices.otter.translatable.Translatable;
 
 import java.math.BigInteger;
 import java.util.UUID;
@@ -8,7 +9,7 @@ import java.util.UUID;
 /**
  * Created by tommackenzie on 2/25/17.
  */
-public class RSAPublicKey {
+public class RSAPublicKey implements Translatable {
     private UUID keyId;
     private KeyUse use;
     private BigInteger n; // modulus
