@@ -9,10 +9,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
-import org.rootservices.authorization.oauth2.grant.token.exception.DuplicateKeyException;
-import org.rootservices.authorization.oauth2.grant.token.exception.InvalidPayloadException;
 import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
-import org.rootservices.authorization.oauth2.grant.token.translator.JsonToMapTranslator;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -28,13 +25,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by tommackenzie on 9/27/16.
- */
+
 public class RequestTokenTest {
     private RequestToken subject;
-    @Mock
-    private JsonToMapTranslator mockJsonToMapTranslator;
     @Mock
     private RequestTokenGrantFactory mockRequestTokenGrantFactory;
 
@@ -42,7 +35,6 @@ public class RequestTokenTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new RequestToken(
-                mockJsonToMapTranslator,
                 new BadRequestExceptionBuilder(),
                 mockRequestTokenGrantFactory
         );
@@ -53,19 +45,16 @@ public class RequestTokenTest {
         UUID clientId = UUID.randomUUID();
         String clientUserName = clientId.toString();
         String clientPassword = "password";
-        StringReader src = new StringReader("foo");
-        BufferedReader request = new BufferedReader(src);
 
-        Map<String, String> tokenInput = new HashMap<>();
-        tokenInput.put("grant_type", "password");
+        Map<String, String> tokenRequest = new HashMap<>();
+        tokenRequest.put("grant_type", "password");
         RequestTokenGrant mockRequestTokenGrant = mock(RequestTokenGrant.class);
         TokenResponse response = new TokenResponse();
 
-        when(mockJsonToMapTranslator.to(request)).thenReturn(tokenInput);
         when(mockRequestTokenGrantFactory.make("password")).thenReturn(mockRequestTokenGrant);
-        when(mockRequestTokenGrant.request(clientId, clientPassword, tokenInput)).thenReturn(response);
+        when(mockRequestTokenGrant.request(clientId, clientPassword, tokenRequest)).thenReturn(response);
 
-        TokenResponse actual = subject.request(clientUserName, clientPassword, request);
+        TokenResponse actual = subject.request(clientUserName, clientPassword, tokenRequest);
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(response));
     }
@@ -74,15 +63,13 @@ public class RequestTokenTest {
     public void requestWhenUserNameIsNotUUIDShouldThrowUnauthorizedException() throws Exception {
         String clientUserName = "foo";
         String clientPassword = "password";
-        StringReader src = new StringReader("foo");
-        BufferedReader request = new BufferedReader(src);
 
-        Map<String, String> tokenInput = new HashMap<>();
-        tokenInput.put("grant_type", "password");
+        Map<String, String> tokenRequest = new HashMap<>();
+        tokenRequest.put("grant_type", "password");
 
         UnauthorizedException actual = null;
         try {
-            subject.request(clientUserName, clientPassword, request);
+            subject.request(clientUserName, clientPassword, tokenRequest);
         } catch(UnauthorizedException e) {
             actual = e;
         }
@@ -94,84 +81,19 @@ public class RequestTokenTest {
     }
 
     @Test
-    public void requestWhenDuplicateKeyShouldThrowBadRequestException() throws Exception {
-        String clientUserName = UUID.randomUUID().toString();
-        String clientPassword = "password";
-        StringReader src = new StringReader("foo");
-        BufferedReader request = new BufferedReader(src);
-
-        DuplicateKeyException dke = new DuplicateKeyException(
-                ErrorCode.DUPLICATE_KEY.getDescription(),
-                null,
-                ErrorCode.DUPLICATE_KEY.getCode(),
-                "foo"
-        );
-
-        when(mockJsonToMapTranslator.to(request)).thenThrow(dke);
-
-        BadRequestException actual = null;
-
-        try {
-            subject.request(clientUserName, clientPassword, request);
-        } catch (BadRequestException e) {
-            actual = e;
-        }
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(dke));
-        assertThat(actual.getCode(), is(dke.getCode()));
-        assertThat(actual.getMessage(), is("Bad request"));
-        assertThat(actual.getError(), is("invalid_request"));
-        assertThat(actual.getDescription(), is("foo is repeated"));
-    }
-    @Test
-    public void requestWhenInvalidPayloadShouldThrowBadRequestException() throws Exception {
-        String clientUserName = UUID.randomUUID().toString();
-        String clientPassword = "password";
-        StringReader src = new StringReader("foo");
-        BufferedReader request = new BufferedReader(src);
-
-        InvalidPayloadException ipe = new InvalidPayloadException(
-                ErrorCode.INVALID_PAYLOAD.getDescription(),
-                null,
-                ErrorCode.INVALID_PAYLOAD.getCode()
-        );
-
-        when(mockJsonToMapTranslator.to(request)).thenThrow(ipe);
-
-        BadRequestException actual = null;
-
-        try {
-            subject.request(clientUserName, clientPassword, request);
-        } catch (BadRequestException e) {
-            actual = e;
-        }
-
-        assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), is(ipe));
-        assertThat(actual.getCode(), is(ipe.getCode()));
-        assertThat(actual.getMessage(), is("Bad request"));
-        assertThat(actual.getError(), is("invalid_request"));
-        assertThat(actual.getDescription(), is("payload is not json"));
-    }
-
-    @Test
     public void requestWhenGrantTypeInvalidShouldThrowBadRequestException() throws Exception {
         String clientUserName = UUID.randomUUID().toString();
         String clientPassword = "password";
-        StringReader src = new StringReader("foo");
-        BufferedReader request = new BufferedReader(src);
 
-        Map<String, String> tokenInput = new HashMap<>();
-        tokenInput.put("grant_type", "unknown");
+        Map<String, String> tokenRequest = new HashMap<>();
+        tokenRequest.put("grant_type", "unknown");
 
-        when(mockJsonToMapTranslator.to(request)).thenReturn(tokenInput);
         when(mockRequestTokenGrantFactory.make("unknown")).thenReturn(null);
 
         BadRequestException actual = null;
 
         try {
-            subject.request(clientUserName, clientPassword, request);
+            subject.request(clientUserName, clientPassword, tokenRequest);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -182,6 +104,5 @@ public class RequestTokenTest {
         assertThat(actual.getMessage(), is("Bad request"));
         assertThat(actual.getError(), is("invalid_request"));
         assertThat(actual.getDescription(), is("grant_type is invalid"));
-
     }
 }
