@@ -4,9 +4,7 @@ import org.rootservices.authorization.constant.ErrorCode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by tommackenzie on 7/13/15.
- */
+
 @Scope("prototype")
 @Component
 public class BadRequestExceptionBuilder {
@@ -18,12 +16,12 @@ public class BadRequestExceptionBuilder {
 
     public BadRequestExceptionBuilder() {}
 
-    public BadRequestExceptionBuilder DuplicateKey(String key, int code, Throwable domainCause) {
+    public BadRequestExceptionBuilder DuplicateKey(String key) {
         this.message = "Bad request";
         this.error = "invalid_request";
         this.description = key + " is repeated";
-        this.domainCause = domainCause;
-        this.code = code;
+        this.domainCause = null; // no cause.
+        this.code = 0; // no code.
         return this;
     }
 
