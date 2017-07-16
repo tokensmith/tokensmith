@@ -50,8 +50,6 @@ public class GetPublicClientRedirectUriTest {
         try {
             subject.run(clientId, redirectURI, rootCause);
             fail("InformResourceOwnerException expected");
-        } catch(InformClientException e) {
-            fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
             assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));
@@ -69,8 +67,6 @@ public class GetPublicClientRedirectUriTest {
 
         try {
             subject.run(client.getId(), redirectURI, rootCause);
-            fail("InformResourceOwnerException expected");
-        } catch(InformClientException e) {
             fail("InformResourceOwnerException expected");
         } catch(InformResourceOwnerException e) {
             assertThat(e.getCause(), instanceOf(OptionalException.class));
@@ -91,8 +87,6 @@ public class GetPublicClientRedirectUriTest {
         URI actual = null;
         try {
             actual = subject.run(client.getId(), redirectURI, rootCause);
-        } catch(InformClientException e) {
-            fail("No exception expected");
         } catch(InformResourceOwnerException e) {
             fail("No exception expected");
         }
@@ -112,7 +106,7 @@ public class GetPublicClientRedirectUriTest {
         URI actual = null;
         try {
             actual = subject.run(client.getId(), redirectUri, rootCause);
-        } catch(InformClientException|InformResourceOwnerException e) {
+        } catch(InformResourceOwnerException e) {
             fail("caught: " + e.getClass() + " with code: " + e.getCode() + " when no exception was expected");
         }
 
