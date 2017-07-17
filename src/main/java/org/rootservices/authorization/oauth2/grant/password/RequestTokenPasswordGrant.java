@@ -23,25 +23,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-/**
- * Created by tommackenzie on 9/18/16.
- */
+
 @Component
 public class RequestTokenPasswordGrant implements RequestTokenGrant {
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputPasswordGrantFactory tokenInputPasswordGrantFactory;
-    private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private LoginResourceOwner loginResourceOwner;
     private RandomString randomString;
     private IssueTokenPasswordGrant issueTokenPasswordGrant;
 
-    private static String OPENID_SCOPE = "openid";
-
     @Autowired
-    public RequestTokenPasswordGrant(LoginConfidentialClient loginConfidentialClient, TokenInputPasswordGrantFactory tokenInputPasswordGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenPasswordGrant issueTokenPasswordGrant) {
+    public RequestTokenPasswordGrant(LoginConfidentialClient loginConfidentialClient, TokenInputPasswordGrantFactory tokenInputPasswordGrantFactory, LoginResourceOwner loginResourceOwner, RandomString randomString, IssueTokenPasswordGrant issueTokenPasswordGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputPasswordGrantFactory = tokenInputPasswordGrantFactory;
-        this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.loginResourceOwner = loginResourceOwner;
         this.randomString = randomString;
         this.issueTokenPasswordGrant = issueTokenPasswordGrant;
@@ -56,11 +50,11 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
         try {
             input = tokenInputPasswordGrantFactory.run(request);
         } catch (UnknownKeyException e) {
-            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().UnknownKey(e.getKey(), e.getCode(), e).build();
         } catch (InvalidValueException e) {
-            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (MissingKeyException e) {
-            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
+            throw new BadRequestExceptionBuilder().MissingKey(e.getKey(), e).build();
         }
 
         ResourceOwner resourceOwner = loginResourceOwner.run(input.getUserName(), input.getPassword());
@@ -97,7 +91,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
                     .findFirst();
 
             if (!match.isPresent()) {
-                throw badRequestExceptionBuilder.InvalidScope(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()).build();
+                throw new BadRequestExceptionBuilder().InvalidScope(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()).build();
             }
             matches.add(match.get());
         }

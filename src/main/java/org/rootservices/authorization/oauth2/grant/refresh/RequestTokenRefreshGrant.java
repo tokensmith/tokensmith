@@ -34,7 +34,6 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
 
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory;
-    private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private RefreshTokenRepository refreshTokenRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
@@ -45,10 +44,9 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private static String RESOURCE_OWNER_NOT_FOUND = "no resource owner was associated to refresh token";
 
     @Autowired
-    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerRepository resourceOwnerRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
+    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerRepository resourceOwnerRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputRefreshGrantFactory = tokenInputRefreshGrantFactory;
-        this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.refreshTokenRepository = refreshTokenRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
@@ -64,11 +62,11 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         try {
             input = tokenInputRefreshGrantFactory.run(request);
         } catch (MissingKeyException e) {
-            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
+            throw new BadRequestExceptionBuilder().MissingKey(e.getKey(), e).build();
         } catch (InvalidValueException e) {
-            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (UnknownKeyException e) {
-            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().UnknownKey(e.getKey(), e.getCode(), e).build();
         }
 
         String hashedRefreshToken = hashText.run(input.getRefreshToken());
@@ -98,7 +96,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
             );
         } catch (CompromisedRefreshTokenException e) {
             logger.warn(e.getMessage(), e);
-            throw badRequestExceptionBuilder.CompromisedRefreshToken(
+            throw new BadRequestExceptionBuilder().CompromisedRefreshToken(
                 ErrorCode.COMPROMISED_REFRESH_TOKEN.getCode(),
                 e
             ).build();
@@ -138,7 +136,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
 
             // matched scopes should be the same size as inputScopes.
             if (matchedScopes.size() != inputScopes.size()) {
-                throw badRequestExceptionBuilder.InvalidScope(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()).build();
+                throw new BadRequestExceptionBuilder().InvalidScope(ErrorCode.SCOPES_NOT_SUPPORTED.getCode()).build();
             }
         } else {
             matchedScopes = tokenScopes.stream()
