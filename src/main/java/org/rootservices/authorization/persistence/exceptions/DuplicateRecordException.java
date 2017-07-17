@@ -8,6 +8,9 @@ import java.util.Optional;
 public class DuplicateRecordException extends Exception {
     private Optional<String> key;
 
+    // empty constructor, used by tests
+    public DuplicateRecordException() {}
+
     public DuplicateRecordException(String message, Throwable cause){
         super(message, cause);
         this.key = Optional.empty();
