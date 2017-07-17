@@ -20,11 +20,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 10/25/15.
- */
+
 @Component
 public class RequestOpenIdAuthCode {
+    private static String ERROR_MSG = "failed to issue authorization code";
+    private static String ERROR = "server_error";
+    private static String ERROR_DESC = "failed to issue authorization code";
 
     private ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType;
     protected LoginResourceOwner loginResourceOwner;
@@ -41,17 +42,25 @@ public class RequestOpenIdAuthCode {
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException, AuthCodeInsertException {
+    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
         OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(parameters);
 
-        return makeAuthResponse(
-                userName,
-                password,
-                authRequest.getClientId(),
-                Optional.of(authRequest.getRedirectURI()),
-                authRequest.getScopes(),
-                authRequest.getState()
-        );
+        AuthResponse authResponse;
+        try {
+            authResponse = makeAuthResponse(
+                    userName,
+                    password,
+                    authRequest.getClientId(),
+                    Optional.of(authRequest.getRedirectURI()),
+                    authRequest.getScopes(),
+                    authRequest.getState()
+            );
+        } catch (AuthCodeInsertException e) {
+            throw new InformClientException(
+                    ERROR_MSG, ERROR, ERROR_DESC, authRequest.getRedirectURI(), authRequest.getState(), e
+            );
+        }
+        return authResponse;
     }
 
     protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException {
