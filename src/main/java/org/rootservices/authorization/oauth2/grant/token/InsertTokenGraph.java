@@ -84,7 +84,7 @@ public abstract class InsertTokenGraph {
 
         try {
             tokenRepository.insert(token);
-        } catch( DuplicateRecordException e) {
+        } catch (DuplicateRecordException e) {
             return handleDuplicateToken(e, attempt, clientId, configId, atSize, secondsToExpiration);
         }
 
