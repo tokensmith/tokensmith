@@ -8,7 +8,6 @@ import org.rootservices.authorization.authenticate.exception.UnauthorizedExcepti
 import org.rootservices.authorization.constant.ErrorCode;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestException;
-import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 
 
@@ -33,10 +32,7 @@ public class RequestTokenTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestToken(
-                new BadRequestExceptionBuilder(),
-                mockRequestTokenGrantFactory
-        );
+        subject = new RequestToken(mockRequestTokenGrantFactory);
     }
 
     @Test

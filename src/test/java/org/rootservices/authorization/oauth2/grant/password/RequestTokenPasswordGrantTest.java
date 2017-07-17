@@ -56,7 +56,6 @@ public class RequestTokenPasswordGrantTest {
         subject = new RequestTokenPasswordGrant(
                 mockLoginConfidentialClient,
                 mockTokenInputPasswordGrantFactory,
-                new BadRequestExceptionBuilder(), // not a mock.
                 mockLoginResourceOwner,
                 mockRandomString,
                 mockIssueTokenPasswordGrant
