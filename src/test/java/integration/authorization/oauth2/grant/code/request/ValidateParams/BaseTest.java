@@ -4,6 +4,7 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 import helper.fixture.persistence.LoadCodeConfidentialClientWithScopes;
 import org.hamcrest.MatcherAssert;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -75,6 +76,8 @@ public abstract class BaseTest {
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail("InformClientException was thrown. Expected, InformResourceOwnerException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformResourceOwnerException");
         }
     }
 
@@ -86,9 +89,10 @@ public abstract class BaseTest {
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCause(), is(nullValue()));
             assertThat(e.getCode(), is(expectedErrorCode));
-
         } catch(InformClientException e) {
             fail("InformClientException was thrown. Expected, InformResourceOwnerException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformResourceOwnerException");
         }
     }
 
@@ -107,6 +111,8 @@ public abstract class BaseTest {
             MatcherAssert.assertThat(e.getState().get(), is(p.get("state").get(0)));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformClientException");
         }
     }
 
@@ -124,6 +130,8 @@ public abstract class BaseTest {
             assertThat(e.getState().isPresent(), is(false));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformClientException");
         }
     }
 

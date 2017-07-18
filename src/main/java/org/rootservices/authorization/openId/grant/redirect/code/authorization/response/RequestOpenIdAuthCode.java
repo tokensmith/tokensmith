@@ -2,6 +2,7 @@ package org.rootservices.authorization.openId.grant.redirect.code.authorization.
 
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
@@ -42,7 +43,7 @@ public class RequestOpenIdAuthCode {
         this.authResponseFactory = authResponseFactory;
     }
 
-    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
+    public AuthResponse run(String userName, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException, ServerException {
         OpenIdAuthRequest authRequest = validateOpenIdCodeResponseType.run(parameters);
 
         AuthResponse authResponse;

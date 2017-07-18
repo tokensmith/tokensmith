@@ -1,7 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.shared.authorization;
 
 import org.apache.commons.validator.routines.UrlValidator;
-import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
@@ -23,10 +23,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tommackenzie on 4/12/17.
- */
+
 public class ValidateRequest {
+    private static String PARSE_ERROR = "Unhandled parse error";
     private static String INFORM_CLIENT_MSG = "Authorization Request did not pass validation - client should be informed.";
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
@@ -44,7 +43,7 @@ public class ValidateRequest {
         this.compareClientToAuthRequest = compareClientToAuthRequest;
     }
 
-    public AuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException {
+    public AuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, ServerException {
 
         if (fields == null) {
             fields = parser.reflect(AuthRequest.class);
@@ -56,13 +55,13 @@ public class ValidateRequest {
         } catch (RequiredException e) {
             handleRequired(e);
         } catch (OptionalException e) {
-            if ("redirect_uri".equals(e.getParam())) {
+            if (REDIRECT_URI.equals(e.getParam())) {
                 throw new InformResourceOwnerException("", e, 1);
             }
 
             handleOptional(e);
         } catch (ParseException e) {
-            // TODO: unexpected thing occurred.
+            throw new ServerException(PARSE_ERROR, e);
         }
 
         if (request.getRedirectURI().isPresent() && !urlValidator.isValid(request.getRedirectURI().get().toString())) {

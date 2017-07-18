@@ -61,7 +61,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         this.issuer = issuer;
     }
 
-    public OpenIdImplicitAccessToken request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+    public OpenIdImplicitAccessToken request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException, ServerException {
         OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(parameters);
 
         ResourceOwner resourceOwner = loginResourceOwner.run(username, password);
