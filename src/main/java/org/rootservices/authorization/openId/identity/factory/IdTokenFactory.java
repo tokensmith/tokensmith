@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by tommackenzie on 3/19/16.
- * TODO: should this be a builder?
+ * This is not a builder because it contains logic on how to create an id_token.
  */
 @Component
 public class IdTokenFactory {
