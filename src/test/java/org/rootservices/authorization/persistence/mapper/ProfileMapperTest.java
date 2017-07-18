@@ -60,7 +60,6 @@ public class ProfileMapperTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getResourceOwnerId(), is(notNullValue()));
-        // TODO: assertions for resource owner
 
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
@@ -115,7 +114,6 @@ public class ProfileMapperTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getResourceOwnerId(), is(notNullValue()));
-        // TODO: assertions for resource owner
 
         assertThat(actual.getName().isPresent(), is(true));
         assertThat(actual.getName().get(), is("Obi-Wan Kenobi"));
