@@ -3,6 +3,7 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 
 import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdScope;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
@@ -71,6 +72,8 @@ public abstract class BaseTest {
             assertThat(e.getCause(), instanceOf(cause.getClass()));
         } catch(InformClientException e) {
             fail("InformClientException was thrown. Expected, InformResourceOwnerException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformResourceOwnerException");
         }
     }
 
@@ -83,6 +86,8 @@ public abstract class BaseTest {
             assertThat(e.getCause(), is(nullValue()));
         } catch(InformClientException e) {
             fail("InformClientException was thrown. Expected, InformResourceOwnerException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformResourceOwnerException");
         }
     }
 
@@ -101,6 +106,8 @@ public abstract class BaseTest {
             assertThat(e.getState().get(), is(p.get("state").get(0)));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformClientException");
         }
     }
 
@@ -117,6 +124,8 @@ public abstract class BaseTest {
             assertThat(e.getState().isPresent(), is(false));
         } catch (InformResourceOwnerException e) {
             fail("InformResourceOwnerException was thrown. Expected, InformClientException");
+        } catch (ServerException e) {
+            fail("ServerException was thrown. Expected, InformClientException");
         }
     }
 

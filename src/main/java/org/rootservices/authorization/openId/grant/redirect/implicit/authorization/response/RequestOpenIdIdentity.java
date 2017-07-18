@@ -3,6 +3,7 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
@@ -46,7 +47,7 @@ public class RequestOpenIdIdentity {
         this.issuer = issuer;
     }
 
-    public OpenIdImplicitIdentity request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+    public OpenIdImplicitIdentity request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException, ServerException {
         OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(parameters);
 
         ResourceOwner resourceOwner = loginResourceOwner.run(username, password);

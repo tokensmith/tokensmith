@@ -1,6 +1,7 @@
 package org.rootservices.authorization.openId.grant.redirect.shared.authorization.request;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
@@ -26,6 +27,7 @@ import java.util.Map;
  * Created by tommackenzie on 4/8/17.
  */
 public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
+    private static String PARSE_ERROR = "Unhandled parse error";
     private static String INFORM_CLIENT_MSG = "Authorization Request did not pass validation - client should be informed.";
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
@@ -45,7 +47,7 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
         this.compareClientToOpenIdAuthRequest = compareClientToOpenIdAuthRequest;
     }
 
-    public T run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException {
+    public T run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, ServerException {
 
         // this could have been a constructor param too.
         if(type == null) {
@@ -65,7 +67,7 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
         } catch (OptionalException e) {
             handleOptional(e);
         } catch (ParseException e) {
-            // TODO: unexpected thing occurred.
+            throw new ServerException(PARSE_ERROR, e);
         }
 
         if (!urlValidator.isValid(request.getRedirectURI().toString())) {
