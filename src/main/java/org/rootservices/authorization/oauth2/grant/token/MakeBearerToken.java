@@ -13,7 +13,6 @@ import java.util.UUID;
 
 /**
  * Created by tommackenzie on 6/2/15.
- * TODO: this should be moved to a parent package.
  */
 @Component
 public class MakeBearerToken {
