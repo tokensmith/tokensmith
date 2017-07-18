@@ -83,7 +83,11 @@ public class MakeUserInfoIdentityToken {
 
         TokenClaims tc = makeTokenClaims(ro.getTokens().get(0));
 
-        // TODO: NPE - for ro.getTokens()
+        /**
+         * assumption is that ro.getTokens() will not throw NPE since
+         *  - resourceOwnerRepository.getByAccessTokenWithProfileAndTokens must return a token.
+         *  - this is called after a token is issued.
+         */
         List<String> scopesForIdToken = ro.getTokens().get(0).getTokenScopes().stream()
                 .map(item -> item.getScope().getName())
                 .collect(Collectors.toList());
