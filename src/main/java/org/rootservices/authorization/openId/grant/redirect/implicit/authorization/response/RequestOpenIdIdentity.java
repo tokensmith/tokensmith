@@ -52,8 +52,6 @@ public class RequestOpenIdIdentity {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(username, password);
 
-        // TODO: should it fetch scopes from the database?
-
         List<String> audience = new ArrayList<>();
         audience.add(request.getClientId().toString());
 
@@ -64,8 +62,9 @@ public class RequestOpenIdIdentity {
         tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
         tc.setExpirationTime(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION).toEpochSecond());
 
-        String idToken = null;
+        String idToken;
         try {
+            // does not fetch scopes from db since they were validated with, validateOpenIdIdImplicitGrant
             idToken = makeImplicitIdentityToken.makeIdentityOnly(
                 request.getNonce(), tc, resourceOwner, request.getScopes()
             );
