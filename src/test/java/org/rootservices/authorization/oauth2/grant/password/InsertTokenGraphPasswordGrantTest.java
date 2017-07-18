@@ -80,6 +80,7 @@ public class InsertTokenGraphPasswordGrantTest {
 
         String plainTextToken = "plain-text-token";
         Token token = FixtureFactory.makeOpenIdToken(plainTextToken, clientId, new ArrayList<>());
+        token.setTokenScopes(new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
 
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenPasswordSecondsToExpiry())).thenReturn(token);
@@ -99,6 +100,15 @@ public class InsertTokenGraphPasswordGrantTest {
         assertThat(actual.getToken().getGrantType(), is(GrantType.PASSWORD));
         assertThat(actual.getToken().getAudience(), is(notNullValue()));
         assertThat(actual.getToken().getAudience(), is(audience));
+
+        assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
+        assertThat(actual.getToken().getTokenScopes().size(), is(scopes.size()));
+
+        for(int i=0; i< actual.getToken().getTokenScopes().size(); i++) {
+            Scope s = actual.getToken().getTokenScopes().get(i).getScope();
+            assertThat(s.getName(), is(s.getName()));
+        }
+
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));

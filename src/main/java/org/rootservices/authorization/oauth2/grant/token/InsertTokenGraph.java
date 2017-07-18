@@ -126,7 +126,6 @@ public abstract class InsertTokenGraph {
             }
             tokenScopeRepository.insert(ts);
             tokenGraph.getToken().getTokenScopes().add(ts);
-            // TODO: 134265317: needs a test
         }
         tokenGraph.setExtension(extension);
     }
