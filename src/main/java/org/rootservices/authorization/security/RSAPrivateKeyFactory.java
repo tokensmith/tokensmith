@@ -24,9 +24,9 @@ public class RSAPrivateKeyFactory {
         this.keyFactory = keyFactory;
     }
 
-    public PrivateKey makePrivateKey(int keySize) {
+    public synchronized PrivateKey makePrivateKey(int keySize) {
 
-        // TODO: not thread safe.
+        // not thread safe so its synchronized ^
         keyPairGenerator.initialize(keySize);
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
