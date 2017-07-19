@@ -73,13 +73,12 @@ public class TokenMapperTest {
         assertThat(actual.getMessage().contains("Detail: Key (token)"), is(true));
     }
 
-    @Test
-    public void revokeByAuthCodeIdShouldBeOk() throws Exception {
-        // begin prepare db for test.
+    public AuthCode prepare() throws Exception {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
-        String accessToken = "accessToken";
+        // token to revoke.
+        String accessToken = randomString.run();
         Token tokenToRevoke = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId(), new ArrayList<>());
         subject.insert(tokenToRevoke);
 
@@ -89,16 +88,26 @@ public class TokenMapperTest {
         authCodeToken.setAuthCodeId(authCode.getId());
 
         authCodeTokenRepository.insert(authCodeToken);
+
+        return authCode;
+    }
+
+    @Test
+    public void revokeByAuthCodeIdShouldBeOk() throws Exception {
+        // begin prepare db for test.
+        AuthCode authCodeToRevoke = prepare();
+        AuthCode authCodeToNotRevoke = prepare();
         // end prepare db for test.
 
-        subject.revokeByAuthCodeId(authCode.getId());
+        subject.revokeByAuthCodeId(authCodeToRevoke.getId());
 
-        Token revokedToken = subject.getByAuthCodeId(authCode.getId());
-        assertTrue(revokedToken.isRevoked());
+        Token actual = subject.getByAuthCodeId(authCodeToRevoke.getId());
+        assertThat(actual.isRevoked(), is(true));
 
-        /**
-         * TODO: make sure it only revokes a token connected to the auth code id.
-         */
+        // make sure it didn't revoke other tokens.
+        Token notRevoked = subject.getByAuthCodeId(authCodeToNotRevoke.getId());
+        assertThat(notRevoked.isRevoked(), is(false));
+
     }
 
     @Test
