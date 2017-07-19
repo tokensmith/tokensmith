@@ -84,7 +84,7 @@ public abstract class InsertTokenGraph {
 
         try {
             tokenRepository.insert(token);
-        } catch( DuplicateRecordException e) {
+        } catch (DuplicateRecordException e) {
             return handleDuplicateToken(e, attempt, clientId, configId, atSize, secondsToExpiration);
         }
 
@@ -126,7 +126,6 @@ public abstract class InsertTokenGraph {
             }
             tokenScopeRepository.insert(ts);
             tokenGraph.getToken().getTokenScopes().add(ts);
-            // TODO: 134265317: needs a test
         }
         tokenGraph.setExtension(extension);
     }

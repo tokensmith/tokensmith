@@ -47,7 +47,7 @@ public class RequestAccessToken {
         this.clientRepository = clientRepository;
     }
 
-    public ImplicitAccessToken requestToken(String userName, String password, Map<String, List<String>> parameters) throws InformClientException, InformResourceOwnerException, UnauthorizedException {
+    public ImplicitAccessToken requestToken(String userName, String password, Map<String, List<String>> parameters) throws InformClientException, InformResourceOwnerException, UnauthorizedException, ServerException {
 
         AuthRequest authRequest = validateImplicitGrant.run(parameters);
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);

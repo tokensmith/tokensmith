@@ -15,13 +15,11 @@ import java.util.UUID;
 
 @Component
 public class RequestToken {
-    private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private RequestTokenGrantFactory requestTokenGrantFactory;
     private static String GRANT_TYPE = "grant_type";
 
     @Autowired
-    public RequestToken(BadRequestExceptionBuilder badRequestExceptionBuilder, RequestTokenGrantFactory requestTokenGrantFactory) {
-        this.badRequestExceptionBuilder = badRequestExceptionBuilder;
+    public RequestToken(RequestTokenGrantFactory requestTokenGrantFactory) {
         this.requestTokenGrantFactory = requestTokenGrantFactory;
     }
 
@@ -36,7 +34,7 @@ public class RequestToken {
         RequestTokenGrant requestTokenGrant = requestTokenGrantFactory.make(tokenRequest.get(GRANT_TYPE));
 
         if (requestTokenGrant == null) {
-            throw badRequestExceptionBuilder.InvalidKeyValue(GRANT_TYPE, ErrorCode.GRANT_TYPE_INVALID.getCode(), null).build();
+            throw new BadRequestExceptionBuilder().InvalidKeyValue(GRANT_TYPE, ErrorCode.GRANT_TYPE_INVALID.getCode(), null).build();
         }
 
         TokenResponse tokenResponse = requestTokenGrant.request(clientId, clientPassword, tokenRequest);

@@ -31,16 +31,14 @@ import java.util.stream.Collectors;
 public class RequestTokenCodeGrant implements RequestTokenGrant {
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
-    private BadRequestExceptionBuilder badRequestExceptionBuilder;
     private HashTextStaticSalt hashText;
     private AuthCodeRepository authCodeRepository;
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, BadRequestExceptionBuilder badRequestExceptionBuilder, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
-        this.badRequestExceptionBuilder = badRequestExceptionBuilder;
         this.hashText = hashText;
         this.authCodeRepository = authCodeRepository;
         this.issueTokenCodeGrant = issueTokenCodeGrant;
@@ -55,11 +53,11 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         try {
             input = tokenInputCodeGrantFactory.run(request);
         } catch (UnknownKeyException e) {
-            throw badRequestExceptionBuilder.UnknownKey(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().UnknownKey(e.getKey(), e.getCode(), e).build();
         } catch (InvalidValueException e) {
-            throw badRequestExceptionBuilder.InvalidKeyValue(e.getKey(), e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().InvalidKeyValue(e.getKey(), e.getCode(), e).build();
         } catch (MissingKeyException e) {
-            throw badRequestExceptionBuilder.MissingKey(e.getKey(), e).build();
+            throw new BadRequestExceptionBuilder().MissingKey(e.getKey(), e).build();
         }
 
         // fetch auth code
@@ -83,7 +81,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     audience
             );
         } catch (CompromisedCodeException e) {
-            throw badRequestExceptionBuilder.CompromisedCode(e.getCode(), e).build();
+            throw new BadRequestExceptionBuilder().CompromisedCode(e.getCode(), e).build();
         } catch (ServerException e) {
             throw e;
         }

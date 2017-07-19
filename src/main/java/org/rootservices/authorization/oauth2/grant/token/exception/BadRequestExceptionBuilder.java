@@ -5,8 +5,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
-@Scope("prototype")
-@Component
+
 public class BadRequestExceptionBuilder {
     private String message;
     private Throwable domainCause;

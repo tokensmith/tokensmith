@@ -8,22 +8,24 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.IssueAuthCode;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
+import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import org.rootservices.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
+import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 
 import java.net.URI;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by tommackenzie on 10/27/15.
- */
+
 public class RequestOpenIdAuthCodeTest {
 
     @Mock
@@ -96,4 +98,55 @@ public class RequestOpenIdAuthCodeTest {
         assertThat(actual.getState(), is(expectedAuthResponse.getState()));
     }
 
+    @Test
+    public void runWhenFailsToIssueAuthCodeShouldThrowInformClientException() throws Exception {
+        // parameter to pass into method in test
+        UUID clientId = UUID.randomUUID();
+        Map<String, List<String>> params = FixtureFactory.makeOpenIdParameters(clientId, "CODE");
+        String userName = FixtureFactory.makeRandomEmail();
+        String password = FixtureFactory.PLAIN_TEXT_PASSWORD;
+
+        // response from mockValidateParams.
+        OpenIdAuthRequest authRequest = FixtureFactory.makeOpenIdAuthRequest(clientId, "CODE");
+
+        // response from mockLoginResourceOwner.
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+
+        // response from mockGrantAuthCode.
+        String randomString = "randomString";
+
+        // expected response from method in test
+        AuthResponse expectedAuthResponse = new AuthResponse();
+        expectedAuthResponse.setCode(randomString);
+        expectedAuthResponse.setState(authRequest.getState());
+        expectedAuthResponse.setRedirectUri(new URI(FixtureFactory.SECURE_REDIRECT_URI));
+
+        when(mockValidateOpenIdCodeResponseType.run(params)).thenReturn(authRequest);
+        when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
+
+        DuplicateRecordException dre = new DuplicateRecordException();
+        AuthCodeInsertException cause = new AuthCodeInsertException("test", dre);
+
+        when(mockIssueAuthCode.run(
+                resourceOwner.getId(),
+                authRequest.getClientId(),
+                Optional.of(authRequest.getRedirectURI()),
+                authRequest.getScopes())
+        ).thenThrow(cause);
+
+        InformClientException actual = null;
+        try {
+            subject.run(userName, password, params);
+        } catch (InformClientException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getMessage(), is("failed to issue authorization code"));
+        assertThat(actual.getError(), is("server_error"));
+        assertThat(actual.getDescription(), is("failed to issue authorization code"));
+        assertThat(actual.getRedirectURI(), is(authRequest.getRedirectURI()));
+        assertThat(actual.getState(), is(authRequest.getState()));
+        assertThat(actual.getCause(), is(cause));
+    }
 }

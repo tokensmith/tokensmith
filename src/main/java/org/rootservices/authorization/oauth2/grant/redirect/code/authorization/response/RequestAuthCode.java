@@ -3,6 +3,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
@@ -52,7 +53,7 @@ public class RequestAuthCode {
         this.getConfidentialClientRedirectUri = getConfidentialClientRedirectUri;
     }
 
-    public AuthResponse run(String username, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
+    public AuthResponse run(String username, String password, Map<String, List<String>> parameters) throws UnauthorizedException, InformResourceOwnerException, InformClientException, ServerException {
 
         AuthRequest authRequest = validateCodeGrant.run(parameters);
 

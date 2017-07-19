@@ -3,6 +3,7 @@ package integration.authorization.oauth2.grant.token.request.ValidateParams;
 
 import helper.fixture.persistence.LoadTokenClientWithScopes;
 import org.junit.runner.RunWith;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -26,9 +27,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.fail;
 
 
-/**
- * Created by tommackenzie on 5/20/16.
- */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-auth-test.xml")
 @Transactional
@@ -77,6 +76,8 @@ public abstract class BaseTest {
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
+        } catch (ServerException e) {
+            fail(EXPECTED_INFORM_RESOURCE_OWNER);
         }
     }
 
@@ -90,6 +91,8 @@ public abstract class BaseTest {
             assertThat(e.getCode(), is(expectedErrorCode));
         } catch(InformClientException e) {
             fail(EXPECTED_INFORM_RESOURCE_OWNER);
+        } catch (ServerException e) {
+            fail(EXPECTED_INFORM_CLIENT);
         }
     }
 
@@ -108,6 +111,8 @@ public abstract class BaseTest {
             assertThat(e.getState().get(), is(p.get("state").get(0)));
         } catch (InformResourceOwnerException e) {
             fail(EXPECTED_INFORM_CLIENT);
+        } catch (ServerException e) {
+            fail(EXPECTED_INFORM_CLIENT);
         }
     }
 
@@ -125,10 +130,12 @@ public abstract class BaseTest {
             assertThat(e.getState().isPresent(), is(false));
         } catch (InformResourceOwnerException e) {
             fail(EXPECTED_INFORM_CLIENT);
+        } catch (ServerException e) {
+            fail(EXPECTED_INFORM_CLIENT);
         }
     }
 
-    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) throws Exception {
+    public void runExpectInformClientExceptionWithStateNoCause(Map<String, List<String>> p, int expectedErrorCode, String expectedError, String expectedDescription, URI expectedRedirect) {
 
         try {
             validateImplicitGrant.run(p);
@@ -142,6 +149,8 @@ public abstract class BaseTest {
             assertThat(e.getState().isPresent(), is(true));
             assertThat(e.getState().get(), is(p.get("state").get(0)));
         } catch (InformResourceOwnerException e) {
+            fail(EXPECTED_INFORM_CLIENT);
+        } catch (ServerException e) {
             fail(EXPECTED_INFORM_CLIENT);
         }
     }

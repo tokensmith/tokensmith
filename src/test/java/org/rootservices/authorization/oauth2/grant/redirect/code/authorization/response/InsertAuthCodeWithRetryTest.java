@@ -22,9 +22,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by tommackenzie on 7/16/15.
- */
+
 public class InsertAuthCodeWithRetryTest {
 
     private InsertAuthCodeWithRetry subject;

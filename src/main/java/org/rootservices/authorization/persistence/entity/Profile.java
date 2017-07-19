@@ -26,8 +26,7 @@ public class Profile {
     private Optional<String> locale;
     private Optional<String> phoneNumber;
     private Boolean phoneNumberVerified;
-
-    // TODO: move to constructor?
+    
     private List<Address> addresses = new ArrayList<>();
     private List<GivenName> givenNames = new ArrayList<>();
     private List<FamilyName> familyNames = new ArrayList<>();
