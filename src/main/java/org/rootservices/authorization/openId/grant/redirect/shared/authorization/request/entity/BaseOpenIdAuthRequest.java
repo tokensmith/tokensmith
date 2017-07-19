@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 8/12/16.
- */
+
 public class BaseOpenIdAuthRequest {
     @Parameter(name = "client_id")
     protected UUID clientId;
@@ -18,7 +16,7 @@ public class BaseOpenIdAuthRequest {
     protected URI redirectURI;
 
     @Parameter(name = "state", required = false)
-    protected Optional<String> state = Optional.empty(); // TODO: parser is this right?
+    protected Optional<String> state = Optional.empty();
 
     @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"})
     protected List<String> responseTypes;

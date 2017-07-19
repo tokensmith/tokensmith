@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 9/30/15.
- */
+
 public class OpenIdAuthRequest extends BaseOpenIdAuthRequest {
 
     @Parameter(name = "nonce", required = false)

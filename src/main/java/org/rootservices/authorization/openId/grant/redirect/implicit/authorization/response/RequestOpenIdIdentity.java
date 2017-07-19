@@ -3,6 +3,7 @@ package org.rootservices.authorization.openId.grant.redirect.implicit.authorizat
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
@@ -46,12 +47,10 @@ public class RequestOpenIdIdentity {
         this.issuer = issuer;
     }
 
-    public OpenIdImplicitIdentity request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException {
+    public OpenIdImplicitIdentity request(String username, String password, Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, UnauthorizedException, ServerException {
         OpenIdImplicitAuthRequest request = validateOpenIdIdImplicitGrant.run(parameters);
 
         ResourceOwner resourceOwner = loginResourceOwner.run(username, password);
-
-        // TODO: should it fetch scopes from the database?
 
         List<String> audience = new ArrayList<>();
         audience.add(request.getClientId().toString());
@@ -63,8 +62,9 @@ public class RequestOpenIdIdentity {
         tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
         tc.setExpirationTime(OffsetDateTime.now().plusSeconds(SECONDS_TO_EXPIRATION).toEpochSecond());
 
-        String idToken = null;
+        String idToken;
         try {
+            // does not fetch scopes from db since they were validated with, validateOpenIdIdImplicitGrant
             idToken = makeImplicitIdentityToken.makeIdentityOnly(
                 request.getNonce(), tc, resourceOwner, request.getScopes()
             );

@@ -2,13 +2,10 @@ package org.rootservices.authorization.register.request;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.rootservices.otter.translatable.Translatable;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
 public class UserInfo implements Translatable {

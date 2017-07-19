@@ -98,7 +98,12 @@ public class InsertTokenGraphImplicitGrantTest {
         assertThat(actual.getToken().getAudience(), is(audience));
 
         assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
-        assertThat(actual.getToken().getTokenScopes().size(), is(1));
+        assertThat(actual.getToken().getTokenScopes().size(), is(scopes.size()));
+
+        for(int i=0; i< actual.getToken().getTokenScopes().size(); i++) {
+            Scope s = actual.getToken().getTokenScopes().get(i).getScope();
+            assertThat(s.getName(), is(s.getName()));
+        }
 
         assertThat(actual.getRefreshTokenId().isPresent(), is(false));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(false));
