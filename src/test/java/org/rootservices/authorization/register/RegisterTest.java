@@ -8,8 +8,10 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.pelican.Publish;
 import org.springframework.dao.DuplicateKeyException;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -17,6 +19,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,12 +32,15 @@ public class RegisterTest {
     private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
     private HashTextRandomSalt mockHashTextRandomSalt;
+    @Mock
+    private Publish mockPublish;
+
     private Register subject;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Register(mockResourceOwnerRepository, mockHashTextRandomSalt);
+        subject = new Register(mockResourceOwnerRepository, mockHashTextRandomSalt, mockPublish);
     }
 
     @Test
@@ -52,6 +58,8 @@ public class RegisterTest {
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getEmail(), is(email));
         assertThat(actual.getPassword(), is(hashedPassword.getBytes()));
+
+        verify(mockPublish).send(eq("welcome"), any(Map.class));
     }
 
     @Test
