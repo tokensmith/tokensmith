@@ -4,15 +4,19 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.pelican.Publish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
 public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
     private HashTextRandomSalt hashTextRandomSalt;
+    private Publish publish;
 
     private static String REGISTER_ERROR = "Could not insert resource_owner";
     private static String EMAIL_REQUIRED = "Email is empty or null";
@@ -23,9 +27,10 @@ public class Register {
     private static String EMPTY = "";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, Publish publish) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
+        this.publish = publish;
     }
 
     public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException {
@@ -42,7 +47,10 @@ public class Register {
             throw new RegisterException(REGISTER_ERROR, registerError, e);
         }
 
-        // TODO: send off the welcome/confirmation email.
+        Map<String, String> msg = new HashMap<>();
+        msg.put("email", ro.getEmail());
+
+        publish.send("welcome", msg);
 
         return ro;
     }

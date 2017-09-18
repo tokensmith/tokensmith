@@ -10,9 +10,9 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.pelican.KafkaProps;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +23,13 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Properties;
 
 /**
  * Created by tommackenzie on 7/4/15.
  */
 @Configuration
-@ComponentScan("org.rootservices.authorization")
+@ComponentScan({"org.rootservices.authorization", "org.rootservices.pelican"})
 public class AppConfig {
     private static String ALGORITHM = "RSA";
     private static String SHA_256 = "SHA-256";
@@ -120,5 +121,20 @@ public class AppConfig {
     @Bean
     public String issuer() {
         return System.getenv("ISSUER");
+    }
+
+    @Bean
+    public Properties properties() {
+        Properties props = new Properties();
+        props.put(KafkaProps.SERVER.getValue(), "localhost:9092");
+        props.put(KafkaProps.ACK.getValue(), KafkaProps.SERVER.ALL.getValue());
+        props.put(KafkaProps.RETRIES.getValue(), 0);
+        props.put(KafkaProps.BATCH_SIZE.getValue(), 16384);
+        props.put(KafkaProps.LINGER.getValue(), 1);
+        props.put(KafkaProps.BUFFER_SIZE.getValue(), 33554432);
+        props.put(KafkaProps.KEY_SERIALIZER.getValue(), "org.apache.kafka.common.serialization.ByteArraySerializer");
+        props.put(KafkaProps.VALUE_SERIALIZER.getValue(), "org.apache.kafka.connect.json.JsonSerializer");
+
+        return props;
     }
 }
