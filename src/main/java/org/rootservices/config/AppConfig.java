@@ -12,7 +12,8 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.jwt.config.AppFactory;
-import org.rootservices.pelican.KafkaProps;
+import org.rootservices.pelican.Publish;
+import org.rootservices.pelican.config.PelicanAppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,7 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Properties;
+
 
 /**
  * Created by tommackenzie on 7/4/15.
@@ -124,17 +125,9 @@ public class AppConfig {
     }
 
     @Bean
-    public Properties properties() {
-        Properties props = new Properties();
-        props.put(KafkaProps.SERVER.getValue(), "localhost:9092");
-        props.put(KafkaProps.ACK.getValue(), KafkaProps.SERVER.ALL.getValue());
-        props.put(KafkaProps.RETRIES.getValue(), 0);
-        props.put(KafkaProps.BATCH_SIZE.getValue(), 16384);
-        props.put(KafkaProps.LINGER.getValue(), 1);
-        props.put(KafkaProps.BUFFER_SIZE.getValue(), 33554432);
-        props.put(KafkaProps.KEY_SERIALIZER.getValue(), "org.apache.kafka.common.serialization.ByteArraySerializer");
-        props.put(KafkaProps.VALUE_SERIALIZER.getValue(), "org.apache.kafka.connect.json.JsonSerializer");
-
-        return props;
+    public Publish publish() {
+        PelicanAppConfig pelicanAppConfig = new PelicanAppConfig();
+        // TODO: replace with host name
+        return pelicanAppConfig.publish("auth-1");
     }
 }
