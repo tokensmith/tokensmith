@@ -17,6 +17,7 @@ public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
     private HashTextRandomSalt hashTextRandomSalt;
     private Publish publish;
+    private String issuer;
 
     private static String REGISTER_ERROR = "Could not insert resource_owner";
     private static String EMAIL_REQUIRED = "Email is empty or null";
@@ -27,10 +28,11 @@ public class Register {
     private static String EMPTY = "";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, Publish publish) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, Publish publish, String issuer) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
         this.publish = publish;
+        this.issuer = issuer;
     }
 
     public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException {
@@ -48,9 +50,11 @@ public class Register {
         }
 
         Map<String, String> msg = new HashMap<>();
-        msg.put("email", ro.getEmail());
+        msg.put("type", "welcome");
+        msg.put("recipient", ro.getEmail());
+        msg.put("body_link", issuer + "/welcome");
 
-        publish.send("welcome", msg);
+        publish.send("mailer", msg);
 
         return ro;
     }

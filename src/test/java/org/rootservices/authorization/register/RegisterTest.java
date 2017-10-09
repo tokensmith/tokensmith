@@ -24,10 +24,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by tommackenzie on 3/11/17.
- */
+
 public class RegisterTest {
+    private static String ISSUER = "https://sso.rootservices.org";
+
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
@@ -40,7 +40,7 @@ public class RegisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Register(mockResourceOwnerRepository, mockHashTextRandomSalt, mockPublish);
+        subject = new Register(mockResourceOwnerRepository, mockHashTextRandomSalt, mockPublish, ISSUER);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class RegisterTest {
         assertThat(actual.getEmail(), is(email));
         assertThat(actual.getPassword(), is(hashedPassword.getBytes()));
 
-        verify(mockPublish).send(eq("welcome"), any(Map.class));
+        verify(mockPublish).send(eq("mailer"), any(Map.class));
     }
 
     @Test

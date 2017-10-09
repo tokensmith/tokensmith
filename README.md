@@ -21,12 +21,21 @@ Requesting Features and reporting bugs
 
 Environment Variables for configuring db connection
 ---------------------------------------------------
+```bash
+$ export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
+$ export AUTH_DB_USER="postgres";
+$ export AUTH_DB_PASSWORD="";
+$ export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
+$ export ISSUER="https://sso.rootservices.org"
 ```
-export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
-export AUTH_DB_USER="postgres";
-export AUTH_DB_PASSWORD="";
-export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
-export ISSUER="https://sso.rootservices.org"
+
+Environment Variable for publishing to a queue
+----------------------------------------------
+
+See pelican for details.
+
+```bash
+$ export MESSAGE_QUEUE_HOST='localhost:9092'
 ```
 
 Running migrations (replace values where necessary).
