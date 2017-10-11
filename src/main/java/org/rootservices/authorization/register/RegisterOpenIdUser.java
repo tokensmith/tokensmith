@@ -6,9 +6,10 @@ import org.rootservices.authorization.persistence.entity.GivenName;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.*;
+import org.rootservices.authorization.register.exception.RegisterException;
 import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.authorization.register.translator.UserInfoTranslator;
-import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

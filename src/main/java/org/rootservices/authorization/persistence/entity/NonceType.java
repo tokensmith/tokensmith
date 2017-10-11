@@ -11,9 +11,10 @@ public class NonceType {
 
     public NonceType() {}
 
-    public NonceType(UUID id, String name, OffsetDateTime createdAt) {
+    public NonceType(UUID id, String name, Integer secondsToExpiry, OffsetDateTime createdAt) {
         this.id = id;
         this.name = name;
+        this.secondsToExpiry = secondsToExpiry;
         this.createdAt = createdAt;
     }
 

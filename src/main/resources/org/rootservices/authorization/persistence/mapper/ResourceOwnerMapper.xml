@@ -169,4 +169,11 @@
         and token.expires_at > current_timestamp
         and token.revoked = false
     </select>
+
+    <update id="setEmailVerified">
+        update resource_owner
+        set email_verified = true
+        where id = #{id}
+    </update>
+
 </mapper>

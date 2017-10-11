@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.token.MakeRefreshToken;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

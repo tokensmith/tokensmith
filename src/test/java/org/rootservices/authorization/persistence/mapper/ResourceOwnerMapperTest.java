@@ -494,4 +494,24 @@ public class ResourceOwnerMapperTest {
 
         assertThat(actual, is(nullValue()));
     }
+
+    @Test
+    public void setEmailVerifiedShouldSetToTrue() {
+        ResourceOwner user = insertResourceOwner();
+
+        // should be false for email verified.
+        ResourceOwner insertedUser = subject.getById(user.getId());
+        assertThat(insertedUser.isEmailVerified(), is(false));
+
+        subject.setEmailVerified(user.getId());
+        ResourceOwner actual = subject.getById(user.getId());
+
+        assertThat(actual.getId(), is(user.getId()));
+        assertThat(actual.getEmail(), is(user.getEmail()));
+        assertThat(actual.getPassword(), is(user.getPassword()));
+
+        // should be true for email verified.
+        assertThat(actual.isEmailVerified(), is(true));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+    }
 }

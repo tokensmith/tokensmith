@@ -63,20 +63,28 @@ public class NonceRepositoryImplTest {
     public void getByNonceShouldBeOk() throws Exception {
         Nonce nonce = new Nonce();
 
-        when(mockNonceMapper.getByNonce("nonce")).thenReturn(nonce);
+        when(mockNonceMapper.getByNonce("welcome","nonce")).thenReturn(nonce);
 
-        Nonce actual = subject.getByNonce("nonce");
+        Nonce actual = subject.getByNonce("welcome","nonce");
 
         assertThat(actual, is(nonce));
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void getByNonceShouldThrowRecordNotFound() throws Exception {
-        Nonce nonce = new Nonce();
 
-        when(mockNonceMapper.getByNonce("nonce")).thenReturn(null);
+        when(mockNonceMapper.getByNonce("welcome", "nonce")).thenReturn(null);
 
-        subject.getByNonce("nonce");
+        subject.getByNonce("welcome", "nonce");
+    }
+
+    @Test
+    public void setSpent() {
+        UUID id = UUID.randomUUID();
+
+        subject.setSpent(id);
+
+        verify(mockNonceMapper).setSpent(id);
     }
 
 }

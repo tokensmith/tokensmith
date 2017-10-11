@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface NonceMapper {
     void insert(@Param("nonce") Nonce nonce);
     Nonce getById(@Param("id") UUID id);
-    Nonce getByNonce(@Param("nonce") String nonce);
+    Nonce getByNonce(@Param("type") String type, @Param("nonce") String nonce);
+    void setSpent(@Param("id") UUID id);
 }

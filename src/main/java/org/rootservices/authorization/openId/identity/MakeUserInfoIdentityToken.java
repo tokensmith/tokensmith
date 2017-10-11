@@ -15,7 +15,7 @@ import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
-import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.jwt.SecureJwtEncoder;
 import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;

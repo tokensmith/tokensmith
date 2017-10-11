@@ -26,10 +26,25 @@ public class NonceTypeMapperTest {
 
     @Test
     public void insertShouldInsertRecord() throws Exception {
-        NonceType nonceType = new NonceType(UUID.randomUUID(), "foo", OffsetDateTime.now());
+        NonceType nonceType = new NonceType(UUID.randomUUID(), "foo", 120, OffsetDateTime.now());
         subject.insert(nonceType);
 
         NonceType actual = subject.getById(nonceType.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getId(), is(nonceType.getId()));
+        assertThat(actual.getName(), is(nonceType.getName()));
+        assertThat(actual.getSecondsToExpiry(), is(86400));
+        assertThat(actual.getCreatedAt(), is(nonceType.getCreatedAt()));
+    }
+
+
+    @Test
+    public void getByNameShouldBeOK() throws Exception {
+        NonceType nonceType = new NonceType(UUID.randomUUID(), "foo", 120, OffsetDateTime.now());
+        subject.insert(nonceType);
+
+        NonceType actual = subject.getByName("foo");
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonceType.getId()));
