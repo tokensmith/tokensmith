@@ -21,11 +21,16 @@
         )
     </insert>
 
-
     <select id="getById" resultMap="nonceType">
         select nonce_type.id, nonce_type.name, nonce_type.seconds_to_expiry, nonce_type.created_at
         from nonce_type
-        where id = #{id}
+        where nonce_type.id = #{id}
+    </select>
+
+    <select id="getByName" resultMap="nonceType">
+        select nonce_type.id, nonce_type.name, nonce_type.seconds_to_expiry, nonce_type.created_at
+        from nonce_type
+        where nonce_type.name = #{name}
     </select>
 
 </mapper>

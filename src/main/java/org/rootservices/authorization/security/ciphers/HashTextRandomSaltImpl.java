@@ -1,4 +1,4 @@
-package org.rootservices.authorization.security;
+package org.rootservices.authorization.security.ciphers;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;

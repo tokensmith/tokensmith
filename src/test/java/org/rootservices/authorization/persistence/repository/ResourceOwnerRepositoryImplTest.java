@@ -157,4 +157,12 @@ public class ResourceOwnerRepositoryImplTest {
         }
         assertThat(actual, Is.is(dre));
     }
+
+    @Test
+    public void setEmailVerifiedShouldBeOk() {
+        UUID id = UUID.randomUUID();
+        subject.setEmailVerified(id);
+
+        verify(mockMapper).setEmailVerified(id);
+    }
 }

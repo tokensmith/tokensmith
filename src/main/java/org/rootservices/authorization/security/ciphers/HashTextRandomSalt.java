@@ -1,4 +1,4 @@
-package org.rootservices.authorization.security;
+package org.rootservices.authorization.security.ciphers;
 
 /**
  * Created by tommackenzie on 4/13/15.

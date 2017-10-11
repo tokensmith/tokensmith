@@ -78,9 +78,16 @@
         join nonce_type on nonce_type.id = nonce.nonce_type_id
         join resource_owner on resource_owner.id = nonce.resource_owner_id
         where nonce.nonce = decode(#{nonce}, 'escape')
+        and nonce_type.name = #{type}
         and nonce.revoked = false
         and nonce.spent = false
         and nonce.expires_at > current_timestamp
     </select>
+
+    <update id="setSpent">
+        update nonce
+        set spent = true
+        where id = #{id}
+    </update>
 
 </mapper>

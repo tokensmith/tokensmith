@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface NonceTypeRepository {
     void insert(NonceType nonceType);
     NonceType getById(UUID id) throws RecordNotFoundException;
+    NonceType getByName(String name) throws RecordNotFoundException;
 }

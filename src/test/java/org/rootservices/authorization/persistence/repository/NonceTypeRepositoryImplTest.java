@@ -57,4 +57,26 @@ public class NonceTypeRepositoryImplTest {
 
         subject.getById(nonceType.getId());
     }
+
+    @Test
+    public void getByNameShouldBeOk() throws Exception {
+        NonceType nonceType = new NonceType();
+        nonceType.setName("foo");
+
+        when(mockNonceTypeMapper.getByName(nonceType.getName())).thenReturn(nonceType);
+
+        NonceType actual = subject.getByName(nonceType.getName());
+
+        assertThat(actual, is(nonceType));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByNameShouldThrowRecordNotFound() throws Exception {
+        NonceType nonceType = new NonceType();
+        nonceType.setName("foo");
+
+        when(mockNonceTypeMapper.getByName(nonceType.getName())).thenReturn(null);
+
+        subject.getById(nonceType.getId());
+    }
 }

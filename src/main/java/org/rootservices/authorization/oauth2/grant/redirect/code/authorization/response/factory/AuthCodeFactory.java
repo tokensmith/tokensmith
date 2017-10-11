@@ -2,7 +2,7 @@ package org.rootservices.authorization.oauth2.grant.redirect.code.authorization.
 
 import org.rootservices.authorization.persistence.entity.AccessRequest;
 import org.rootservices.authorization.persistence.entity.AuthCode;
-import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

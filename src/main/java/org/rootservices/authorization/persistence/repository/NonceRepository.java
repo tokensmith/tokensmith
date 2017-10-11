@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface NonceRepository {
     void insert(Nonce nonce);
     Nonce getById(UUID id) throws RecordNotFoundException;
-    Nonce getByNonce(String nonce) throws RecordNotFoundException;
+    Nonce getByNonce(String type, String nonce) throws RecordNotFoundException;
+    void setSpent(UUID id);
 }

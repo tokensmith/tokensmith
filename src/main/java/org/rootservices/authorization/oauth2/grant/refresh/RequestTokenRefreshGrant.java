@@ -16,14 +16,12 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerTokenRepository;
-import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by tommackenzie on 10/8/16.

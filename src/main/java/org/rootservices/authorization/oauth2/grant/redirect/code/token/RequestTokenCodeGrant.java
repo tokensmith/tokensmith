@@ -9,14 +9,11 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.T
 import org.rootservices.authorization.oauth2.grant.token.RequestTokenGrant;
 import org.rootservices.authorization.oauth2.grant.token.exception.*;
 import org.rootservices.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.authorization.security.HashTextStaticSalt;
-import org.rootservices.authorization.security.RandomString;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

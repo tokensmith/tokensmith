@@ -35,9 +35,8 @@ public class NonceMapperTest {
     @Autowired
     private NonceMapper subject;
 
-    @Test
-    public void insert() throws Exception {
-        NonceType nonceType = new NonceType(UUID.randomUUID(), "foo", OffsetDateTime.now());
+    public Nonce insertNonce(String type) {
+        NonceType nonceType = new NonceType(UUID.randomUUID(), type, 120, OffsetDateTime.now());
         nonceTypeMapper.insert(nonceType);
 
         byte [] password = "plainTextPassword".getBytes();
@@ -54,6 +53,13 @@ public class NonceMapperTest {
         nonce.setNonce("nonce".getBytes());
 
         subject.insert(nonce);
+
+        return nonce;
+    }
+
+    @Test
+    public void insert() throws Exception {
+        Nonce nonce = insertNonce("foo");
 
         Nonce actual = subject.getById(nonce.getId());
 
@@ -65,14 +71,14 @@ public class NonceMapperTest {
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
         assertThat(actual.getCreatedAt(), is(nonce.getCreatedAt()));
 
-        Assert.assertThat(actual.getNonceType().getId(), is(nonceType.getId()));
-        Assert.assertThat(actual.getNonceType().getName(), is(nonceType.getName()));
+        Assert.assertThat(actual.getNonceType().getId(), is(nonce.getNonceType().getId()));
+        Assert.assertThat(actual.getNonceType().getName(), is(nonce.getNonceType().getName()));
         Assert.assertThat(actual.getNonceType().getSecondsToExpiry(), is(86400));
-        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonceType.getCreatedAt()));
+        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonce.getNonceType().getCreatedAt()));
 
-        assertThat(actual.getResourceOwner().getId(), is(user.getId()));
-        assertThat(actual.getResourceOwner().getEmail(), is(user.getEmail()));
-        assertThat(actual.getResourceOwner().getPassword(), is(user.getPassword()));
+        assertThat(actual.getResourceOwner().getId(), is(nonce.getResourceOwner().getId()));
+        assertThat(actual.getResourceOwner().getEmail(), is(nonce.getResourceOwner().getEmail()));
+        assertThat(actual.getResourceOwner().getPassword(), is(nonce.getResourceOwner().getPassword()));
         assertThat(actual.getResourceOwner().isEmailVerified(), is(false));
         assertThat(actual.getResourceOwner().getCreatedAt(), is(CoreMatchers.notNullValue()));
     }
@@ -80,25 +86,9 @@ public class NonceMapperTest {
 
     @Test
     public void getByNonceShouldReturnRecord() throws Exception {
-        NonceType nonceType = new NonceType(UUID.randomUUID(), "bar", OffsetDateTime.now());
-        nonceTypeMapper.insert(nonceType);
+        Nonce nonce = insertNonce("bar");
 
-        byte [] password = "plainTextPassword".getBytes();
-        ResourceOwner user = new ResourceOwner(UUID.randomUUID(), "test@rootservices.com", password);
-
-        resourceOwnerMapper.insert(user);
-
-        Nonce nonce = new Nonce();
-        nonce.setId(UUID.randomUUID());
-        nonce.setNonceType(nonceType);
-        nonce.setResourceOwner(user);
-        nonce.setCreatedAt(OffsetDateTime.now());
-        nonce.setExpiresAt(OffsetDateTime.now().plusMinutes(10));
-        nonce.setNonce("nonce".getBytes());
-
-        subject.insert(nonce);
-
-        Nonce actual = subject.getByNonce("nonce");
+        Nonce actual = subject.getByNonce("bar","nonce");
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
@@ -108,16 +98,26 @@ public class NonceMapperTest {
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
         assertThat(actual.getCreatedAt(), is(nonce.getCreatedAt()));
 
-        Assert.assertThat(actual.getNonceType().getId(), is(nonceType.getId()));
-        Assert.assertThat(actual.getNonceType().getName(), is(nonceType.getName()));
+        Assert.assertThat(actual.getNonceType().getId(), is(nonce.getNonceType().getId()));
+        Assert.assertThat(actual.getNonceType().getName(), is(nonce.getNonceType().getName()));
         Assert.assertThat(actual.getNonceType().getSecondsToExpiry(), is(86400));
-        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonceType.getCreatedAt()));
+        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonce.getNonceType().getCreatedAt()));
 
-        assertThat(actual.getResourceOwner().getId(), is(user.getId()));
-        assertThat(actual.getResourceOwner().getEmail(), is(user.getEmail()));
-        assertThat(actual.getResourceOwner().getPassword(), is(user.getPassword()));
+        assertThat(actual.getResourceOwner().getId(), is(nonce.getResourceOwner().getId()));
+        assertThat(actual.getResourceOwner().getEmail(), is(nonce.getResourceOwner().getEmail()));
+        assertThat(actual.getResourceOwner().getPassword(), is(nonce.getResourceOwner().getPassword()));
         assertThat(actual.getResourceOwner().isEmailVerified(), is(false));
         assertThat(actual.getResourceOwner().getCreatedAt(), is(CoreMatchers.notNullValue()));
+    }
+
+    @Test
+    public void setSpent() {
+        Nonce nonce = insertNonce("foo");
+        subject.setSpent(nonce.getId());
+
+        Nonce actual = subject.getById(nonce.getId());
+
+        assertThat(actual.getSpent(), is(true));
     }
 
 }

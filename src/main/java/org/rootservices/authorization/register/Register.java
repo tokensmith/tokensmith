@@ -1,13 +1,23 @@
 package org.rootservices.authorization.register;
 
+import org.rootservices.authorization.persistence.entity.Nonce;
+import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import org.rootservices.authorization.persistence.repository.NonceRepository;
+import org.rootservices.authorization.persistence.repository.NonceTypeRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.security.HashTextRandomSalt;
+import org.rootservices.authorization.register.exception.NonceException;
+import org.rootservices.authorization.register.exception.RegisterException;
+import org.rootservices.authorization.security.RandomString;
+import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.pelican.Publish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,6 +26,10 @@ import java.util.UUID;
 public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
     private HashTextRandomSalt hashTextRandomSalt;
+    private RandomString randomString;
+    private HashTextStaticSalt hashTextStaticSalt;
+    private NonceTypeRepository nonceTypeRepository;
+    private NonceRepository nonceRepository;
     private Publish publish;
     private String issuer;
 
@@ -26,16 +40,21 @@ public class Register {
     private static String PASSWORD_MISMATCH = "Passwords do not match";
     private static String EMAIL_FIELD = "email";
     private static String EMPTY = "";
+    private static String NONCE_TYPE = "welcome";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, Publish publish, String issuer) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashTextStaticSalt hashTextStaticSalt, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
+        this.randomString = randomString;
+        this.hashTextStaticSalt = hashTextStaticSalt;
+        this.nonceTypeRepository = nonceTypeRepository;
+        this.nonceRepository = nonceRepository;
         this.publish = publish;
         this.issuer = issuer;
     }
 
-    public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException {
+    public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException, NonceException {
 
         validate(email, password, repeatPassword);
 
@@ -49,10 +68,16 @@ public class Register {
             throw new RegisterException(REGISTER_ERROR, registerError, e);
         }
 
+        // insert nonce used to validate user's email address.
+        String plainTextNonce = randomString.run();
+        byte[] hashedNonce = hashTextStaticSalt.run(plainTextNonce).getBytes();
+        insertNonce(ro, hashedNonce);
+
         Map<String, String> msg = new HashMap<>();
         msg.put("type", "welcome");
         msg.put("recipient", ro.getEmail());
-        msg.put("body_link", issuer + "/welcome");
+        msg.put("base_link", issuer + "/welcome?nonce=");
+        msg.put("nonce", plainTextNonce);
 
         publish.send("mailer", msg);
 
@@ -90,5 +115,25 @@ public class Register {
             return false;
         }
         return true;
+    }
+
+    protected Nonce insertNonce(ResourceOwner ro, byte[] hashedNonce) throws NonceException {
+        NonceType nonceType;
+        try {
+            nonceType = nonceTypeRepository.getByName(NONCE_TYPE);
+        } catch (RecordNotFoundException e) {
+            throw new NonceException("Fatal - could not find nonce type for welcome nonce", e);
+        }
+
+        Nonce nonce = new Nonce();
+        nonce.setId(UUID.randomUUID());
+        nonce.setResourceOwner(ro);
+        nonce.setNonceType(nonceType);
+        nonce.setNonce(hashedNonce);
+        nonce.setExpiresAt(OffsetDateTime.now().plusSeconds(nonceType.getSecondsToExpiry()));
+
+        nonceRepository.insert(nonce);
+
+        return nonce;
     }
 }

@@ -1,9 +1,8 @@
 package org.rootservices.authorization.oauth2.grant.token;
 
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.persistence.entity.RefreshToken;
 import org.rootservices.authorization.persistence.entity.Token;
-import org.rootservices.authorization.security.HashTextStaticSalt;
+import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

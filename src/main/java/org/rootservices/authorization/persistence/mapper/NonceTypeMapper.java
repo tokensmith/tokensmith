@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface NonceTypeMapper {
     void insert(@Param("nonceType") NonceType nonceType);
     NonceType getById(@Param("id") UUID id);
+    NonceType getByName(@Param("name") String name);
 }

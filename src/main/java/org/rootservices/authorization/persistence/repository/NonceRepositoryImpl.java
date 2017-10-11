@@ -35,13 +35,18 @@ public class NonceRepositoryImpl implements NonceRepository {
     }
 
     @Override
-    public Nonce getByNonce(String nonce) throws RecordNotFoundException {
-        Nonce nonceRecord = nonceMapper.getByNonce(nonce);
+    public Nonce getByNonce(String type, String nonce) throws RecordNotFoundException {
+        Nonce nonceRecord = nonceMapper.getByNonce(type, nonce);
 
         if (nonceRecord == null) {
             throw new RecordNotFoundException("NonceType was not found");
         }
 
         return nonceRecord;
+    }
+
+    @Override
+    public void setSpent(UUID id) {
+        nonceMapper.setSpent(id);
     }
 }
