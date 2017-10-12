@@ -36,6 +36,8 @@ public class Welcome {
         try {
             jsonWebToken = jwtSerializer.stringToJwt(jwt, NonceClaim.class);
         } catch (JsonToJwtException e) {
+            throw new WelcomeException("Could not marshal to a jwt", e);
+        } catch(ArrayIndexOutOfBoundsException e) {
             throw new WelcomeException("Input was not a JWT", e);
         }
 
