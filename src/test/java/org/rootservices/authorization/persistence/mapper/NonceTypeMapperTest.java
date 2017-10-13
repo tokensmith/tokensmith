@@ -35,7 +35,7 @@ public class NonceTypeMapperTest {
         assertThat(actual.getId(), is(nonceType.getId()));
         assertThat(actual.getName(), is(nonceType.getName()));
         assertThat(actual.getSecondsToExpiry(), is(86400));
-        assertThat(actual.getCreatedAt(), is(nonceType.getCreatedAt()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 
 
@@ -50,7 +50,7 @@ public class NonceTypeMapperTest {
         assertThat(actual.getId(), is(nonceType.getId()));
         assertThat(actual.getName(), is(nonceType.getName()));
         assertThat(actual.getSecondsToExpiry(), is(86400));
-        assertThat(actual.getCreatedAt(), is(nonceType.getCreatedAt()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
     }
 
 }
