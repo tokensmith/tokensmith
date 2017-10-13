@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
+import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.refresh.entity.TokenInputRefreshGrant;
 import org.rootservices.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;

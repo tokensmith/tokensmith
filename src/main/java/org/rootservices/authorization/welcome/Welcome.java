@@ -1,5 +1,7 @@
 package org.rootservices.authorization.welcome;
 
+import org.rootservices.authorization.exception.BadRequestException;
+import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
@@ -28,7 +30,7 @@ public class Welcome {
         this.resourceOwnerRepository = resourceOwnerRepository;
     }
 
-    public void markEmailVerified(String jwt) throws WelcomeException {
+    public void markEmailVerified(String jwt) throws BadRequestException, NotFoundException {
         AppFactory appFactory = new AppFactory();
         JWTSerializer jwtSerializer = appFactory.jwtSerializer();
 
@@ -36,9 +38,9 @@ public class Welcome {
         try {
             jsonWebToken = jwtSerializer.stringToJwt(jwt, NonceClaim.class);
         } catch (JsonToJwtException e) {
-            throw new WelcomeException("Could not marshal to a jwt", e);
+            throw new BadRequestException("Could not marshal to a jwt", e);
         } catch(ArrayIndexOutOfBoundsException e) {
-            throw new WelcomeException("Input was not a JWT", e);
+            throw new BadRequestException("Input was not a JWT", e);
         }
 
         NonceClaim nonceClaim = (NonceClaim) jsonWebToken.getClaims();
@@ -49,7 +51,7 @@ public class Welcome {
         try {
             nonce = nonceRepository.getByNonce(WELCOME_TYPE, hashedNonce);
         } catch (RecordNotFoundException e) {
-            throw new WelcomeException("Nonce not found", e);
+            throw new NotFoundException("Nonce not found", e);
         }
 
         resourceOwnerRepository.setEmailVerified(nonce.getResourceOwner().getId());
