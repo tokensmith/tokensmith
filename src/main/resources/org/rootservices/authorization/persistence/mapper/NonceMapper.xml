@@ -23,14 +23,13 @@
     </resultMap>
 
     <insert id="insert">
-        insert into nonce (id, nonce_type_id, resource_owner_id, nonce, expires_at, created_at)
+        insert into nonce (id, nonce_type_id, resource_owner_id, nonce, expires_at)
         values (
             #{nonce.id},
             #{nonce.nonceType.id},
             #{nonce.resourceOwner.id},
             #{nonce.nonce},
-            #{nonce.expiresAt},
-            #{nonce.createdAt}
+            #{nonce.expiresAt}
         )
     </insert>
 

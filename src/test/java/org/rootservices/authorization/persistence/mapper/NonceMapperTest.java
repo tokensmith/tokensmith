@@ -69,12 +69,12 @@ public class NonceMapperTest {
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
-        assertThat(actual.getCreatedAt(), is(nonce.getCreatedAt()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         Assert.assertThat(actual.getNonceType().getId(), is(nonce.getNonceType().getId()));
         Assert.assertThat(actual.getNonceType().getName(), is(nonce.getNonceType().getName()));
         Assert.assertThat(actual.getNonceType().getSecondsToExpiry(), is(86400));
-        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonce.getNonceType().getCreatedAt()));
+        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getResourceOwner().getId(), is(nonce.getResourceOwner().getId()));
         assertThat(actual.getResourceOwner().getEmail(), is(nonce.getResourceOwner().getEmail()));
@@ -96,12 +96,12 @@ public class NonceMapperTest {
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
-        assertThat(actual.getCreatedAt(), is(nonce.getCreatedAt()));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         Assert.assertThat(actual.getNonceType().getId(), is(nonce.getNonceType().getId()));
         Assert.assertThat(actual.getNonceType().getName(), is(nonce.getNonceType().getName()));
         Assert.assertThat(actual.getNonceType().getSecondsToExpiry(), is(86400));
-        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(nonce.getNonceType().getCreatedAt()));
+        Assert.assertThat(actual.getNonceType().getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getResourceOwner().getId(), is(nonce.getResourceOwner().getId()));
         assertThat(actual.getResourceOwner().getEmail(), is(nonce.getResourceOwner().getEmail()));

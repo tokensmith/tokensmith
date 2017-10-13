@@ -13,11 +13,10 @@
     </resultMap>
 
     <insert id="insert">
-        insert into nonce_type (id, name, created_at)
+        insert into nonce_type (id, name)
         values (
             #{nonceType.id},
-            #{nonceType.name},
-            #{nonceType.createdAt}
+            #{nonceType.name}
         )
     </insert>
 
