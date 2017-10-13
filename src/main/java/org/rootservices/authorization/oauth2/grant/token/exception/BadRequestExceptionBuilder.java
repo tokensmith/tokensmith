@@ -1,9 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.token.exception;
 
 import org.rootservices.authorization.constant.ErrorCode;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
+import org.rootservices.authorization.exception.BadRequestException;
 
 
 public class BadRequestExceptionBuilder {

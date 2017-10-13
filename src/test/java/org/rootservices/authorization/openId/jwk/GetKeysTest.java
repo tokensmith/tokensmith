@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
-import org.rootservices.authorization.openId.jwk.exception.NotFoundException;
+import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
 import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;

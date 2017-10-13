@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.exception.BadRequestException;
+import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -71,12 +73,12 @@ public class WelcomeTest {
     }
 
     @Test
-    public void markEmailVerifiedWhenMangledNonceShouldThrowWelcomeException() throws Exception {
+    public void markEmailVerifiedWhenMangledNonceShouldThrowBadRequestExceptionException() throws Exception {
 
-        WelcomeException actual = null;
+        BadRequestException actual = null;
         try {
             subject.markEmailVerified("notAJwt");
-        } catch(WelcomeException e) {
+        } catch(BadRequestException e) {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
@@ -87,7 +89,7 @@ public class WelcomeTest {
     }
 
     @Test
-    public void markEmailVerifiedWhenNonceNotFoundShouldThrowWelcomeException() throws Exception {
+    public void markEmailVerifiedWhenNonceNotFoundShouldThrowNotFoundExceptionException() throws Exception {
         // make a jwt for the test.
         AppFactory appFactory = new AppFactory();
         UnSecureJwtEncoder encoder = appFactory.unSecureJwtEncoder();
@@ -101,10 +103,10 @@ public class WelcomeTest {
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
         when(mockNonceRepository.getByNonce("welcome", "hashedNonce")).thenThrow(RecordNotFoundException.class);
 
-        WelcomeException actual = null;
+        NotFoundException actual = null;
         try {
             subject.markEmailVerified(jwt);
-        } catch(WelcomeException e) {
+        } catch(NotFoundException e) {
             actual = e;
         }
 
