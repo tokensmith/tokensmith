@@ -8,13 +8,13 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.persistence.entity.Nonce;
+import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.authorization.security.entity.NonceClaim;
-import org.rootservices.authorization.welcome.exception.WelcomeException;
 import org.rootservices.jwt.UnSecureJwtEncoder;
 import org.rootservices.jwt.config.AppFactory;
 
@@ -58,18 +58,23 @@ public class WelcomeTest {
 
         String jwt = encoder.encode(nonceClaim);
 
+        NonceType nonceType = new NonceType();
+        nonceType.setName("welcome");
+
         Nonce nonce = new Nonce();
         nonce.setId(UUID.randomUUID());
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         nonce.setResourceOwner(ro);
+        nonce.setNonceType(nonceType);
 
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
-        when(mockNonceRepository.getByNonce("welcome", "hashedNonce")).thenReturn(nonce);
+        when(mockNonceRepository.getByTypeAndNonce("welcome", "hashedNonce")).thenReturn(nonce);
 
         subject.markEmailVerified(jwt);
 
         verify(mockResourceOwnerRepository).setEmailVerified(nonce.getResourceOwner().getId());
         verify(mockNonceRepository).setSpent(nonce.getId());
+        verify(mockNonceRepository).revokeUnSpent(nonce.getNonceType().getName(), nonce.getResourceOwner().getId());
     }
 
     @Test
@@ -101,7 +106,7 @@ public class WelcomeTest {
 
 
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
-        when(mockNonceRepository.getByNonce("welcome", "hashedNonce")).thenThrow(RecordNotFoundException.class);
+        when(mockNonceRepository.getByTypeAndNonce("welcome", "hashedNonce")).thenThrow(RecordNotFoundException.class);
 
         NotFoundException actual = null;
         try {
