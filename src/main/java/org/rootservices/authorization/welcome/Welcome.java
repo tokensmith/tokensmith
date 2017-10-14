@@ -8,7 +8,6 @@ import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.authorization.security.entity.NonceClaim;
-import org.rootservices.authorization.welcome.exception.WelcomeException;
 import org.rootservices.jwt.config.AppFactory;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.serializer.JWTSerializer;
@@ -49,12 +48,13 @@ public class Welcome {
 
         Nonce nonce;
         try {
-            nonce = nonceRepository.getByNonce(WELCOME_TYPE, hashedNonce);
+            nonce = nonceRepository.getByTypeAndNonce(WELCOME_TYPE, hashedNonce);
         } catch (RecordNotFoundException e) {
             throw new NotFoundException("Nonce not found", e);
         }
 
         resourceOwnerRepository.setEmailVerified(nonce.getResourceOwner().getId());
         nonceRepository.setSpent(nonce.getId());
+        nonceRepository.revokeUnSpent(nonce.getNonceType().getName(), nonce.getResourceOwner().getId());
     }
 }

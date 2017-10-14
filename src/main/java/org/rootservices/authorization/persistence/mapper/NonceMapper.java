@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface NonceMapper {
     void insert(@Param("nonce") Nonce nonce);
     Nonce getById(@Param("id") UUID id);
-    Nonce getByNonce(@Param("type") String type, @Param("nonce") String nonce);
+    Nonce getByTypeAndNonce(@Param("type") String type, @Param("nonce") String nonce);
+    Nonce getByNonce(@Param("nonce") String nonce);
+    void revokeUnSpent(@Param("type") String type, @Param("resourceOwnerId") UUID resourceOwnerId);
     void setSpent(@Param("id") UUID id);
 }

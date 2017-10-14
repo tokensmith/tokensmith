@@ -56,7 +56,7 @@
         where nonce.id = #{id}
     </select>
 
-    <select id="getByNonce" resultMap="nonce">
+    <select id="getByTypeAndNonce" resultMap="nonce">
         select
         nonce.id,
         nonce.nonce,
@@ -82,6 +82,41 @@
         and nonce.spent = false
         and nonce.expires_at > current_timestamp
     </select>
+
+
+    <select id="getByNonce" resultMap="nonce">
+        select
+        nonce.id,
+        nonce.nonce,
+        nonce.revoked,
+        nonce.spent,
+        nonce.expires_at,
+        nonce.created_at,
+        nonce_type.id as nonce_type_id,
+        nonce_type.name as nonce_type_name,
+        nonce_type.seconds_to_expiry as nonce_type_seconds_to_expiry,
+        nonce_type.created_at as nonce_type_created_at,
+        resource_owner.id as resource_owner_id,
+        resource_owner.email as resource_owner_email,
+        resource_owner.password as resource_owner_password,
+        resource_owner.email_verified as resource_owner_email_verified,
+        resource_owner.created_at as resource_owner_created_at
+        from nonce
+        join nonce_type on nonce_type.id = nonce.nonce_type_id
+        join resource_owner on resource_owner.id = nonce.resource_owner_id
+        where nonce.nonce = decode(#{nonce}, 'escape')
+    </select>
+
+    <update id="revokeUnSpent">
+        update nonce
+        set revoked = true
+        from nonce_type
+        where resource_owner_id = #{resourceOwnerId}
+        and nonce.spent = false
+        and nonce.expires_at > current_timestamp
+        and nonce_type.id = nonce.nonce_type_id
+        and nonce_type.name = #{type}
+    </update>
 
     <update id="setSpent">
         update nonce

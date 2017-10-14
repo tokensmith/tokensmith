@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.persistence.entity.Nonce;
-import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.NonceMapper;
 
@@ -60,12 +59,31 @@ public class NonceRepositoryImplTest {
     }
 
     @Test
+    public void getByTypeAndNonceShouldBeOk() throws Exception {
+        Nonce nonce = new Nonce();
+
+        when(mockNonceMapper.getByTypeAndNonce("welcome","nonce")).thenReturn(nonce);
+
+        Nonce actual = subject.getByTypeAndNonce("welcome","nonce");
+
+        assertThat(actual, is(nonce));
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void getByTypeAndNonceShouldThrowRecordNotFound() throws Exception {
+
+        when(mockNonceMapper.getByTypeAndNonce("welcome", "nonce")).thenReturn(null);
+
+        subject.getByTypeAndNonce("welcome", "nonce");
+    }
+
+    @Test
     public void getByNonceShouldBeOk() throws Exception {
         Nonce nonce = new Nonce();
 
-        when(mockNonceMapper.getByNonce("welcome","nonce")).thenReturn(nonce);
+        when(mockNonceMapper.getByNonce("nonce")).thenReturn(nonce);
 
-        Nonce actual = subject.getByNonce("welcome","nonce");
+        Nonce actual = subject.getByNonce("nonce");
 
         assertThat(actual, is(nonce));
     }
@@ -73,9 +91,20 @@ public class NonceRepositoryImplTest {
     @Test(expected = RecordNotFoundException.class)
     public void getByNonceShouldThrowRecordNotFound() throws Exception {
 
-        when(mockNonceMapper.getByNonce("welcome", "nonce")).thenReturn(null);
+        when(mockNonceMapper.getByNonce("nonce")).thenReturn(null);
 
-        subject.getByNonce("welcome", "nonce");
+        subject.getByNonce("nonce");
+    }
+
+
+    @Test
+    public void revokeUnSpent() {
+        UUID resourceOwnerId = UUID.randomUUID();
+        String type = "foo";
+
+        subject.revokeUnSpent(type, resourceOwnerId);
+
+        verify(mockNonceMapper).revokeUnSpent(type, resourceOwnerId);
     }
 
     @Test
