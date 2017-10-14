@@ -39,7 +39,7 @@ public class NonceMapperTest {
     @Autowired
     private NonceMapper subject;
 
-    public Nonce insertNonce(String type) {
+    public Nonce insertNonce(String type, String nonceValue) {
 
         NonceType nonceType = nonceTypeMapper.getByName(type);
 
@@ -59,8 +59,6 @@ public class NonceMapperTest {
         nonce.setResourceOwner(user);
         nonce.setCreatedAt(OffsetDateTime.now());
         nonce.setExpiresAt(OffsetDateTime.now().plusMinutes(10));
-
-        String nonceValue = randomString.run();
         nonce.setNonce(nonceValue.getBytes());
 
         subject.insert(nonce);
@@ -70,13 +68,14 @@ public class NonceMapperTest {
 
     @Test
     public void insert() throws Exception {
-        Nonce nonce = insertNonce("foo");
+        String nonceValue = randomString.run();
+        Nonce nonce = insertNonce("foo", nonceValue);
 
         Nonce actual = subject.getById(nonce.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is("nonce".getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
@@ -97,13 +96,14 @@ public class NonceMapperTest {
 
     @Test
     public void getByTypeAndNonceShouldReturnRecord() throws Exception {
-        Nonce nonce = insertNonce("bar");
+        String nonceValue = randomString.run();
+        Nonce nonce = insertNonce("bar", nonceValue);
 
-        Nonce actual = subject.getByTypeAndNonce("bar","nonce");
+        Nonce actual = subject.getByTypeAndNonce("bar", nonceValue);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is("nonce".getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
@@ -123,13 +123,14 @@ public class NonceMapperTest {
 
     @Test
     public void getByNonceShouldReturnRecord() throws Exception {
-        Nonce nonce = insertNonce("bar");
+        String nonceValue = randomString.run();
+        Nonce nonce = insertNonce("bar", nonceValue);
 
-        Nonce actual = subject.getByNonce("nonce");
+        Nonce actual = subject.getByNonce(nonceValue);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is("nonce".getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
@@ -149,9 +150,11 @@ public class NonceMapperTest {
 
     @Test
     public void revokeUnSpent() {
-        Nonce nonceToNotRevoke = insertNonce("foo");
+        String nonceValue = randomString.run();
+        Nonce nonceToNotRevoke = insertNonce("foo", nonceValue);
 
-        Nonce nonceToRevoke = insertNonce("foo");
+        nonceValue = randomString.run();
+        Nonce nonceToRevoke = insertNonce("foo", nonceValue);
         nonceToRevoke = subject.getById(nonceToRevoke.getId());
 
         // should not be spent..
@@ -174,7 +177,8 @@ public class NonceMapperTest {
 
     @Test
     public void setSpent() {
-        Nonce nonce = insertNonce("foo");
+        String nonceValue = randomString.run();
+        Nonce nonce = insertNonce("foo", nonceValue);
         subject.setSpent(nonce.getId());
 
         Nonce actual = subject.getById(nonce.getId());
