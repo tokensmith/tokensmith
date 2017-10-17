@@ -73,4 +73,9 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
             throw duplicateRecordExceptionFactory.make(e, SCHEMA);
         }
     }
+
+    @Override
+    public void setEmailVerified(UUID id) {
+        resourceOwnerMapper.setEmailVerified(id);
+    }
 }

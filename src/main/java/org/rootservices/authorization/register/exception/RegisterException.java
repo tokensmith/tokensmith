@@ -1,5 +1,7 @@
-package org.rootservices.authorization.register;
+package org.rootservices.authorization.register.exception;
 
+
+import org.rootservices.authorization.register.RegisterError;
 
 public class RegisterException extends Exception {
     private RegisterError registerError;

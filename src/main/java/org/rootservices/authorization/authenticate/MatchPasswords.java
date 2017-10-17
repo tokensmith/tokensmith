@@ -2,7 +2,7 @@ package org.rootservices.authorization.authenticate;
 
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.security.IsTextEqualToHash;
+import org.rootservices.authorization.security.ciphers.IsTextEqualToHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -15,4 +15,5 @@ public interface ResourceOwnerRepository {
     ResourceOwner getByAccessToken(String accessToken) throws RecordNotFoundException;
     ResourceOwner getByAccessTokenWithProfileAndTokens(String accessToken) throws RecordNotFoundException;
     void insert(ResourceOwner resourceOwner) throws DuplicateRecordException;
+    void setEmailVerified(UUID id);
 }
