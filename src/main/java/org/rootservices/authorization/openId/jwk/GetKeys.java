@@ -1,7 +1,7 @@
 package org.rootservices.authorization.openId.jwk;
 
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
-import org.rootservices.authorization.openId.jwk.exception.NotFoundException;
+import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;

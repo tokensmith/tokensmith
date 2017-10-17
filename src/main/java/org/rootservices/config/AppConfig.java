@@ -10,9 +10,10 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.ComparePublicClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.pelican.Publish;
+import org.rootservices.pelican.config.PelicanAppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +25,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+
 /**
  * Created by tommackenzie on 7/4/15.
  */
 @Configuration
-@ComponentScan("org.rootservices.authorization")
+@ComponentScan({"org.rootservices.authorization", "org.rootservices.pelican"})
 public class AppConfig {
     private static String ALGORITHM = "RSA";
     private static String SHA_256 = "SHA-256";
@@ -120,5 +122,12 @@ public class AppConfig {
     @Bean
     public String issuer() {
         return System.getenv("ISSUER");
+    }
+
+    @Bean
+    public Publish publish() {
+        PelicanAppConfig pelicanAppConfig = new PelicanAppConfig();
+        // TODO: replace with host name
+        return pelicanAppConfig.publish("auth-1");
     }
 }

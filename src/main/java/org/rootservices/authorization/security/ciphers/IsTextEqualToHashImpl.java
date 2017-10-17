@@ -1,12 +1,9 @@
-package org.rootservices.authorization.security;
+package org.rootservices.authorization.security.ciphers;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by tommackenzie on 5/4/15.
- */
+
 @Component
 public class IsTextEqualToHashImpl implements  IsTextEqualToHash {
 
