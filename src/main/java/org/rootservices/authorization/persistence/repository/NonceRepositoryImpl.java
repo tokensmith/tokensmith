@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.repository;
 
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.NonceMapper;
@@ -35,8 +36,8 @@ public class NonceRepositoryImpl implements NonceRepository {
     }
 
     @Override
-    public Nonce getByTypeAndNonce(String type, String nonce) throws RecordNotFoundException {
-        Nonce nonceRecord = nonceMapper.getByTypeAndNonce(type, nonce);
+    public Nonce getByTypeAndNonce(NonceName type, String nonce) throws RecordNotFoundException {
+        Nonce nonceRecord = nonceMapper.getByTypeAndNonce(type.toString().toLowerCase(), nonce);
 
         if (nonceRecord == null) {
             throw new RecordNotFoundException("Nonce was not found");

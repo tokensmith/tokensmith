@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.NonceTypeMapper;
@@ -61,11 +62,11 @@ public class NonceTypeRepositoryImplTest {
     @Test
     public void getByNameShouldBeOk() throws Exception {
         NonceType nonceType = new NonceType();
-        nonceType.setName("foo");
+        nonceType.setName(NonceName.WELCOME.toString());
 
         when(mockNonceTypeMapper.getByName(nonceType.getName())).thenReturn(nonceType);
 
-        NonceType actual = subject.getByName(nonceType.getName());
+        NonceType actual = subject.getByName(NonceName.WELCOME);
 
         assertThat(actual, is(nonceType));
     }

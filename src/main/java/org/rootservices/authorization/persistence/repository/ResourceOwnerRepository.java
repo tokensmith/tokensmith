@@ -6,9 +6,7 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 10/11/14.
- */
+
 public interface ResourceOwnerRepository {
     ResourceOwner getById(UUID id) throws RecordNotFoundException;
     ResourceOwner getByEmail(String email) throws RecordNotFoundException;
@@ -16,4 +14,5 @@ public interface ResourceOwnerRepository {
     ResourceOwner getByAccessTokenWithProfileAndTokens(String accessToken) throws RecordNotFoundException;
     void insert(ResourceOwner resourceOwner) throws DuplicateRecordException;
     void setEmailVerified(UUID id);
+    void updatePassword(UUID id, byte[] password);
 }

@@ -1,5 +1,9 @@
 package org.rootservices.authorization.register;
 
+import org.rootservices.authorization.nonce.message.MessageKey;
+import org.rootservices.authorization.nonce.message.MessageType;
+import org.rootservices.authorization.nonce.message.Topic;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
@@ -74,12 +78,12 @@ public class Register {
         insertNonce(ro, hashedNonce);
 
         Map<String, String> msg = new HashMap<>();
-        msg.put("type", "welcome");
-        msg.put("recipient", ro.getEmail());
-        msg.put("base_link", issuer + "/welcome?nonce=");
-        msg.put("nonce", plainTextNonce);
+        msg.put(MessageKey.TYPE.toString(), MessageType.WELCOME.toString().toLowerCase());
+        msg.put(MessageKey.RECIPIENT.toString(), ro.getEmail());
+        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/welcome?nonce=");
+        msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
-        publish.send("mailer", msg);
+        publish.send(Topic.MAILER.toString(), msg);
 
         return ro;
     }
@@ -120,7 +124,7 @@ public class Register {
     protected Nonce insertNonce(ResourceOwner ro, byte[] hashedNonce) throws NonceException {
         NonceType nonceType;
         try {
-            nonceType = nonceTypeRepository.getByName(NONCE_TYPE);
+            nonceType = nonceTypeRepository.getByName(NonceName.WELCOME);
         } catch (RecordNotFoundException e) {
             throw new NonceException("Fatal - could not find nonce type for welcome nonce", e);
         }

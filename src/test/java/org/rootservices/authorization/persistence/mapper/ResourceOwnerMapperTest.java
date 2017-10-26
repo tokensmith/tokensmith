@@ -17,14 +17,10 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-/**
- * Created by tommackenzie on 9/25/14.
- */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
@@ -57,7 +53,7 @@ public class ResourceOwnerMapperTest {
     public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
         byte [] password = "plainTextPassword".getBytes();
-        ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
+        ResourceOwner user = new ResourceOwner(uuid, UUID.randomUUID() + "@rootservices.com", password);
 
         subject.insert(user);
         return user;
@@ -513,5 +509,24 @@ public class ResourceOwnerMapperTest {
         // should be true for email verified.
         assertThat(actual.isEmailVerified(), is(true));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void updatePasswordShouldBeOk() {
+        ResourceOwner user = insertResourceOwner();
+        ResourceOwner userToUpdate = insertResourceOwner();
+        String password = "plainTextPassword123";
+
+        subject.updatePassword(userToUpdate.getId(), password.getBytes());
+
+        // fetch it to make sure it was updated.
+        ResourceOwner actual = subject.getById(userToUpdate.getId());
+        assertThat(actual.getPassword(), is(password.getBytes()));
+
+        // should not have updated others passwords.
+        ResourceOwner otherUser = subject.getById(user.getId());
+        assertThat(otherUser.getPassword(), is(not(password.getBytes())));
+
+
     }
 }

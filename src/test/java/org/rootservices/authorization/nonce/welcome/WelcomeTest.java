@@ -1,4 +1,4 @@
-package org.rootservices.authorization.welcome;
+package org.rootservices.authorization.nonce.welcome;
 
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.NotFoundException;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
@@ -68,7 +69,7 @@ public class WelcomeTest {
         nonce.setNonceType(nonceType);
 
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
-        when(mockNonceRepository.getByTypeAndNonce("welcome", "hashedNonce")).thenReturn(nonce);
+        when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenReturn(nonce);
 
         subject.markEmailVerified(jwt);
 
@@ -106,7 +107,7 @@ public class WelcomeTest {
 
 
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
-        when(mockNonceRepository.getByTypeAndNonce("welcome", "hashedNonce")).thenThrow(RecordNotFoundException.class);
+        when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenThrow(RecordNotFoundException.class);
 
         NotFoundException actual = null;
         try {
