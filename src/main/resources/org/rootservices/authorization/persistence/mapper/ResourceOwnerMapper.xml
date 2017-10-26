@@ -176,4 +176,10 @@
         where id = #{id}
     </update>
 
+    <update id="updatePassword">
+        update resource_owner
+        set password = #{password}
+        where id = #{id}
+    </update>
+
 </mapper>

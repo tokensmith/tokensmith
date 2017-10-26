@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 10/11/14.
- */
+
 @Component
 public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
     private static String SCHEMA = "resource_owner";
@@ -77,5 +75,10 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
     @Override
     public void setEmailVerified(UUID id) {
         resourceOwnerMapper.setEmailVerified(id);
+    }
+
+    @Override
+    public void updatePassword(UUID id, byte[] password) {
+        resourceOwnerMapper.updatePassword(id, password);
     }
 }

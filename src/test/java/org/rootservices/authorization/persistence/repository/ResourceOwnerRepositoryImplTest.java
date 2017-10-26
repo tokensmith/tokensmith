@@ -165,4 +165,14 @@ public class ResourceOwnerRepositoryImplTest {
 
         verify(mockMapper).setEmailVerified(id);
     }
+
+    @Test
+    public void updatePasswordShouldBeOk(){
+        UUID id = UUID.randomUUID();
+        String password = "plainTextPassword";
+
+        subject.updatePassword(id, password.getBytes());
+
+        verify(mockMapper).updatePassword(id, password.getBytes());
+    }
 }
