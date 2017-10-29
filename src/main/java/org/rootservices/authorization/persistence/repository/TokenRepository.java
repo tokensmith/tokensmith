@@ -14,5 +14,5 @@ public interface TokenRepository {
     void revokeByAuthCodeId(UUID authCodeId);
     void revokeById(UUID id);
     void updateExpiresAtByAccessToken(OffsetDateTime expiresAt, String accessToken);
-    void revokeAll(UUID resourceOwnerId);
+    void revokeActive(UUID resourceOwnerId);
 }
