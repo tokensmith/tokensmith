@@ -22,9 +22,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by tommackenzie on 5/23/15.
- */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
@@ -36,6 +34,8 @@ public class TokenMapperTest {
     private RandomString randomString;
     @Autowired
     private AuthCodeTokenRepository authCodeTokenRepository;
+    @Autowired
+    private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -86,6 +86,16 @@ public class TokenMapperTest {
         authCodeToken.setId(UUID.randomUUID());
         authCodeToken.setTokenId(tokenToRevoke.getId());
         authCodeToken.setAuthCodeId(authCode.getId());
+
+        // token should be associated to resource owner.
+        ResourceOwner resourceOwner = new ResourceOwner();
+        resourceOwner.setId(authCode.getAccessRequest().getResourceOwnerId());
+
+        ResourceOwnerToken rot = new ResourceOwnerToken();
+        rot.setId(UUID.randomUUID());
+        rot.setResourceOwner(resourceOwner);
+        rot.setToken(tokenToRevoke);
+        resourceOwnerTokenRepository.insert(rot);
 
         authCodeTokenRepository.insert(authCodeToken);
 
@@ -187,5 +197,20 @@ public class TokenMapperTest {
         assertThat(actual.getClientId(), is(client.getId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt().toEpochSecond(), is(expiresAt.toEpochSecond()));
+    }
+
+    @Test
+    public void revokeActiveShouldRevoke() throws Exception {
+        AuthCode authCode = prepare();
+
+        // make sure its not revoked.
+        Token token = subject.getByAuthCodeId(authCode.getId());
+        assertThat(token.isRevoked(), is(false));
+
+        // revoke it.
+        subject.revokeActive(authCode.getAccessRequest().getResourceOwnerId());
+
+        Token actual = subject.getByAuthCodeId(authCode.getId());
+        assertThat(actual.isRevoked(), is(true));
     }
 }

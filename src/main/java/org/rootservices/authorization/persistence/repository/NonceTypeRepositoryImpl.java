@@ -37,7 +37,7 @@ public class NonceTypeRepositoryImpl implements NonceTypeRepository {
 
     @Override
     public NonceType getByName(NonceName name) throws RecordNotFoundException {
-        NonceType nonceType = nonceTypeMapper.getByName(name.toString().toLowerCase());
+        NonceType nonceType = nonceTypeMapper.getByName(name.toString());
 
         if (nonceType == null) {
             throw new RecordNotFoundException("NonceType was not found");
