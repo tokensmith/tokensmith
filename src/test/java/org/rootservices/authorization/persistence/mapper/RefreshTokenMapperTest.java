@@ -46,8 +46,6 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenScopeMapper tokenScopeMapper;
     @Autowired
-    private TokenAudienceMapper clientTokenMapper;
-    @Autowired
     private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
     private AuthCodeTokenMapper authCodeTokenMapper;
@@ -87,8 +85,8 @@ public class RefreshTokenMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
 
-        String accessToken = "access-token";
-        String leadAccessToken = "lead-access-token";
+        String accessToken = randomString.run();
+        String leadAccessToken = randomString.run();
 
         UUID clientId = authCode.getAccessRequest().getClientId();
         Token leadToken = loadToken(leadAccessToken, OffsetDateTime.now().minusDays(10), false, clientId);
@@ -131,13 +129,9 @@ public class RefreshTokenMapperTest {
         authCodeToken.setTokenId(token.getId());
         authCodeTokenMapper.insert(authCodeToken);
 
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(token.getId());
-        clientTokenMapper.insert(clientToken);
+        // XXX: should it insert a client token?
 
-        String refreshAccessToken = "refresh-access-token";
+        String refreshAccessToken = randomString.run();
         RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
         refreshToken.setExpiresAt(refreshTokenExpiresAt);
         subject.insert(refreshToken);
