@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 10/3/16.
- */
+
 @Component
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     private static String SCHEMA = "refresh_token";
@@ -62,5 +60,10 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     @Override
     public void revokeByTokenId(UUID tokenId) {
         refreshTokenMapper.revokeByTokenId(tokenId);
+    }
+
+    @Override
+    public void revokeActive(UUID resourceOwnerId) {
+        refreshTokenMapper.revokeActive(resourceOwnerId);
     }
 }

@@ -11,13 +11,16 @@ import org.rootservices.authorization.nonce.message.MessageType;
 import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.nonce.message.Topic;
 import org.rootservices.authorization.persistence.entity.Nonce;
+import org.rootservices.authorization.persistence.repository.RefreshTokenRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
+import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.register.exception.NonceException;
 import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
 import org.rootservices.pelican.Publish;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ResetPassword {
     private static final Logger logger = LogManager.getLogger(ResetPassword.class);
@@ -27,6 +30,8 @@ public class ResetPassword {
     private SpendNonce spendNonce;
     private HashTextRandomSalt hashTextRandomSalt;
     private ResourceOwnerRepository resourceOwnerRepository;
+    private TokenRepository tokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
 
     public void sendMessage(String email) throws NonceException {
@@ -58,11 +63,14 @@ public class ResetPassword {
             throw e;
         }
 
+        UUID resourceOwnerId = nonce.getResourceOwner().getId();
         String hashedPassword = hashTextRandomSalt.run(password);
-        resourceOwnerRepository.updatePassword(nonce.getResourceOwner().getId(), hashedPassword.getBytes());
+        resourceOwnerRepository.updatePassword(resourceOwnerId, hashedPassword.getBytes());
 
-        // revoke active tokens and refresh tokens.
-        // send user a message saying the password reset was successful.
+        tokenRepository.revokeActive(resourceOwnerId);
+        refreshTokenRepository.revokeActive(resourceOwnerId);
+
+        // send user a email saying their password was reset.
 
     }
 }
