@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class ResetPassword {
-    private static final Logger logger = LogManager.getLogger(ResetPassword.class);
+public class ForgotPassword {
+    private static final Logger logger = LogManager.getLogger(ForgotPassword.class);
     private InsertNonce insertNonce;
     private Publish publish;
     private String issuer;
@@ -36,7 +36,7 @@ public class ResetPassword {
     private RefreshTokenRepository refreshTokenRepository;
 
 
-    public ResetPassword(InsertNonce insertNonce, Publish publish, String issuer, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
+    public ForgotPassword(InsertNonce insertNonce, Publish publish, String issuer, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
         this.insertNonce = insertNonce;
         this.publish = publish;
         this.issuer = issuer;
@@ -81,7 +81,6 @@ public class ResetPassword {
 
         tokenRepository.revokeActive(resourceOwnerId);
         refreshTokenRepository.revokeActive(resourceOwnerId);
-
 
         Map<String, String> msg = new HashMap<>();
         msg.put(MessageKey.TYPE.toString(), MessageType.PASSWORD_WAS_RESET.toString());

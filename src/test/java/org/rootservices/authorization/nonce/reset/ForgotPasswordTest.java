@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-public class ResetPasswordTest {
+public class ForgotPasswordTest {
     @Mock
     private InsertNonce mockInsertNonce;
     @Mock
@@ -50,14 +50,14 @@ public class ResetPasswordTest {
     private TokenRepository mockTokenRepository;
     @Mock
     private RefreshTokenRepository mockRefreshTokenRepository;
-    private ResetPassword subject;
+    private ForgotPassword subject;
 
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         this.issuer = "sso.rootservices.org";
-        subject = new ResetPassword(mockInsertNonce, mockPublish, issuer, mockSpendNonce, mockHashTextRandomSalt, mockResourceOwnerRepository, mockTokenRepository, mockRefreshTokenRepository);
+        subject = new ForgotPassword(mockInsertNonce, mockPublish, issuer, mockSpendNonce, mockHashTextRandomSalt, mockResourceOwnerRepository, mockTokenRepository, mockRefreshTokenRepository);
     }
 
     @Test
