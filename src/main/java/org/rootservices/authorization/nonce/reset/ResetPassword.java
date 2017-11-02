@@ -17,11 +17,13 @@ import org.rootservices.authorization.persistence.repository.TokenRepository;
 import org.rootservices.authorization.register.exception.NonceException;
 import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
 import org.rootservices.pelican.Publish;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Component
 public class ResetPassword {
     private static final Logger logger = LogManager.getLogger(ResetPassword.class);
     private InsertNonce insertNonce;
@@ -33,6 +35,17 @@ public class ResetPassword {
     private TokenRepository tokenRepository;
     private RefreshTokenRepository refreshTokenRepository;
 
+
+    public ResetPassword(InsertNonce insertNonce, Publish publish, String issuer, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
+        this.insertNonce = insertNonce;
+        this.publish = publish;
+        this.issuer = issuer;
+        this.spendNonce = spendNonce;
+        this.hashTextRandomSalt = hashTextRandomSalt;
+        this.resourceOwnerRepository = resourceOwnerRepository;
+        this.tokenRepository = tokenRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
     public void sendMessage(String email) throws NonceException {
 
@@ -46,11 +59,10 @@ public class ResetPassword {
         Map<String, String> msg = new HashMap<>();
         msg.put(MessageKey.TYPE.toString(), MessageType.RESET_PASSWORD.toString());
         msg.put(MessageKey.RECIPIENT.toString(), email);
-        msg.put(MessageKey.RECIPIENT.toString(), issuer + "/reset?nonce=");
+        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/reset?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
         publish.send(Topic.MAILER.toString(), msg);
-
     }
 
     public void reset(String jwt, String password) throws NotFoundException, BadRequestException {
@@ -70,7 +82,11 @@ public class ResetPassword {
         tokenRepository.revokeActive(resourceOwnerId);
         refreshTokenRepository.revokeActive(resourceOwnerId);
 
-        // send user a email saying their password was reset.
 
+        Map<String, String> msg = new HashMap<>();
+        msg.put(MessageKey.TYPE.toString(), MessageType.PASSWORD_WAS_RESET.toString());
+        msg.put(MessageKey.RECIPIENT.toString(), nonce.getResourceOwner().getEmail());
+
+        publish.send(Topic.MAILER.toString(), msg);
     }
 }
