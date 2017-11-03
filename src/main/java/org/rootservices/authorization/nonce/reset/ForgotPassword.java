@@ -35,6 +35,7 @@ public class ForgotPassword {
     private TokenRepository tokenRepository;
     private RefreshTokenRepository refreshTokenRepository;
 
+    private static String EMPTY = "";
 
     public ForgotPassword(InsertNonce insertNonce, Publish publish, String issuer, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
         this.insertNonce = insertNonce;
@@ -47,9 +48,11 @@ public class ForgotPassword {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public void sendMessage(String email) throws NonceException {
+    public void sendMessage(String email) throws NonceException, BadRequestException {
 
-        String plainTextNonce = null;
+        validate(email);
+
+        String plainTextNonce;
         try {
             plainTextNonce = insertNonce.insert(email, NonceName.RESET_PASSWORD);
         } catch (NonceException e) {
@@ -57,7 +60,7 @@ public class ForgotPassword {
         }
 
         Map<String, String> msg = new HashMap<>();
-        msg.put(MessageKey.TYPE.toString(), MessageType.RESET_PASSWORD.toString());
+        msg.put(MessageKey.TYPE.toString(), MessageType.FORGOT_PASSWORD.toString());
         msg.put(MessageKey.RECIPIENT.toString(), email);
         msg.put(MessageKey.BASE_LINK.toString(), issuer + "/reset?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
@@ -65,7 +68,22 @@ public class ForgotPassword {
         publish.send(Topic.MAILER.toString(), msg);
     }
 
+    protected void validate(String email) throws BadRequestException {
+        if(!hasValue(email)) {
+            throw new BadRequestException("email is invalid", "email", "Email is required");
+        }
+    }
+
+    protected Boolean hasValue(String value) {
+        if (value == null || EMPTY.equals(value)) {
+            return false;
+        }
+        return true;
+    }
+
     public void reset(String jwt, String password) throws NotFoundException, BadRequestException {
+        validate(jwt, password);
+
         Nonce nonce;
         try {
             nonce = spendNonce.spend(jwt, NonceName.RESET_PASSWORD);
@@ -87,5 +105,15 @@ public class ForgotPassword {
         msg.put(MessageKey.RECIPIENT.toString(), nonce.getResourceOwner().getEmail());
 
         publish.send(Topic.MAILER.toString(), msg);
+    }
+
+    protected void validate(String jwt, String password) throws BadRequestException {
+        if(!hasValue(jwt)) {
+            throw new BadRequestException("jwt is invalid", "nonce", "Nonce is required");
+        }
+
+        if(!hasValue(password)) {
+            throw new BadRequestException("password is invalid", "password", "Password is required");
+        }
     }
 }
