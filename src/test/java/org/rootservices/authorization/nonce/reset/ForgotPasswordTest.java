@@ -73,10 +73,42 @@ public class ForgotPasswordTest {
         verify(mockPublish).send(eq("mailer"), messageCaptor.capture());
 
         assertThat(messageCaptor.getValue().size(), is(4));
-        assertThat(messageCaptor.getValue().get("type"), is("reset_password"));
+        assertThat(messageCaptor.getValue().get("type"), is("forgot_password"));
         assertThat(messageCaptor.getValue().get("recipient"), is(email));
         assertThat(messageCaptor.getValue().get("base_link"), is(issuer + "/reset?nonce="));
         assertThat(messageCaptor.getValue().get("nonce"), is(plainTextNonce));
+    }
+
+    @Test
+    public void sendMessageWhenEmailEmptyShouldThrowBadRequestException() throws Exception {
+        String email = "";
+
+        BadRequestException actual = null;
+        try {
+            subject.sendMessage(email);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("email"));
+        assertThat(actual.getDescription(), is("Email is required"));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void sendMessageWhenEmailNullShouldThrowBadRequestException() throws Exception {
+        String email = null;
+
+        BadRequestException actual = null;
+        try {
+            subject.sendMessage(email);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("email"));
+        assertThat(actual.getDescription(), is("Email is required"));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
     }
 
     @Test
@@ -101,7 +133,7 @@ public class ForgotPasswordTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         nonce.setResourceOwner(ro);
 
-        String jwt = "";
+        String jwt = "some.jwt";
         String password = "plainTextPassword";
         String hashedPassword = "hashedPassword";
 
@@ -123,12 +155,72 @@ public class ForgotPasswordTest {
     }
 
     @Test
-    public void resetShouldThrowBadRequestException() throws Exception {
+    public void resetWhenJwtEmptyShouldThrowBadRequestException() throws Exception {
         Nonce nonce = new Nonce();
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         nonce.setResourceOwner(ro);
 
         String jwt = "";
+        String password = "plainTextPassword";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("nonce"));
+        assertThat(actual.getDescription(), is("Nonce is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetWhenJwtNullShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = null;
+        String password = "plainTextPassword";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("nonce"));
+        assertThat(actual.getDescription(), is("Nonce is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
         String password = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(BadRequestException.class);
@@ -155,7 +247,7 @@ public class ForgotPasswordTest {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         nonce.setResourceOwner(ro);
 
-        String jwt = "";
+        String jwt = "some.jwt";
         String password = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(NotFoundException.class);

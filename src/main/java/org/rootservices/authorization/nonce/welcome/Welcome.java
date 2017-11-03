@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Welcome {
-    private static String WELCOME_TYPE = "welcome";
     private HashTextStaticSalt hashTextStaticSalt;
     private NonceRepository nonceRepository;
     private ResourceOwnerRepository resourceOwnerRepository;

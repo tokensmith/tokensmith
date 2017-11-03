@@ -1,12 +1,14 @@
 package org.rootservices.authorization.exception;
 
 
-/**
- * Created by tommackenzie on 2/8/15.
- */
+
 public class BaseInformException extends Exception {
 
     private int code;
+
+    public BaseInformException(String message) {
+        super(message);
+    }
 
     public BaseInformException(String message, int code) {
         super(message);
