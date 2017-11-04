@@ -75,13 +75,29 @@ public class ForgotPasswordTest {
         assertThat(messageCaptor.getValue().size(), is(4));
         assertThat(messageCaptor.getValue().get("type"), is("forgot_password"));
         assertThat(messageCaptor.getValue().get("recipient"), is(email));
-        assertThat(messageCaptor.getValue().get("base_link"), is(issuer + "/reset?nonce="));
+        assertThat(messageCaptor.getValue().get("base_link"), is(issuer + "/update-password?nonce="));
         assertThat(messageCaptor.getValue().get("nonce"), is(plainTextNonce));
     }
 
     @Test
     public void sendMessageWhenEmailEmptyShouldThrowBadRequestException() throws Exception {
         String email = "";
+
+        BadRequestException actual = null;
+        try {
+            subject.sendMessage(email);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("email"));
+        assertThat(actual.getDescription(), is("Email is required"));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void sendMessageWhenEmailWhiteSpaceShouldThrowBadRequestException() throws Exception {
+        String email = " ";
 
         BadRequestException actual = null;
         try {
@@ -135,12 +151,13 @@ public class ForgotPasswordTest {
 
         String jwt = "some.jwt";
         String password = "plainTextPassword";
+        String repeatPassword = "plainTextPassword";
         String hashedPassword = "hashedPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
         when(mockHashTextRandomSalt.run(password)).thenReturn(hashedPassword);
 
-        subject.reset(jwt, password);
+        subject.reset(jwt, password, repeatPassword);
 
         verify(mockResourceOwnerRepository).updatePassword(nonce.getResourceOwner().getId(), hashedPassword.getBytes());
         verify(mockTokenRepository).revokeActive(nonce.getResourceOwner().getId());
@@ -162,12 +179,13 @@ public class ForgotPasswordTest {
 
         String jwt = "";
         String password = "plainTextPassword";
+        String repeatPassword = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
 
         BadRequestException actual = null;
         try {
-            subject.reset(jwt, password);
+            subject.reset(jwt, password, repeatPassword);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -192,12 +210,13 @@ public class ForgotPasswordTest {
 
         String jwt = null;
         String password = "plainTextPassword";
+        String repeatPassword = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
 
         BadRequestException actual = null;
         try {
-            subject.reset(jwt, password);
+            subject.reset(jwt, password, repeatPassword);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -222,12 +241,13 @@ public class ForgotPasswordTest {
 
         String jwt = "some.jwt";
         String password = "plainTextPassword";
+        String repeatPassword = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(BadRequestException.class);
 
         BadRequestException actual = null;
         try {
-            subject.reset(jwt, password);
+            subject.reset(jwt, password, repeatPassword);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -249,12 +269,13 @@ public class ForgotPasswordTest {
 
         String jwt = "some.jwt";
         String password = "plainTextPassword";
+        String repeatPassword = "plainTextPassword";
 
         when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(NotFoundException.class);
 
         NotFoundException actual = null;
         try {
-            subject.reset(jwt, password);
+            subject.reset(jwt, password, repeatPassword);
         } catch (NotFoundException e) {
             actual = e;
         }

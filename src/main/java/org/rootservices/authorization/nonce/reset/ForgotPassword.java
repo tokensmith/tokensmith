@@ -62,7 +62,7 @@ public class ForgotPassword {
         Map<String, String> msg = new HashMap<>();
         msg.put(MessageKey.TYPE.toString(), MessageType.FORGOT_PASSWORD.toString());
         msg.put(MessageKey.RECIPIENT.toString(), email);
-        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/reset?nonce=");
+        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/update-password?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
         publish.send(Topic.MAILER.toString(), msg);
@@ -75,14 +75,14 @@ public class ForgotPassword {
     }
 
     protected Boolean hasValue(String value) {
-        if (value == null || EMPTY.equals(value)) {
+        if (value == null || EMPTY.equals(value.trim())) {
             return false;
         }
         return true;
     }
 
-    public void reset(String jwt, String password) throws NotFoundException, BadRequestException {
-        validate(jwt, password);
+    public void reset(String jwt, String password, String repeatPassword) throws NotFoundException, BadRequestException {
+        validate(jwt, password, repeatPassword);
 
         Nonce nonce;
         try {
@@ -107,13 +107,21 @@ public class ForgotPassword {
         publish.send(Topic.MAILER.toString(), msg);
     }
 
-    protected void validate(String jwt, String password) throws BadRequestException {
+    protected void validate(String jwt, String password, String repeatPassword) throws BadRequestException {
         if(!hasValue(jwt)) {
             throw new BadRequestException("jwt is invalid", "nonce", "Nonce is required");
         }
 
         if(!hasValue(password)) {
             throw new BadRequestException("password is invalid", "password", "Password is required");
+        }
+
+        if(!hasValue(repeatPassword)) {
+            throw new BadRequestException("repeat password is invalid", "repeatPassword", "Repeat Password is required");
+        }
+
+        if (!password.equals(repeatPassword)) {
+            throw new BadRequestException("passwords do not match", "password", "Passwords do not match");
         }
     }
 }
