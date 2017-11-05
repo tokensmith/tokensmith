@@ -445,4 +445,29 @@ public class ForgotPasswordTest {
         verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
     }
 
+    @Test
+    public void hasValueShouldBeTrue() {
+        Boolean actual = subject.hasValue("some-value");
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void hasValueWhenNullShouldBeFalse() {
+        Boolean actual = subject.hasValue(null);
+        assertThat(actual, is(false));
+    }
+
+    @Test
+    public void hasValueWhenEmptyShouldBeFalse() {
+        Boolean actual = subject.hasValue(null);
+        assertThat(actual, is(""));
+    }
+
+    @Test
+    public void hasValueWhenWhiteSpaceShouldBeFalse() {
+        Boolean actual = subject.hasValue(null);
+        assertThat(actual, is(" "));
+    }
+
+
 }
