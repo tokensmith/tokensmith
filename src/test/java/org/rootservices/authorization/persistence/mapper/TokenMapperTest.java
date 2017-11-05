@@ -201,6 +201,7 @@ public class TokenMapperTest {
 
     @Test
     public void revokeActiveShouldRevoke() throws Exception {
+        AuthCode authCodeToNotRevoke = prepare();
         AuthCode authCode = prepare();
 
         // make sure its not revoked.
@@ -212,5 +213,9 @@ public class TokenMapperTest {
 
         Token actual = subject.getByAuthCodeId(authCode.getId());
         assertThat(actual.isRevoked(), is(true));
+
+        // make sure it didn't revoke other resource owner tokens.
+        Token tokenNotRevoked = subject.getByAuthCodeId(authCodeToNotRevoke.getId());
+        assertThat(tokenNotRevoked.isRevoked(), is(false));
     }
 }
