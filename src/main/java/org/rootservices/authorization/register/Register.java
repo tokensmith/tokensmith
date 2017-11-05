@@ -78,7 +78,7 @@ public class Register {
         insertNonce(ro, hashedNonce);
 
         Map<String, String> msg = new HashMap<>();
-        msg.put(MessageKey.TYPE.toString(), MessageType.WELCOME.toString().toLowerCase());
+        msg.put(MessageKey.TYPE.toString(), MessageType.WELCOME.toString());
         msg.put(MessageKey.RECIPIENT.toString(), ro.getEmail());
         msg.put(MessageKey.BASE_LINK.toString(), issuer + "/welcome?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
