@@ -459,14 +459,14 @@ public class ForgotPasswordTest {
 
     @Test
     public void hasValueWhenEmptyShouldBeFalse() {
-        Boolean actual = subject.hasValue(null);
-        assertThat(actual, is(""));
+        Boolean actual = subject.hasValue("");
+        assertThat(actual, is(false));
     }
 
     @Test
     public void hasValueWhenWhiteSpaceShouldBeFalse() {
-        Boolean actual = subject.hasValue(null);
-        assertThat(actual, is(" "));
+        Boolean actual = subject.hasValue(" ");
+        assertThat(actual, is(false));
     }
 
 
