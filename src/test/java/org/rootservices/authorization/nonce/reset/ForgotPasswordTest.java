@@ -234,7 +234,7 @@ public class ForgotPasswordTest {
     }
 
     @Test
-    public void resetShouldThrowBadRequestException() throws Exception {
+    public void resetWhenBadNonceShouldThrowBadRequestException() throws Exception {
         Nonce nonce = new Nonce();
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         nonce.setResourceOwner(ro);
@@ -260,6 +260,162 @@ public class ForgotPasswordTest {
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
     }
+
+    @Test
+    public void resetWhenPasswordEmptyShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
+        String password = "";
+        String repeatPassword = "plainTextPassword";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password, repeatPassword);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("password"));
+        assertThat(actual.getDescription(), is("Password is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetWhenPasswordNullShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
+        String password = null;
+        String repeatPassword = "plainTextPassword";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password, repeatPassword);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("password"));
+        assertThat(actual.getDescription(), is("Password is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetWhenRepeatPasswordEmptyShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
+        String password = "plainTextPassword";
+        String repeatPassword = "";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password, repeatPassword);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("repeatPassword"));
+        assertThat(actual.getDescription(), is("Repeat Password is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetWhenRepeatPasswordNullShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
+        String password = "plainTextPassword";
+        String repeatPassword = null;
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password, repeatPassword);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("repeatPassword"));
+        assertThat(actual.getDescription(), is("Repeat Password is required"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
+    @Test
+    public void resetWhenPasswordsDontMatchShouldThrowBadRequestException() throws Exception {
+        Nonce nonce = new Nonce();
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        nonce.setResourceOwner(ro);
+
+        String jwt = "some.jwt";
+        String password = "password1";
+        String repeatPassword = "password2";
+
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenReturn(nonce);
+
+        BadRequestException actual = null;
+        try {
+            subject.reset(jwt, password, repeatPassword);
+        } catch (BadRequestException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("password"));
+        assertThat(actual.getDescription(), is("Passwords do not match"));
+
+        verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
+        verify(mockHashTextRandomSalt, never()).run(password);
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
+        verify(mockPublish, never()).send(eq("mailer"), any(HashMap.class));
+    }
+
 
     @Test
     public void resetShouldThrowNotFoundException() throws Exception {
