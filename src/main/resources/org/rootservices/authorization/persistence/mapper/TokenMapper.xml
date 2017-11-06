@@ -88,4 +88,13 @@
         where token = decode(#{accessToken}, 'escape')
     </update>
 
+    <update id="revokeActive">
+        update token
+        set revoked = true
+        from resource_owner_token
+        where resource_owner_token.token_id = token.id
+        and token.expires_at > current_timestamp
+        and resource_owner_token.resource_owner_id = #{resourceOwnerId}
+    </update>
+
 </mapper>

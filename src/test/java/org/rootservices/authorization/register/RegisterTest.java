@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
@@ -73,7 +74,7 @@ public class RegisterTest {
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
 
         NonceType nonceType = new NonceType(UUID.randomUUID(), "welcome", 120, OffsetDateTime.now());
-        when(mockNonceTypeRepository.getByName("welcome")).thenReturn(nonceType);
+        when(mockNonceTypeRepository.getByName(NonceName.WELCOME)).thenReturn(nonceType);
 
         ResourceOwner actual = subject.run(email, password, repeatPassword);
 

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.mapper.NonceMapper;
@@ -64,7 +65,7 @@ public class NonceRepositoryImplTest {
 
         when(mockNonceMapper.getByTypeAndNonce("welcome","nonce")).thenReturn(nonce);
 
-        Nonce actual = subject.getByTypeAndNonce("welcome","nonce");
+        Nonce actual = subject.getByTypeAndNonce(NonceName.WELCOME,"nonce");
 
         assertThat(actual, is(nonce));
     }
@@ -74,7 +75,7 @@ public class NonceRepositoryImplTest {
 
         when(mockNonceMapper.getByTypeAndNonce("welcome", "nonce")).thenReturn(null);
 
-        subject.getByTypeAndNonce("welcome", "nonce");
+        subject.getByTypeAndNonce(NonceName.WELCOME, "nonce");
     }
 
     @Test

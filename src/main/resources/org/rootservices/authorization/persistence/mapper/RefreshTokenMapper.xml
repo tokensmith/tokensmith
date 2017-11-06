@@ -93,6 +93,14 @@
         and token.client_id = #{clientId}
     </select>
 
+    <select id="getByResourceOwner" resultMap="refreshToken">
+        select *
+        from refresh_token
+        join token on token.id = refresh_token.token_id
+        join resource_owner_token on resource_owner_token.token_id = token.id
+        where resource_owner_token.resource_owner_id = #{resourceOwnerId}
+    </select>
+
     <update id="revokeByAuthCodeId">
         update refresh_token
         set revoked = true
@@ -108,4 +116,16 @@
         set revoked = true
         where token_id = #{tokenId}
     </update>
+
+    <update id="revokeActive">
+        update refresh_token
+        set revoked = true
+        from token, resource_owner_token
+        where token.id = refresh_token.token_id
+        and resource_owner_token.token_id = token.id
+        and resource_owner_token.resource_owner_id = #{resourceOwnerId}
+        and refresh_token.expires_at > current_timestamp
+        and refresh_token.revoked = false
+    </update>
+
 </mapper>

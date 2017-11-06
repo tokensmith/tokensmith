@@ -22,9 +22,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by tommackenzie on 10/3/16.
- */
+
 public class RefreshTokenRepositoryImplTest {
     private RefreshTokenRepository subject;
     @Mock
@@ -146,5 +144,14 @@ public class RefreshTokenRepositoryImplTest {
         subject.revokeByTokenId(tokenId);
 
         verify(mockRefreshTokenMapper, times(1)).revokeByTokenId(tokenId);
+    }
+
+    @Test
+    public void revokeActiveShouldBeOk() {
+        UUID resourceOwnerId = UUID.randomUUID();
+
+        subject.revokeActive(resourceOwnerId);
+
+        verify(mockRefreshTokenMapper, times(1)).revokeActive(resourceOwnerId);
     }
 }

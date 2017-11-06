@@ -22,9 +22,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by tommackenzie on 5/23/15.
- */
+
 public class TokenRepositoryImplTest {
 
     @Mock
@@ -125,5 +123,13 @@ public class TokenRepositoryImplTest {
         subject.updateExpiresAtByAccessToken(expiresAt, accessToken);
 
         verify(mockTokenMapper, times(1)).updateExpiresAtByAccessToken(expiresAt, accessToken);
+    }
+
+    @Test
+    public void revokeActiveShouldBeOk() {
+        UUID resourceOwnerId = UUID.randomUUID();
+        subject.revokeActive(resourceOwnerId);
+
+        verify(mockTokenMapper, times(1)).revokeActive(resourceOwnerId);
     }
 }

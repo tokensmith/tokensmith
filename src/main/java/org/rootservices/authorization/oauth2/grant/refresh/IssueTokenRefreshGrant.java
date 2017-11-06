@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Created by tommackenzie on 10/7/16.
- */
+
 @Component
 public class IssueTokenRefreshGrant {
     private InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant;

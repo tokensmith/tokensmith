@@ -13,9 +13,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
-/**
- * Created by tommackenzie on 5/23/15.
- */
 @Component
 public class TokenRepositoryImpl implements TokenRepository {
     private static String SCHEMA = "token";
@@ -63,5 +60,10 @@ public class TokenRepositoryImpl implements TokenRepository {
         }
 
         return token;
+    }
+
+    @Override
+    public void revokeActive(UUID resourceOwnerId) {
+        tokenMapper.revokeActive(resourceOwnerId);
     }
 }
