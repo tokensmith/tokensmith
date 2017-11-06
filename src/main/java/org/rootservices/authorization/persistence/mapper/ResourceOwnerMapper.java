@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-/**
- * Created by tommackenzie on 9/24/14.
- */
+
 @Repository
 public interface ResourceOwnerMapper {
     ResourceOwner getById(@Param("id") UUID id);
@@ -18,4 +16,5 @@ public interface ResourceOwnerMapper {
     ResourceOwner getByAccessTokenWithProfileAndTokens(@Param("accessToken") String accessToken);
     void insert(@Param("resourceOwner") ResourceOwner resourceOwner);
     void setEmailVerified(@Param("id") UUID id);
+    void updatePassword(@Param("id") UUID id, @Param("password") byte[] password);
 }

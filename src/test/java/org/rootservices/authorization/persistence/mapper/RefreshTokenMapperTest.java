@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -23,9 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-/**
- * Created by tommackenzie on 10/2/16.
- */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:spring-auth-test.xml"})
 @Transactional
@@ -37,6 +36,8 @@ public class RefreshTokenMapperTest {
     @Autowired
     private TokenMapper tokenMapper;
     @Autowired
+    private ResourceOwnerTokenMapper resourceOwnerTokenMapper;
+    @Autowired
     private TokenAudienceMapper tokenAudienceMapper;
     @Autowired
     private TokenLeadTokenMapper tokenLeadTokenMapper;
@@ -44,8 +45,6 @@ public class RefreshTokenMapperTest {
     private ScopeMapper scopeMapper;
     @Autowired
     private TokenScopeMapper tokenScopeMapper;
-    @Autowired
-    private TokenAudienceMapper clientTokenMapper;
     @Autowired
     private LoadConfClientTokenReady loadConfClientTokenReady;
     @Autowired
@@ -77,10 +76,72 @@ public class RefreshTokenMapperTest {
         return token;
     }
 
+    public RefreshToken prepare() throws Exception {
+        return prepare(OffsetDateTime.now().minusDays(1), OffsetDateTime.now().plusSeconds(1209600));
+    }
+
+    public RefreshToken prepare(OffsetDateTime tokenExpiresAt, OffsetDateTime refreshTokenExpiresAt) throws Exception {
+        // begin prepare db for test.
+        String plainTextAuthCode = randomString.run();
+        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
+
+        String accessToken = randomString.run();
+        String leadAccessToken = randomString.run();
+
+        UUID clientId = authCode.getAccessRequest().getClientId();
+        Token leadToken = loadToken(leadAccessToken, OffsetDateTime.now().minusDays(10), false, clientId);
+
+        ResourceOwner ro = new ResourceOwner();
+        ro.setId(authCode.getAccessRequest().getResourceOwnerId());
+
+        Token token = loadTokenWithScopes(accessToken, tokenExpiresAt, false, clientId);
+        token.setLeadToken(leadToken);
+
+        // lead token rot.
+        ResourceOwnerToken leadRot = new ResourceOwnerToken();
+        leadRot.setId(UUID.randomUUID());
+        leadRot.setResourceOwner(ro);
+        leadRot.setToken(leadToken);
+        resourceOwnerTokenMapper.insert(leadRot);
+
+        // token rot
+        ResourceOwnerToken rot = new ResourceOwnerToken();
+        rot.setId(UUID.randomUUID());
+        rot.setResourceOwner(ro);
+        rot.setToken(token);
+        resourceOwnerTokenMapper.insert(rot);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(clientId);
+        tokenAudienceMapper.insert(tokenAudience);
+
+        AuthCodeToken authCodeToken = new AuthCodeToken();
+        authCodeToken.setId(UUID.randomUUID());
+        authCodeToken.setAuthCodeId(authCode.getId());
+        authCodeToken.setTokenId(token.getId());
+        authCodeTokenMapper.insert(authCodeToken);
+
+        // XXX: should it insert a client token?
+
+        String refreshAccessToken = randomString.run();
+        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
+        refreshToken.setExpiresAt(refreshTokenExpiresAt);
+        subject.insert(refreshToken);
+
+        return refreshToken;
+    }
+
     @Test
     public void insertShouldBeOk() throws Exception {
         String accessToken = "access-token";
-        String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
 
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
@@ -98,7 +159,6 @@ public class RefreshTokenMapperTest {
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() throws Exception {
         String accessToken = "access-token";
-        String headAccessToken = "head-access-token";
         String refreshAccessToken = "refresh-access-token";
 
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
@@ -138,45 +198,8 @@ public class RefreshTokenMapperTest {
 
     @Test
     public void getByClientIdAndTokenShouldBeOk() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
-
-        String accessToken = "access-token";
-        String leadAccessToken = "lead-access-token";
-
-        UUID clientId = authCode.getAccessRequest().getClientId();
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
-        Token leadToken = loadToken(leadAccessToken, OffsetDateTime.now().minusDays(10), false, clientId);
-
-        TokenLeadToken tlt = new TokenLeadToken();
-        tlt.setId(UUID.randomUUID());
-        tlt.setTokenId(token.getId());
-        tlt.setLeadTokenId(leadToken.getId());
-        tokenLeadTokenMapper.insert(tlt);
-
-        TokenAudience tokenAudience = new TokenAudience();
-        tokenAudience.setId(UUID.randomUUID());
-        tokenAudience.setTokenId(token.getId());
-        tokenAudience.setClientId(clientId);
-        tokenAudienceMapper.insert(tokenAudience);
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        TokenAudience clientToken = new TokenAudience();
-        clientToken.setId(UUID.randomUUID());
-        clientToken.setClientId(clientId);
-        clientToken.setTokenId(token.getId());
-        clientTokenMapper.insert(clientToken);
-
-        String refreshAccessToken = "refresh-access-token";
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
-        // end prepare db for test.
+        RefreshToken refreshToken = prepare();
+        UUID clientId = refreshToken.getToken().getClientId();
 
         String hashedRefreshAccessToken = new String(refreshToken.getAccessToken());
         RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedRefreshAccessToken);
@@ -189,7 +212,7 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getToken(), is(notNullValue()));
-        assertThat(actual.getToken().getId(), is(token.getId()));
+        assertThat(actual.getToken().getId(), is(refreshToken.getToken().getId()));
         assertThat(actual.getToken().getToken(), is(notNullValue()));
         assertThat(actual.getToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
 
@@ -203,10 +226,10 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
 
         assertThat(actual.getToken().getLeadToken(), is(notNullValue()));
-        assertThat(actual.getToken().getLeadToken().getId(), is(leadToken.getId()));
+        assertThat(actual.getToken().getLeadToken().getId(), is(refreshToken.getToken().getLeadToken().getId()));
         assertThat(actual.getToken().getLeadToken().isRevoked(), is(false));
         assertThat(actual.getToken().getLeadToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getToken().getLeadToken().getClientId(), is(leadToken.getClientId()));
+        assertThat(actual.getToken().getLeadToken().getClientId(), is(refreshToken.getToken().getClientId()));
         assertThat(actual.getToken().getLeadToken().getCreatedAt(), is(notNullValue()));
         assertThat(actual.getToken().getLeadToken().getExpiresAt(), is(notNullValue()));
 
@@ -224,186 +247,112 @@ public class RefreshTokenMapperTest {
 
     @Test
     public void getByClientIdAndAccessTokenWhenRefreshTokenIsRevokedShouldBeNull() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
+        RefreshToken refreshToken = prepare();
+        UUID clientId = refreshToken.getToken().getClientId();
+        String hashedRefreshAccessToken = new String(refreshToken.getAccessToken());
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
+        subject.revokeByTokenId(refreshToken.getToken().getId());
 
-        TokenAudience tokenAudience = new TokenAudience();
-        tokenAudience.setId(UUID.randomUUID());
-        tokenAudience.setTokenId(token.getId());
-        tokenAudience.setClientId(clientId);
-        tokenAudienceMapper.insert(tokenAudience);
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
-
-        subject.revokeByTokenId(token.getId());
-        // end prepare db for test.
-
-        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
+        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedRefreshAccessToken);
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
-    public void getByTokenWhenRefreshTokenIsExpiredShouldBeNull() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
+    public void getByClientIdAndAccessTokenWhenRefreshTokenIsExpiredShouldBeNull() throws Exception {
+        RefreshToken refreshToken = prepare(OffsetDateTime.now().minusDays(1), OffsetDateTime.now().minusHours(1));
+        UUID clientId = refreshToken.getToken().getClientId();
+        String hashedRefreshAccessToken = new String(refreshToken.getAccessToken());
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
-
-        TokenAudience tokenAudience = new TokenAudience();
-        tokenAudience.setId(UUID.randomUUID());
-        tokenAudience.setTokenId(token.getId());
-        tokenAudience.setClientId(clientId);
-        tokenAudienceMapper.insert(tokenAudience);
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        refreshToken.setExpiresAt(OffsetDateTime.now().minusHours(1));
-        subject.insert(refreshToken);
-        // end prepare db for test.
-
-        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
+        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedRefreshAccessToken);
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void getByClientIdAndAccessTokenWhenTokenIsNotExpiredShouldBeNull() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
+        RefreshToken refreshToken = prepare(OffsetDateTime.now().plusSeconds(1209600), OffsetDateTime.now().minusHours(1));
+        UUID clientId = refreshToken.getToken().getClientId();
+        String hashedRefreshAccessToken = new String(refreshToken.getAccessToken());
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, clientId);
-
-        TokenAudience tokenAudience = new TokenAudience();
-        tokenAudience.setId(UUID.randomUUID());
-        tokenAudience.setTokenId(token.getId());
-        tokenAudience.setClientId(clientId);
-        tokenAudienceMapper.insert(tokenAudience);
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
-        // end prepare db for test.
-
-        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
+        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedRefreshAccessToken);
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void getByClientIdAndAccessTokenWhenTokenRevokedShouldBeNull() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
+        RefreshToken refreshToken = prepare();
+        UUID clientId = refreshToken.getToken().getClientId();
+        String hashedRefreshAccessToken = new String(refreshToken.getAccessToken());
 
-        UUID clientId = authCode.getAccessRequest().getClientId();
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), true, clientId);
+        tokenMapper.revokeById(refreshToken.getToken().getId());
 
-        TokenAudience tokenAudience = new TokenAudience();
-        tokenAudience.setId(UUID.randomUUID());
-        tokenAudience.setTokenId(token.getId());
-        tokenAudience.setClientId(clientId);
-        tokenAudienceMapper.insert(tokenAudience);
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
-        // end prepare db for test.
-
-        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, accessToken);
+        RefreshToken actual = subject.getByClientIdAndAccessToken(clientId, hashedRefreshAccessToken);
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void revokeByAuthCodeIdShouldBeOk() throws Exception {
-        // begin prepare db for test.
-        String plainTextAuthCode = randomString.run();
-        AuthCode authCode = loadConfClientTokenReady.run(true, false, plainTextAuthCode);
-
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, authCode.getAccessRequest().getClientId());
-
-        AuthCodeToken authCodeToken = new AuthCodeToken();
-        authCodeToken.setId(UUID.randomUUID());
-        authCodeToken.setAuthCodeId(authCode.getId());
-        authCodeToken.setTokenId(token.getId());
-        authCodeTokenMapper.insert(authCodeToken);
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
-        // end prepare db for test.
+        RefreshToken refreshToken = prepare();
+        AuthCodeToken act =  authCodeTokenMapper.getByTokenId(refreshToken.getToken().getId());
 
         assertThat(refreshToken.isRevoked(), is(false));
 
-        subject.revokeByAuthCodeId(authCode.getId());
+        subject.revokeByAuthCodeId(act.getAuthCodeId());
 
-        RefreshToken actual = subject.getByTokenId(token.getId());
+        RefreshToken actual = subject.getByTokenId(refreshToken.getToken().getId());
 
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.isRevoked(), is(true));
     }
 
     @Test
+    public void getByResourceOwnerShouldBeOk() throws Exception {
+        RefreshToken refreshToken = prepare();
+
+        String hashedAccessToken = new String(refreshToken.getToken().getToken());
+        ResourceOwnerToken rot = resourceOwnerTokenMapper.getByAccessToken(hashedAccessToken);
+
+        List<RefreshToken> actual = subject.getByResourceOwner(rot.getResourceOwner().getId());
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.size(), is(1));
+    }
+
+    @Test
     public void revokeByTokenIdShouldBeOk() throws Exception {
-        String accessToken = "access-token";
-        String refreshAccessToken = "refresh-access-token";
-
-        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
-        clientMapper.insert(client);
-
-        Token token = loadTokenWithScopes(accessToken, OffsetDateTime.now().minusHours(1), false, client.getId());
-
-        RefreshToken refreshToken = FixtureFactory.makeRefreshToken(refreshAccessToken, token);
-        subject.insert(refreshToken);
+        RefreshToken refreshToken = prepare();
+        UUID tokenId = refreshToken.getToken().getId();
 
         assertThat(refreshToken.isRevoked(), is(false));
 
-        subject.revokeByTokenId(token.getId());
+        subject.revokeByTokenId(tokenId);
 
-        RefreshToken actual = subject.getByTokenId(token.getId());
+        RefreshToken actual = subject.getByTokenId(tokenId);
 
         assertThat(actual.getId(), is(refreshToken.getId()));
         assertThat(actual.isRevoked(), is(true));
+    }
+
+    @Test
+    public void revokeActiveShouldBeOK() throws Exception {
+        RefreshToken refreshToken = prepare();
+
+        assertThat(refreshToken.isRevoked(), is(false));
+
+        String hashedAccessToken = new String(refreshToken.getToken().getToken());
+        ResourceOwnerToken rot = resourceOwnerTokenMapper.getByAccessToken(hashedAccessToken);
+
+        assertThat(rot, is(notNullValue()));
+
+        // revoke active.
+        subject.revokeActive(rot.getResourceOwner().getId());
+
+        List<RefreshToken> refreshTokens = subject.getByResourceOwner(rot.getResourceOwner().getId());
+        assertThat(refreshTokens, is(notNullValue()));
+        assertThat(refreshTokens.size(), is(1));
+        assertThat(refreshTokens.get(0).isRevoked(), is(true));
     }
 
 }

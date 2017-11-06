@@ -1,8 +1,10 @@
-package org.rootservices.authorization.welcome;
+package org.rootservices.authorization.nonce.welcome;
 
 import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.NotFoundException;
+import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
+import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Welcome {
-    private static String WELCOME_TYPE = "welcome";
     private HashTextStaticSalt hashTextStaticSalt;
     private NonceRepository nonceRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
@@ -48,7 +49,7 @@ public class Welcome {
 
         Nonce nonce;
         try {
-            nonce = nonceRepository.getByTypeAndNonce(WELCOME_TYPE, hashedNonce);
+            nonce = nonceRepository.getByTypeAndNonce(NonceName.WELCOME, hashedNonce);
         } catch (RecordNotFoundException e) {
             throw new NotFoundException("Nonce not found", e);
         }
