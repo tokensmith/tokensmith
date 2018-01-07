@@ -1,1 +1,0 @@
-alter table token add column revoked boolean default false;

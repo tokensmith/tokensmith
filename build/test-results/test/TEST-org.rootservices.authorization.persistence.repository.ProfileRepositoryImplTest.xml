@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.persistence.repository.ProfileRepositoryImplTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:08" hostname="Kristins-MBP" time="0.286">
-  <properties/>
-  <testcase name="insert" classname="org.rootservices.authorization.persistence.repository.ProfileRepositoryImplTest" time="0.152"/>
-  <testcase name="testGetByResourceOwnerIdShouldReturnProfile" classname="org.rootservices.authorization.persistence.repository.ProfileRepositoryImplTest" time="0.132"/>
-  <testcase name="testGetByResourceOwnerIdShouldThrowRecordNotFound" classname="org.rootservices.authorization.persistence.repository.ProfileRepositoryImplTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

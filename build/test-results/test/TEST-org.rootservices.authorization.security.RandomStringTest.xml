@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.security.RandomStringTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:09" hostname="Kristins-MBP" time="0.003">
-  <properties/>
-  <testcase name="runNumChars32ShouldReturnCorrectLength" classname="org.rootservices.authorization.security.RandomStringTest" time="0.0"/>
-  <testcase name="runNumChars64ShouldReturnCorrectLength" classname="org.rootservices.authorization.security.RandomStringTest" time="0.0"/>
-  <testcase name="runNumChars128ShouldReturnCorrectLength" classname="org.rootservices.authorization.security.RandomStringTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

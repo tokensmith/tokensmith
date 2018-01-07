@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.nonce.welcome.WelcomeTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:51" hostname="Kristins-MBP" time="2.987">
-  <properties/>
-  <testcase name="markEmailVerifiedShouldBeOK" classname="org.rootservices.authorization.nonce.welcome.WelcomeTest" time="2.924"/>
-  <testcase name="markEmailVerifiedWhenNonceNotFoundShouldThrowNotFoundExceptionException" classname="org.rootservices.authorization.nonce.welcome.WelcomeTest" time="0.061"/>
-  <testcase name="markEmailVerifiedWhenMangledNonceShouldThrowBadRequestExceptionException" classname="org.rootservices.authorization.nonce.welcome.WelcomeTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

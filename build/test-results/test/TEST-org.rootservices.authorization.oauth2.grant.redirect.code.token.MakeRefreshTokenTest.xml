@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeRefreshTokenTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:03" hostname="Kristins-MBP" time="0.145">
-  <properties/>
-  <testcase name="runShouldBeOk" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.MakeRefreshTokenTest" time="0.145"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
