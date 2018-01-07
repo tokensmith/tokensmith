@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.nonce.SpendNonceTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:44" hostname="Kristins-MBP" time="2.656">
+  <properties/>
+  <testcase name="spendShouldThrowNotFoundExceptionException" classname="org.rootservices.authorization.nonce.SpendNonceTest" time="2.313"/>
+  <testcase name="spendShouldThrowBadRequestExceptionException" classname="org.rootservices.authorization.nonce.SpendNonceTest" time="0.003"/>
+  <testcase name="spendShouldBeOK" classname="org.rootservices.authorization.nonce.SpendNonceTest" time="0.286"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

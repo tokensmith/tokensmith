@@ -7,6 +7,7 @@ import org.rootservices.authorization.persistence.entity.Client;
 import org.rootservices.authorization.persistence.entity.ClientScope;
 import org.rootservices.authorization.persistence.entity.ResponseType;
 import org.rootservices.authorization.persistence.entity.Scope;
+import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ClientRepository;
 import org.rootservices.authorization.persistence.repository.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +45,19 @@ public class ClientScopesMapperTests {
         return client.getId();
     }
 
-    private UUID insertScope() {
-        Scope scope = new Scope(
-                UUID.randomUUID(),
-                "profile"
-        );
-        scopeRepository.insert(scope);
+    private UUID insertScope() throws Exception {
+
+        Scope scope = null;
+        try {
+            scope = scopeRepository.findByName("profile");
+        } catch (RecordNotFoundException e) {
+            throw new Exception("profile scope should have been seeded in migrations.");
+        }
         return scope.getId();
     }
 
     @Test
-    public void insert() throws URISyntaxException {
+    public void insert() throws Exception {
         UUID clientUUID = insertClient();
         UUID scopeUUID = insertScope();
 

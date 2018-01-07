@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.repository.ConfidentialClientRepositoryImplTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:20" hostname="Kristins-MBP" time="0.242">
+  <properties/>
+  <testcase name="insert" classname="org.rootservices.authorization.persistence.repository.ConfidentialClientRepositoryImplTest" time="0.134"/>
+  <testcase name="getByClientUUIDRecordNotFound" classname="org.rootservices.authorization.persistence.repository.ConfidentialClientRepositoryImplTest" time="0.001"/>
+  <testcase name="getByClientUUID" classname="org.rootservices.authorization.persistence.repository.ConfidentialClientRepositoryImplTest" time="0.107"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

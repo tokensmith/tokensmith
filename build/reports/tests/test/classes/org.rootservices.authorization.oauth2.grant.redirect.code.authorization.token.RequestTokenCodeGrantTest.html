@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.html">org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token</a> &gt; RequestTokenCodeGrantTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">10</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">9.864s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">requesstWhenRedirectUriIsNotHttpsShouldThrowBadRequestException</td>
+<td>0.661s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestShouldBeOk</td>
+<td>1.252s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestShouldBeOpenIdExtension</td>
+<td>1.171s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenCodeIsCompromisedShouldThrowBadRequestException</td>
+<td>1.549s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenCodeIsRevokedShouldThrowNotFoundException</td>
+<td>1.080s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenLoginClientFailsShouldThrowUnauthorizedException</td>
+<td>1.254s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenMissingCodeShouldThrowBadRequestException</td>
+<td>0.666s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenMissingRedirectUriShouldThrowNotFoundException</td>
+<td>0.820s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenPayloadHasUnknownKeyShouldThrowBadRequestException</td>
+<td>0.746s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">requestWhenRedirectUriIsNotValidShouldThrowBadRequestException</td>
+<td>0.665s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-01-07T10:01:53,879  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:01:53,880  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:01:53,881  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5575d11d, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@47dd6c0d, org.springframework.test.context.support.DirtiesContextTestExecutionListener@2a372245, org.springframework.test.context.transaction.TransactionalTestExecutionListener@312aff83, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4aac3d82]
+2018-01-07T10:01:53,890  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@38f3bb9, testMethod = requestWhenLoginClientFailsShouldThrowUnauthorizedException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:55,142  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@38f3bb9, testMethod = requestWhenLoginClientFailsShouldThrowUnauthorizedException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:55,144  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@72b70382, testMethod = requestWhenPayloadHasUnknownKeyShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:55,889  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@72b70382, testMethod = requestWhenPayloadHasUnknownKeyShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:55,891  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@906113b, testMethod = requestWhenMissingCodeShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:56,556  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@906113b, testMethod = requestWhenMissingCodeShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:56,557  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@3693cd34, testMethod = requestWhenRedirectUriIsNotValidShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:57,221  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@3693cd34, testMethod = requestWhenRedirectUriIsNotValidShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:57,223  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@5467de12, testMethod = requestWhenCodeIsRevokedShouldThrowNotFoundException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:58,301  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@5467de12, testMethod = requestWhenCodeIsRevokedShouldThrowNotFoundException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:58,303  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@181e2edb, testMethod = requestShouldBeOpenIdExtension@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:01:59,472  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@181e2edb, testMethod = requestShouldBeOpenIdExtension@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:59,474  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@1b6eac23, testMethod = requesstWhenRedirectUriIsNotHttpsShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:00,134  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@1b6eac23, testMethod = requesstWhenRedirectUriIsNotHttpsShouldThrowBadRequestException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:00,138  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@728482e5, testMethod = requestShouldBeOk@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:01,387  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@728482e5, testMethod = requestShouldBeOk@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:01,389  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@7f2fd742, testMethod = requestWhenMissingRedirectUriShouldThrowNotFoundException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:02,208  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@61aa2dd2 testClass = RequestTokenCodeGrantTest, testInstance = org.rootservices.authorization.oauth2.grant.redirect.code.authorization.token.RequestTokenCodeGrantTest@7f2fd742, testMethod = requestWhenMissingRedirectUriShouldThrowNotFoundException@RequestTokenCodeGrantTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@663d8dde testClass = RequestTokenCodeGrantTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:03,666  INFO Test worker xml.XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [org/springframework/jdbc/support/sql-error-codes.xml]
+2018-01-07T10:02:03,723  INFO Test worker support.SQLErrorCodesFactory:126 - SQLErrorCodes loaded: [DB2, Derby, H2, HSQL, Informix, MS-SQL, MySQL, Oracle, PostgreSQL, Sybase, Hana]
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Jan 7, 2018 10:02:21 AM</p>
+</div>
+</div>
+</body>
+</html>

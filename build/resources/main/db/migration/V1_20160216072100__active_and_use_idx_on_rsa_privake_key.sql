@@ -1,0 +1,1 @@
+CREATE INDEX active_and_use_idx on rsa_private_key (active, use);

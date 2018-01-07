@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentityTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:58" hostname="Kristins-MBP" time="0.74">
+  <properties/>
+  <testcase name="requestShouldReturnIdentity" classname="org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentityTest" time="0.292"/>
+  <testcase name="requestWhenKeyNotFoundShouldThrowInformClientException" classname="org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentityTest" time="0.154"/>
+  <testcase name="requestWhenJwtEncodingErrorShouldThrowInformClientException" classname="org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentityTest" time="0.146"/>
+  <testcase name="requestWhenProfileNotFoundShouldThrowInformClientException" classname="org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentityTest" time="0.147"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:07" hostname="Kristins-MBP" time="0.036">
+  <properties/>
+  <testcase name="getMostRecentAndActiveForSigningShouldThrowRecordNotFound" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.032"/>
+  <testcase name="getWhereActiveAndUseIsSignShouldReturnList" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.001"/>
+  <testcase name="getByIdActiveSignShouldReturnKey" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.001"/>
+  <testcase name="getByIdActiveSignShouldReturnRecord" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.0"/>
+  <testcase name="testInsert" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.001"/>
+  <testcase name="getMostRecentAndActiveForSigningShouldFindRecord" classname="org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepositoryImplTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

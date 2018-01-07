@@ -5,7 +5,7 @@ Dependencies
 ------------
  - Postgres 9.3
  - Java 1.8
- - Maven 3.2.3
+ - Gradle 4.4
 
 Contributing
 ------------
@@ -29,7 +29,7 @@ $ export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
 $ export ISSUER="https://sso.rootservices.org"
 ```
 
-Environment Variable for publishing to a queue
+Environment Variable for publishing to a message queue
 ----------------------------------------------
 
 See pelican for details.
@@ -41,8 +41,8 @@ $ export MESSAGE_QUEUE_HOST='localhost:9092'
 Running migrations (replace values where necessary).
 ----------------------------------------------------
 ```
-mvn clean package -DskipTests
-mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth" -Dflyway.initOnMigrate=true
+$ ./gradlew -x test clean build
+$ ./gradlew flywayMigrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth"  
 ```
 
 Running the tests from the terminal.

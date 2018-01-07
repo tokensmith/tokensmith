@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.html">integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType</a> &gt; ClientFoundTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">6</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.105s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">responseTypeHasTwoItemsShouldThrowInformClientException</td>
+<td>0.015s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">responseTypeIsBlankStringShouldThrowInformClientException</td>
+<td>0.014s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">responseTypeIsEmptyListShouldThrowInformClientException</td>
+<td>0.026s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">responseTypeIsInvalidShouldThrowInformClientException</td>
+<td>0.013s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">responseTypeIsNullShouldThrowInformClientException</td>
+<td>0.014s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">responseTypesDontMatchShouldThrowInformClientException</td>
+<td>0.023s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-01-07T10:01:44,608  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:01:44,609  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:01:44,610  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@4d1efe7c, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@6c074312, org.springframework.test.context.support.DirtiesContextTestExecutionListener@3f61ef7d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@11e8b91e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2b3f4841]
+2018-01-07T10:01:44,624  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@1b494a5, testMethod = responseTypesDontMatchShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,645  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@1b494a5, testMethod = responseTypesDontMatchShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:44,648  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@76b07264, testMethod = responseTypeIsBlankStringShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,660  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@76b07264, testMethod = responseTypeIsBlankStringShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:44,666  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@5fe37ef5, testMethod = responseTypeHasTwoItemsShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,677  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@5fe37ef5, testMethod = responseTypeHasTwoItemsShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:44,681  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@3f6a02a, testMethod = responseTypeIsInvalidShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,692  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@3f6a02a, testMethod = responseTypeIsInvalidShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:44,695  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@53bc0f59, testMethod = responseTypeIsNullShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,706  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@53bc0f59, testMethod = responseTypeIsNullShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:44,710  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@117875ec, testMethod = responseTypeIsEmptyListShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2d976234]; rollback [true]
+2018-01-07T10:01:44,734  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@4804ddfb testClass = ClientFoundTest, testInstance = integration.authorization.oauth2.grant.token.request.ValidateParams.validation.ResponseType.ClientFoundTest@117875ec, testMethod = responseTypeIsEmptyListShouldThrowInformClientException@ClientFoundTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@7df681e7 testClass = ClientFoundTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Jan 7, 2018 10:02:21 AM</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:56" hostname="Kristins-MBP" time="0.022">
+  <properties/>
+  <testcase name="runWhenRequiredAndOptionalAndUnknownKeyShouldThrowUnknownKeyException" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.002"/>
+  <testcase name="runWhenRedirectUriMissingShouldBeOk" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.003"/>
+  <testcase name="runShouldBeOk" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.001"/>
+  <testcase name="runWhenRedirectUriIsEmptyValueShouldThrowInvalidValueException" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.002"/>
+  <testcase name="runWhenRequiredAndUnknownKeyShouldThrowUnknownKeyException" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.0"/>
+  <testcase name="runWhenRedirectUriIsInvalidShouldThrowInvalidValueException" classname="org.rootservices.authorization.oauth2.grant.redirect.code.token.factory.TokenInputCodeGrantFactoryTest" time="0.001"/>
+  <system-out><![CDATA[2018-01-07T10:01:56,972  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:01:56,976  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:01:56,977  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5abfe445, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@8303934, org.springframework.test.context.support.DirtiesContextTestExecutionListener@359ca422, org.springframework.test.context.transaction.TransactionalTestExecutionListener@78982c70, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@5d2072ea]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

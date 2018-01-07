@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:08" hostname="Kristins-MBP" time="1.582">
+  <properties/>
+  <testcase name="makeWhenInvalidJsonWebKeyExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.366"/>
+  <testcase name="makeWhenJwtToJsonExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.149"/>
+  <testcase name="makeWhenInvalidAlgorithmExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.111"/>
+  <testcase name="makeShouldReturnEncodedJwt" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.109"/>
+  <testcase name="makeIdentityOnlyShouldReturnEncodedJwt" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.106"/>
+  <testcase name="makeIdentityOnlyWhenJwtToJsonExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.104"/>
+  <testcase name="makeShouldThrowKeyNotFoundException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.109"/>
+  <testcase name="makeIdentityOnlyShouldThrowKeyNotFoundException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.106"/>
+  <testcase name="makeShouldThrowProfileNotFoundException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.105"/>
+  <testcase name="makeIdentityOnlyShouldThrowProfileNotFoundException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.103"/>
+  <testcase name="makeIdentityOnlyWhenInvalidAlgorithmExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.105"/>
+  <testcase name="makeIdentityOnlyWhenInvalidJsonWebKeyExceptionShouldThrowIdTokenException" classname="org.rootservices.authorization.openId.identity.MakeImplicitIdentityTokenTest" time="0.105"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

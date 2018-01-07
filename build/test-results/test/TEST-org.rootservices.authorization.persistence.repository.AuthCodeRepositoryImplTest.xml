@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:05" hostname="Kristins-MBP" time="0.046">
+  <properties/>
+  <testcase name="getByIdShouldBeOk" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.04"/>
+  <testcase name="testInsertDuplicateExpectDuplicateRecordException" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.001"/>
+  <testcase name="getByClientIdAndAuthCodeShouldBeOk" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.001"/>
+  <testcase name="revokeByIdShouldBeOk" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.0"/>
+  <testcase name="testInsert" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.001"/>
+  <testcase name="getByClientIdAndAuthCodeShouldThrowRecordNotFound" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.001"/>
+  <testcase name="getByIdShouldThrowRecordNotFound" classname="org.rootservices.authorization.persistence.repository.AuthCodeRepositoryImplTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,1 @@
+alter table token add constraint token_unique unique (token);

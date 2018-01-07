@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.NonceTypeMapper">
+
+    <resultMap id="nonceType" type="org.rootservices.authorization.persistence.entity.NonceType">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="name" property="name"/>
+        <id column="seconds_to_expiry" property="secondsToExpiry"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+    </resultMap>
+
+    <insert id="insert">
+        insert into nonce_type (id, name)
+        values (
+            #{nonceType.id},
+            #{nonceType.name}
+        )
+    </insert>
+
+    <select id="getById" resultMap="nonceType">
+        select nonce_type.id, nonce_type.name, nonce_type.seconds_to_expiry, nonce_type.created_at
+        from nonce_type
+        where nonce_type.id = #{id}
+    </select>
+
+    <select id="getByName" resultMap="nonceType">
+        select nonce_type.id, nonce_type.name, nonce_type.seconds_to_expiry, nonce_type.created_at
+        from nonce_type
+        where nonce_type.name = #{name}
+    </select>
+
+</mapper>

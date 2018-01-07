@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rootservices.authorization.persistence.mapper.ConfigurationMapper">
+
+    <resultMap id="configuration" type="org.rootservices.authorization.persistence.entity.Configuration">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="access_token_size" property="accessTokenSize" />
+        <result column="authorization_code_size" property="authorizationCodeSize" />
+        <result column="refresh_token_size" property="refreshTokenSize" />
+        <result column="access_token_code_seconds_to_expiry" property="accessTokenCodeSecondsToExpiry" />
+        <result column="access_token_token_seconds_to_expiry" property="accessTokenTokenSecondsToExpiry" />
+        <result column="access_token_password_seconds_to_expiry" property="accessTokenPasswordSecondsToExpiry"  />
+        <result column="access_token_refresh_seconds_to_expiry" property="accessTokenRefreshSecondsToExpiry" />
+        <result column="access_token_client_seconds_to_expiry" property="accessTokenClientSecondsToExpiry"  />
+        <result column="authorization_code_seconds_to_expiry" property="authorizationCodeSecondsToExpiry"  />
+        <result column="refresh_token_seconds_to_expiry" property="refreshTokenSecondsToExpiry"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="get" resultMap="configuration">
+        select
+            configuration.id,
+            configuration.access_token_size,
+            configuration.authorization_code_size,
+            configuration.refresh_token_size,
+            configuration.access_token_code_seconds_to_expiry,
+            configuration.access_token_token_seconds_to_expiry,
+            configuration.access_token_password_seconds_to_expiry,
+            configuration.access_token_refresh_seconds_to_expiry,
+            configuration.access_token_client_seconds_to_expiry,
+            configuration.authorization_code_seconds_to_expiry,
+            configuration.refresh_token_seconds_to_expiry,
+            configuration.created_at,
+            configuration.updated_at
+        from configuration
+        limit 1
+    </select>
+
+    <update id="updateAccessTokenSize">
+        update configuration
+        set access_token_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
+    <update id="updateAuthorizationCodeSize">
+        update configuration
+        set authorization_code_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
+    <update id="updateRefreshTokenSize">
+        update configuration
+        set refresh_token_size = #{size},
+        updated_at=now()
+        where id=#{id}
+    </update>
+
+</mapper>

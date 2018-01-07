@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslatorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:02" hostname="Kristins-MBP" time="0.001">
+  <properties/>
+  <testcase name="toShouldTranslate" classname="org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslatorTest" time="0.001"/>
+  <testcase name="fromShouldTranslate" classname="org.rootservices.authorization.openId.identity.translator.PrivateKeyTranslatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

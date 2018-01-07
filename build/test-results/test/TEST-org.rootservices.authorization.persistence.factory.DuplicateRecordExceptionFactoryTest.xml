@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactoryTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:10" hostname="Kristins-MBP" time="0.001">
+  <properties/>
+  <testcase name="makeWhenAuthCodeShouldHaveKeyPresent" classname="org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactoryTest" time="0.0"/>
+  <testcase name="makeWhenResourceOwnerShouldHaveKeyPresent" classname="org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactoryTest" time="0.001"/>
+  <testcase name="makeShouldNotHaveKeyPresent" classname="org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactoryTest" time="0.0"/>
+  <testcase name="makeShouldHaveKeyPresent" classname="org.rootservices.authorization.persistence.factory.DuplicateRecordExceptionFactoryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

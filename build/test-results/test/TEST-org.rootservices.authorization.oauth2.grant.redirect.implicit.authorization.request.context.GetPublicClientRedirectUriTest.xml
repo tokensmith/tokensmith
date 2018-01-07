@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUriTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:58" hostname="Kristins-MBP" time="0.012">
+  <properties/>
+  <testcase name="clientFoundRedirectUriMismatch" classname="org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUriTest" time="0.001"/>
+  <testcase name="clientFoundRedirectUriIsNotPresent" classname="org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUriTest" time="0.001"/>
+  <testcase name="clientNotFound" classname="org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUriTest" time="0.001"/>
+  <testcase name="clientFoundRedirectUrisMatch" classname="org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUriTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
