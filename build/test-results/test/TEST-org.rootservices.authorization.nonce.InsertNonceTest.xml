@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.nonce.InsertNonceTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:01:49" hostname="Kristins-MBP" time="2.203">
-  <properties/>
-  <testcase name="insertByResourceOwnerShouldInsertNonce" classname="org.rootservices.authorization.nonce.InsertNonceTest" time="2.201"/>
-  <testcase name="insertByEmailShouldInsertNonce" classname="org.rootservices.authorization.nonce.InsertNonceTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

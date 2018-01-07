@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.persistence.repository.ClientResponseTypeRepositoryImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:08" hostname="Kristins-MBP" time="0.019">
-  <properties/>
-  <testcase name="testInsert" classname="org.rootservices.authorization.persistence.repository.ClientResponseTypeRepositoryImplTest" time="0.019"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

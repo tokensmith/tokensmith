@@ -1,1 +1,0 @@
-alter table refresh_token add constraint refresh_token_access_token_unique unique (access_token);

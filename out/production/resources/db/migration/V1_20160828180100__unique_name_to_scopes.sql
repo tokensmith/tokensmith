@@ -1,1 +1,0 @@
-alter table scope add constraint scope_name_unique unique (name);

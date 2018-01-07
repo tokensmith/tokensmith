@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.openId.grant.code.response.RequestOpenIdAuthCodeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:06" hostname="Kristins-MBP" time="0.447">
-  <properties/>
-  <testcase name="testRun" classname="org.rootservices.authorization.openId.grant.code.response.RequestOpenIdAuthCodeTest" time="0.301"/>
-  <testcase name="runWhenFailsToIssueAuthCodeShouldThrowInformClientException" classname="org.rootservices.authorization.openId.grant.code.response.RequestOpenIdAuthCodeTest" time="0.146"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

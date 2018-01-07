@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.rootservices.authorization.persistence.repository.TokenLeadTokenRepositoryImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:07" hostname="Kristins-MBP" time="0.015">
-  <properties/>
-  <testcase name="insertShouldBeOk" classname="org.rootservices.authorization.persistence.repository.TokenLeadTokenRepositoryImplTest" time="0.015"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
