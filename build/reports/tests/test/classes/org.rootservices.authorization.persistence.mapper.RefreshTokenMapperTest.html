@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/org.rootservices.authorization.persistence.mapper.html">org.rootservices.authorization.persistence.mapper</a> &gt; RefreshTokenMapperTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">12</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">6.359s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">getByClientIdAndAccessTokenWhenRefreshTokenIsExpiredShouldBeNull</td>
+<td>0.643s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAccessTokenWhenRefreshTokenIsRevokedShouldBeNull</td>
+<td>0.644s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAccessTokenWhenTokenIsNotExpiredShouldBeNull</td>
+<td>0.632s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAccessTokenWhenTokenRevokedShouldBeNull</td>
+<td>0.642s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndTokenShouldBeOk</td>
+<td>0.644s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByResourceOwnerShouldBeOk</td>
+<td>0.622s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByTokenIdShouldBeOk</td>
+<td>0.210s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">insertShouldBeOk</td>
+<td>0.204s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">insertShouldThrowDuplicateKeyException</td>
+<td>0.205s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">revokeActiveShouldBeOK</td>
+<td>0.640s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">revokeByAuthCodeIdShouldBeOk</td>
+<td>0.638s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">revokeByTokenIdShouldBeOk</td>
+<td>0.635s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-01-07T10:02:13,431  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:02:13,432  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:02:13,433  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@78789453, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@523ae726, org.springframework.test.context.support.DirtiesContextTestExecutionListener@d016071, org.springframework.test.context.transaction.TransactionalTestExecutionListener@56af1d0e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6a49c184]
+2018-01-07T10:02:13,438  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@62a7eddd, testMethod = getByClientIdAndTokenShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:14,079  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@62a7eddd, testMethod = getByClientIdAndTokenShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:14,081  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@173f67c8, testMethod = revokeByTokenIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:14,714  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@173f67c8, testMethod = revokeByTokenIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:14,716  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@6748f8b6, testMethod = insertShouldThrowDuplicateKeyException@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:14,919  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@6748f8b6, testMethod = insertShouldThrowDuplicateKeyException@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:14,921  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7e5ec685, testMethod = getByClientIdAndAccessTokenWhenTokenIsNotExpiredShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:15,552  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7e5ec685, testMethod = getByClientIdAndAccessTokenWhenTokenIsNotExpiredShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:15,554  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@f5d2721, testMethod = getByClientIdAndAccessTokenWhenRefreshTokenIsRevokedShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:16,196  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@f5d2721, testMethod = getByClientIdAndAccessTokenWhenRefreshTokenIsRevokedShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:16,198  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@15d55f86, testMethod = revokeActiveShouldBeOK@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:16,837  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@15d55f86, testMethod = revokeActiveShouldBeOK@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:16,839  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@55ea4059, testMethod = insertShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:17,042  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@55ea4059, testMethod = insertShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:17,043  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@413f42f9, testMethod = revokeByAuthCodeIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:17,681  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@413f42f9, testMethod = revokeByAuthCodeIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:17,682  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7512532, testMethod = getByClientIdAndAccessTokenWhenTokenRevokedShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:18,323  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7512532, testMethod = getByClientIdAndAccessTokenWhenTokenRevokedShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:18,325  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@4727dc29, testMethod = getByClientIdAndAccessTokenWhenRefreshTokenIsExpiredShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:18,966  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@4727dc29, testMethod = getByClientIdAndAccessTokenWhenRefreshTokenIsExpiredShouldBeNull@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:18,967  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7f597b1c, testMethod = getByResourceOwnerShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:19,588  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@7f597b1c, testMethod = getByResourceOwnerShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:19,590  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@472670aa, testMethod = getByTokenIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:19,800  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5d451710 testClass = RefreshTokenMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.RefreshTokenMapperTest@472670aa, testMethod = getByTokenIdShouldBeOk@RefreshTokenMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@6f4f183c testClass = RefreshTokenMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Jan 7, 2018 10:02:21 AM</p>
+</div>
+</div>
+</body>
+</html>

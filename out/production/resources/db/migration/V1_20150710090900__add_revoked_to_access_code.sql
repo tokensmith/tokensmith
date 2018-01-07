@@ -1,0 +1,1 @@
+alter table auth_code add column revoked boolean default false;

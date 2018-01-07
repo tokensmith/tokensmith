@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:06" hostname="Kristins-MBP" time="1.571">
+  <properties/>
+  <testcase name="revokeByTokenIdShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.046"/>
+  <testcase name="getByClientIdAndAccessTokenShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.292"/>
+  <testcase name="revokeActiveShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.0"/>
+  <testcase name="insertShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.321"/>
+  <testcase name="revokeByAuthCodeIdShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.001"/>
+  <testcase name="insertShouldThrowDuplicateRecordException" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.469"/>
+  <testcase name="getByTokenIdShouldBeOk" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.435"/>
+  <testcase name="getByClientIdAndAccessTokenWhenNotFoundShouldThrowRecordNotFoundException" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.0"/>
+  <testcase name="getByTokenIdWhenNotFoundShouldThrowRecordNotFoundException" classname="org.rootservices.authorization.persistence.repository.RefreshTokenRepositoryImplTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

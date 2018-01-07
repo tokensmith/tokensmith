@@ -1,0 +1,1 @@
+alter table client drop response_type;

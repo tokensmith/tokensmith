@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <context:annotation-config/>
+
+    <context:component-scan base-package="helper"/>
+
+    <bean name = "loadConfClientOpendIdTokenReady" class="helper.fixture.persistence.LoadConfClientTokenReady">
+        <property name="loadCodeClientWithScopes">
+            <bean class="helper.fixture.persistence.openid.LoadCodeClientWithOpenIdScope" />
+        </property>
+    </bean>
+
+    <beans>
+        <context:annotation-config/>
+        <bean class="org.rootservices.config.AppConfig"/>
+        <bean class="org.rootservices.config.PersistenceConfig"/>
+    </beans>
+</beans>

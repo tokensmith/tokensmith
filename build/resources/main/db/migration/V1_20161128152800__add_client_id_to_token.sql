@@ -1,0 +1,1 @@
+alter table token add column client_id UUID references client(id) NOT NULL;

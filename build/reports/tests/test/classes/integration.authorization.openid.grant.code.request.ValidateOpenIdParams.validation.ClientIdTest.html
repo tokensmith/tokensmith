@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.html">integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation</a> &gt; ClientIdTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">5</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.021s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">clientIdIsBlankStringShouldThrowInformResourceOwnerException</td>
+<td>0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">clientIdIsEmptyListShouldThrowInformResourceOwnerException</td>
+<td>0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">clientIdIsInvalidShouldThrowInformResourceOwnerException</td>
+<td>0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">clientIdIsNullShouldThrowInformResourceOwnerException</td>
+<td>0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">clientIdsHasTwoItemsShouldThrowInformResourceOwnerException</td>
+<td>0.005s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-01-07T10:01:42,987  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:01:42,990  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:01:42,994  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@52c77037, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@179defd2, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4bc28437, org.springframework.test.context.transaction.TransactionalTestExecutionListener@2c86b404, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@45a92f6b]
+2018-01-07T10:01:43,003  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@5f2e23c8, testMethod = clientIdIsInvalidShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@6cc63594]; rollback [true]
+2018-01-07T10:01:43,005  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@5f2e23c8, testMethod = clientIdIsInvalidShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:43,008  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@375b52d5, testMethod = clientIdsHasTwoItemsShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@6cc63594]; rollback [true]
+2018-01-07T10:01:43,011  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@375b52d5, testMethod = clientIdsHasTwoItemsShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:43,014  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@19c50795, testMethod = clientIdIsNullShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@6cc63594]; rollback [true]
+2018-01-07T10:01:43,015  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@19c50795, testMethod = clientIdIsNullShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:43,018  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@2e06dbf6, testMethod = clientIdIsEmptyListShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@6cc63594]; rollback [true]
+2018-01-07T10:01:43,020  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@2e06dbf6, testMethod = clientIdIsEmptyListShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:01:43,022  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@fd09f9f, testMethod = clientIdIsBlankStringShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@6cc63594]; rollback [true]
+2018-01-07T10:01:43,023  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@776f6765 testClass = ClientIdTest, testInstance = integration.authorization.openid.grant.code.request.ValidateOpenIdParams.validation.ClientIdTest@fd09f9f, testMethod = clientIdIsBlankStringShouldThrowInformResourceOwnerException@ClientIdTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@3d32ab73 testClass = ClientIdTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Jan 7, 2018 10:02:21 AM</p>
+</div>
+</div>
+</body>
+</html>

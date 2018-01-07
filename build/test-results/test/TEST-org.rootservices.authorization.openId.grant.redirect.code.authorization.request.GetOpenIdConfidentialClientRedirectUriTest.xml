@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.openId.grant.redirect.code.authorization.request.GetOpenIdConfidentialClientRedirectUriTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:06" hostname="Kristins-MBP" time="0.405">
+  <properties/>
+  <testcase name="clientNotFoundShouldThrowInformResourceOwnerException" classname="org.rootservices.authorization.openId.grant.redirect.code.authorization.request.GetOpenIdConfidentialClientRedirectUriTest" time="0.001"/>
+  <testcase name="clientFoundRedirectMatchesShouldBeOK" classname="org.rootservices.authorization.openId.grant.redirect.code.authorization.request.GetOpenIdConfidentialClientRedirectUriTest" time="0.185"/>
+  <testcase name="redirectUriMismatchShouldThrowInformResourceOwnerException" classname="org.rootservices.authorization.openId.grant.redirect.code.authorization.request.GetOpenIdConfidentialClientRedirectUriTest" time="0.218"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

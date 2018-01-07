@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.parse.ParserTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:02" hostname="Kristins-MBP" time="0.024">
+  <properties/>
+  <testcase name="toWhenReqFieldHasInvalidValueThrowRequiredException" classname="org.rootservices.authorization.parse.ParserTest" time="0.002"/>
+  <testcase name="toWhenOptFieldIsMissingShouldMakeAEmptyValue" classname="org.rootservices.authorization.parse.ParserTest" time="0.002"/>
+  <testcase name="toWhenMissingReqFieldShouldThrowRequiredException" classname="org.rootservices.authorization.parse.ParserTest" time="0.001"/>
+  <testcase name="toWhenOptFieldInvalidValueShouldThrowOptionalException" classname="org.rootservices.authorization.parse.ParserTest" time="0.002"/>
+  <testcase name="toWhenTypeOptionalEmptyListShouldTranslate" classname="org.rootservices.authorization.parse.ParserTest" time="0.001"/>
+  <testcase name="toShouldTranslate" classname="org.rootservices.authorization.parse.ParserTest" time="0.001"/>
+  <testcase name="reflectWhenExtendsShouldFindAllFields" classname="org.rootservices.authorization.parse.ParserTest" time="0.0"/>
+  <testcase name="reflectShouldFindAllFields" classname="org.rootservices.authorization.parse.ParserTest" time="0.0"/>
+  <testcase name="toWhenOptFieldIsEmptyShouldThrowOptionalException" classname="org.rootservices.authorization.parse.ParserTest" time="0.004"/>
+  <testcase name="toWhenReqFieldInvalidValueShouldThrowRequiredException" classname="org.rootservices.authorization.parse.ParserTest" time="0.001"/>
+  <testcase name="toWhenTypeListEmptyListShouldTranslate" classname="org.rootservices.authorization.parse.ParserTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

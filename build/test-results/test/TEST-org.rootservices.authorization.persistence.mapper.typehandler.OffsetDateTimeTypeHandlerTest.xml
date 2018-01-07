@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2018-01-07T16:02:04" hostname="Kristins-MBP" time="1.251">
+  <properties/>
+  <testcase name="testGetResultsSixDigitsFractionSeconds" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.749"/>
+  <testcase name="testGetResultsUTCOffset" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.0"/>
+  <testcase name="testSetParameterMinusSixOffset" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.493"/>
+  <testcase name="testGetResultsFourDigitsFractionSeconds" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.001"/>
+  <testcase name="testSetParameterMinusSixThirtyOffset" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.0"/>
+  <testcase name="testSetParameterZeroOffset" classname="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandlerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

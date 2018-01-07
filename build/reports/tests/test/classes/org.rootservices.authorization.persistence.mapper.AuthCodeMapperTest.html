@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/org.rootservices.authorization.persistence.mapper.html">org.rootservices.authorization.persistence.mapper</a> &gt; AuthCodeMapperTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">7</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">2.542s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">getByClientIdAndAuthCodeShouldBeOk</td>
+<td>0.316s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAuthCodeWhenCodeIsRevoked</td>
+<td>0.393s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAuthCodeWhenRedirectURIIsNotPresent</td>
+<td>0.317s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">getByClientIdAndAuthCodeWhenTokenIsPresent</td>
+<td>0.435s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">insert</td>
+<td>0.213s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">insertDuplicateExpectDuplicateKeyException</td>
+<td>0.216s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">revokeByIdShouldRevoke</td>
+<td>0.652s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2018-01-07T10:02:10,636  INFO Test worker support.DefaultTestContextBootstrapper:260 - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2018-01-07T10:02:10,640  INFO Test worker support.DefaultTestContextBootstrapper:209 - Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2018-01-07T10:02:10,641  INFO Test worker support.DefaultTestContextBootstrapper:187 - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@40e0dd7b, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@742d338f, org.springframework.test.context.support.DirtiesContextTestExecutionListener@382c0466, org.springframework.test.context.transaction.TransactionalTestExecutionListener@24850a3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@44055e94]
+2018-01-07T10:02:10,648  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@c2864b5, testMethod = insert@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:10,860  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@c2864b5, testMethod = insert@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:10,862  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@3944012e, testMethod = revokeByIdShouldRevoke@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:11,513  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@3944012e, testMethod = revokeByIdShouldRevoke@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:11,514  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@14f4c46f, testMethod = getByClientIdAndAuthCodeWhenCodeIsRevoked@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:11,906  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@14f4c46f, testMethod = getByClientIdAndAuthCodeWhenCodeIsRevoked@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:11,908  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@6cd0a138, testMethod = getByClientIdAndAuthCodeWhenTokenIsPresent@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:12,342  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@6cd0a138, testMethod = getByClientIdAndAuthCodeWhenTokenIsPresent@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:12,343  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@12cf4fa1, testMethod = insertDuplicateExpectDuplicateKeyException@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:12,559  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@12cf4fa1, testMethod = insertDuplicateExpectDuplicateKeyException@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:12,560  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@15b25002, testMethod = getByClientIdAndAuthCodeShouldBeOk@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:12,875  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@15b25002, testMethod = getByClientIdAndAuthCodeShouldBeOk@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+2018-01-07T10:02:12,877  INFO Test worker transaction.TransactionContext:101 - Began transaction (1) for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@699d6e5f, testMethod = getByClientIdAndAuthCodeWhenRedirectURIIsNotPresent@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]]; transaction manager [org.springframework.jdbc.datasource.DataSourceTransactionManager@2afd27a1]; rollback [true]
+2018-01-07T10:02:13,192  INFO Test worker transaction.TransactionContext:136 - Rolled back transaction for test context [DefaultTestContext@5c43f4f7 testClass = AuthCodeMapperTest, testInstance = org.rootservices.authorization.persistence.mapper.AuthCodeMapperTest@699d6e5f, testMethod = getByClientIdAndAuthCodeWhenRedirectURIIsNotPresent@AuthCodeMapperTest, testException = [null], mergedContextConfiguration = [MergedContextConfiguration@5929acd0 testClass = AuthCodeMapperTest, locations = '{classpath:spring-auth-test.xml}', classes = '{}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[[empty]], contextLoader = 'org.springframework.test.context.support.DelegatingSmartContextLoader', parent = [null]]].
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Jan 7, 2018 10:02:21 AM</p>
+</div>
+</div>
+</body>
+</html>
