@@ -1,1 +1,0 @@
-alter table token add column grant_type varchar(100) NOT NULL;

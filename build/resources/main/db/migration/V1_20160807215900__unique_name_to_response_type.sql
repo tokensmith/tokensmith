@@ -1,1 +1,0 @@
-alter table response_type add constraint name_unique unique (name);

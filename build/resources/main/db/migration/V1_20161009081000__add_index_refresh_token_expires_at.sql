@@ -1,1 +1,0 @@
-CREATE INDEX refresh_token_expires_at on refresh_token (expires_at);

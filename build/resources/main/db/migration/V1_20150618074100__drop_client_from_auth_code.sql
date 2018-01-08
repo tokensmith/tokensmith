@@ -1,1 +1,0 @@
-alter table auth_code drop client_uuid;
