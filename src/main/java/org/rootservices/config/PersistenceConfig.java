@@ -2,18 +2,18 @@ package org.rootservices.config;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
-import java.net.URL;
+
 
 /**
  * Created by tommackenzie on 5/21/16.
@@ -21,6 +21,7 @@ import java.net.URL;
 @Configuration
 @MapperScan("org.rootservices.authorization.persistence.mapper")
 public class PersistenceConfig {
+    protected static Logger LOGGER = LogManager.getLogger(PersistenceConfig.class);
 
     @Bean
     public DataSource dataSource() {
@@ -45,14 +46,19 @@ public class PersistenceConfig {
 
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
-        SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
+        SqlSessionFactoryBean sqlSessionFactory;
+        try {
+            sqlSessionFactory = new SqlSessionFactoryBean();
 
-        Resource configResource = new ClassPathResource("mybatis-config.xml");
+            Resource configResource = new ClassPathResource("mybatis-config.xml");
 
-        sqlSessionFactory.setDataSource(dataSource());
-        sqlSessionFactory.setTypeAliasesPackage("org.rootservices.authorization.persistence.entity");
-        sqlSessionFactory.setConfigLocation(configResource);
-
+            sqlSessionFactory.setDataSource(dataSource());
+            sqlSessionFactory.setTypeAliasesPackage("org.rootservices.authorization.persistence.entity");
+            sqlSessionFactory.setConfigLocation(configResource);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw e;
+        }
         return (SqlSessionFactory) sqlSessionFactory.getObject();
     }
 }

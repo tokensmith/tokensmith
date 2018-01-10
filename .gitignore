@@ -19,3 +19,9 @@ hs_err_pid*
 *.iws
 
 target/
+
+# gradle
+!gradle-wrapper.jar
+.gradle
+/build/
+out
