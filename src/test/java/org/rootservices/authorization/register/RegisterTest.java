@@ -8,10 +8,12 @@ import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.NonceType;
+import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.NonceTypeRepository;
+import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.register.exception.RegisterException;
 import org.rootservices.authorization.security.RandomString;
@@ -42,6 +44,8 @@ public class RegisterTest {
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
+    private ProfileRepository mockProfileRepository;
+    @Mock
     private HashTextRandomSalt mockHashTextRandomSalt;
     @Mock
     private RandomString mockRandomString;
@@ -59,7 +63,7 @@ public class RegisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Register(mockResourceOwnerRepository, mockHashTextRandomSalt, mockRandomString, mockHashTextStaticSalt, mockNonceTypeRepository, mockNonceRepository, mockPublish, ISSUER);
+        subject = new Register(mockResourceOwnerRepository, mockProfileRepository, mockHashTextRandomSalt, mockRandomString, mockHashTextStaticSalt, mockNonceTypeRepository, mockNonceRepository, mockPublish, ISSUER);
     }
 
     @Test
@@ -84,6 +88,14 @@ public class RegisterTest {
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getEmail(), is(email));
         assertThat(actual.getPassword(), is(hashedPassword.getBytes()));
+
+        ArgumentCaptor<Profile> profileCaptor = ArgumentCaptor.forClass(Profile.class);
+        verify(mockProfileRepository).insert(profileCaptor.capture());
+
+        assertThat(profileCaptor.getValue(), is(notNullValue()));
+        assertThat(profileCaptor.getValue().getId(), is(notNullValue()));
+        assertThat(profileCaptor.getValue().getResourceOwnerId(), is(roCaptor.getValue().getId()));
+        assertThat(profileCaptor.getValue().isPhoneNumberVerified(), is(false));
 
         ArgumentCaptor<Nonce> nonceCaptor = ArgumentCaptor.forClass(Nonce.class);
         verify(mockNonceRepository).insert(nonceCaptor.capture());

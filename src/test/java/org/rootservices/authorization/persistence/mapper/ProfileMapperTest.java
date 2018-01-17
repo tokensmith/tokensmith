@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -44,6 +45,18 @@ public class ProfileMapperTest {
         resourceOwnerMapper.insert(ro);
 
         Profile profile = FixtureFactory.makeProfile(ro.getId());
+        subject.insert(profile);
+    }
+
+    @Test
+    public void insertEmptyValuesShouldInsertProfile() throws URISyntaxException {
+        ResourceOwner ro = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(ro);
+
+        Profile profile = new Profile();
+        profile.setId(UUID.randomUUID());
+        profile.setResourceOwnerId(ro.getId());
+        profile.setPhoneNumberVerified(false);
         subject.insert(profile);
     }
 
