@@ -35,6 +35,18 @@ public class Profile {
     private OffsetDateTime createdAt;
 
     public Profile() {
+        this.name = Optional.empty();
+        middleName = Optional.empty();
+        nickName = Optional.empty();
+        preferredUserName = Optional.empty();
+        profile = Optional.empty();
+        picture = Optional.empty();
+        website = Optional.empty();
+        gender = Optional.empty();
+        birthDate = Optional.empty();
+        zoneInfo = Optional.empty();
+        locale = Optional.empty();
+        phoneNumber = Optional.empty();
     }
 
     public Profile(UUID id, UUID resourceOwnerId) {
