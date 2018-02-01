@@ -49,7 +49,7 @@ public class AppConfig {
 
     @Bean
     public UrlValidator urlValidator() {
-        String[] schemes = {"https",};
+        String[] schemes = null;
         return new UrlValidator(schemes);
     }
 

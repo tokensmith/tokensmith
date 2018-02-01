@@ -1,6 +1,8 @@
 package org.rootservices.authorization.openId.grant.redirect.shared.authorization.request;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -70,9 +72,12 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
             throw new ServerException(PARSE_ERROR, e);
         }
 
+        // fails when localhost:8082/welcome
+        /**
         if (!urlValidator.isValid(request.getRedirectURI().toString())) {
             throw new InformResourceOwnerException("redirect_uri is not valid", 1);
         }
+         */
 
         compareClientToOpenIdAuthRequest.run(request);
 
