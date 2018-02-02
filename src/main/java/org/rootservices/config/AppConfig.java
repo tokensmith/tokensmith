@@ -47,10 +47,48 @@ public class AppConfig {
         return om;
     }
 
+    public Boolean allowLocalUrls() {
+        String var = System.getenv("ALLOW_LOCAL_URLS");
+        Boolean allowLocalUrls = new Boolean(var);
+        return allowLocalUrls;
+    }
+
+    public Boolean allowHttpUrls() {
+        String var = System.getenv("ALLOW_HTTP_URLS");
+        Boolean allowHttplUrls = new Boolean(var);
+        return allowHttplUrls;
+    }
+
+    public long urlValidatorOpts() {
+        Boolean allowLocalUrls = allowLocalUrls();
+
+        long opts = 0;
+        if (allowLocalUrls) {
+            opts += UrlValidator.ALLOW_LOCAL_URLS;
+        }
+        return opts;
+    }
+
+    public String[] urlValidatorSchemes() {
+        Boolean allowHttpUrls = allowHttpUrls();
+
+        if (allowHttpUrls) {
+            return new String[] {"http", "https"};
+
+        }
+        return new String[] {"https"};
+    }
+
     @Bean
     public UrlValidator urlValidator() {
-        String[] schemes = {"https",};
-        return new UrlValidator(schemes);
+        long opts = urlValidatorOpts();
+        String[] schemes = urlValidatorSchemes();
+
+        if (opts > 0) {
+            return new UrlValidator(schemes, opts);
+        } else {
+            return new UrlValidator(schemes);
+        }
     }
 
     @Bean

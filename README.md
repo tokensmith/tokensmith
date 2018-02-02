@@ -27,6 +27,8 @@ $ export AUTH_DB_USER="postgres";
 $ export AUTH_DB_PASSWORD="";
 $ export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
 $ export ISSUER="https://sso.rootservices.org"
+$ export ALLOW_LOCAL_URLS="true"
+$ export ALLOW_HTTP_URLS="true"
 ```
 
 Environment Variable for publishing to a message queue

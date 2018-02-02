@@ -1,5 +1,7 @@
 package org.rootservices.authorization.oauth2.grant.redirect.code.token;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.constant.ErrorCode;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestTokenCodeGrant implements RequestTokenGrant {
+    private static final Logger LOGGER = LogManager.getLogger(RequestTokenCodeGrant.class);
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
     private HashTextStaticSalt hashText;
@@ -93,6 +96,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
             authCode = authCodeRepository.getByClientIdAndAuthCode(clientUUID, hashedCode);
         } catch (RecordNotFoundException e) {
             // TODO: security - could a client be phishing for other client's auth codes?
+            LOGGER.debug(e.getMessage(), e);
             throw new NotFoundException(
                     "Access Request was not found",
                     "invalid_grant",
@@ -103,6 +107,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         }
 
         if ( ! doRedirectUrisMatch(tokenRequestRedirectUri, authCode.getAccessRequest().getRedirectURI()) ) {
+            LOGGER.debug("mismatch: tr: " + tokenRequestRedirectUri + " ar: " + authCode.getAccessRequest().getRedirectURI());
             throw new NotFoundException(
                     "Access Request was not found",
                     "invalid_grant",

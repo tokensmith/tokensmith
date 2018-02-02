@@ -6,11 +6,13 @@ import org.rootservices.authorization.nonce.message.Topic;
 import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
 import org.rootservices.authorization.persistence.entity.NonceType;
+import org.rootservices.authorization.persistence.entity.Profile;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.NonceTypeRepository;
+import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.register.exception.NonceException;
 import org.rootservices.authorization.register.exception.RegisterException;
@@ -29,6 +31,7 @@ import java.util.UUID;
 @Component
 public class Register {
     private ResourceOwnerRepository resourceOwnerRepository;
+    private ProfileRepository profileRepository;
     private HashTextRandomSalt hashTextRandomSalt;
     private RandomString randomString;
     private HashTextStaticSalt hashTextStaticSalt;
@@ -47,8 +50,9 @@ public class Register {
     private static String NONCE_TYPE = "welcome";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashTextStaticSalt hashTextStaticSalt, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, ProfileRepository profileRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashTextStaticSalt hashTextStaticSalt, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
         this.resourceOwnerRepository = resourceOwnerRepository;
+        this.profileRepository = profileRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
         this.randomString = randomString;
         this.hashTextStaticSalt = hashTextStaticSalt;
@@ -71,6 +75,13 @@ public class Register {
             RegisterError registerError = makeRegisterError(e);
             throw new RegisterException(REGISTER_ERROR, registerError, e);
         }
+
+        Profile profile = new Profile();
+        profile.setId(UUID.randomUUID());
+        profile.setResourceOwnerId(ro.getId());
+        profile.setPhoneNumberVerified(false);
+
+        profileRepository.insert(profile);
 
         // insert nonce used to validate user's email address.
         String plainTextNonce = randomString.run();
