@@ -1,5 +1,6 @@
 package org.rootservices.authorization.oauth2.grant.password;
 
+
 import org.rootservices.authorization.authenticate.LoginConfidentialClient;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;

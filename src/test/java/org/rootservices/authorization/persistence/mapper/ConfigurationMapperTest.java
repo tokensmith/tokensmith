@@ -1,5 +1,6 @@
 package org.rootservices.authorization.persistence.mapper;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.Configuration;
@@ -45,6 +46,7 @@ public class ConfigurationMapperTest {
     }
 
     @Test
+    @Ignore
     public void updateAccessTokenSizeShouldBeOk() {
         Configuration original = subject.get();
 
@@ -58,6 +60,7 @@ public class ConfigurationMapperTest {
     }
 
     @Test
+    @Ignore
     public void updateAuthorizationCodeSizeShouldBeOk() {
         Configuration original = subject.get();
 
@@ -71,6 +74,7 @@ public class ConfigurationMapperTest {
     }
 
     @Test
+    @Ignore
     public void updateRefreshTokenSizeShouldBeOk() {
         Configuration original = subject.get();
 
