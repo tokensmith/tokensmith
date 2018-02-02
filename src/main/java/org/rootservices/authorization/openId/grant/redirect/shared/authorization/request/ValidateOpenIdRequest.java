@@ -72,12 +72,9 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
             throw new ServerException(PARSE_ERROR, e);
         }
 
-        // fails when localhost:8082/welcome
-        /**
         if (!urlValidator.isValid(request.getRedirectURI().toString())) {
             throw new InformResourceOwnerException("redirect_uri is not valid", 1);
         }
-         */
 
         compareClientToOpenIdAuthRequest.run(request);
 

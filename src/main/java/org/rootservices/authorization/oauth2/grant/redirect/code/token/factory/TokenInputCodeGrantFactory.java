@@ -56,9 +56,8 @@ public class TokenInputCodeGrantFactory {
 
     protected Optional<URI> makeRedirectUri(Optional<String> input) throws InvalidValueException {
         Optional<URI> redirectUri = Optional.empty();
-        // url validator doesn work for localhost.
-        // if (input.isPresent() && urlValidator.isValid(input.get())) {
-        if (input.isPresent()) {
+
+        if (input.isPresent() && urlValidator.isValid(input.get())) {
             try {
                 redirectUri = Optional.of(new URI(input.get()));
             } catch (URISyntaxException e) {
