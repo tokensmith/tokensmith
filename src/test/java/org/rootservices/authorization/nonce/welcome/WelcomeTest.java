@@ -16,8 +16,8 @@ import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.authorization.security.entity.NonceClaim;
-import org.rootservices.jwt.UnSecureJwtEncoder;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.builder.compact.UnsecureCompactBuilder;
+import org.rootservices.jwt.exception.InvalidJWT;
 
 
 import java.util.UUID;
@@ -51,13 +51,12 @@ public class WelcomeTest {
     @Test
     public void markEmailVerifiedShouldBeOK() throws Exception {
         // make a jwt for the test.
-        AppFactory appFactory = new AppFactory();
-        UnSecureJwtEncoder encoder = appFactory.unSecureJwtEncoder();
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
 
         NonceClaim nonceClaim = new NonceClaim();
         nonceClaim.setNonce("nonce");
 
-        String jwt = encoder.encode(nonceClaim);
+        String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
         NonceType nonceType = new NonceType();
         nonceType.setName("welcome");
@@ -88,7 +87,7 @@ public class WelcomeTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getCause(), instanceOf(ArrayIndexOutOfBoundsException.class));
+        assertThat(actual.getCause(), instanceOf(InvalidJWT.class));
 
         verify(mockResourceOwnerRepository, never()).setEmailVerified(any(UUID.class));
         verify(mockNonceRepository, never()).setSpent(any(UUID.class));
@@ -97,13 +96,12 @@ public class WelcomeTest {
     @Test
     public void markEmailVerifiedWhenNonceNotFoundShouldThrowNotFoundExceptionException() throws Exception {
         // make a jwt for the test.
-        AppFactory appFactory = new AppFactory();
-        UnSecureJwtEncoder encoder = appFactory.unSecureJwtEncoder();
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
 
         NonceClaim nonceClaim = new NonceClaim();
         nonceClaim.setNonce("nonce");
 
-        String jwt = encoder.encode(nonceClaim);
+        String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
 
         when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");

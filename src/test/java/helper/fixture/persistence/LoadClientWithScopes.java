@@ -1,10 +1,10 @@
 package helper.fixture.persistence;
 
-import helper.fixture.FixtureFactory;
+
 import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;

@@ -4,16 +4,16 @@ import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.NotFoundException;
 import org.rootservices.authorization.nonce.entity.NonceName;
 import org.rootservices.authorization.persistence.entity.Nonce;
-import org.rootservices.authorization.persistence.entity.NonceType;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.NonceRepository;
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
 import org.rootservices.authorization.security.entity.NonceClaim;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
-import org.rootservices.jwt.serializer.JWTSerializer;
-import org.rootservices.jwt.serializer.exception.JsonToJwtException;
+import org.rootservices.jwt.exception.InvalidJWT;
+import org.rootservices.jwt.serialization.JwtSerde;
+import org.rootservices.jwt.serialization.exception.JsonToJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,15 +31,15 @@ public class Welcome {
     }
 
     public void markEmailVerified(String jwt) throws BadRequestException, NotFoundException {
-        AppFactory appFactory = new AppFactory();
-        JWTSerializer jwtSerializer = appFactory.jwtSerializer();
+        JwtAppFactory appFactory = new JwtAppFactory();
+        JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jsonWebToken;
         try {
-            jsonWebToken = jwtSerializer.stringToJwt(jwt, NonceClaim.class);
+            jsonWebToken = jwtSerde.stringToJwt(jwt, NonceClaim.class);
         } catch (JsonToJwtException e) {
             throw new BadRequestException("Could not marshal to a jwt", e);
-        } catch(ArrayIndexOutOfBoundsException e) {
+        } catch (InvalidJWT e) {
             throw new BadRequestException("Input was not a JWT", e);
         }
 
