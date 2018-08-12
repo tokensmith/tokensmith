@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.TestAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.Address;
@@ -9,6 +10,7 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
@@ -22,7 +24,7 @@ import static org.junit.Assert.*;
  * Created by tommackenzie on 3/12/16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@ContextConfiguration(classes= TestAppConfig.class, loader= AnnotationConfigContextLoader.class)
 @Transactional
 public class AddressMapperTest {
 

@@ -1,6 +1,6 @@
 package org.rootservices.authorization.persistence.repository;
 
-import com.sun.prism.impl.Disposer;
+
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 

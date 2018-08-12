@@ -11,18 +11,15 @@ import org.rootservices.authorization.persistence.entity.*;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
-import org.rootservices.jwt.SecureJwtEncoder;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.builder.compact.SecureCompactBuilder;
+import org.rootservices.jwt.builder.exception.CompactException;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.exception.JwtToJsonException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by tommackenzie on 8/31/16.
@@ -31,19 +28,18 @@ import java.util.UUID;
 public class MakeImplicitIdentityToken {
     private static String PROFILE_ERROR_MESSAGE = "Profile was not found";
     private static String KEY_ERROR_MESSAGE = "No key available to sign id token";
-    private static String ALG_ERROR_MESSAGE = "Algorithm to sign with is invalid";
-    private static String JWK_ERROR_MESSAGE = "key is invalid";
-    private static String SERIALIZE_ERROR_MESSAGE = "Could not serialize id token";
+    private static String ID_TOKEN_ERROR_MSG = "Could not create id token";
+
 
     private ProfileRepository profileRepository;
     private MakeAccessTokenHash makeAccessTokenHash;
     private IdTokenFactory idTokenFactory;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private PrivateKeyTranslator privateKeyTranslator;
-    private AppFactory jwtAppFactory;
+    private JwtAppFactory jwtAppFactory;
 
     @Autowired
-    public MakeImplicitIdentityToken(ProfileRepository profileRepository, MakeAccessTokenHash makeAccessTokenHash, IdTokenFactory idTokenFactory, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory) {
+    public MakeImplicitIdentityToken(ProfileRepository profileRepository, MakeAccessTokenHash makeAccessTokenHash, IdTokenFactory idTokenFactory, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory) {
         this.profileRepository = profileRepository;
         this.makeAccessTokenHash = makeAccessTokenHash;
         this.idTokenFactory = idTokenFactory;
@@ -112,20 +108,15 @@ public class MakeImplicitIdentityToken {
 
     protected String translateIdTokenToEncodedJwt(RSAKeyPair rsaKeyPair, IdToken idToken) throws IdTokenException {
 
-        SecureJwtEncoder secureJwtEncoder;
+        String encodedJwt;
+        SecureCompactBuilder compactBuilder = new SecureCompactBuilder();
         try {
-            secureJwtEncoder = jwtAppFactory.secureJwtEncoder(Algorithm.RS256, rsaKeyPair);
-        } catch (InvalidAlgorithmException e) {
-            throw new IdTokenException(ALG_ERROR_MESSAGE, e);
-        } catch (InvalidJsonWebKeyException e) {
-            throw new IdTokenException(JWK_ERROR_MESSAGE, e);
-        }
-
-        String encodedJwt = null;
-        try {
-            encodedJwt = secureJwtEncoder.encode(idToken);
-        } catch (JwtToJsonException e) {
-            throw new IdTokenException(SERIALIZE_ERROR_MESSAGE, e);
+            encodedJwt = compactBuilder.alg(Algorithm.RS256)
+                    .key(rsaKeyPair)
+                    .claims(idToken)
+                    .build().toString();
+        } catch (CompactException e) {
+            throw new IdTokenException(ID_TOKEN_ERROR_MSG, e);
         }
 
         return encodedJwt;
