@@ -11,13 +11,10 @@ import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.CompareConfidentialClientToAuthRequest;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.pelican.Publish;
-import org.rootservices.pelican.config.PelicanAppConfig;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
 
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
@@ -31,9 +28,19 @@ import java.util.Base64;
  */
 @Configuration
 @ComponentScan({"org.rootservices.authorization", "org.rootservices.pelican"})
+@PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class AppConfig {
     private static String ALGORITHM = "RSA";
     private static String SHA_256 = "SHA-256";
+
+    @Value("${allowLocalUrls}")
+    private Boolean allowLocalUrls;
+    @Value("${allowHttpUrls}")
+    private Boolean allowHttpUrls;
+    @Value("${salt}")
+    private String salt;
+    @Value("${issuer}")
+    private String issuer;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -47,21 +54,7 @@ public class AppConfig {
         return om;
     }
 
-    public Boolean allowLocalUrls() {
-        String var = System.getenv("ALLOW_LOCAL_URLS");
-        Boolean allowLocalUrls = new Boolean(var);
-        return allowLocalUrls;
-    }
-
-    public Boolean allowHttpUrls() {
-        String var = System.getenv("ALLOW_HTTP_URLS");
-        Boolean allowHttplUrls = new Boolean(var);
-        return allowHttplUrls;
-    }
-
     public long urlValidatorOpts() {
-        Boolean allowLocalUrls = allowLocalUrls();
-
         long opts = 0;
         if (allowLocalUrls) {
             opts += UrlValidator.ALLOW_LOCAL_URLS;
@@ -70,8 +63,6 @@ public class AppConfig {
     }
 
     public String[] urlValidatorSchemes() {
-        Boolean allowHttpUrls = allowHttpUrls();
-
         if (allowHttpUrls) {
             return new String[] {"http", "https"};
 
@@ -93,7 +84,7 @@ public class AppConfig {
 
     @Bean
     public String salt() {
-        return System.getenv("AUTH_SALT");
+        return this.salt;
     }
 
     @Bean
@@ -136,8 +127,8 @@ public class AppConfig {
     }
 
     @Bean
-    public AppFactory appFactory() {
-        return new AppFactory();
+    public JwtAppFactory jwtAppFactory() {
+        return new JwtAppFactory();
     }
 
     // TOKEN Response Type
@@ -159,13 +150,12 @@ public class AppConfig {
 
     @Bean
     public String issuer() {
-        return System.getenv("ISSUER");
+        return this.issuer;
     }
 
     @Bean
     public Publish publish() {
-        PelicanAppConfig pelicanAppConfig = new PelicanAppConfig();
-        // TODO: replace with host name
+        GizmoPelicanAppConfig pelicanAppConfig = new GizmoPelicanAppConfig();
         return pelicanAppConfig.publish("auth-1");
     }
 }

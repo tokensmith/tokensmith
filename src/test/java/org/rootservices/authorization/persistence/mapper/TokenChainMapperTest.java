@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.TestAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.persistence.entity.Client;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import static org.junit.Assert.*;
  * Created by tommackenzie on 10/8/16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@ContextConfiguration(classes= TestAppConfig.class, loader= AnnotationConfigContextLoader.class)
 @Transactional
 public class TokenChainMapperTest {
     @Autowired
@@ -79,14 +81,14 @@ public class TokenChainMapperTest {
         assertThat(actual.getToken().isRevoked(), is(false));
         assertThat(actual.getToken().getGrantType(), is(token.getGrantType()));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getToken().getExpiresAt(), is(token.getExpiresAt()));
+        assertThat(actual.getToken().getExpiresAt().toEpochSecond(), is(token.getExpiresAt().toEpochSecond()));
 
         assertThat(actual.getPreviousToken().getId(), is(previousToken.getId()));
         assertThat(actual.getPreviousToken().getToken(), is(previousToken.getToken()));
         assertThat(actual.getPreviousToken().isRevoked(), is(false));
         assertThat(actual.getPreviousToken().getGrantType(), is(previousToken.getGrantType()));
         assertThat(actual.getPreviousToken().getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getPreviousToken().getExpiresAt(), is(previousToken.getExpiresAt()));
+        assertThat(actual.getPreviousToken().getExpiresAt().toEpochSecond(), is(previousToken.getExpiresAt().toEpochSecond()));
 
         assertThat(actual.getRefreshToken().getId(), is(refreshToken.getId()));
         assertThat(actual.getRefreshToken().getTokenId(), is(refreshToken.getTokenId()));

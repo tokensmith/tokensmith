@@ -11,13 +11,11 @@ import org.rootservices.authorization.persistence.exceptions.RecordNotFoundExcep
 import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
 import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
-import org.rootservices.jwt.SecureJwtEncoder;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.builder.compact.SecureCompactBuilder;
+import org.rootservices.jwt.builder.exception.CompactException;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
 import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.exception.JwtToJsonException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,18 +33,16 @@ public class MakeCodeGrantIdentityToken {
     private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private PrivateKeyTranslator privateKeyTranslator;
-    private AppFactory jwtAppFactory;
+    private JwtAppFactory jwtAppFactory;
     private IdTokenFactory idTokenFactory;
 
     private static String RESOURCE_OWNER_NOT_FOUND = "resource owner was not found";
     private static String PROFILE_NOT_FOUND = "resource owner does not have a profile";
     private static String KEY_NOT_FOUND = "No key available to sign id token";
-    private static String ALG_INVALID = "Algorithm to sign with is invalid";
-    private static String KEY_INVALID = "key is invalid";
-    private static String SERIALIZE_ERROR = "Could not serialize id token";
+    private static String ID_TOKEN_ERROR_MSG = "Could not create id token";
 
     @Autowired
-    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, AppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
+    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
         this.hashText = hashText;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
@@ -86,20 +82,15 @@ public class MakeCodeGrantIdentityToken {
 
         IdToken idToken = idTokenFactory.make(tokenClaims, scopesForIdToken, ro);
 
-        SecureJwtEncoder secureJwtEncoder;
-        try {
-            secureJwtEncoder = jwtAppFactory.secureJwtEncoder(Algorithm.RS256, rsaKeyPair);
-        } catch (InvalidAlgorithmException e) {
-            throw new IdTokenException(ALG_INVALID, e);
-        } catch (InvalidJsonWebKeyException e) {
-            throw new IdTokenException(KEY_INVALID, e);
-        }
-
         String encodedJwt;
+        SecureCompactBuilder compactBuilder = new SecureCompactBuilder();
         try {
-            encodedJwt = secureJwtEncoder.encode(idToken);
-        } catch (JwtToJsonException e) {
-            throw new IdTokenException(SERIALIZE_ERROR, e);
+            encodedJwt = compactBuilder.alg(Algorithm.RS256)
+                    .key(rsaKeyPair)
+                    .claims(idToken)
+                    .build().toString();
+        } catch (CompactException e) {
+            throw new IdTokenException(ID_TOKEN_ERROR_MSG, e);
         }
 
         return encodedJwt;

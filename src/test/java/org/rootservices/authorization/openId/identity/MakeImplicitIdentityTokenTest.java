@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
 import org.rootservices.authorization.openId.identity.entity.IdToken;
-import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
 import org.rootservices.authorization.openId.identity.exception.ProfileNotFoundException;
 import org.rootservices.authorization.openId.identity.factory.IdTokenFactory;
@@ -18,21 +17,18 @@ import org.rootservices.authorization.persistence.entity.ResourceOwner;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
 import org.rootservices.authorization.persistence.repository.ProfileRepository;
 import org.rootservices.authorization.persistence.repository.RsaPrivateKeyRepository;
-import org.rootservices.jwt.SecureJwtEncoder;
-import org.rootservices.jwt.config.AppFactory;
+import org.rootservices.jwt.config.JwtAppFactory;
 import org.rootservices.jwt.entity.jwk.RSAKeyPair;
-import org.rootservices.jwt.entity.jwt.header.Algorithm;
-import org.rootservices.jwt.serializer.exception.JwtToJsonException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidAlgorithmException;
-import org.rootservices.jwt.signature.signer.factory.exception.InvalidJsonWebKeyException;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -51,8 +47,7 @@ public class MakeImplicitIdentityTokenTest {
     private RsaPrivateKeyRepository mockRsaPrivateKeyRepository;
     @Mock
     private PrivateKeyTranslator mockPrivateKeyTranslator;
-    @Mock
-    private AppFactory mockJwtAppFactory;
+
 
     @Before
     public void setUp() {
@@ -63,7 +58,7 @@ public class MakeImplicitIdentityTokenTest {
                 mockIdTokenFactory,
                 mockRsaPrivateKeyRepository,
                 mockPrivateKeyTranslator,
-                mockJwtAppFactory
+                new JwtAppFactory()
         );
     }
 
@@ -84,8 +79,7 @@ public class MakeImplicitIdentityTokenTest {
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
         IdToken idToken = new IdToken();
-        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
-        String expected = "some-compact-jwt";
+
 
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
@@ -101,15 +95,9 @@ public class MakeImplicitIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenReturn(mockSecureJwtEncoder);
-
-        when(mockSecureJwtEncoder.encode(idToken))
-                .thenReturn(expected);
-
         String actual = subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
 
-        assertThat(actual, is(expected));
+        assertThat(actual, is(notNullValue()));
         assertThat(resourceOwner.getProfile(), is(profile));
     }
 
@@ -163,122 +151,6 @@ public class MakeImplicitIdentityTokenTest {
         subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
     }
 
-    @Test(expected = IdTokenException.class)
-    public void makeWhenInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
-
-        String accessToken = "some-access-token";
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-        List<String> scopesForIdToken = new ArrayList<>();
-
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
-                .thenReturn("accessTokenHash");
-
-        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenThrow(InvalidAlgorithmException.class);
-
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void makeWhenInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception {
-
-        String accessToken = "some-access-token";
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-        List<String> scopesForIdToken = new ArrayList<>();
-
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
-                .thenReturn("accessTokenHash");
-
-        when(mockIdTokenFactory.make("accessTokenHash", tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenThrow(InvalidJsonWebKeyException.class);
-
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void makeWhenJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
-        String accessToken = "some-access-token";
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-        List<String> scopesForIdToken = new ArrayList<>();
-
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockMakeAccessTokenHash.makeEncodedHash(accessToken))
-                .thenReturn("accessTokenHash");
-
-        when(mockIdTokenFactory.make("accessTokenHash", nonce, tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenReturn(mockSecureJwtEncoder);
-
-        when(mockSecureJwtEncoder.encode(idToken))
-                .thenThrow(JwtToJsonException.class);
-
-        subject.makeForAccessToken(accessToken, nonce, tc, resourceOwner, scopesForIdToken);
-    }
 
     @Test
     public void makeIdentityOnlyShouldReturnEncodedJwt() throws Exception {
@@ -295,8 +167,6 @@ public class MakeImplicitIdentityTokenTest {
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
         IdToken idToken = new IdToken();
-        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
-        String expected = "some-compact-jwt";
 
         when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
                 .thenReturn(profile);
@@ -309,15 +179,10 @@ public class MakeImplicitIdentityTokenTest {
 
         when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
 
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenReturn(mockSecureJwtEncoder);
-
-        when(mockSecureJwtEncoder.encode(idToken))
-                .thenReturn(expected);
 
         String actual = subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
 
-        assertThat(actual, is(expected));
+        assertThat(actual, is(notNullValue()));
         assertThat(resourceOwner.getProfile(), is(profile));
     }
 
@@ -362,112 +227,6 @@ public class MakeImplicitIdentityTokenTest {
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
                 .thenThrow(RecordNotFoundException.class);
-
-        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void makeIdentityOnlyWhenInvalidAlgorithmExceptionShouldThrowIdTokenException() throws Exception {
-
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-
-        List<String> scopesForIdToken = new ArrayList<>();
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenThrow(InvalidAlgorithmException.class);
-
-        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void makeIdentityOnlyWhenInvalidJsonWebKeyExceptionShouldThrowIdTokenException() throws Exception {
-
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-
-        List<String> scopesForIdToken = new ArrayList<>();
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenThrow(InvalidJsonWebKeyException.class);
-
-        subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
-    }
-
-    @Test(expected = IdTokenException.class)
-    public void makeIdentityOnlyWhenJwtToJsonExceptionShouldThrowIdTokenException() throws Exception {
-
-        String nonce = "some-nonce";
-
-        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
-        Profile profile = FixtureFactory.makeProfile(resourceOwner.getId());
-
-        List<String> scopesForIdToken = new ArrayList<>();
-        List<String> audience = new ArrayList<>();
-        audience.add(UUID.randomUUID().toString());
-        TokenClaims tc = FixtureFactory.makeTokenClaims(audience);
-
-        RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
-        RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
-        IdToken idToken = new IdToken();
-        SecureJwtEncoder mockSecureJwtEncoder = mock(SecureJwtEncoder.class);
-
-        when(mockProfileRepository.getByResourceOwnerId(resourceOwner.getId()))
-                .thenReturn(profile);
-
-        when(mockIdTokenFactory.make(nonce, tc, scopesForIdToken, resourceOwner))
-                .thenReturn(idToken);
-
-        when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenReturn(key);
-
-        when(mockPrivateKeyTranslator.from(key)).thenReturn(keyPair);
-
-        when(mockJwtAppFactory.secureJwtEncoder(Algorithm.RS256, keyPair))
-                .thenReturn(mockSecureJwtEncoder);
-
-        when(mockSecureJwtEncoder.encode(idToken))
-                .thenThrow(JwtToJsonException.class);
 
         subject.makeIdentityOnly(nonce, tc, resourceOwner, scopesForIdToken);
     }

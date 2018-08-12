@@ -1,6 +1,7 @@
 package integration.authorization.authenticate;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.TestAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.rootservices.authorization.authenticate.LoginResourceOwner;
@@ -12,6 +13,7 @@ import org.rootservices.authorization.persistence.repository.ResourceOwnerReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -26,7 +28,7 @@ import static org.junit.Assert.assertThat;
  * Created by tommackenzie on 4/13/15.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring-auth-test.xml")
+@ContextConfiguration(classes=TestAppConfig.class, loader= AnnotationConfigContextLoader.class)
 @Transactional
 public class LoginResourceOwnerImplTest {
 

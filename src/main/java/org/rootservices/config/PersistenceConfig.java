@@ -6,8 +6,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -20,16 +22,20 @@ import javax.sql.DataSource;
  */
 @Configuration
 @MapperScan("org.rootservices.authorization.persistence.mapper")
+@PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class PersistenceConfig {
     protected static Logger LOGGER = LogManager.getLogger(PersistenceConfig.class);
+
+    @Value("${db.user}")
+    private String userName;
+    @Value("${db.password}")
+    private String password;
+    @Value("${db.url}")
+    private String connectionUrl;
 
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-
-        String userName = System.getenv("AUTH_DB_USER");
-        String password = System.getenv("AUTH_DB_PASSWORD");
-        String connectionUrl = System.getenv("AUTH_DB_URL");
 
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUsername(userName);
