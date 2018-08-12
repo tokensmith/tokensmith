@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.TestAppConfig;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.rootservices.authorization.persistence.entity.*;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -22,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@ContextConfiguration(classes= TestAppConfig.class, loader= AnnotationConfigContextLoader.class)
 @Transactional
 public class ResourceOwnerMapperTest {
     @Autowired

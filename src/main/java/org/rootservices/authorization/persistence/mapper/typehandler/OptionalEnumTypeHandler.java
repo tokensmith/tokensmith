@@ -26,7 +26,8 @@ public class OptionalEnumTypeHandler<T extends Enum> extends OptionalTypeHandler
         if (value == null) {
             return Optional.empty();
         } else {
-            return Optional.of(Enum.valueOf(type, value));
+            T enumInstance = (T) Enum.valueOf(type, value);
+            return Optional.of(enumInstance);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.rootservices.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
+import helper.fixture.TestAppConfig;
 import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -26,7 +28,7 @@ import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value={"classpath:spring-auth-test.xml"})
+@ContextConfiguration(classes= TestAppConfig.class, loader= AnnotationConfigContextLoader.class)
 @Transactional
 public class RefreshTokenMapperTest {
     @Autowired
