@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.postgresql.util.PSQLException;
 import org.rootservices.authorization.persistence.entity.Token;
 import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
 import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
@@ -17,7 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;

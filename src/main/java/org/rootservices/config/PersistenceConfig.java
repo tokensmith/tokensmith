@@ -1,6 +1,7 @@
 package org.rootservices.config;
 
-import org.apache.commons.dbcp.BasicDataSource;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
