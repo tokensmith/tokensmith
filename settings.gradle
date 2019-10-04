@@ -1,1 +1,3 @@
-rootProject.name = 'auth'
+rootProject.name = 'gizmo'
+include 'gizmo'
+include 'gizmo-http'
