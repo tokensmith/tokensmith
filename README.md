@@ -55,3 +55,13 @@ Running the tests from the terminal.
  - Run migrations against the test db (see, Running Migrations)
  - Use maven to run the tests, `mvn test`
 
+Interact with postgres
+-----------------------
+
+```bash
+$ docker exec -it postgres bash
+
+root@8581e63f4474:/# psql -U postgres
+postgres=# \c auth;
+auth=# \dt
+```

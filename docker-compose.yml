@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  db:
+    container_name: postgres
+    image: postgres:11.5
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ""
+        POSTGRES_DB: auth
+
+  kafka:
+    container_name: gizmo-kafka
+    image: rs/kafka
+    build:
+      context: .
+      dockerfile: docker/kafka/Dockerfile
+
+  zookeeper:
+    container_name: gizmo-zookeeper
+    image: rs/zookeeper
+    build:
+      context: docker/zookeeper
+      dockerfile: Dockerfile
+    ports:
+      - 2181:2181
+
+  kafka-broker:
+    container_name: gizmo-kafka-broker
+    image: rs/kafka-broker
+    depends_on:
+      - zookeeper
+    build:
+      context: docker/kafka-broker
+      dockerfile: Dockerfile
+    ports:
+      - 9092:9092
+      - 29092:29092
