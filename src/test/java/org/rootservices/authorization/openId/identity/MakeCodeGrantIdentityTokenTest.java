@@ -156,7 +156,7 @@ public class MakeCodeGrantIdentityTokenTest {
                 .thenReturn(ro);
 
         when(mockRsaPrivateKeyRepository.getMostRecentAndActiveForSigning())
-                .thenThrow(KeyNotFoundException.class);
+                .thenThrow(RecordNotFoundException.class);
 
         subject.make(accessToken, tc);
     }
