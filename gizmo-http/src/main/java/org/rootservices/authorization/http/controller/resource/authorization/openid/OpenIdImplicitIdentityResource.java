@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.ServerException;
 import org.rootservices.authorization.http.controller.resource.authorization.helper.AuthorizationHelper;
+import org.rootservices.authorization.http.controller.security.TokenSession;
+import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -13,16 +15,16 @@ import org.rootservices.authorization.openId.grant.redirect.implicit.authorizati
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentity;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpenIdImplicitIdentityResource extends Resource {
+public class OpenIdImplicitIdentityResource extends Resource<TokenSession, WebSiteUser> {
     private static final Logger logger = LogManager.getLogger(OpenIdImplicitIdentityResource.class);
 
     private static String JSP_PATH = "/WEB-INF/jsp/authorization.jsp";
@@ -44,7 +46,7 @@ public class OpenIdImplicitIdentityResource extends Resource {
     }
 
     @Override
-    public Response get(Request request, Response response) {
+    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         try {
             validateOpenIdIdImplicitGrant.run(request.getQueryParams());
         } catch (InformResourceOwnerException e) {
@@ -65,7 +67,7 @@ public class OpenIdImplicitIdentityResource extends Resource {
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         String userName = authorizationHelper.getFormValue(request.getFormData().get(EMAIL));
         String password = authorizationHelper.getFormValue(request.getFormData().get(PASSWORD));
 

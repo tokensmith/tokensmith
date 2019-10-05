@@ -3,16 +3,17 @@ package org.rootservices.authorization.http.controller.resource;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdCodeResource;
+import org.rootservices.authorization.http.controller.security.TokenSession;
+import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.authorization.http.presenter.RegisterPresenter;
 import org.rootservices.authorization.register.Register;
 import org.rootservices.authorization.register.RegisterError;
 import org.rootservices.authorization.register.exception.NonceException;
 import org.rootservices.authorization.register.exception.RegisterException;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class RegisterResource extends Resource {
+public class RegisterResource extends Resource<TokenSession, WebSiteUser> {
     private static final Logger logger = LogManager.getLogger(RegisterResource.class);
 
     public static String URL = "/register(.*)";
@@ -38,7 +39,7 @@ public class RegisterResource extends Resource {
     }
 
     @Override
-    public Response get(Request request, Response response) {
+    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         RegisterPresenter presenter = makeRegisterPresenter(BLANK, request.getCsrfChallenge().get());
         response.setStatusCode(StatusCode.OK);
         response.setPresenter(Optional.of(presenter));
@@ -47,7 +48,7 @@ public class RegisterResource extends Resource {
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         Map<String, List<String>> form = request.getFormData();
 
         String email = getFormValue(form.get(EMAIL));
@@ -110,7 +111,7 @@ public class RegisterResource extends Resource {
         return presenter;
     }
 
-    protected void prepareResponse(Response response, StatusCode statusCode, RegisterPresenter presenter) {
+    protected void prepareResponse(Response<TokenSession> response, StatusCode statusCode, RegisterPresenter presenter) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
         response.setTemplate(Optional.of(JSP_PATH));
