@@ -1,22 +1,21 @@
 package org.rootservices.authorization.http.controller.gizmo;
 
 import org.rootservices.authorization.http.config.HttpAppConfig;
-import org.rootservices.authorization.http.controller.resource.ForgotPasswordResource;
-import org.rootservices.authorization.http.controller.resource.NotFoundResource;
-import org.rootservices.authorization.http.controller.resource.RegisterResource;
-import org.rootservices.authorization.http.controller.resource.UpdatePasswordResource;
+import org.rootservices.authorization.http.controller.resource.html.ForgotPasswordResource;
+import org.rootservices.authorization.http.controller.resource.html.NotFoundResource;
+import org.rootservices.authorization.http.controller.resource.html.RegisterResource;
+import org.rootservices.authorization.http.controller.resource.html.UpdatePasswordResource;
 import org.rootservices.authorization.http.controller.resource.api.RSAPublicKeyResource;
 import org.rootservices.authorization.http.controller.resource.api.RSAPublicKeysResource;
 import org.rootservices.authorization.http.controller.resource.api.TokenResource;
 import org.rootservices.authorization.http.controller.resource.api.UserInfoResource;
-import org.rootservices.authorization.http.controller.resource.authorization.AuthorizationResource;
-import org.rootservices.authorization.http.controller.resource.authorization.welcome.WelcomeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.welcome.WelcomeResource;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.config.CookieConfig;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
-import org.rootservices.otter.router.RouteBuilder;
+import org.rootservices.otter.router.builder.RouteBuilder;
 import org.rootservices.otter.router.entity.Route;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -24,38 +23,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class GizmoConfigure implements Configure {
+public class GizmoConfigure {
 
-    @Override
-    public void configure(Gateway gateway) {
-        // CSRF cookie configuration
-        CookieConfig csrfCookieConfig = new CookieConfig("csrf", false, -1);
-        gateway.setCsrfCookieConfig(csrfCookieConfig);
-        gateway.setCsrfFormFieldName("csrfToken");
-
-        // Session cookie configuration.
-        CookieConfig sessionCookieConfig = new CookieConfig("session", false, -1);
-        gateway.setSessionCookieConfig(sessionCookieConfig);
-
-        // CSRF key configuration.
-        SymmetricKey csrfKey = new SymmetricKey(
-                Optional.of("key-1"),
-                "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
-                Use.SIGNATURE
-        );
-        gateway.setSignKey(csrfKey);
-
-        //Session key configuration.
-        SymmetricKey encKey = new SymmetricKey(
-                Optional.of("key-2"),
-                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
-                Use.ENCRYPTION
-        );
-        gateway.setEncKey(encKey);
-    }
-
-    @Override
     public void routes(Gateway gateway) {
+        /**
         ApplicationContext context = new AnnotationConfigApplicationContext(HttpAppConfig.class);
 
         AuthorizationResource authorizationResource = context.getBean(AuthorizationResource.class);
@@ -97,5 +68,6 @@ public class GizmoConfigure implements Configure {
                 .build();
 
         gateway.setNotFoundRoute(notFoundRoute);
+         **/
     }
 }

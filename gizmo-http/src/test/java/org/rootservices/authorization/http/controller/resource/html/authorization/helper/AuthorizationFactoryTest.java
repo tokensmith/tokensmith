@@ -1,15 +1,17 @@
-package org.rootservices.authorization.http.controller.resource.authorization.helper;
+package org.rootservices.authorization.http.controller.resource.html.authorization.helper;
 
 import helpers.category.UnitTests;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.MockitoAnnotations;
-import org.rootservices.authorization.http.controller.resource.authorization.oauth.OAuth2CodeResource;
-import org.rootservices.authorization.http.controller.resource.authorization.oauth.OAuth2ImplicitResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdCodeResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdImplicitIdentityResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdImplicitResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.oauth.OAuth2CodeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.oauth.OAuth2ImplicitResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdCodeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitIdentityResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitResource;
+import org.rootservices.authorization.http.controller.security.TokenSession;
+import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.otter.controller.Resource;
 
 import java.util.ArrayList;
@@ -80,7 +82,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(IMPLICIT_GRANT + " " + IDENTITY_RESPONSE_TYPE);
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OpenIdImplicitResource.class));
     }
@@ -93,7 +95,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(IDENTITY_RESPONSE_TYPE);
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OpenIdImplicitIdentityResource.class));
     }
@@ -105,7 +107,7 @@ public class AuthorizationFactoryTest {
 
         List<String> responseTypes = null;
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OpenIdCodeResource.class));
     }
@@ -118,7 +120,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(AUTHORIZATION_CODE_GRANT);
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OpenIdCodeResource.class));
     }
@@ -130,7 +132,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(IMPLICIT_GRANT);
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OAuth2ImplicitResource.class));
     }
@@ -142,7 +144,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add(AUTHORIZATION_CODE_GRANT);
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OAuth2CodeResource.class));
     }
@@ -154,7 +156,7 @@ public class AuthorizationFactoryTest {
         List<String> responseTypes = new ArrayList<>();
         responseTypes.add("foo");
 
-        Resource actual = subject.makeResource(scopes, responseTypes);
+        Resource<TokenSession, WebSiteUser> actual = subject.makeResource(scopes, responseTypes);
 
         assertThat(actual, instanceOf(OAuth2CodeResource.class));
     }

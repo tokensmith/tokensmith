@@ -1,4 +1,4 @@
-package org.rootservices.authorization.http.controller.resource;
+package org.rootservices.authorization.http.controller.resource.html;
 
 
 import org.apache.log4j.LogManager;

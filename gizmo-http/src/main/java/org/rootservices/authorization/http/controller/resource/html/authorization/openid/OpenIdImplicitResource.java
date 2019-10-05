@@ -1,11 +1,11 @@
-package org.rootservices.authorization.http.controller.resource.authorization.openid;
+package org.rootservices.authorization.http.controller.resource.html.authorization.openid;
 
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.http.controller.resource.authorization.helper.AuthorizationHelper;
+import org.rootservices.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;

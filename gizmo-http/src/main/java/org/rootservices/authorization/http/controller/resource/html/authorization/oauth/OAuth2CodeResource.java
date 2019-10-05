@@ -1,19 +1,19 @@
-package org.rootservices.authorization.http.controller.resource.authorization.openid;
+package org.rootservices.authorization.http.controller.resource.html.authorization.oauth;
 
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.http.controller.resource.authorization.helper.AuthorizationHelper;
+import org.rootservices.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.RequestOpenIdIdentity;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
 import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
@@ -23,9 +23,10 @@ import org.rootservices.otter.controller.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component
-public class OpenIdImplicitIdentityResource extends Resource<TokenSession, WebSiteUser> {
-    private static final Logger logger = LogManager.getLogger(OpenIdImplicitIdentityResource.class);
+public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
+    private static final Logger logger = LogManager.getLogger(OAuth2CodeResource.class);
 
     private static String JSP_PATH = "/WEB-INF/jsp/authorization.jsp";
     protected static String EMAIL = "email";
@@ -33,22 +34,22 @@ public class OpenIdImplicitIdentityResource extends Resource<TokenSession, WebSi
     protected static String BLANK = "";
 
     private AuthorizationHelper authorizationHelper;
-    private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
-    private RequestOpenIdIdentity requestOpenIdIdentity;
+    private ValidateCodeGrant validateCodeGrant;
+    private RequestAuthCode requestAuthCode;
 
-    public OpenIdImplicitIdentityResource() {}
+    public OAuth2CodeResource() {}
 
     @Autowired
-    public OpenIdImplicitIdentityResource(AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdIdentity requestOpenIdIdentity) {
+    public OAuth2CodeResource(AuthorizationHelper authorizationHelper, ValidateCodeGrant validateCodeGrant, RequestAuthCode requestAuthCode) {
         this.authorizationHelper = authorizationHelper;
-        this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
-        this.requestOpenIdIdentity = requestOpenIdIdentity;
+        this.validateCodeGrant = validateCodeGrant;
+        this.requestAuthCode = requestAuthCode;
     }
 
     @Override
     public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         try {
-            validateOpenIdIdImplicitGrant.run(request.getQueryParams());
+            validateCodeGrant.run(request.getQueryParams());
         } catch (InformResourceOwnerException e) {
             authorizationHelper.prepareNotFoundResponse(response);
             return response;
@@ -67,13 +68,13 @@ public class OpenIdImplicitIdentityResource extends Resource<TokenSession, WebSi
     }
 
     @Override
-    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         String userName = authorizationHelper.getFormValue(request.getFormData().get(EMAIL));
         String password = authorizationHelper.getFormValue(request.getFormData().get(PASSWORD));
 
-        OpenIdImplicitIdentity identity;
+        AuthResponse authResponse;
         try {
-            identity = requestOpenIdIdentity.request(userName, password, request.getQueryParams());
+            authResponse = requestAuthCode.run(userName, password, request.getQueryParams());
         } catch (UnauthorizedException e) {
             AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(userName, request.getCsrfChallenge().get());
             authorizationHelper.prepareResponse(response, StatusCode.FORBIDDEN, presenter, JSP_PATH);
@@ -90,9 +91,8 @@ public class OpenIdImplicitIdentityResource extends Resource<TokenSession, WebSi
             return response;
         }
 
-
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue());
-        String location = authorizationHelper.makeRedirectURIForOpenIdIdentity(identity);;
+        String location = authorizationHelper.makeRedirectURIForCodeGrant(authResponse);
         response.getHeaders().put(Header.LOCATION.getValue(), location);
         response.setStatusCode(StatusCode.MOVED_TEMPORARILY);
 
