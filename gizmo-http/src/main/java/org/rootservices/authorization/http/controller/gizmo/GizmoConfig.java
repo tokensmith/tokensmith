@@ -220,7 +220,7 @@ public class GizmoConfig implements Configure {
                 .groupName(API_GROUP_V1)
                 .method(Method.GET)
                 .restResource(rsaPublicKeysResource)
-                .regex(RSAPublicKeyResource.URL)
+                .regex(RSAPublicKeysResource.URL)
                 .contentType(json)
                 .payload(RSAPublicKey[].class)
                 .build();
