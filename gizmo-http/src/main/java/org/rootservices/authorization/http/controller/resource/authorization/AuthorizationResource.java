@@ -2,15 +2,17 @@ package org.rootservices.authorization.http.controller.resource.authorization;
 
 
 import org.rootservices.authorization.http.controller.resource.authorization.helper.AuthorizationFactory;
+import org.rootservices.authorization.http.controller.security.TokenSession;
+import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
-public class AuthorizationResource extends Resource {
+public class AuthorizationResource extends Resource<TokenSession, WebSiteUser> {
     public String URL = "^/authorization?.*";
     private static String RESPONSE_TYPE = "response_type";
     private static String SCOPE = "scope";
@@ -22,7 +24,7 @@ public class AuthorizationResource extends Resource {
         this.authorizationFactory = authorizationFactory;
     }
 
-    public Response get(Request request, Response response) {
+    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         Resource resource = authorizationFactory.makeResource(
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)
@@ -30,7 +32,7 @@ public class AuthorizationResource extends Resource {
         return resource.get(request, response);
     }
 
-    public Response post(Request request, Response response) {
+    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         Resource resource = authorizationFactory.makeResource(
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)

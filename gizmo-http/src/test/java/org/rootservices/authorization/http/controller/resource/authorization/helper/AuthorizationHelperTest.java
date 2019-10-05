@@ -5,6 +5,7 @@ import helpers.fixture.EntityFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
@@ -12,8 +13,8 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
 import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.header.Header;
 
 import java.net.URI;
@@ -36,7 +37,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareErrorResponseWhenNoState() throws Exception {
-        Response response = new ResponseBuilder().headers(new HashMap<>()).build();
+        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
         URI redirect = new URI("https://rootservices.org");
         String error = "some-error";
         String desc = "some-description";
@@ -52,7 +53,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareErrorResponseWhenState() throws Exception {
-        Response response = new ResponseBuilder().headers(new HashMap<>()).build();
+        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
         URI redirect = new URI("https://rootservices.org");
         String error = "some-error";
         String desc = "some-description";
@@ -68,7 +69,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareNotFoundResponse() {
-        Response response = new ResponseBuilder().headers(new HashMap<>()).build();
+        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
 
         subject.prepareNotFoundResponse(response);
 
@@ -79,7 +80,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareServerErrorResponse() {
-        Response response = new ResponseBuilder().headers(new HashMap<>()).build();
+        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
 
         subject.prepareServerErrorResponse(response);
 
@@ -102,7 +103,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareResponse() {
-        Response response = new ResponseBuilder().headers(new HashMap<>()).build();
+        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
         AuthorizationPresenter presenter = new AuthorizationPresenter();
         String template = "/path/to/template";
 

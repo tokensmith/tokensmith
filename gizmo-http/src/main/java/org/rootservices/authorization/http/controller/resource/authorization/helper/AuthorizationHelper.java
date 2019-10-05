@@ -1,13 +1,14 @@
 package org.rootservices.authorization.http.controller.resource.authorization.helper;
 
 
+import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class AuthorizationHelper {
         return value;
     }
 
-    public void prepareErrorResponse(Response response, URI redirect, String error, String desc, Optional<String> state) {
+    public void prepareErrorResponse(Response<TokenSession> response, URI redirect, String error, String desc, Optional<String> state) {
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue());
 
         StringBuilder location = new StringBuilder();
@@ -68,12 +69,12 @@ public class AuthorizationHelper {
         response.getHeaders().put(Header.LOCATION.getValue(), location.toString());
     }
 
-    public void prepareNotFoundResponse(Response response) {
+    public void prepareNotFoundResponse(Response<TokenSession> response) {
         response.setStatusCode(StatusCode.NOT_FOUND);
         response.setTemplate(Optional.of(NOT_FOUND_JSP_PATH));
     }
 
-    public void prepareServerErrorResponse(Response response) {
+    public void prepareServerErrorResponse(Response<TokenSession> response) {
         response.setStatusCode(StatusCode.SERVER_ERROR);
         response.setTemplate(Optional.of(SERVER_ERROR_JSP_PATH));
     }
@@ -85,7 +86,7 @@ public class AuthorizationHelper {
         return presenter;
     }
 
-    public void prepareResponse(Response response, StatusCode statusCode, AuthorizationPresenter presenter, String template) {
+    public void prepareResponse(Response<TokenSession> response, StatusCode statusCode, AuthorizationPresenter presenter, String template) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
         response.setTemplate(Optional.of(template));
