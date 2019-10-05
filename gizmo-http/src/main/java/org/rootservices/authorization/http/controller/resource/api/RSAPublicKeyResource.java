@@ -17,12 +17,10 @@ import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.router.entity.Regex;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

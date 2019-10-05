@@ -22,7 +22,10 @@ public class GizmoServer extends HttpServer {
 
     public static void main(String[] args) {
 
-        List<String> gzipMimeTypes = new ArrayList<>();
+        List<String> gzipMimeTypes = Arrays.asList(
+                "text/html", "text/plain", "text/xml",
+                "text/css", "application/javascript", "text/javascript",
+                "application/json");
 
         HttpServerConfig config = new HttpServerConfig(
                 DOCUMENT_ROOT, PORT, REQUEST_LOG, HealthResource.class, gzipMimeTypes, new ArrayList<>()
