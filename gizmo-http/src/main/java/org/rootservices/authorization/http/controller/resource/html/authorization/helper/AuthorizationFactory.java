@@ -1,11 +1,13 @@
-package org.rootservices.authorization.http.controller.resource.authorization.helper;
+package org.rootservices.authorization.http.controller.resource.html.authorization.helper;
 
 
-import org.rootservices.authorization.http.controller.resource.authorization.oauth.OAuth2CodeResource;
-import org.rootservices.authorization.http.controller.resource.authorization.oauth.OAuth2ImplicitResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdCodeResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdImplicitIdentityResource;
-import org.rootservices.authorization.http.controller.resource.authorization.openid.OpenIdImplicitResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.oauth.OAuth2CodeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.oauth.OAuth2ImplicitResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdCodeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitIdentityResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitResource;
+import org.rootservices.authorization.http.controller.security.TokenSession;
+import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.otter.controller.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,30 +43,30 @@ public class AuthorizationFactory {
         this.openIdImplicitIdentityResource = openIdImplicitIdentityResource;
     }
 
-    public Resource makeResource(List<String> scopes, List<String> responseTypes) {
+    public Resource<TokenSession, WebSiteUser> makeResource(List<String> scopes, List<String> responseTypes) {
 
         List<String> scopesSplit = splitInput(scopes);
         List<String> responseTypesSplit = splitInput(responseTypes);
 
         boolean isOpenId = isOpenId(scopesSplit);
 
-        Resource resoure = oAuth2CodeResource;
+        Resource<TokenSession, WebSiteUser> resource = oAuth2CodeResource;
 
         if (isOpenIdCodeGrant(isOpenId, responseTypesSplit)) {
-            resoure = openIdCodeResource;
+            resource = openIdCodeResource;
         } else if (isOpenIdImplicitGrant(isOpenId, responseTypesSplit)) {
-            resoure = openIdImplicitResource;
+            resource = openIdImplicitResource;
         } else if (isOpenIdImplicitIdentityGrant(isOpenId, responseTypesSplit)){
-            resoure = openIdImplicitIdentityResource;
+            resource = openIdImplicitIdentityResource;
         } else if (isOpenId) {
             // default to a open id grant flow if open id
-            resoure = openIdCodeResource;
+            resource = openIdCodeResource;
         }else if (isOAuthCodeGrant(isOpenId, responseTypesSplit)) {
-            resoure = oAuth2CodeResource;
+            resource = oAuth2CodeResource;
         } else if (isOAuthImplicitGrant(isOpenId, responseTypesSplit)) {
-            resoure = oAuth2ImplicitResource;
+            resource = oAuth2ImplicitResource;
         }
-        return resoure;
+        return resource;
     }
 
     protected List<String> splitInput(List<String> input) {

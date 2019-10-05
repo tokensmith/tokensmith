@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebListener;
 /**
  * Created by tommackenzie on 6/3/15.
  */
-@WebListener
+// @WebListener
 public class ContextListener implements ServletContextListener {
 
     @Override

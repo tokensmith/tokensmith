@@ -1,7 +1,7 @@
-package org.rootservices.authorization.http.controller.resource.authorization;
+package org.rootservices.authorization.http.controller.resource.html.authorization;
 
 
-import org.rootservices.authorization.http.controller.resource.authorization.helper.AuthorizationFactory;
+import org.rootservices.authorization.http.controller.resource.html.authorization.helper.AuthorizationFactory;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.otter.controller.Resource;
@@ -25,7 +25,7 @@ public class AuthorizationResource extends Resource<TokenSession, WebSiteUser> {
     }
 
     public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
-        Resource resource = authorizationFactory.makeResource(
+        Resource<TokenSession, WebSiteUser> resource = authorizationFactory.makeResource(
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)
         );
@@ -33,7 +33,7 @@ public class AuthorizationResource extends Resource<TokenSession, WebSiteUser> {
     }
 
     public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
-        Resource resource = authorizationFactory.makeResource(
+        Resource<TokenSession, WebSiteUser> resource = authorizationFactory.makeResource(
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)
         );

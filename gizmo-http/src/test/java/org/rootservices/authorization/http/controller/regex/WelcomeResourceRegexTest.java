@@ -4,7 +4,7 @@ import helpers.category.UnitTests;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.authorization.http.controller.resource.authorization.welcome.WelcomeResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.welcome.WelcomeResource;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

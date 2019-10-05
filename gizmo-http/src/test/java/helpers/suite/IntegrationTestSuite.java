@@ -17,7 +17,7 @@ import org.rootservices.authorization.http.controller.WelcomeResourceTest;
 import org.rootservices.authorization.http.controller.authorization.*;
 import org.rootservices.authorization.http.controller.resource.ForgotPasswordResourceTest;
 import org.rootservices.authorization.http.controller.resource.UpdatePasswordResourceTest;
-import org.rootservices.authorization.http.controller.resource.authorization.AuthorizationResource;
+import org.rootservices.authorization.http.controller.resource.html.authorization.AuthorizationResource;
 import org.rootservices.authorization.http.controller.token.TokenServletRefreshTokenTest;
 import org.rootservices.authorization.http.controller.token.TokenServletResponseTypeCodeTest;
 import org.rootservices.authorization.http.controller.token.TokenServletResponseTypePasswordTest;

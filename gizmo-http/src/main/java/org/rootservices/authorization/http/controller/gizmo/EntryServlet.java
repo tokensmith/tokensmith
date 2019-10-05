@@ -12,6 +12,6 @@ public class EntryServlet extends OtterEntryServlet {
 
     @Override
     public Configure makeConfigure() {
-        return new GizmoConfigure();
+        return new GizmoConfig();
     }
 }

@@ -1,4 +1,4 @@
-package org.rootservices.authorization.http.controller.resource.authorization.welcome;
+package org.rootservices.authorization.http.controller.resource.html.authorization.welcome;
 
 import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.exception.NotFoundException;

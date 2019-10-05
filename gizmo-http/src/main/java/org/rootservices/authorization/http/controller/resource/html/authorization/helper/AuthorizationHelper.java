@@ -1,4 +1,4 @@
-package org.rootservices.authorization.http.controller.resource.authorization.helper;
+package org.rootservices.authorization.http.controller.resource.html.authorization.helper;
 
 
 import org.rootservices.authorization.http.controller.security.TokenSession;

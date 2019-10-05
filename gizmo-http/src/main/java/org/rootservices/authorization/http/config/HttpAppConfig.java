@@ -6,7 +6,6 @@ import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.authentication.ParseBearer;
 import org.rootservices.otter.authentication.ParseHttpBasic;
 import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.translator.JsonTranslator;
 import org.springframework.context.annotation.*;
 
 
@@ -21,11 +20,6 @@ public class HttpAppConfig {
 
     public OtterAppFactory otterAppFactory() {
         return new OtterAppFactory();
-    }
-
-    @Bean
-    public JsonTranslator jsonTranslator() {
-        return otterAppFactory().jsonTranslator();
     }
 
     @Bean
