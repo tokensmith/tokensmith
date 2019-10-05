@@ -17,8 +17,10 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+    mavenCentral()
+    mavenLocal()
 }
 
 ext {
@@ -44,7 +46,7 @@ dependencies {
     compile group: 'org.mindrot', name: 'jbcrypt', version: "${bcryptVersion}"
     compile group: 'org.rootservices', name: 'jwt', version: "${jwtVersion}"
     compile group: 'org.rootservices', name: 'otter-translatable', version:'1.0'
-    compile group: 'org.rootservices', name: 'pelican', version:'1.0-SNAPSHOT'
+    compile group: 'org.rootservices', name: 'pelican', version:'1.1-SNAPSHOT'
     compile group: 'org.postgresql', name: 'postgresql', version: "${postgresDriverVersion}"
     compile group: 'org.mybatis', name: 'mybatis', version: "${mybatisVersion}"
     compile(group: 'org.mybatis', name: 'mybatis-spring', version: "${mybatisSpringVersion}") {

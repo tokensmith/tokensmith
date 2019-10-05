@@ -45,9 +45,17 @@ public class GetSessionAndCsrfToken {
 
         Session session = new Session();
         for(Cookie cookie: response.getCookies()) {
-            if (cookie.getName().equals("csrf")) {
+            if (cookie.getName().equals("csrfToken")) {
                 session.setSession(cookie);
             }
+        }
+
+        if (session.getSession() == null) {
+            throw new GetCsrfException(
+                    "could not find the CSRF cookie",
+                    response.getStatusCode(),
+                    null,
+                    response.getResponseBody());
         }
 
         session.setCsrfToken(extractCsrfToken(response.getResponseBody()).get());
