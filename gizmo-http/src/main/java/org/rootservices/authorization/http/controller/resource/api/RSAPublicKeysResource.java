@@ -3,33 +3,28 @@ package org.rootservices.authorization.http.controller.resource.api;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.exception.BadRequestException;
+import org.rootservices.authorization.http.controller.security.APIUser;
 import org.rootservices.authorization.openId.jwk.GetKeys;
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
-import org.rootservices.otter.QueryStringToMap;
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.request.RestRequest;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class RSAPublicKeysResource extends Resource {
-    private static final Logger logger = LogManager.getLogger(RSAPublicKeysResource.class);
+public class RSAPublicKeysResource extends RestResource<APIUser, RSAPublicKey[]> {
+    private static final Logger LOGGER = LogManager.getLogger(RSAPublicKeysResource.class);
     public static String URL = "/api/v1/jwk/rsa(?!/)(.*)";
 
-    private JsonTranslator translator;
-    private QueryStringToMap queryStringToMap;
     private GetKeys getKeys;
 
     private static String PAGE_NUMBER_PARAM = "page";
@@ -37,15 +32,13 @@ public class RSAPublicKeysResource extends Resource {
     private static String BAD_REQUEST_ERROR = "page value is not a Integer";
 
     @Autowired
-    public RSAPublicKeysResource(JsonTranslator translator, QueryStringToMap queryStringToMap, GetKeys getKeys) {
+    public RSAPublicKeysResource(GetKeys getKeys) {
         super();
-        this.translator = translator;
-        this.queryStringToMap = queryStringToMap;
         this.getKeys = getKeys;
     }
 
     @Override
-    public Response get(Request request, Response response) {
+    public RestResponse<RSAPublicKey[]> get(RestRequest<APIUser, RSAPublicKey[]> request, RestResponse<RSAPublicKey[]> response) {
         setDefaultHeaders(response);
 
         Integer pageNumber;
@@ -56,15 +49,10 @@ public class RSAPublicKeysResource extends Resource {
             return response;
         }
 
-        List<RSAPublicKey> keys =  getKeys.getPublicKeys(pageNumber);
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
-        try {
-            payload = Optional.of(translator.to(keys));
-        } catch (ToJsonException e) {
-            logger.error(e.getMessage(), e);
-        }
+        RSAPublicKey[] keys = (RSAPublicKey[]) getKeys.getPublicKeys(pageNumber).toArray();
+        Optional<RSAPublicKey[]> optKeys =  Optional.of(keys);
 
-        response.setPayload(payload);
+        response.setPayload(optKeys);
         response.setStatusCode(StatusCode.OK);
         return response;
     }
@@ -82,7 +70,7 @@ public class RSAPublicKeysResource extends Resource {
         return pageNumber;
     }
 
-    protected void setDefaultHeaders(Response response) {
+    protected void setDefaultHeaders(RestResponse<RSAPublicKey[]> response) {
         Map<String, String> headers = new HashMap<>();
 
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), "application/json;charset=UTF-8");
