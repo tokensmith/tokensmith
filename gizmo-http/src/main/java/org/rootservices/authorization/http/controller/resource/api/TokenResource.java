@@ -4,6 +4,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
 import org.rootservices.authorization.exception.ServerException;
+import org.rootservices.authorization.http.controller.security.APIUser;
+import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.factory.MakeToken;
 import org.rootservices.authorization.http.factory.MakeTokenFactory;
 import org.rootservices.authorization.http.factory.exception.TokenException;
@@ -18,9 +20,9 @@ import org.rootservices.otter.authentication.HttpBasicEntity;
 import org.rootservices.otter.authentication.ParseHttpBasic;
 import org.rootservices.otter.authentication.exception.HttpBasicException;
 import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.Request;
-import org.rootservices.otter.controller.entity.Response;
 import org.rootservices.otter.controller.entity.StatusCode;
+import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
@@ -29,19 +31,20 @@ import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 
+
 @Component
-public class TokenResource extends Resource {
+public class TokenResource extends Resource<TokenSession, APIUser> {
     private static final Logger logger = LogManager.getLogger(TokenResource.class);
     public static String URL = "/api/v1/token(?!/).*";
 
-    private JsonTranslator translator;
+    private JsonTranslator<Error> errorTranslator;
+    private JsonTranslator<Token> tokenTranslator;
     private RequestToken requestToken;
     private ParseHttpBasic parseHttpBasic;
     private MakeTokenFactory makeTokenFactory;
@@ -49,15 +52,16 @@ public class TokenResource extends Resource {
     private static String UNHANDLED_ERROR_DESC = "Unhandled Server Exception";
 
     @Autowired
-    public TokenResource(JsonTranslator translator, RequestToken requestToken, ParseHttpBasic parseHttpBasic, MakeTokenFactory makeTokenFactory) {
-        this.translator = translator;
+    public TokenResource(JsonTranslator<Error> errorTranslator, JsonTranslator<Token> tokenTranslator, RequestToken requestToken, ParseHttpBasic parseHttpBasic, MakeTokenFactory makeTokenFactory) {
+        this.errorTranslator = errorTranslator;
+        this.tokenTranslator = tokenTranslator;
         this.requestToken = requestToken;
         this.parseHttpBasic = parseHttpBasic;
         this.makeTokenFactory = makeTokenFactory;
     }
 
     @Override
-    public Response post(Request request, Response response) {
+    public Response<TokenSession> post(Request<TokenSession, APIUser> request, Response<TokenSession> response) {
         setDefaultHeaders(response);
 
         String authenticationHeader = request.getHeaders().get("Authorization");
@@ -66,7 +70,7 @@ public class TokenResource extends Resource {
             httpBasic = parseHttpBasic.run(authenticationHeader);
         } catch (HttpBasicException e) {
             logger.debug(e.getMessage(), e);
-            preparedUnAuthorizedResponse(response);
+            preparedUnAuthorizedErrorResponse(response);
             return response;
         }
 
@@ -77,7 +81,7 @@ public class TokenResource extends Resource {
         } catch (BadRequestException e) {
             logger.debug(e.getMessage(), e);
             Error error = new Error(e.getError(), e.getDescription());
-            prepareResponse(response, error, StatusCode.BAD_REQUEST);
+            prepareErrorResponse(response, error, StatusCode.BAD_REQUEST);
             return response;
         }
 
@@ -86,22 +90,22 @@ public class TokenResource extends Resource {
             tokenResponse = requestToken.request(httpBasic.getUser(), httpBasic.getPassword(), tokenRequest);
         } catch(UnauthorizedException e) {
             logger.debug(e.getMessage(), e);
-            preparedUnAuthorizedResponse(response);
+            preparedUnAuthorizedErrorResponse(response);
             return response;
         } catch (NotFoundException e) {
             logger.debug(e.getMessage(), e);
             Error error = new Error(e.getError(), null);
-            prepareResponse(response, error, StatusCode.BAD_REQUEST);
+            prepareErrorResponse(response, error, StatusCode.BAD_REQUEST);
             return response;
         } catch (BadRequestException e) {
             logger.debug(e.getMessage(), e);
             Error error = new Error(e.getError(), e.getDescription());
-            prepareResponse(response, error, StatusCode.BAD_REQUEST);
+            prepareErrorResponse(response, error, StatusCode.BAD_REQUEST);
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
             Error error = new Error(UNHANDLED_ERROR_DESC, UNHANDLED_ERROR_DESC);
-            prepareResponse(response, error, StatusCode.SERVER_ERROR);
+            prepareErrorResponse(response, error, StatusCode.SERVER_ERROR);
             return response;
         }
 
@@ -113,11 +117,11 @@ public class TokenResource extends Resource {
         } catch (TokenException e) {
             logger.error(e.getMessage(), e);
             Error error = new Error(UNHANDLED_ERROR_DESC, UNHANDLED_ERROR_DESC);
-            prepareResponse(response, error, StatusCode.SERVER_ERROR);
+            prepareErrorResponse(response, error, StatusCode.SERVER_ERROR);
             return response;
         }
 
-        prepareResponse(response, token, StatusCode.OK);
+        prepareTokenResponse(response, token, StatusCode.OK);
         return response;
     }
 
@@ -135,13 +139,13 @@ public class TokenResource extends Resource {
         return tokenRequest;
     }
 
-    protected void preparedUnAuthorizedResponse(Response response) {
+    protected void preparedUnAuthorizedErrorResponse(Response<TokenSession> response) {
         Error error = new Error("invalid_client", null);
         response.getHeaders().put("WWW-Authenticate", "Basic");
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+        Optional<byte[]> payload = Optional.empty();
 
         try {
-            payload = Optional.of(translator.to(error));
+            payload = Optional.of(errorTranslator.to(error));
         } catch (ToJsonException e) {
             logger.error(e.getMessage(), e);
         }
@@ -150,11 +154,24 @@ public class TokenResource extends Resource {
         response.setStatusCode(StatusCode.UNAUTHORIZED);
     }
 
-    protected void prepareResponse(Response response, Object object, StatusCode statusCode) {
-        Optional<ByteArrayOutputStream> payload = Optional.empty();
+    protected void prepareErrorResponse(Response response, Error error, StatusCode statusCode) {
+        Optional<byte[]> payload = Optional.empty();
 
         try {
-            payload = Optional.of(translator.to(object));
+            payload = Optional.of(errorTranslator.to(error));
+        } catch (ToJsonException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        response.setPayload(payload);
+        response.setStatusCode(statusCode);
+    }
+
+    protected void prepareTokenResponse(Response response, Token token, StatusCode statusCode) {
+        Optional<byte[]> payload = Optional.empty();
+
+        try {
+            payload = Optional.of(tokenTranslator.to(token));
         } catch (ToJsonException e) {
             logger.error(e.getMessage(), e);
         }
