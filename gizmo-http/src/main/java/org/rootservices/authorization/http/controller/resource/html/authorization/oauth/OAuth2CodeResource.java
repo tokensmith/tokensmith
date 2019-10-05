@@ -68,7 +68,7 @@ public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
     }
 
     @Override
-    public Response post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         String userName = authorizationHelper.getFormValue(request.getFormData().get(EMAIL));
         String password = authorizationHelper.getFormValue(request.getFormData().get(PASSWORD));
 

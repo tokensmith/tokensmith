@@ -19,7 +19,7 @@ import java.util.Optional;
 public class WelcomeResource extends Resource<TokenSession, WebSiteUser> {
     private static String JSP_PATH_OK = "/WEB-INF/jsp/welcome.jsp";
     private static String JSP_PATH_ERROR = "/WEB-INF/jsp/welcome-error.jsp";
-    public String URL = "/welcome\\?nonce=(.*)";
+    public static String URL = "/welcome\\?nonce=(.*)";
     private static String NONCE_URL_PARAM = "nonce";
 
     private String NONCE_URL_ERROR_MSG = "input was null, empty, or had more than 1 value";

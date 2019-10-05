@@ -154,7 +154,7 @@ public class TokenResource extends Resource<TokenSession, APIUser> {
         response.setStatusCode(StatusCode.UNAUTHORIZED);
     }
 
-    protected void prepareErrorResponse(Response response, Error error, StatusCode statusCode) {
+    protected void prepareErrorResponse(Response<TokenSession> response, Error error, StatusCode statusCode) {
         Optional<byte[]> payload = Optional.empty();
 
         try {
@@ -167,7 +167,7 @@ public class TokenResource extends Resource<TokenSession, APIUser> {
         response.setStatusCode(statusCode);
     }
 
-    protected void prepareTokenResponse(Response response, Token token, StatusCode statusCode) {
+    protected void prepareTokenResponse(Response<TokenSession> response, Token token, StatusCode statusCode) {
         Optional<byte[]> payload = Optional.empty();
 
         try {
@@ -180,7 +180,7 @@ public class TokenResource extends Resource<TokenSession, APIUser> {
         response.setStatusCode(statusCode);
     }
 
-    protected void setDefaultHeaders(Response response) {
+    protected void setDefaultHeaders(Response<TokenSession> response) {
         Map<String, String> headers = new HashMap<>();
 
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue());

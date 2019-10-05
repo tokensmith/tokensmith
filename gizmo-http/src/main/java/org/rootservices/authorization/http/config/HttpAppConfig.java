@@ -1,11 +1,15 @@
 package org.rootservices.authorization.http.config;
 
 
+import org.rootservices.authorization.http.response.Error;
+import org.rootservices.authorization.http.response.Token;
+import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.config.AppConfig;
 import org.rootservices.otter.QueryStringToMap;
 import org.rootservices.otter.authentication.ParseBearer;
 import org.rootservices.otter.authentication.ParseHttpBasic;
-import org.rootservices.otter.config.OtterAppFactory;
+import org.rootservices.otter.translator.JsonTranslator;
+import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import org.springframework.context.annotation.*;
 
 
@@ -18,8 +22,8 @@ import org.springframework.context.annotation.*;
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class HttpAppConfig {
 
-    public OtterAppFactory otterAppFactory() {
-        return new OtterAppFactory();
+    private TranslatorAppFactory translatorAppFactory() {
+        return new TranslatorAppFactory();
     }
 
     @Bean
@@ -35,5 +39,20 @@ public class HttpAppConfig {
     @Bean
     public ParseHttpBasic parseHttpBasic() {
         return new ParseHttpBasic();
+    }
+
+    @Bean
+    public JsonTranslator<Error> errorTranslator() {
+        return translatorAppFactory().jsonTranslator(Error.class);
+    }
+
+    @Bean
+    public JsonTranslator<Token> tokenTranslator() {
+        return translatorAppFactory().jsonTranslator(Token.class);
+    }
+
+    @Bean
+    public JsonTranslator<UserInfo> userTranslator() {
+        return translatorAppFactory().jsonTranslator(UserInfo.class);
     }
 }

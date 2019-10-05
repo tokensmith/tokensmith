@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthorizationResource extends Resource<TokenSession, WebSiteUser> {
-    public String URL = "^/authorization?.*";
+    public static String URL = "^/authorization?.*";
     private static String RESPONSE_TYPE = "response_type";
     private static String SCOPE = "scope";
 
