@@ -45,12 +45,15 @@ public class RSAPublicKeysResource extends RestResource<APIUser, RSAPublicKey[]>
         try {
             pageNumber = getPageNumber(request.getQueryParams());
         } catch (BadRequestException e) {
+            response.setPayload(Optional.empty());
             response.setStatusCode(StatusCode.BAD_REQUEST);
             return response;
         }
 
-        RSAPublicKey[] keys = (RSAPublicKey[]) getKeys.getPublicKeys(pageNumber).toArray();
-        Optional<RSAPublicKey[]> optKeys =  Optional.of(keys);
+        List<RSAPublicKey> keys = getKeys.getPublicKeys(pageNumber);
+        RSAPublicKey[] keysArray = keys.toArray(new RSAPublicKey[keys.size()]);
+
+        Optional<RSAPublicKey[]> optKeys =  Optional.of(keysArray);
 
         response.setPayload(optKeys);
         response.setStatusCode(StatusCode.OK);

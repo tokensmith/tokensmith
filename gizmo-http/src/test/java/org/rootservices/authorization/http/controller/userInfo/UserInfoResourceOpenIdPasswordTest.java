@@ -88,6 +88,7 @@ public class UserInfoResourceOpenIdPasswordTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), ContentType.JWT_UTF_8.getValue())
                 .setHeader(Header.AUTH.getValue(), "Bearer " + new String(token.getAccessToken()))
                 .execute();

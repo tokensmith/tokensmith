@@ -21,6 +21,7 @@ import org.rootservices.authorization.openId.identity.exception.ResourceOwnerNot
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
@@ -67,7 +68,7 @@ public class MakeOpenIdTokenTest {
     @Test(expected = TokenException.class)
     public void makeResourceOwnerNotFoundShouldThrowTokenException() throws Exception {
         TokenResponse tokenResponse = makeTokenResponse();
-        when(mockBuildIdentityToken.make("accessToken", tokenResponse.getTokenClaims())).thenThrow(TokenException.class);
+        doThrow(ResourceOwnerNotFoundException.class).when(mockBuildIdentityToken).make("accessToken", tokenResponse.getTokenClaims());
 
         subject.make(tokenResponse);
     }

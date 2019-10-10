@@ -119,6 +119,7 @@ public class UserInfoResourceOpenIdTokenAndIdTokenTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader(Header.ACCEPT.getValue(), ContentType.JWT.getValue())
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.AUTH.getValue(), "Bearer " + token)
                 .execute();
 

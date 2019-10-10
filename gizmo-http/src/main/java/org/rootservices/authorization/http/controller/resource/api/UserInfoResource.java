@@ -15,9 +15,12 @@ import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.otter.authentication.ParseBearer;
 import org.rootservices.otter.authentication.exception.BearerException;
 import org.rootservices.otter.controller.Resource;
+import org.rootservices.otter.controller.RestResource;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.request.Request;
+import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.Response;
+import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
@@ -33,7 +36,7 @@ import java.util.*;
 
 
 @Component
-public class UserInfoResource extends Resource<TokenSession, APIUser> {
+public class UserInfoResource extends RestResource<APIUser, UserInfo> {
     private static final Logger logger = LogManager.getLogger(UserInfoResource.class);
     public static String URL = "/api/v1/userinfo";
 
@@ -53,7 +56,7 @@ public class UserInfoResource extends Resource<TokenSession, APIUser> {
     }
 
     @Override
-    public Response<TokenSession> get(Request<TokenSession, APIUser> request, Response<TokenSession> response) {
+    public RestResponse<UserInfo> get(RestRequest<APIUser, UserInfo> request, RestResponse<UserInfo> response) {
         setDefaultHeaders(response);
 
         Set<String> accepts = parseHeader(request.getHeaders().get(Header.ACCEPT.getValue()));
@@ -96,30 +99,18 @@ public class UserInfoResource extends Resource<TokenSession, APIUser> {
             payload.write(idToken.charAt(i));
 
         response.setStatusCode(StatusCode.OK);
-        response.setPayload(Optional.of(payload.toByteArray()));
+        response.setRawPayload(Optional.of(payload.toByteArray()));
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.JWT_UTF_8.getValue());
 
         return response;
     }
 
-    // TODO: this shouldbe a in a separate rest resource endpoint - its response is different than GET.
     @Override
-    public Response<TokenSession> post(Request<TokenSession, APIUser> request, Response<TokenSession> response) {
+    public RestResponse<UserInfo> post(RestRequest<APIUser, UserInfo> request, RestResponse<UserInfo> response) {
         setDefaultHeaders(response);
 
-        if (request.getBody().isPresent()) {
-            // TODO: return a bad request.
-        }
-
-        UserInfo entity = null;
         try {
-            entity = userTranslator.from(request.getBody().get());
-        } catch (DeserializationException e) {
-            // TODO: return a bad request.
-        }
-
-        try {
-            registerOpenIdUser.run(entity);
+            registerOpenIdUser.run(request.getPayload().get());
         } catch (RegisterException e) {
             logger.debug(e.getMessage(), e);
 
@@ -134,7 +125,7 @@ public class UserInfoResource extends Resource<TokenSession, APIUser> {
             }
 
             response.setStatusCode(StatusCode.BAD_REQUEST);
-            response.setPayload(payload);
+            response.setRawPayload(payload);
             response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.JWT_UTF_8.getValue());
             return response;
         }
@@ -157,7 +148,7 @@ public class UserInfoResource extends Resource<TokenSession, APIUser> {
         return accepts;
     }
 
-    protected void setDefaultHeaders(Response<TokenSession> response) {
+    protected void setDefaultHeaders(RestResponse<UserInfo> response) {
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_STORE.getValue());
         headers.put(Header.PRAGMA.getValue(), HeaderValue.NO_CACHE.getValue());

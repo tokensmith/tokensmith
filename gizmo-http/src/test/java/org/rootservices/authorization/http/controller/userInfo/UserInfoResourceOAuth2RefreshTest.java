@@ -30,6 +30,7 @@ import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.jws.verifier.VerifySignature;
 import org.rootservices.jwt.serialization.JwtSerde;
 import org.rootservices.otter.controller.header.ContentType;
+import org.rootservices.otter.controller.header.Header;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletResponse;
@@ -109,6 +110,7 @@ public class UserInfoResourceOAuth2RefreshTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader("Accept", "application/jwt")
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader("Authorization", "Bearer " + token)
                 .execute();
 
