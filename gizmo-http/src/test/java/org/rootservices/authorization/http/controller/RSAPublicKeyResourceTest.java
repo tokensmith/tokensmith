@@ -48,6 +48,7 @@ public class RSAPublicKeyResourceTest {
         String subjectURI = servletURI + key.getId().toString();
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(subjectURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 
@@ -75,6 +76,7 @@ public class RSAPublicKeyResourceTest {
         String subjectURI = servletURI + UUID.randomUUID().toString();
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(subjectURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 
@@ -95,6 +97,7 @@ public class RSAPublicKeyResourceTest {
         String subjectURI = servletURI + "not-a-uuid";
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(subjectURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 

@@ -49,6 +49,7 @@ public class RSAPublicKeyResource extends RestResource<APIUser, RSAPublicKey>{
             key = Optional.of(getKeys.getPublicKeyById(id));
         } catch (NotFoundException e) {
             response.setStatusCode(StatusCode.NOT_FOUND);
+            response.setPayload(Optional.empty());
             return response;
         }
 

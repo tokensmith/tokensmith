@@ -68,6 +68,7 @@ public class RSAPublicKeysResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 
@@ -99,6 +100,7 @@ public class RSAPublicKeysResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .addQueryParam("page", "100")
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 
@@ -126,6 +128,7 @@ public class RSAPublicKeysResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .addQueryParam("page", "foo")
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), "application/json")
                 .execute();
 

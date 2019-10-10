@@ -49,6 +49,7 @@ public class UserInfoResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), ContentType.JWT.getValue())
                 .execute();
 
@@ -66,6 +67,7 @@ public class UserInfoResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -79,6 +81,7 @@ public class UserInfoResourceTest {
     public void getWhenResourceOwnerNotFoundExceptionShouldReturn401() throws Exception {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setHeader(Header.ACCEPT.getValue(), ContentType.JWT.getValue())
                 .setHeader(Header.AUTH.getValue(), "Bearer foo")
                 .execute();
@@ -96,6 +99,7 @@ public class UserInfoResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -125,6 +129,7 @@ public class UserInfoResourceTest {
         for(int i=0; i<=1; i++) {
             ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                     .preparePost(servletURI)
+                    .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                     .setBody(objectMapper.writeValueAsBytes(payload))
                     .execute();
 
@@ -156,6 +161,7 @@ public class UserInfoResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setBody(objectMapper.writeValueAsBytes(payload))
                 .execute();
 
@@ -178,6 +184,7 @@ public class UserInfoResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
+                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
                 .setBody(objectMapper.writeValueAsBytes(payload))
                 .execute();
 

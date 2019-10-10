@@ -46,7 +46,7 @@ dependencies {
     compile project (':gizmo')
 
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
-    compile group: 'org.rootservices', name: 'otter', version:'1.4.1'
+    compile group: 'org.rootservices', name: 'otter', version:'1.4.2-SNAPSHOT'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jacksonVersion}"
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
     compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"

@@ -10,7 +10,7 @@ import org.rootservices.otter.controller.entity.response.Response;
 
 
 public class NotFoundResource extends Resource<TokenSession, WebSiteUser> {
-    public static String URL = "/notFound";
+    public static String URL = "(.*)";
     public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
         response.setStatusCode(StatusCode.NOT_FOUND);
         return response;

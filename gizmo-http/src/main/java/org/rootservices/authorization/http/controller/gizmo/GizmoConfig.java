@@ -5,6 +5,7 @@ import org.rootservices.authorization.http.config.HttpAppConfig;
 import org.rootservices.authorization.http.controller.resource.api.*;
 import org.rootservices.authorization.http.controller.resource.api.model.Health;
 import org.rootservices.authorization.http.controller.resource.html.ForgotPasswordResource;
+import org.rootservices.authorization.http.controller.resource.html.NotFoundResource;
 import org.rootservices.authorization.http.controller.resource.html.RegisterResource;
 import org.rootservices.authorization.http.controller.resource.html.UpdatePasswordResource;
 import org.rootservices.authorization.http.controller.resource.html.authorization.AuthorizationResource;
@@ -15,13 +16,16 @@ import org.rootservices.authorization.http.controller.security.APIUser;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
+import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.jwt.entity.jwk.SymmetricKey;
 import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.otter.controller.builder.MimeTypeBuilder;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
+import org.rootservices.otter.controller.error.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
@@ -42,6 +46,7 @@ import java.util.Optional;
 public class GizmoConfig implements Configure {
     public static final String WEB_SITE_GROUP = "WebSite";
     public static final String API_GROUP_V1 = "API_V1";
+    public static MimeType JSON = new MimeTypeBuilder().json().build();
 
     @Override
     public Shape shape() {
@@ -173,34 +178,43 @@ public class GizmoConfig implements Configure {
 
         gateway.add(tokenTarget);
 
-        UserInfoResource userInfoResource = context.getBean(UserInfoResource.class);
-        Target<TokenSession, APIUser> userInfoTarget = new TargetBuilder<TokenSession, APIUser>()
+        Target<TokenSession, WebSiteUser> notFoundTarget = new TargetBuilder<TokenSession, WebSiteUser>()
                 .groupName(WEB_SITE_GROUP)
                 .method(Method.GET)
                 .method(Method.POST)
-                .resource(userInfoResource)
-                .regex(UserInfoResource.URL)
+                .resource(new NotFoundResource())
+                .regex(NotFoundResource.URL)
                 .build();
 
-        gateway.add(userInfoTarget);
+        gateway.notFound(notFoundTarget);
 
-        // include not founds
     }
 
     protected void apiRoutes(Gateway gateway, ApplicationContext context) {
-
-        MimeType json = new MimeTypeBuilder().json().build();
 
         RestTarget<APIUser, Health> healthTarget = new RestTargetBuilder<APIUser, Health>()
                 .groupName(API_GROUP_V1)
                 .method(Method.GET)
                 .restResource(new HealthResource())
                 .regex(HealthResource.URL)
-                .contentType(json)
+                .contentType(JSON)
                 .payload(Health.class)
                 .build();
 
         gateway.add(healthTarget);
+
+        UserInfoResource userInfoResource = context.getBean(UserInfoResource.class);
+        RestTarget<APIUser, UserInfo> userInfoTarget = new RestTargetBuilder<APIUser, UserInfo>()
+                .groupName(API_GROUP_V1)
+                .method(Method.GET)
+                .method(Method.POST)
+                .restResource(userInfoResource)
+                .regex(UserInfoResource.URL)
+                .payload(UserInfo.class)
+                .contentType(JSON)
+                .build();
+
+        gateway.add(userInfoTarget);
 
         RSAPublicKeyResource rsaPublicKeyResource = context.getBean(RSAPublicKeyResource.class);
         RestTarget<APIUser, RSAPublicKey> rsaPublicKeyTarget = new RestTargetBuilder<APIUser, RSAPublicKey>()
@@ -208,7 +222,7 @@ public class GizmoConfig implements Configure {
                 .method(Method.GET)
                 .restResource(rsaPublicKeyResource)
                 .regex(RSAPublicKeyResource.URL)
-                .contentType(json)
+                .contentType(JSON)
                 .payload(RSAPublicKey.class)
                 .build();
 
@@ -221,12 +235,22 @@ public class GizmoConfig implements Configure {
                 .method(Method.GET)
                 .restResource(rsaPublicKeysResource)
                 .regex(RSAPublicKeysResource.URL)
-                .contentType(json)
+                .contentType(JSON)
                 .payload(RSAPublicKey[].class)
                 .build();
 
         gateway.add(rsaPublicKeysTarget);
-        // include not founds
+
+        var restNotFoundResource = new NotFoundRestResource<APIUser>();
+        RestTarget<APIUser, ClientError> notFoundTarget = new RestTargetBuilder<APIUser, ClientError>()
+                .groupName(API_GROUP_V1)
+                .crud()
+                .restResource(restNotFoundResource)
+                .regex("/api/v1/(.*)")
+                .payload(ClientError.class)
+                .build();
+
+        gateway.notFound(notFoundTarget);
     }
 
 }
