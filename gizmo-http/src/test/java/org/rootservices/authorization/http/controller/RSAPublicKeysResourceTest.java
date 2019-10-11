@@ -15,6 +15,7 @@ import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.config.AppConfig;
+import org.rootservices.otter.controller.entity.ClientError;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
@@ -139,6 +140,16 @@ public class RSAPublicKeysResourceTest {
         assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
         assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
 
-        assertThat(response.getResponseBody(), is(""));
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getKey(), is("page"));
+        assertThat(actual.getActual(), is("foo"));
+        assertThat(actual.getSource(), is(ClientError.Source.URL));
+        assertThat(actual.getExpected(), is(notNullValue()));
+        assertThat(actual.getExpected().size(), is(0));
+        assertThat(actual.getReason(), is("page value is not a integer"));
     }
 }

@@ -14,6 +14,7 @@ import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.request.RestRequest;
 import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.response.RestResponse;
+import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.router.entity.Regex;
@@ -62,7 +63,7 @@ public class RSAPublicKeyResource extends RestResource<APIUser, RSAPublicKey>{
     protected void setDefaultHeaders(RestResponse<RSAPublicKey> response) {
         Map<String, String> headers = new HashMap<>();
 
-        response.getHeaders().put(Header.CONTENT_TYPE.getValue(), "application/json;charset=UTF-8");
+        response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue());
         headers.put(Header.CACHE_CONTROL.getValue(), HeaderValue.NO_STORE.getValue());
         headers.put(Header.PRAGMA.getValue(), HeaderValue.NO_CACHE.getValue());
 
