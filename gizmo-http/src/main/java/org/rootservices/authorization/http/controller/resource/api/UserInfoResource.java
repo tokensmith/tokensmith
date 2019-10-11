@@ -3,7 +3,6 @@ package org.rootservices.authorization.http.controller.resource.api;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.security.APIUser;
-import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.response.Error;
 import org.rootservices.authorization.openId.identity.MakeUserInfoIdentityToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
@@ -14,19 +13,16 @@ import org.rootservices.authorization.register.RegisterOpenIdUser;
 import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.otter.authentication.ParseBearer;
 import org.rootservices.otter.authentication.exception.BearerException;
-import org.rootservices.otter.controller.Resource;
 import org.rootservices.otter.controller.RestResource;
+import org.rootservices.otter.controller.entity.ServerError;
 import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
 import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.Response;
 import org.rootservices.otter.controller.entity.response.RestResponse;
 import org.rootservices.otter.controller.header.AuthScheme;
 import org.rootservices.otter.controller.header.ContentType;
 import org.rootservices.otter.controller.header.Header;
 import org.rootservices.otter.controller.header.HeaderValue;
 import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.DeserializationException;
 import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,16 +36,14 @@ public class UserInfoResource extends RestResource<APIUser, UserInfo> {
     private static final Logger logger = LogManager.getLogger(UserInfoResource.class);
     public static String URL = "/api/v1/userinfo";
 
-    private JsonTranslator<UserInfo> userTranslator;
-    private JsonTranslator<Error> errorTranslator;
+    private JsonTranslator<ServerError> serverErrorTranslator;
     private ParseBearer parseBearer;
     private MakeUserInfoIdentityToken makeUserInfoIdentityToken;
     private RegisterOpenIdUser registerOpenIdUser;
 
     @Autowired
-    public UserInfoResource(JsonTranslator<UserInfo> userTranslator, JsonTranslator<Error> errorTranslator, ParseBearer parseBearer, MakeUserInfoIdentityToken makeUserInfoIdentityToken, RegisterOpenIdUser registerOpenIdUser) {
-        this.userTranslator = userTranslator;
-        this.errorTranslator = errorTranslator;
+    public UserInfoResource(JsonTranslator<ServerError> serverErrorTranslator, ParseBearer parseBearer, MakeUserInfoIdentityToken makeUserInfoIdentityToken, RegisterOpenIdUser registerOpenIdUser) {
+        this.serverErrorTranslator = serverErrorTranslator;
         this.parseBearer = parseBearer;
         this.makeUserInfoIdentityToken = makeUserInfoIdentityToken;
         this.registerOpenIdUser = registerOpenIdUser;
@@ -115,10 +109,10 @@ public class UserInfoResource extends RestResource<APIUser, UserInfo> {
             logger.debug(e.getMessage(), e);
 
             Optional<byte[]> payload = Optional.empty();
-            Error error = new Error("Registration Error", e.getMessage());
+            ServerError serverError = new ServerError("Registration Error");
 
             try {
-                byte[] out = errorTranslator.to(error);
+                byte[] out = serverErrorTranslator.to(serverError);
                 payload = Optional.of(out);
             } catch (ToJsonException jsonException) {
                 logger.error(jsonException.getMessage(), jsonException);

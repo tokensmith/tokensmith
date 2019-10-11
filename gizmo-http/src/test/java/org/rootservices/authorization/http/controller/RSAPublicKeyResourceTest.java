@@ -49,7 +49,7 @@ public class RSAPublicKeyResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(subjectURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setHeader(Header.ACCEPT.getValue(), "application/json")
+                .setHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
@@ -77,7 +77,7 @@ public class RSAPublicKeyResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(subjectURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setHeader(Header.ACCEPT.getValue(), "application/json")
+                .setHeader(Header.ACCEPT.getValue(), ContentType.JSON_UTF_8.getValue())
                 .execute();
 
         Response response = f.get();
