@@ -332,7 +332,7 @@ public class FixtureFactory {
     public static Map<String, List<String>> makeOAuthParameters(UUID clientId, String responseType) {
         Map<String, List<String>> parameters = new HashMap<>();
 
-        List<String> clientIds = new ArrayList();
+        List<String> clientIds = new ArrayList<>();
         clientIds.add(clientId.toString());
 
         List<String> responseTypes = new ArrayList<>();
@@ -363,7 +363,7 @@ public class FixtureFactory {
     public static Map<String, List<String>> makeOpenIdParameters(UUID clientId, String responseType) {
         Map<String, List<String>> parameters = new HashMap<>();
 
-        List<String> clientIds = new ArrayList();
+        List<String> clientIds = new ArrayList<>();
         clientIds.add(clientId.toString());
 
         List<String> responseTypes = new ArrayList<>();

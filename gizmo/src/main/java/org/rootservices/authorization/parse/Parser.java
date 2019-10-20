@@ -83,7 +83,7 @@ public class Parser {
                     if (from == null || from.size() == 0) {
                         // these will be optional parameters.
                         if (RawType.LIST.getTypeName().equals(rawType)) {
-                            ArrayList arrayList = new ArrayList();
+                            ArrayList arrayList = new ArrayList<>();
                             f.set(o, arrayList);
                         } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
                             f.set(o, Optional.empty());
@@ -95,7 +95,7 @@ public class Parser {
 
                         if (isExpected(parsedValues, expected)){
                             if (RawType.LIST.getTypeName().equals(rawType)) {
-                                ArrayList arrayList = new ArrayList();
+                                ArrayList arrayList = new ArrayList<>();
                                 for (String parsedValue : parsedValues) {
                                     Object item = make(argType, parsedValue);
                                     arrayList.add(item);

@@ -42,7 +42,7 @@ public class ScopeRepositoryImplTest {
 
     @Test
     public void findByNames() throws Exception {
-        List<String> names = new ArrayList();
+        List<String> names = new ArrayList<>();
         names.add("profile");
 
         Scope scope = new Scope(UUID.randomUUID(), "profile");

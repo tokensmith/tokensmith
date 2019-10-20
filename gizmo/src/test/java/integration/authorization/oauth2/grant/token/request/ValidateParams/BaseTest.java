@@ -47,7 +47,7 @@ public abstract class BaseTest {
     public Map<String, List<String>> makeParams() {
         Map<String, List<String>> parameters = new HashMap<>();
 
-        List<String> clientIds = new ArrayList();
+        List<String> clientIds = new ArrayList<>();
         List<String> responseTypes = new ArrayList<>();
         List<String> redirectUris = new ArrayList<>();
         List<String> scopes = new ArrayList<>();
