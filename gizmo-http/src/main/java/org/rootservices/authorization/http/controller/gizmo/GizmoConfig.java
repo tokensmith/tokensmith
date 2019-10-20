@@ -25,7 +25,7 @@ import org.rootservices.otter.controller.entity.DefaultSession;
 import org.rootservices.otter.controller.entity.DefaultUser;
 import org.rootservices.otter.controller.entity.StatusCode;
 import org.rootservices.otter.controller.entity.mime.MimeType;
-import org.rootservices.otter.controller.error.NotFoundRestResource;
+import org.rootservices.otter.controller.error.rest.NotFoundRestResource;
 import org.rootservices.otter.gateway.Configure;
 import org.rootservices.otter.gateway.Gateway;
 import org.rootservices.otter.gateway.builder.*;
