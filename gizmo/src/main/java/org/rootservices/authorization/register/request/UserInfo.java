@@ -4,6 +4,7 @@ package org.rootservices.authorization.register.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.rootservices.otter.translatable.Translatable;
 
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;

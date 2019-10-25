@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.config.AppConfig;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.router.GetServletURI;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.router.GetServletURI;
 
 
 import javax.servlet.http.HttpServletResponse;

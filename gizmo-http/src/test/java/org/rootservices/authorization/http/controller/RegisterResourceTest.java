@@ -14,7 +14,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rootservices.otter.router.GetServletURI;
+import net.tokensmith.otter.router.GetServletURI;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,11 +1,12 @@
 package org.rootservices.authorization.http.controller.resource.api;
 
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
 import org.rootservices.authorization.http.controller.resource.api.model.Health;
 import org.rootservices.authorization.http.controller.security.APIUser;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
+
 
 import java.util.Optional;
 

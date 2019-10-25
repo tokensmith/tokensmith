@@ -1,5 +1,6 @@
 package org.rootservices.authorization.http.controller.resource.api.model;
 
+
 import org.rootservices.otter.translatable.Translatable;
 
 public class Health implements Translatable {

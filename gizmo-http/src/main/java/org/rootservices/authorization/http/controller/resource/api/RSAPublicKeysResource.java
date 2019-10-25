@@ -1,22 +1,22 @@
 package org.rootservices.authorization.http.controller.resource.api;
 
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
+import net.tokensmith.otter.controller.entity.ClientError;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.translator.JsonTranslator;
+import net.tokensmith.otter.translator.exception.ToJsonException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.exception.BadRequestException;
 import org.rootservices.authorization.http.controller.security.APIUser;
 import org.rootservices.authorization.openId.jwk.GetKeys;
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.builder.ClientErrorBuilder;
-import org.rootservices.otter.controller.entity.ClientError;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

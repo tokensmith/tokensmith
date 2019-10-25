@@ -14,10 +14,10 @@ import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.persistence.entity.KeyUse;
 import org.rootservices.authorization.persistence.entity.RSAPrivateKey;
 import org.rootservices.config.AppConfig;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
 
 import java.util.UUID;
 
