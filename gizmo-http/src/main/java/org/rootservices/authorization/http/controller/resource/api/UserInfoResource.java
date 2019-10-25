@@ -1,9 +1,21 @@
 package org.rootservices.authorization.http.controller.resource.api;
 
+import net.tokensmith.otter.authentication.ParseBearer;
+import net.tokensmith.otter.authentication.exception.BearerException;
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.ServerError;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.header.AuthScheme;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.translator.JsonTranslator;
+import net.tokensmith.otter.translator.exception.ToJsonException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.security.APIUser;
-import org.rootservices.authorization.http.response.Error;
 import org.rootservices.authorization.openId.identity.MakeUserInfoIdentityToken;
 import org.rootservices.authorization.openId.identity.exception.IdTokenException;
 import org.rootservices.authorization.openId.identity.exception.KeyNotFoundException;
@@ -11,19 +23,6 @@ import org.rootservices.authorization.openId.identity.exception.ResourceOwnerNot
 import org.rootservices.authorization.register.exception.RegisterException;
 import org.rootservices.authorization.register.RegisterOpenIdUser;
 import org.rootservices.authorization.register.request.UserInfo;
-import org.rootservices.otter.authentication.ParseBearer;
-import org.rootservices.otter.authentication.exception.BearerException;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.ServerError;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.controller.header.AuthScheme;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

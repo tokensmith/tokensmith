@@ -1,8 +1,9 @@
 package org.rootservices.authorization.http.controller.gizmo;
 
 
-import org.rootservices.otter.gateway.Configure;
-import org.rootservices.otter.servlet.OtterEntryServlet;
+
+import net.tokensmith.otter.gateway.Configure;
+import net.tokensmith.otter.servlet.OtterEntryServlet;
 
 import javax.servlet.annotation.WebServlet;
 

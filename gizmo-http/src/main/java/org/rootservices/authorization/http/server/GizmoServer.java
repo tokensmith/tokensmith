@@ -1,10 +1,10 @@
 package org.rootservices.authorization.http.server;
 
+import net.tokensmith.otter.server.HttpServer;
+import net.tokensmith.otter.server.HttpServerConfig;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.resource.api.HealthResource;
-import org.rootservices.otter.server.HttpServer;
-import org.rootservices.otter.server.HttpServerConfig;
 
 
 import java.util.ArrayList;

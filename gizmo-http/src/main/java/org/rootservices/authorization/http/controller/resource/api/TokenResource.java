@@ -1,5 +1,17 @@
 package org.rootservices.authorization.http.controller.resource.api;
 
+import net.tokensmith.otter.authentication.HttpBasicEntity;
+import net.tokensmith.otter.authentication.ParseHttpBasic;
+import net.tokensmith.otter.authentication.exception.HttpBasicException;
+import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.translator.JsonTranslator;
+import net.tokensmith.otter.translator.exception.ToJsonException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
@@ -16,18 +28,6 @@ import org.rootservices.authorization.oauth2.grant.token.entity.TokenResponse;
 import org.rootservices.authorization.exception.BadRequestException;
 import org.rootservices.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
 import org.rootservices.authorization.oauth2.grant.token.exception.NotFoundException;
-import org.rootservices.otter.authentication.HttpBasicEntity;
-import org.rootservices.otter.authentication.ParseHttpBasic;
-import org.rootservices.otter.authentication.exception.HttpBasicException;
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.exception.ToJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
