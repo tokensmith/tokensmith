@@ -1,17 +1,17 @@
 package org.rootservices.authorization.http.config;
 
 
+import net.tokensmith.otter.QueryStringToMap;
+import net.tokensmith.otter.authentication.ParseBearer;
+import net.tokensmith.otter.authentication.ParseHttpBasic;
+import net.tokensmith.otter.controller.entity.ClientError;
+import net.tokensmith.otter.controller.entity.ServerError;
+import net.tokensmith.otter.translator.JsonTranslator;
+import net.tokensmith.otter.translator.config.TranslatorAppFactory;
 import org.rootservices.authorization.http.response.Error;
 import org.rootservices.authorization.http.response.Token;
 import org.rootservices.authorization.register.request.UserInfo;
 import org.rootservices.config.AppConfig;
-import org.rootservices.otter.QueryStringToMap;
-import org.rootservices.otter.authentication.ParseBearer;
-import org.rootservices.otter.authentication.ParseHttpBasic;
-import org.rootservices.otter.controller.entity.ClientError;
-import org.rootservices.otter.controller.entity.ServerError;
-import org.rootservices.otter.translator.JsonTranslator;
-import org.rootservices.otter.translator.config.TranslatorAppFactory;
 import org.springframework.context.annotation.*;
 
 

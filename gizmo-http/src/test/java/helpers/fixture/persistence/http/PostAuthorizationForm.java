@@ -6,7 +6,7 @@ import com.ning.http.client.Param;
 import com.ning.http.client.Response;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
-import org.rootservices.otter.QueryStringToMap;
+import net.tokensmith.otter.QueryStringToMap;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 
 import java.io.IOException;

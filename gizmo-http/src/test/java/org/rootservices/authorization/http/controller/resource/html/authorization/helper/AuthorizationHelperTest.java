@@ -12,10 +12,10 @@ import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorizati
 import org.rootservices.authorization.oauth2.grant.token.entity.TokenType;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
-import org.rootservices.otter.controller.builder.ResponseBuilder;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.header.Header;
+import net.tokensmith.otter.controller.builder.ResponseBuilder;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.Header;
 
 import java.net.URI;
 import java.util.HashMap;

@@ -1,23 +1,20 @@
 package org.rootservices.authorization.http.controller.resource.api;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import net.tokensmith.otter.controller.RestResource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.RestRequest;
+import net.tokensmith.otter.controller.entity.response.RestResponse;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.otter.router.entity.Regex;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.http.controller.security.APIUser;
 import org.rootservices.authorization.openId.jwk.GetKeys;
 import org.rootservices.authorization.openId.jwk.entity.RSAPublicKey;
 import org.rootservices.authorization.exception.NotFoundException;
-import org.rootservices.otter.controller.RestResource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.request.RestRequest;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.entity.response.RestResponse;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
-import org.rootservices.otter.controller.header.HeaderValue;
-import org.rootservices.otter.router.entity.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class RSAPublicKeyResource extends RestResource<APIUser, RSAPublicKey>{
+public class RSAPublicKeyResource extends RestResource<APIUser, RSAPublicKey> {
     private static final Logger logger = LogManager.getLogger(RSAPublicKeyResource.class);
     private static String ID_NAME = "id";
     public static String URL = "/api/v1/jwk/rsa/(?<" + ID_NAME + ">" + Regex.UUID.getRegex() + ")";
