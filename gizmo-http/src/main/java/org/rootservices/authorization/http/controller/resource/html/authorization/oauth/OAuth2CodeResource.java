@@ -1,6 +1,12 @@
 package org.rootservices.authorization.http.controller.resource.html.authorization.oauth;
 
 
+import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.rootservices.authorization.authenticate.exception.UnauthorizedException;
@@ -14,12 +20,6 @@ import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.r
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.RequestAuthCode;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

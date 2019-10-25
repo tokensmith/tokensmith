@@ -12,7 +12,7 @@ import org.rootservices.authorization.http.controller.resource.html.authorizatio
 import org.rootservices.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitResource;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
-import org.rootservices.otter.controller.Resource;
+import net.tokensmith.otter.controller.Resource;
 
 import java.util.ArrayList;
 import java.util.List;

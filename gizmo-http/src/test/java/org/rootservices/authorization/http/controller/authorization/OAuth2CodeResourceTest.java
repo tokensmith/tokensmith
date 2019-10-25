@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.rootservices.authorization.persistence.entity.ConfidentialClient;
 import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.otter.QueryStringToMap;
+import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
 import java.net.URLEncoder;

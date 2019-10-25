@@ -1,12 +1,13 @@
 package org.rootservices.authorization.http.controller.resource.html;
 
 
+import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.controller.security.WebSiteUser;
-import org.rootservices.otter.controller.Resource;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.request.Request;
-import org.rootservices.otter.controller.entity.response.Response;
+
 
 
 public class NotFoundResource extends Resource<TokenSession, WebSiteUser> {

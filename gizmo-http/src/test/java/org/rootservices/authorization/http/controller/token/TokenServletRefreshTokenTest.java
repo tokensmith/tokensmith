@@ -36,7 +36,7 @@ import org.rootservices.jwt.entity.jwk.Use;
 import org.rootservices.jwt.entity.jwt.JsonWebToken;
 import org.rootservices.jwt.jws.verifier.VerifySignature;
 import org.rootservices.jwt.serialization.JwtSerde;
-import org.rootservices.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.ContentType;
 
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;

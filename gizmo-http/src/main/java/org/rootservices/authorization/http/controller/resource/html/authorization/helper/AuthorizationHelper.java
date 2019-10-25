@@ -1,16 +1,16 @@
 package org.rootservices.authorization.http.controller.resource.html.authorization.helper;
 
 
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
 import org.rootservices.authorization.http.controller.security.TokenSession;
 import org.rootservices.authorization.http.presenter.AuthorizationPresenter;
 import org.rootservices.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import org.rootservices.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
-import org.rootservices.otter.controller.entity.StatusCode;
-import org.rootservices.otter.controller.entity.response.Response;
-import org.rootservices.otter.controller.header.ContentType;
-import org.rootservices.otter.controller.header.Header;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;

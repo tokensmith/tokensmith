@@ -22,9 +22,9 @@ import org.rootservices.authorization.http.controller.token.TokenServletRefreshT
 import org.rootservices.authorization.http.controller.token.TokenServletResponseTypeCodeTest;
 import org.rootservices.authorization.http.controller.token.TokenServletResponseTypePasswordTest;
 import org.rootservices.authorization.http.controller.userInfo.*;
-import org.rootservices.otter.config.OtterAppFactory;
-import org.rootservices.otter.server.container.ServletContainer;
-import org.rootservices.otter.server.container.ServletContainerFactory;
+import net.tokensmith.otter.config.OtterAppFactory;
+import net.tokensmith.otter.server.container.ServletContainer;
+import net.tokensmith.otter.server.container.ServletContainerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.ArrayList;
