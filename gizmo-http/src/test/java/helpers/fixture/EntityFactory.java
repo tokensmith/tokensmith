@@ -1,9 +1,9 @@
 package helpers.fixture;
 
-import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.register.request.*;
-import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
-import org.rootservices.authorization.security.ciphers.HashTextRandomSaltImpl;
+import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.authorization.register.request.*;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -179,7 +179,7 @@ public class EntityFactory {
         userInfo.setLocale(Optional.of("en-US"));
         userInfo.setPhoneNumber(Optional.of("123-456-7891"));
 
-        org.rootservices.authorization.register.request.Address address = new org.rootservices.authorization.register.request.Address();
+        net.tokensmith.authorization.register.request.Address address = new net.tokensmith.authorization.register.request.Address();
         address.setStreetAddress1("123 Best Jedi Lane");
         address.setStreetAddress2(Optional.of("#1"));
         address.setLocality("Chicago");

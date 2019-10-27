@@ -3,9 +3,9 @@ package helpers.fixture.persistence;
 import helpers.fixture.persistence.http.*;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.suite.IntegrationTestSuite;
-import org.rootservices.authorization.security.GenerateRSAPrivateKey;
-import org.rootservices.authorization.persistence.repository.*;
-import org.rootservices.config.AppConfig;
+import net.tokensmith.authorization.security.GenerateRSAPrivateKey;
+import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.config.AppConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Base64;

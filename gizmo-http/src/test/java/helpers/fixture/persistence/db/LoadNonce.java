@@ -1,12 +1,12 @@
 package helpers.fixture.persistence.db;
 
-import org.rootservices.authorization.nonce.entity.NonceName;
-import org.rootservices.authorization.persistence.entity.Nonce;
-import org.rootservices.authorization.persistence.entity.NonceType;
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
-import org.rootservices.authorization.persistence.repository.NonceRepository;
-import org.rootservices.authorization.persistence.repository.NonceTypeRepository;
+import net.tokensmith.authorization.nonce.entity.NonceName;
+import net.tokensmith.authorization.persistence.entity.Nonce;
+import net.tokensmith.authorization.persistence.entity.NonceType;
+import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.authorization.persistence.repository.NonceRepository;
+import net.tokensmith.authorization.persistence.repository.NonceTypeRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
