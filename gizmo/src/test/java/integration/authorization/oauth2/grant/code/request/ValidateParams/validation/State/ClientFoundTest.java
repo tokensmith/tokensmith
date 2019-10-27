@@ -3,8 +3,8 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.parse.exception.OptionalException;
-import org.rootservices.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.parse.exception.OptionalException;
+import net.tokensmith.authorization.persistence.entity.Client;
 
 import java.net.URISyntaxException;
 import java.util.List;

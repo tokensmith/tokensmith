@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.AccessRequestMapper">
+
+    <resultMap id="accessRequest" type="net.tokensmith.authorization.persistence.entity.AccessRequest">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="auth_code_id" property="authCodeId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+
+        <collection property="accessRequestScopes"
+                    resultMap="net.tokensmith.authorization.persistence.mapper.AccessRequestScopesMapper.accessRequestScope"
+                    columnPrefix="ars_"
+                    javaType="ArrayList"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into access_request (id, resource_owner_id, client_id, redirect_URI)
+        values (
+        #{accessRequest.id},
+        #{accessRequest.resourceOwnerId},
+        #{accessRequest.clientId},
+        #{accessRequest.redirectURI,  typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
+        )
+    </insert>
+
+</mapper>

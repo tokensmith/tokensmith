@@ -3,7 +3,7 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.repository.*;
+import net.tokensmith.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
