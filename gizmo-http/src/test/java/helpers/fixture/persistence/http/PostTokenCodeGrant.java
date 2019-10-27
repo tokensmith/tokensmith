@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
-import org.rootservices.authorization.http.response.OpenIdToken;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
+import net.tokensmith.authorization.http.response.OpenIdToken;
+import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

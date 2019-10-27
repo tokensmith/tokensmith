@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
-import helpers.suite.IntegrationTestSuite;
-import org.rootservices.authorization.http.response.OpenIdToken;
+import net.tokensmith.authorization.http.response.OpenIdToken;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

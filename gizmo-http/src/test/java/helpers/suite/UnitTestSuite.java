@@ -5,12 +5,12 @@ import helpers.category.UnitTests;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.rootservices.authorization.http.controller.regex.WelcomeResourceRegexTest;
-import org.rootservices.authorization.http.controller.resource.html.authorization.helper.AuthorizationFactoryTest;
-import org.rootservices.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelperTest;
-import org.rootservices.authorization.http.factory.MakeOAuthTokenTest;
-import org.rootservices.authorization.http.factory.MakeOpenIdTokenTest;
-import org.rootservices.authorization.http.factory.MakeTokenFactoryTest;
+import net.tokensmith.authorization.http.controller.regex.WelcomeResourceRegexTest;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationFactoryTest;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelperTest;
+import net.tokensmith.authorization.http.factory.MakeOAuthTokenTest;
+import net.tokensmith.authorization.http.factory.MakeOpenIdTokenTest;
+import net.tokensmith.authorization.http.factory.MakeTokenFactoryTest;
 
 
 /**

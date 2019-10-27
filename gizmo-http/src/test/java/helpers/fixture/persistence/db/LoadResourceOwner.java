@@ -1,9 +1,9 @@
 package helpers.fixture.persistence.db;
 
-import org.rootservices.authorization.persistence.entity.ResourceOwner;
-import org.rootservices.authorization.persistence.exceptions.DuplicateRecordException;
-import org.rootservices.authorization.persistence.repository.ResourceOwnerRepository;
-import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
+import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
+import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

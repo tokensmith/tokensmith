@@ -3,12 +3,12 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 
 import helper.fixture.persistence.openid.LoadCodeConfidentialClientWithOpenIdScope;
 import org.junit.runner.RunWith;
-import org.rootservices.authorization.exception.ServerException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ConfidentialClient;
+import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import net.tokensmith.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

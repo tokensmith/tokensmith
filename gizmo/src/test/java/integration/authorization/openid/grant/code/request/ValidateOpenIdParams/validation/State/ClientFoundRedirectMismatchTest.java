@@ -3,8 +3,8 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.parse.exception.OptionalException;
-import org.rootservices.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.parse.exception.OptionalException;
+import net.tokensmith.authorization.persistence.entity.Client;
 
 import java.util.List;
 import java.util.Map;

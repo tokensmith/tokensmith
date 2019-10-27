@@ -3,7 +3,7 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.parse.exception.RequiredException;
+import net.tokensmith.authorization.parse.exception.RequiredException;
 
 import java.util.List;
 import java.util.Map;
