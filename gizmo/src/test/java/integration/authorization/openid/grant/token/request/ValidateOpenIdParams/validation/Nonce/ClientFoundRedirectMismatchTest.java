@@ -2,10 +2,10 @@ package integration.authorization.openid.grant.token.request.ValidateOpenIdParam
 
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.parse.exception.RequiredException;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.parse.exception.RequiredException;
+import net.tokensmith.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.persistence.entity.ResponseType;
 
 import java.util.List;
 import java.util.Map;

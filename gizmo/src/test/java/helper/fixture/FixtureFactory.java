@@ -1,20 +1,20 @@
 package helper.fixture;
 
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenGraph;
-import org.rootservices.authorization.oauth2.grant.token.entity.Extension;
-import org.rootservices.authorization.oauth2.grant.token.entity.TokenClaims;
-import org.rootservices.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
-import org.rootservices.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import org.rootservices.authorization.persistence.entity.*;
-import org.rootservices.authorization.security.ciphers.HashTextRandomSalt;
-import org.rootservices.authorization.security.ciphers.HashTextRandomSaltImpl;
-import org.rootservices.authorization.security.ciphers.HashTextStaticSalt;
-import org.rootservices.authorization.security.ciphers.HashTextStaticSaltImpl;
-import org.rootservices.config.AppConfig;
-import org.rootservices.jwt.entity.jwk.KeyType;
-import org.rootservices.jwt.entity.jwk.RSAKeyPair;
-import org.rootservices.jwt.entity.jwk.Use;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
+import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
+import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
+import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
+import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashTextStaticSaltImpl;
+import net.tokensmith.config.AppConfig;
+import net.tokensmith.jwt.entity.jwk.KeyType;
+import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
+import net.tokensmith.jwt.entity.jwk.Use;
 
 import java.math.BigInteger;
 import java.net.URI;

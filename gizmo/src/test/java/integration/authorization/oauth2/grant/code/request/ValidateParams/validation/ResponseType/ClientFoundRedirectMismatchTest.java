@@ -3,9 +3,9 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.parse.exception.RequiredException;
-import org.rootservices.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.parse.exception.RequiredException;
+import net.tokensmith.authorization.persistence.entity.Client;
 
 
 import java.util.List;

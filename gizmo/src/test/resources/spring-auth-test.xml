@@ -22,7 +22,7 @@
 
     <beans>
         <context:annotation-config/>
-        <bean class="org.rootservices.config.AppConfig"/>
-        <bean class="org.rootservices.config.PersistenceConfig"/>
+        <bean class="net.tokensmith.config.AppConfig"/>
+        <bean class="net.tokensmith.config.PersistenceConfig"/>
     </beans>
 </beans>

@@ -1,13 +1,10 @@
 package integration.authorization.oauth2.grant.token.request.ValidateParams;
 
 import org.junit.Test;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import org.rootservices.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import org.rootservices.authorization.persistence.entity.Client;
-import org.rootservices.authorization.persistence.entity.ResponseType;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import net.tokensmith.authorization.persistence.entity.Client;
+import net.tokensmith.authorization.persistence.entity.ResponseType;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 

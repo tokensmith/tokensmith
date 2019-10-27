@@ -3,7 +3,7 @@ package integration.authorization.openid.grant.token.request.ValidateOpenIdParam
 
 import integration.authorization.openid.grant.token.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.parse.exception.RequiredException;
+import net.tokensmith.authorization.parse.exception.RequiredException;
 
 
 import java.util.List;

@@ -3,10 +3,9 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams.valid
 
 import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTest;
 import org.junit.Test;
-import org.rootservices.authorization.constant.ErrorCode;
-import org.rootservices.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

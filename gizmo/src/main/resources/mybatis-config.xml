@@ -11,16 +11,16 @@
     </settings>
 
     <typeHandlers>
-        <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.UUIDTypeHandler"
+        <typeHandler handler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"
                      javaType="java.util.UUID" jdbcType="OTHER" />
 
-        <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.URITypeHandler"
+        <typeHandler handler="net.tokensmith.authorization.persistence.mapper.typehandler.URITypeHandler"
                      javaType="java.net.URI" jdbcType="VARCHAR" />
 
-        <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"
+        <typeHandler handler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"
                      javaType="java.time.OffsetDateTime" jdbcType="DATE" />
 
-        <typeHandler handler="org.rootservices.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"
+        <typeHandler handler="net.tokensmith.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"
                      javaType="java.math.BigInteger" jdbcType="BLOB" />
     </typeHandlers>
 </configuration>
