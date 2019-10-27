@@ -3,6 +3,8 @@ package net.tokensmith.authorization.openId.identity.factory;
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
@@ -13,14 +15,12 @@ import net.tokensmith.authorization.persistence.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.notNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +76,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -110,7 +110,8 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -146,7 +147,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(1)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -182,7 +183,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(1)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(1)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -216,7 +217,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -258,7 +259,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(1)).to(any(Address.class));
     }
 
@@ -291,7 +292,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -327,7 +328,7 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -371,7 +372,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getAddress().isPresent(), is(false));
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 
@@ -412,7 +413,8 @@ public class IdTokenFactoryTest {
 
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
-        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), any(Optional.class), any(Boolean.class));
+        verify(mockProfileToIdToken, times(0)).toPhoneClaims(any(IdToken.class), FixtureFactory.anyOptionalString(), any(Boolean.class));
+
         verify(mockAddrToAddrClaims, times(0)).to(any(Address.class));
     }
 }

@@ -19,7 +19,6 @@ import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -27,8 +26,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -134,7 +133,7 @@ public class RequestAuthCodeTest {
             authResponse = subject.run(userName, password, params);
         } catch (UnauthorizedException e) {
             verify(mockIssueAuthCode, never()).run(
-                any(UUID.class), any(UUID.class), any(Optional.class), anyListOf(String.class)
+                any(UUID.class), any(UUID.class), FixtureFactory.anyOptionalURI(), anyList()
             );
             actual = e;
         }
