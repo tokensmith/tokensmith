@@ -3,6 +3,7 @@ package net.tokensmith.authorization.register;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.nonce.entity.NonceName;
@@ -31,8 +32,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -106,7 +106,7 @@ public class RegisterTest {
         assertThat(nonceCaptor.getValue().getNonce(), is("hashedNonce".getBytes()));
         assertThat(nonceCaptor.getValue().getExpiresAt(), is(notNullValue()));
 
-        verify(mockPublish).send(eq("mailer"), any(Map.class));
+        verify(mockPublish).send(eq("mailer"), anyMap());
     }
 
     @Test

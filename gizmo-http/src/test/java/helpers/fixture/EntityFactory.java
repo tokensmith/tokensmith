@@ -4,6 +4,7 @@ import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.register.request.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
+import org.mockito.Mockito;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +18,17 @@ import java.util.UUID;
 public class EntityFactory {
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String ISSUER = "https://sso.rootservices.org";
+
+    public static Optional<String> anyOptionalString() {
+        Optional<String> any = Mockito.any();
+        return any;
+    }
+
+    // used to eliminate mockito warnings.
+    public static Optional<URI> anyOptionalURI() {
+        Optional<URI> any = Mockito.any();
+        return any;
+    }
 
     public static ConfidentialClient makeConfidentialClient(Client client) {
         ConfidentialClient confidentialClient = new ConfidentialClient();

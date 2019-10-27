@@ -15,6 +15,7 @@ import net.tokensmith.config.AppConfig;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
+import org.mockito.Mockito;
 
 import java.math.BigInteger;
 import java.net.URI;
@@ -30,6 +31,18 @@ public class FixtureFactory {
     public static String PLAIN_TEXT_PASSWORD = "password";
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String REDIRECT_URI = "http://www.rootservices.org";
+
+    // used to eliminate mockito warnings.
+    public static Optional<String> anyOptionalString() {
+        Optional<String> any = Mockito.any();
+        return any;
+    }
+
+    // used to eliminate mockito warnings.
+    public static Optional<URI> anyOptionalURI() {
+        Optional<URI> any = Mockito.any();
+        return any;
+    }
 
     public static URI makeSecureRedirectUri() throws URISyntaxException {
         return new URI(SECURE_REDIRECT_URI);
