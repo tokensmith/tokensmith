@@ -10,7 +10,7 @@ import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;
 import net.tokensmith.jwt.builder.exception.CompactException;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MakeCodeGrantIdentityToken {
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
     private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private PrivateKeyTranslator privateKeyTranslator;
@@ -42,8 +42,8 @@ public class MakeCodeGrantIdentityToken {
     private static String ID_TOKEN_ERROR_MSG = "Could not create id token";
 
     @Autowired
-    public MakeCodeGrantIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
-        this.hashText = hashText;
+    public MakeCodeGrantIdentityToken(HashToken hashToken, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory, IdTokenFactory idTokenFactory) {
+        this.hashToken = hashToken;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
         this.privateKeyTranslator = privateKeyTranslator;
@@ -53,7 +53,7 @@ public class MakeCodeGrantIdentityToken {
 
     public String make(String accessToken, TokenClaims tokenClaims) throws IdTokenException, KeyNotFoundException, ProfileNotFoundException, ResourceOwnerNotFoundException {
 
-        String hashedAccessToken = hashText.run(accessToken);
+        String hashedAccessToken = hashToken.run(accessToken);
 
         ResourceOwner ro;
         try {

@@ -15,7 +15,7 @@ import net.tokensmith.authorization.persistence.entity.Token;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;
 import net.tokensmith.jwt.builder.exception.CompactException;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class MakeUserInfoIdentityToken {
     private static final Logger logger = LogManager.getLogger(MakeUserInfoIdentityToken.class);
 
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
     private ResourceOwnerRepository resourceOwnerRepository;
     private RsaPrivateKeyRepository rsaPrivateKeyRepository;
     private PrivateKeyTranslator privateKeyTranslator;
@@ -47,8 +47,8 @@ public class MakeUserInfoIdentityToken {
     private static String ID_TOKEN_ERROR_MSG = "Could not create id token";
 
     @Autowired
-    public MakeUserInfoIdentityToken(HashTextStaticSalt hashText, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory, IdTokenFactory idTokenFactory, String issuer) {
-        this.hashText = hashText;
+    public MakeUserInfoIdentityToken(HashToken hashToken, ResourceOwnerRepository resourceOwnerRepository, RsaPrivateKeyRepository rsaPrivateKeyRepository, PrivateKeyTranslator privateKeyTranslator, JwtAppFactory jwtAppFactory, IdTokenFactory idTokenFactory, String issuer) {
+        this.hashToken = hashToken;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.rsaPrivateKeyRepository = rsaPrivateKeyRepository;
         this.privateKeyTranslator = privateKeyTranslator;
@@ -59,7 +59,7 @@ public class MakeUserInfoIdentityToken {
 
 
     public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ResourceOwnerNotFoundException {
-        String hashedAccessToken = hashText.run(accessToken);
+        String hashedAccessToken = hashToken.run(accessToken);
 
         ResourceOwner ro;
         try {

@@ -21,16 +21,7 @@ public class MatchPasswords {
     }
 
 
-    public boolean run(String plainTextPassword, byte[] bytesHashedPassword) throws UnauthorizedException {
-
-        String hashedPassword = "";
-        try {
-            hashedPassword = new String(bytesHashedPassword, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnauthorizedException(
-                    ErrorCode.UNSUPPORTED_ENCODING.getDescription(),
-                    e, ErrorCode.UNSUPPORTED_ENCODING.getCode());
-        }
+    public boolean run(String plainTextPassword, String hashedPassword) throws UnauthorizedException {
 
         boolean passwordsMatch = isTextEqualToHash.run(
                 plainTextPassword, hashedPassword

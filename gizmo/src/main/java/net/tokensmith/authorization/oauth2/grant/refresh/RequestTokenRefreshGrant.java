@@ -17,7 +17,7 @@ import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.RefreshTokenRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
 
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory;
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
     private RefreshTokenRepository refreshTokenRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
     private IssueTokenRefreshGrant issueTokenRefreshGrant;
@@ -43,10 +43,10 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
     private static String RESOURCE_OWNER_NOT_FOUND = "no resource owner was associated to refresh token";
 
     @Autowired
-    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, HashTextStaticSalt hashText, RefreshTokenRepository refreshTokenRepository, ResourceOwnerRepository resourceOwnerRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
+    public RequestTokenRefreshGrant(LoginConfidentialClient loginConfidentialClient, TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory, HashToken hashToken, RefreshTokenRepository refreshTokenRepository, ResourceOwnerRepository resourceOwnerRepository, IssueTokenRefreshGrant issueTokenRefreshGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputRefreshGrantFactory = tokenInputRefreshGrantFactory;
-        this.hashText = hashText;
+        this.hashToken = hashToken;
         this.refreshTokenRepository = refreshTokenRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.issueTokenRefreshGrant = issueTokenRefreshGrant;
@@ -68,7 +68,7 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
             throw new BadRequestExceptionBuilder().UnknownKey(e.getKey(), e.getCode(), e).build();
         }
 
-        String hashedRefreshToken = hashText.run(input.getRefreshToken());
+        String hashedRefreshToken = hashToken.run(input.getRefreshToken());
         RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), hashedRefreshToken);
         List<Scope> scopes = matchScopes(input.getScopes(), refreshToken.getToken().getTokenScopes());
 

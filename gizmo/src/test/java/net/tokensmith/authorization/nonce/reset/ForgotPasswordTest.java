@@ -163,7 +163,7 @@ public class ForgotPasswordTest {
 
         subject.reset(jwt, password, repeatPassword);
 
-        verify(mockResourceOwnerRepository).updatePassword(nonce.getResourceOwner().getId(), hashedPassword.getBytes());
+        verify(mockResourceOwnerRepository).updatePassword(nonce.getResourceOwner().getId(), hashedPassword);
         verify(mockTokenRepository).revokeActive(nonce.getResourceOwner().getId());
         verify(mockRefreshTokenRepository).revokeActive(nonce.getResourceOwner().getId());
 
@@ -200,7 +200,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -231,7 +231,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -259,7 +259,7 @@ public class ForgotPasswordTest {
         assertThat(actual, is(notNullValue()));
 
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -290,7 +290,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -321,7 +321,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -352,7 +352,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -383,7 +383,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -414,7 +414,7 @@ public class ForgotPasswordTest {
 
         verify(mockSpendNonce, never()).spend(jwt, NonceName.RESET_PASSWORD);
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());
@@ -443,7 +443,7 @@ public class ForgotPasswordTest {
         assertThat(actual, is(notNullValue()));
 
         verify(mockHashTextRandomSalt, never()).run(password);
-        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), any(byte[].class));
+        verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockPublish, never()).send(eq("mailer"), anyMap());

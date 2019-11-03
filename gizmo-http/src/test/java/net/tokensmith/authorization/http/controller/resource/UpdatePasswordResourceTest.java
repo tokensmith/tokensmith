@@ -20,7 +20,7 @@ import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.repository.NonceRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.security.RandomString;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.ciphers.IsTextEqualToHash;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
@@ -39,7 +39,7 @@ public class UpdatePasswordResourceTest {
     protected static LoadOpenIdResourceOwner loadOpenIdResourceOwner;
     protected static RandomString randomString;
     protected static LoadNonce loadNonce;
-    protected static HashTextStaticSalt hashTextStaticSalt;
+    protected static HashToken hashToken;
     protected static NonceRepository nonceRepository;
     protected static ResourceOwnerRepository resourceOwnerRepository;
     protected static IsTextEqualToHash isTextEqualToHash;
@@ -50,7 +50,7 @@ public class UpdatePasswordResourceTest {
         loadOpenIdResourceOwner = IntegrationTestSuite.getContext().getBean(LoadOpenIdResourceOwner.class);
         randomString = IntegrationTestSuite.getContext().getBean(RandomString.class);
         loadNonce = IntegrationTestSuite.getContext().getBean(LoadNonce.class);
-        hashTextStaticSalt = IntegrationTestSuite.getContext().getBean(HashTextStaticSalt.class);
+        hashToken = IntegrationTestSuite.getContext().getBean(HashToken.class);
         nonceRepository = IntegrationTestSuite.getContext().getBean(NonceRepository.class);
         resourceOwnerRepository = IntegrationTestSuite.getContext().getBean(ResourceOwnerRepository.class);
         isTextEqualToHash = IntegrationTestSuite.getContext().getBean(IsTextEqualToHash.class);
@@ -71,9 +71,9 @@ public class UpdatePasswordResourceTest {
         nonceClaim.setNonce(plainTextNonce);
         String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
-        String hashedNonce = hashTextStaticSalt.run(plainTextNonce);
+        String hashedNonce = hashToken.run(plainTextNonce);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
-        loadNonce.resetPassword(ro, hashedNonce.getBytes());
+        loadNonce.resetPassword(ro, hashedNonce);
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI + "?nonce=" + jwt)
@@ -93,9 +93,9 @@ public class UpdatePasswordResourceTest {
         nonceClaim.setNonce(plainTextNonce);
         String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
-        String hashedNonce = hashTextStaticSalt.run(plainTextNonce);
+        String hashedNonce = hashToken.run(plainTextNonce);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
-        loadNonce.resetPassword(ro, hashedNonce.getBytes());
+        loadNonce.resetPassword(ro, hashedNonce);
 
         Session session = new Session();
         try {
@@ -107,7 +107,7 @@ public class UpdatePasswordResourceTest {
         String password = "password123";
 
         // before the test runs. make sure the new password does not equal the existing.
-        Boolean passwordsMatch = isTextEqualToHash.run(password, new String(ro.getPassword(), "UTF-8"));
+        Boolean passwordsMatch = isTextEqualToHash.run(password, ro.getPassword());
         assertFalse(passwordsMatch);
 
         List<Param> postData = FormFactory.makeUpdatePasswordForm(password, password, session.getCsrfToken());
@@ -125,7 +125,7 @@ public class UpdatePasswordResourceTest {
 
         // re-fetch resource owner to ensure the password was updated.
         ro = resourceOwnerRepository.getByEmail(ro.getEmail());
-        Boolean actual = isTextEqualToHash.run(password, new String(ro.getPassword(), "UTF-8"));
+        Boolean actual = isTextEqualToHash.run(password, ro.getPassword());
         assertThat(actual, is(true));
     }
 
@@ -138,9 +138,9 @@ public class UpdatePasswordResourceTest {
         nonceClaim.setNonce(plainTextNonce);
         String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
-        String hashedNonce = hashTextStaticSalt.run(plainTextNonce);
+        String hashedNonce = hashToken.run(plainTextNonce);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
-        loadNonce.resetPassword(ro, hashedNonce.getBytes());
+        loadNonce.resetPassword(ro, hashedNonce);
 
         Session session = new Session();
         try {

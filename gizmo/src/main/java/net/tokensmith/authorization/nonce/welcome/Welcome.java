@@ -7,7 +7,7 @@ import net.tokensmith.authorization.persistence.entity.Nonce;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.NonceRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Welcome {
-    private HashTextStaticSalt hashTextStaticSalt;
+    private HashToken hashToken;
     private NonceRepository nonceRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
 
     @Autowired
-    public Welcome(HashTextStaticSalt hashTextStaticSalt, NonceRepository nonceRepository, ResourceOwnerRepository resourceOwnerRepository) {
-        this.hashTextStaticSalt = hashTextStaticSalt;
+    public Welcome(HashToken hashToken, NonceRepository nonceRepository, ResourceOwnerRepository resourceOwnerRepository) {
+        this.hashToken = hashToken;
         this.nonceRepository = nonceRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
     }
@@ -45,7 +45,7 @@ public class Welcome {
 
         NonceClaim nonceClaim = (NonceClaim) jsonWebToken.getClaims();
 
-        String hashedNonce = hashTextStaticSalt.run(nonceClaim.getNonce());
+        String hashedNonce = hashToken.run(nonceClaim.getNonce());
 
         Nonce nonce;
         try {

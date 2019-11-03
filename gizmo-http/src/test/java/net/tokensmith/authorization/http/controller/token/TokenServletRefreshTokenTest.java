@@ -27,7 +27,7 @@ import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
 import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
 import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.repository.TokenRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.config.AppConfig;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.KeyType;
@@ -59,7 +59,7 @@ public class TokenServletRefreshTokenTest {
     private static PostAuthorizationForm postAuthorizationForm;
     private static PostTokenCodeGrant postTokenCodeGrant;
     private static PostTokenPasswordGrant postTokenPasswordGrant;
-    private static HashTextStaticSalt hashText;
+    private static HashToken hashToken;
     private static TokenRepository tokenRepository;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
 
@@ -82,7 +82,7 @@ public class TokenServletRefreshTokenTest {
         postAuthorizationForm = factoryForPersistence.makePostAuthorizationForm();
         postTokenCodeGrant = factoryForPersistence.makePostTokenCodeGrant();
         postTokenPasswordGrant = factoryForPersistence.postPasswordGrant();
-        hashText = IntegrationTestSuite.getContext().getBean(HashTextStaticSalt.class);
+        hashToken = IntegrationTestSuite.getContext().getBean(HashToken.class);
         tokenRepository = IntegrationTestSuite.getContext().getBean(TokenRepository.class);
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
 
@@ -91,7 +91,7 @@ public class TokenServletRefreshTokenTest {
     }
 
     public void expireAccessToken(String accessToken) {
-        String hashedAccessToken = hashText.run(accessToken);
+        String hashedAccessToken = hashToken.run(accessToken);
         tokenRepository.updateExpiresAtByAccessToken(OffsetDateTime.now().minusDays(1), hashedAccessToken);
     }
 

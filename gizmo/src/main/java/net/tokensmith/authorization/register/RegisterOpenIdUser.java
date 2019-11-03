@@ -46,7 +46,7 @@ public class RegisterOpenIdUser {
 
         validate(userInfo);
 
-        byte[] hashedPassword = hashTextRandomSalt.run(userInfo.getPassword()).getBytes();
+        String hashedPassword = hashTextRandomSalt.run(userInfo.getPassword());
         ResourceOwner resourceOwner = userInfoTranslator.from(userInfo);
         resourceOwner.setPassword(hashedPassword);
 

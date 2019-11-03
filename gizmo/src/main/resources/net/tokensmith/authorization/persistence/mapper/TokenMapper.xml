@@ -6,7 +6,7 @@
 
     <resultMap id="token" type="net.tokensmith.authorization.persistence.entity.Token">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="token" property="token"/>
+        <result column="active_token" property="token"/>
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="client_id" property="clientId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
@@ -31,7 +31,7 @@
     <select id="getByAuthCodeId" resultMap="token">
         select
             token.id,
-            token.token,
+            token.active_token,
             token.revoked,
             token.grant_type,
             token.client_id,
@@ -45,7 +45,7 @@
     <select id="getById" resultMap="token">
         select
             token.id,
-            token.token,
+            token.active_token,
             token.revoked,
             token.grant_type,
             token.client_id,
@@ -56,7 +56,7 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
-        insert into token (id, token, grant_type, client_id, revoked, expires_at)
+        insert into token (id, active_token, grant_type, client_id, revoked, expires_at)
         values (
         #{token.id},
         #{token.token},
@@ -85,7 +85,7 @@
     <update id="updateExpiresAtByAccessToken">
         update token
         set expires_at = #{expiresAt}
-        where token = decode(#{accessToken}, 'escape')
+        where active_token = #{accessToken}
     </update>
 
     <update id="revokeActive">

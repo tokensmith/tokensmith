@@ -16,7 +16,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.*;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,15 +32,15 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
     private static final Logger LOGGER = LogManager.getLogger(RequestTokenCodeGrant.class);
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
     private AuthCodeRepository authCodeRepository;
     private IssueTokenCodeGrant issueTokenCodeGrant;
 
     @Autowired
-    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, HashTextStaticSalt hashText, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
+    public RequestTokenCodeGrant(LoginConfidentialClient loginConfidentialClient, TokenInputCodeGrantFactory tokenInputCodeGrantFactory, HashToken hashToken, AuthCodeRepository authCodeRepository, IssueTokenCodeGrant issueTokenCodeGrant) {
         this.loginConfidentialClient = loginConfidentialClient;
         this.tokenInputCodeGrantFactory = tokenInputCodeGrantFactory;
-        this.hashText = hashText;
+        this.hashToken = hashToken;
         this.authCodeRepository = authCodeRepository;
         this.issueTokenCodeGrant = issueTokenCodeGrant;
     }
@@ -62,7 +62,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         }
 
         // fetch auth code
-        String hashedCode = hashText.run(input.getCode());
+        String hashedCode = hashToken.run(input.getCode());
         AuthCode authCode = fetchAndVerifyAuthCode(clientId, hashedCode, input.getRedirectUri());
 
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();

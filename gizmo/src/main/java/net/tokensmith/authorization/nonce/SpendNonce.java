@@ -6,7 +6,7 @@ import net.tokensmith.authorization.nonce.entity.NonceName;
 import net.tokensmith.authorization.persistence.entity.Nonce;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.NonceRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
@@ -21,12 +21,12 @@ public class SpendNonce {
     private static String MARSHAL_MSG = "Could not marshal to a jwt";
     private static String NOT_JWT_MSG = "Input was not a JWT";
     private static String NOT_FOUND_MSG = "Nonce not found";
-    private HashTextStaticSalt hashTextStaticSalt;
+    private HashToken hashToken;
     private NonceRepository nonceRepository;
 
     @Autowired
-    public SpendNonce(HashTextStaticSalt hashTextStaticSalt, NonceRepository nonceRepository) {
-        this.hashTextStaticSalt = hashTextStaticSalt;
+    public SpendNonce(HashToken hashToken, NonceRepository nonceRepository) {
+        this.hashToken = hashToken;
         this.nonceRepository = nonceRepository;
     }
 
@@ -46,7 +46,7 @@ public class SpendNonce {
 
         NonceClaim nonceClaim = (NonceClaim) jsonWebToken.getClaims();
 
-        String hashedNonce = hashTextStaticSalt.run(nonceClaim.getNonce());
+        String hashedNonce = hashToken.run(nonceClaim.getNonce());
 
         Nonce nonce;
         try {

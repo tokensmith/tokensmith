@@ -52,7 +52,7 @@ public class ResourceOwnerMapperTest {
 
     public ResourceOwner insertResourceOwner() {
         UUID uuid = UUID.randomUUID();
-        byte [] password = "plainTextPassword".getBytes();
+        String password = "plainTextPassword";
         ResourceOwner user = new ResourceOwner(uuid, UUID.randomUUID() + "@rootservices.com", password);
 
         subject.insert(user);
@@ -62,7 +62,7 @@ public class ResourceOwnerMapperTest {
     @Test
     public void insert() {
         UUID uuid = UUID.randomUUID();
-        byte [] password = "plainTextPassword".getBytes();
+        String password = "plainTextPassword";
         ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
         subject.insert(user);
     }
@@ -70,7 +70,7 @@ public class ResourceOwnerMapperTest {
     @Test(expected = DuplicateKeyException.class)
     public void insertShouldThrowDuplicateKeyException() {
         UUID id = UUID.randomUUID();
-        byte [] password = "plainTextPassword".getBytes();
+        String password = "plainTextPassword";
         ResourceOwner user = new ResourceOwner(id, "test@rootservices.com", password);
         subject.insert(user);
 
@@ -340,8 +340,8 @@ public class ResourceOwnerMapperTest {
         resourceOwnerTokenMapper.insert(resourceOwnerToken);
         // end: prepare database for the test
 
-        String hashedAccessToken = new String(token.getToken());
-        ResourceOwner actual = subject.getByAccessTokenWithProfileAndTokens(hashedAccessToken);
+        // fc791f60877f4953c6bb272145b7c430af846ba942670d4d4ad7a1ab351b9683696e257ed445b69c5fafa1611891ad1d32d5773ff427459972e5f61bb5aeffae
+        ResourceOwner actual = subject.getByAccessTokenWithProfileAndTokens(token.getToken());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getEmail(), is(ro.getEmail()));
@@ -517,11 +517,11 @@ public class ResourceOwnerMapperTest {
         ResourceOwner userToUpdate = insertResourceOwner();
         String password = "plainTextPassword123";
 
-        subject.updatePassword(userToUpdate.getId(), password.getBytes());
+        subject.updatePassword(userToUpdate.getId(), password);
 
         // fetch it to make sure it was updated.
         ResourceOwner actual = subject.getById(userToUpdate.getId());
-        assertThat(actual.getPassword(), is(password.getBytes()));
+        assertThat(actual.getPassword(), is(password));
 
         // should not have updated others passwords.
         ResourceOwner otherUser = subject.getById(user.getId());

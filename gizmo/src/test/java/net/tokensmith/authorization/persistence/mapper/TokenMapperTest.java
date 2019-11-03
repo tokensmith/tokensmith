@@ -72,7 +72,7 @@ public class TokenMapperTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage().contains("Detail: Key (token)"), is(true));
+        assertThat(actual.getMessage().contains("Detail: Key (active_token)"), is(true));
     }
 
     public AuthCode prepare() throws Exception {

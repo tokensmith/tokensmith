@@ -78,7 +78,7 @@ public class ResourceOwnerRepositoryImpl implements ResourceOwnerRepository {
     }
 
     @Override
-    public void updatePassword(UUID id, byte[] password) {
+    public void updatePassword(UUID id, String password) {
         resourceOwnerMapper.updatePassword(id, password);
     }
 }

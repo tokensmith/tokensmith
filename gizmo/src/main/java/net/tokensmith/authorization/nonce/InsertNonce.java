@@ -12,7 +12,7 @@ import net.tokensmith.authorization.persistence.repository.NonceTypeRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.authorization.security.RandomString;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,16 +24,16 @@ public class InsertNonce {
     private static final Logger logger = LogManager.getLogger(InsertNonce.class);
     private ResourceOwnerRepository resourceOwnerRepository;
     private RandomString randomString;
-    private HashTextStaticSalt hashTextStaticSalt;
+    private HashToken hashToken;
     private NonceTypeRepository nonceTypeRepository;
     private NonceRepository nonceRepository;
 
 
     @Autowired
-    public InsertNonce(ResourceOwnerRepository resourceOwnerRepository, RandomString randomString, HashTextStaticSalt hashTextStaticSalt, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository) {
+    public InsertNonce(ResourceOwnerRepository resourceOwnerRepository, RandomString randomString, HashToken hashToken, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.randomString = randomString;
-        this.hashTextStaticSalt = hashTextStaticSalt;
+        this.hashToken = hashToken;
         this.nonceTypeRepository = nonceTypeRepository;
         this.nonceRepository = nonceRepository;
     }
@@ -53,13 +53,13 @@ public class InsertNonce {
     public String insert(ResourceOwner ro, NonceName nonceName) throws NonceException {
 
         String plainTextNonce = randomString.run();
-        byte[] hashedNonce = hashTextStaticSalt.run(plainTextNonce).getBytes();
+        String hashedNonce = hashToken.run(plainTextNonce);
         insertNonce(ro, hashedNonce, nonceName);
 
         return plainTextNonce;
     }
 
-    protected Nonce insertNonce(ResourceOwner ro, byte[] hashedNonce, NonceName nonceName) throws NonceException {
+    protected Nonce insertNonce(ResourceOwner ro, String hashedNonce, NonceName nonceName) throws NonceException {
         NonceType nonceType;
         try {
             nonceType = nonceTypeRepository.getByName(nonceName);

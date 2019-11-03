@@ -16,5 +16,5 @@ public interface ResourceOwnerMapper {
     ResourceOwner getByAccessTokenWithProfileAndTokens(@Param("accessToken") String accessToken);
     void insert(@Param("resourceOwner") ResourceOwner resourceOwner);
     void setEmailVerified(@Param("id") UUID id);
-    void updatePassword(@Param("id") UUID id, @Param("password") byte[] password);
+    void updatePassword(@Param("id") UUID id, @Param("password") String password);
 }

@@ -1,6 +1,6 @@
 package net.tokensmith.authorization.security.ciphers;
 
 
-public interface HashTextStaticSalt {
+public interface HashToken {
    String run(String plainText);
 }

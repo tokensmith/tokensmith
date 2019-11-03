@@ -17,7 +17,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
 import net.tokensmith.authorization.persistence.repository.*;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,7 +51,7 @@ public class RequestTokenCodeGrantTest {
     private LoadConfClientTokenReady loadConfClientOpendIdTokenReady;
 
     @Autowired
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
 
     @Autowired
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
@@ -111,7 +111,7 @@ public class RequestTokenCodeGrantTest {
         assertThat(actual.getExtension(), is(Extension.NONE));
 
         // token should relate to a resource owner via, resource_owner_token
-        String hashedCode = hashText.run(actual.getAccessToken());
+        String hashedCode = hashToken.run(actual.getAccessToken());
         ResourceOwnerToken actualRot = resourceOwnerTokenRepository.getByAccessToken(hashedCode);
 
         assertThat(actualRot.getResourceOwner(), is(notNullValue()));
