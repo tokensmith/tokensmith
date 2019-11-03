@@ -68,8 +68,7 @@ public class UserInfoResource extends RestResource<APIUser, UserInfo> {
             response.getHeaders().put(Header.AUTH_MISSING.getValue(), AuthScheme.BEARER.getScheme());
             return response;
         }
-
-        // TODO: idToken should be a ByteArrayOutputStream
+        
         ByteArrayOutputStream idToken;
         try {
             idToken = makeUserInfoIdentityToken.make(accessToken);
