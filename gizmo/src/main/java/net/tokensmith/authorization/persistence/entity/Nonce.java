@@ -7,7 +7,7 @@ public class Nonce {
     private UUID id;
     private NonceType nonceType;
     private ResourceOwner resourceOwner;
-    private byte[] nonce;
+    private String nonce;
     private Boolean revoked;
     private Boolean spent;
     private OffsetDateTime expiresAt;
@@ -37,11 +37,11 @@ public class Nonce {
         this.nonceType = nonceType;
     }
 
-    public byte[] getNonce() {
+    public String getNonce() {
         return nonce;
     }
 
-    public void setNonce(byte[] nonce) {
+    public void setNonce(String nonce) {
         this.nonce = nonce;
     }
 

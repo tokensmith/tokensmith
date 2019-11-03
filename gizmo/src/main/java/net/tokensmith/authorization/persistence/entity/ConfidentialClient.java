@@ -9,12 +9,12 @@ import java.util.UUID;
 public class ConfidentialClient {
     private UUID id;
     private Client client;
-    private byte[] password;
+    private String password;
     private OffsetDateTime createdAt;
 
     public ConfidentialClient() {}
 
-    public ConfidentialClient(UUID id, Client client, byte[] password) {
+    public ConfidentialClient(UUID id, Client client, String password) {
         this.id = id;
         this.client = client;
         this.password = password;
@@ -36,11 +36,11 @@ public class ConfidentialClient {
         this.client = client;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

@@ -6,7 +6,7 @@
 
     <resultMap id="confidentialClient" type="net.tokensmith.authorization.persistence.entity.ConfidentialClient">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="active_password" property="password"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <association property="client"
                      resultMap="net.tokensmith.authorization.persistence.mapper.ClientMapper.client"
@@ -14,7 +14,7 @@
     </resultMap>
 
     <insert id="insert">
-        insert into confidential_client (id, client_id, password)
+        insert into confidential_client (id, client_id, active_password)
         values (
             #{confidentialClient.id},
             #{confidentialClient.client.id},
@@ -25,7 +25,7 @@
     <select id="getByClientId" resultMap="confidentialClient">
         select
             confidential_client.id,
-            confidential_client.password,
+            confidential_client.active_password,
             confidential_client.created_at,
             client.id as client_id,
             client.redirect_URI as client_redirect_URI,

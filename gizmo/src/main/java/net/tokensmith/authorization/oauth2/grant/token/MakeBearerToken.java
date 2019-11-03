@@ -3,7 +3,7 @@ package net.tokensmith.authorization.oauth2.grant.token;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
 import net.tokensmith.authorization.persistence.entity.GrantType;
 import net.tokensmith.authorization.persistence.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +18,11 @@ import java.util.UUID;
 public class MakeBearerToken {
 
     private static final TokenType TOKEN_TYPE = TokenType.BEARER;
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
 
     @Autowired
-    public MakeBearerToken(HashTextStaticSalt hashText) {
-        this.hashText = hashText;
+    public MakeBearerToken(HashToken hashToken) {
+        this.hashToken = hashToken;
     }
 
 
@@ -31,7 +31,7 @@ public class MakeBearerToken {
         Token token = new Token();
         token.setId(UUID.randomUUID());
 
-        byte[] hashedToken = hashText.run(plainTextToken).getBytes();
+        String hashedToken = hashToken.run(plainTextToken);
         token.setToken(hashedToken);
         token.setExpiresAt(OffsetDateTime.now().plusSeconds(secondsToExpiration));
         token.setSecondsToExpiration(secondsToExpiration);

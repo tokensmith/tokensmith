@@ -2,7 +2,7 @@ package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.re
 
 import net.tokensmith.authorization.persistence.entity.AccessRequest;
 import net.tokensmith.authorization.persistence.entity.AuthCode;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +15,16 @@ import java.util.UUID;
 @Component
 public class AuthCodeFactory {
 
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
 
     @Autowired
-    public AuthCodeFactory(HashTextStaticSalt hashText) {
-        this.hashText = hashText;
+    public AuthCodeFactory(HashToken hashToken) {
+        this.hashToken = hashToken;
     }
 
     public AuthCode makeAuthCode(AccessRequest accessRequest, String authorizationCode, Long secondsToExpire) {
 
-        byte[] hashedAuthorizationCode = hashText.run(authorizationCode).getBytes();;
+        String hashedAuthorizationCode = hashToken.run(authorizationCode);
 
         OffsetDateTime expiresAt = OffsetDateTime.now();
         expiresAt = expiresAt.plusSeconds(secondsToExpire);

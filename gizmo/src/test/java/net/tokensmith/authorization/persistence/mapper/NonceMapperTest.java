@@ -49,7 +49,7 @@ public class NonceMapperTest {
             nonceTypeMapper.insert(nonceType);
         }
 
-        byte [] password = "plainTextPassword".getBytes();
+        String password = "plainTextPassword";
         ResourceOwner user = new ResourceOwner(UUID.randomUUID(), UUID.randomUUID() + "@rootservices.com", password);
 
         resourceOwnerMapper.insert(user);
@@ -60,7 +60,7 @@ public class NonceMapperTest {
         nonce.setResourceOwner(user);
         nonce.setCreatedAt(OffsetDateTime.now());
         nonce.setExpiresAt(OffsetDateTime.now().plusMinutes(10));
-        nonce.setNonce(nonceValue.getBytes());
+        nonce.setNonce(nonceValue);
 
         subject.insert(nonce);
 
@@ -76,7 +76,7 @@ public class NonceMapperTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
@@ -104,7 +104,7 @@ public class NonceMapperTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));
@@ -131,7 +131,7 @@ public class NonceMapperTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(nonce.getId()));
-        assertThat(actual.getNonce(), is(nonceValue.getBytes()));
+        assertThat(actual.getNonce(), is(nonceValue));
         assertThat(actual.getRevoked(), is(false));
         assertThat(actual.getSpent(), is(false));
         assertThat(actual.getExpiresAt(), is(nonce.getExpiresAt()));

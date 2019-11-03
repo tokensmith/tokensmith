@@ -35,14 +35,14 @@
             token_chain.created_at,
 
             token.id as token_id,
-            token.token as token_token,
+            token.active_token as token_active_token,
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
 
             prev_token.id as prev_token_id,
-            prev_token.token as prev_token_token,
+            prev_token.active_token as prev_token_active_token,
             prev_token.revoked as prev_token_revoked,
             prev_token.grant_type as prev_token_grant_type,
             prev_token.expires_at as prev_token_expires_at,
@@ -68,14 +68,14 @@
             token_chain.created_at,
 
             token.id as token_id,
-            token.token as token_token,
+            token.active_token as token_active_token,
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
 
             prev_token.id as prev_token_id,
-            prev_token.token as prev_token_token,
+            prev_token.active_token as prev_token_active_token,
             prev_token.revoked as prev_token_revoked,
             prev_token.grant_type as prev_token_grant_type,
             prev_token.expires_at as prev_token_expires_at,

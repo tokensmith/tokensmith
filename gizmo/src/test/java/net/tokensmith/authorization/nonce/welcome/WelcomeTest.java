@@ -14,7 +14,7 @@ import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.NonceRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.jwt.exception.InvalidJWT;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 public class WelcomeTest {
 
     @Mock
-    private HashTextStaticSalt mockHashTextStaticSalt;
+    private HashToken mockHashToken;
     @Mock
     private NonceRepository mockNonceRepository;
     @Mock
@@ -45,7 +45,7 @@ public class WelcomeTest {
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
-        subject = new Welcome(mockHashTextStaticSalt, mockNonceRepository, mockResourceOwnerRepository);
+        subject = new Welcome(mockHashToken, mockNonceRepository, mockResourceOwnerRepository);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class WelcomeTest {
         nonce.setResourceOwner(ro);
         nonce.setNonceType(nonceType);
 
-        when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
+        when(mockHashToken.run("nonce")).thenReturn("hashedNonce");
         when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenReturn(nonce);
 
         subject.markEmailVerified(jwt);
@@ -104,7 +104,7 @@ public class WelcomeTest {
         String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
 
-        when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
+        when(mockHashToken.run("nonce")).thenReturn("hashedNonce");
         when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenThrow(RecordNotFoundException.class);
 
         NotFoundException actual = null;

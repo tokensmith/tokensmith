@@ -9,7 +9,7 @@ import java.util.UUID;
  */
 public class Token {
     private UUID id;
-    private byte[] token;
+    private String token;
     private boolean revoked;
     private GrantType grantType;
     private UUID clientId;
@@ -22,7 +22,7 @@ public class Token {
 
     public Token() {}
 
-    public Token(UUID id, byte[] token, OffsetDateTime expiresAt) {
+    public Token(UUID id, String token, OffsetDateTime expiresAt) {
         this.id = id;
         this.token = token;
         this.expiresAt = expiresAt;
@@ -36,11 +36,11 @@ public class Token {
         this.id = id;
     }
 
-    public byte[] getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(byte[] token) {
+    public void setToken(String token) {
         this.token = token;
     }
 

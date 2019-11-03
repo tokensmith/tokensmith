@@ -9,8 +9,8 @@ import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSaltImpl;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.authorization.security.ciphers.HashTokenImpl;
 import net.tokensmith.config.AppConfig;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
@@ -116,7 +116,7 @@ public class FixtureFactory {
         confidentialClient.setClient(client);
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String password = textHasher.run(PLAIN_TEXT_PASSWORD);
-        confidentialClient.setPassword(password.getBytes());
+        confidentialClient.setPassword(password);
 
         return confidentialClient;
     }
@@ -192,7 +192,7 @@ public class FixtureFactory {
         ro.setEmail(makeRandomEmail());
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
-        ro.setPassword(hashedPassword.getBytes());
+        ro.setPassword(hashedPassword);
         ro.setEmailVerified(false);
 
         return ro;
@@ -257,10 +257,10 @@ public class FixtureFactory {
         AuthCode authCode = new AuthCode();
         authCode.setId(UUID.randomUUID());
 
-        HashTextStaticSalt textHasher = hashTextStaticSalt();
+        HashToken textHasher = hashToken();
         String hashedCode = textHasher.run(plainTextAuthCode);
 
-        authCode.setCode(hashedCode.getBytes());
+        authCode.setCode(hashedCode);
         authCode.setRevoked(isRevoked);
         authCode.setAccessRequest(accessRequest);
         authCode.setExpiresAt(OffsetDateTime.now().plusMinutes(3));
@@ -279,13 +279,13 @@ public class FixtureFactory {
     }
 
     public static Token makeOAuthToken(String accessToken, UUID clientId, List<Client> audience) {
-        HashTextStaticSalt textHasher = hashTextStaticSalt();
+        HashToken textHasher = hashToken();
         String hashedAccessToken = textHasher.run(accessToken);
 
         Token token = new Token();
         token.setId(UUID.randomUUID());
-        token.setToken(hashedAccessToken.getBytes());
-        token.setExpiresAt(OffsetDateTime.now());
+        token.setToken(hashedAccessToken);
+        token.setExpiresAt(OffsetDateTime.now().plusSeconds(3600L));
         token.setGrantType(GrantType.AUTHORIZATION_CODE);
         token.setClientId(clientId);
         token.setTokenScopes(new ArrayList<>());
@@ -321,7 +321,7 @@ public class FixtureFactory {
 
     public static RefreshToken makeRefreshToken(String refreshAccessToken, Token token) {
         AppConfig config = new AppConfig();
-        HashTextStaticSalt textHasher = hashTextStaticSalt();
+        HashToken textHasher = hashToken();
         String hashedRefreshAccessToken = textHasher.run(refreshAccessToken);
 
         RefreshToken refreshToken = new RefreshToken();
@@ -578,7 +578,7 @@ public class FixtureFactory {
         return audience;
     }
 
-    public static HashTextStaticSalt hashTextStaticSalt() {
-        return new HashTextStaticSaltImpl("$2a$10$oBKpYtNOYLWIlZHBXU/Vhe");
+    public static HashToken hashToken() {
+        return new HashTokenImpl();
     }
 }

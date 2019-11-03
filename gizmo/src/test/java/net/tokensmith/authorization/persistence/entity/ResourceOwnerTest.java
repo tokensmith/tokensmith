@@ -39,9 +39,9 @@ public class ResourceOwnerTest {
     @Test
     public void password() {
         String password = "plainTextPassword";
-        subject.setPassword(password.getBytes());
+        subject.setPassword(password);
 
-        assertThat(subject.getPassword(), is(password.getBytes()));
+        assertThat(subject.getPassword(), is(password));
     }
 
     @Test
@@ -49,11 +49,11 @@ public class ResourceOwnerTest {
         UUID uuid = UUID.randomUUID();
         String email = "test@rootservices.com";
         String password = "plainTextPassword";
-        subject = new ResourceOwner(uuid, email, password.getBytes());
+        subject = new ResourceOwner(uuid, email, password);
 
         assertThat(subject.getId(), is(uuid));
         assertThat(subject.getEmail(), is(email));
-        assertThat(subject.getPassword(), is(password.getBytes()));
+        assertThat(subject.getPassword(), is(password));
     }
 
 }

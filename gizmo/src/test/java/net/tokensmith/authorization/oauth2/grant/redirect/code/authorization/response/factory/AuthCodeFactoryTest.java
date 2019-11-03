@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.persistence.entity.AccessRequest;
 import net.tokensmith.authorization.persistence.entity.AuthCode;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 public class AuthCodeFactoryTest {
 
     @Mock
-    private HashTextStaticSalt mockHashText;
+    private HashToken mockHashToken;
     private AuthCodeFactory subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
         MockitoAnnotations.initMocks(this);
-        subject = new AuthCodeFactory(mockHashText);
+        subject = new AuthCodeFactory(mockHashToken);
     }
 
     @Test
@@ -41,13 +41,13 @@ public class AuthCodeFactoryTest {
         String randomString = "randomString";
         String hashedRandomString = "hashedRandomString";
 
-        when(mockHashText.run(randomString)).thenReturn(hashedRandomString);
+        when(mockHashToken.run(randomString)).thenReturn(hashedRandomString);
 
         AccessRequest ar = FixtureFactory.makeAccessRequest(resourceOwnerId, clientUUID);
         AuthCode actual = subject.makeAuthCode(ar, randomString, secondsToExpire);
 
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getCode(), is(hashedRandomString.getBytes()));
+        assertThat(actual.getCode(), is(hashedRandomString));
         assertThat(actual.getAccessRequest(), is(ar));
     }
 }

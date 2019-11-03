@@ -19,7 +19,7 @@ import net.tokensmith.authorization.persistence.entity.Token;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 
@@ -47,7 +47,7 @@ public class MakeUserInfoIdentityTokenTest {
     private MakeUserInfoIdentityToken subject;
 
     @Mock
-    private HashTextStaticSalt mockHashText;
+    private HashToken mockHashToken;
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
@@ -61,7 +61,7 @@ public class MakeUserInfoIdentityTokenTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         subject = new MakeUserInfoIdentityToken(
-                mockHashText,
+                mockHashToken,
                 mockResourceOwnerRepository,
                 mockRsaPrivateKeyRepository,
                 mockPrivateKeyTranslator,
@@ -94,7 +94,7 @@ public class MakeUserInfoIdentityTokenTest {
 
         IdToken idToken = new IdToken();
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);
@@ -153,7 +153,7 @@ public class MakeUserInfoIdentityTokenTest {
 
         IdToken idToken = new IdToken();
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);
@@ -188,7 +188,7 @@ public class MakeUserInfoIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
@@ -209,7 +209,7 @@ public class MakeUserInfoIdentityTokenTest {
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);
