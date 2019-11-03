@@ -18,7 +18,7 @@ import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.authorization.register.exception.RegisterException;
 import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.pelican.Publish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class Register {
     private ProfileRepository profileRepository;
     private HashTextRandomSalt hashTextRandomSalt;
     private RandomString randomString;
-    private HashTextStaticSalt hashTextStaticSalt;
+    private HashToken hashToken;
     private NonceTypeRepository nonceTypeRepository;
     private NonceRepository nonceRepository;
     private Publish publish;
@@ -50,12 +50,12 @@ public class Register {
     private static String NONCE_TYPE = "welcome";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, ProfileRepository profileRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashTextStaticSalt hashTextStaticSalt, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, ProfileRepository profileRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashToken hashToken, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.profileRepository = profileRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
         this.randomString = randomString;
-        this.hashTextStaticSalt = hashTextStaticSalt;
+        this.hashToken = hashToken;
         this.nonceTypeRepository = nonceTypeRepository;
         this.nonceRepository = nonceRepository;
         this.publish = publish;
@@ -66,7 +66,7 @@ public class Register {
 
         validate(email, password, repeatPassword);
 
-        byte[] hashedPassword = hashTextRandomSalt.run(password).getBytes();
+        String hashedPassword = hashTextRandomSalt.run(password);
         ResourceOwner ro = new ResourceOwner(UUID.randomUUID(), email, hashedPassword);
 
         try {
@@ -85,7 +85,7 @@ public class Register {
 
         // insert nonce used to validate user's email address.
         String plainTextNonce = randomString.run();
-        byte[] hashedNonce = hashTextStaticSalt.run(plainTextNonce).getBytes();
+        String hashedNonce = hashToken.run(plainTextNonce);
         insertNonce(ro, hashedNonce);
 
         Map<String, String> msg = new HashMap<>();
@@ -132,7 +132,7 @@ public class Register {
         return true;
     }
 
-    protected Nonce insertNonce(ResourceOwner ro, byte[] hashedNonce) throws NonceException {
+    protected Nonce insertNonce(ResourceOwner ro, String hashedNonce) throws NonceException {
         NonceType nonceType;
         try {
             nonceType = nonceTypeRepository.getByName(NonceName.WELCOME);

@@ -2,7 +2,7 @@ package net.tokensmith.authorization.oauth2.grant.token;
 
 import net.tokensmith.authorization.persistence.entity.RefreshToken;
 import net.tokensmith.authorization.persistence.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,16 +14,16 @@ import java.util.UUID;
  */
 @Component
 public class MakeRefreshToken {
-    private HashTextStaticSalt hashText;
+    private HashToken hashToken;
 
     @Autowired
-    public MakeRefreshToken(HashTextStaticSalt hashText) {
-        this.hashText = hashText;
+    public MakeRefreshToken(HashToken hashToken) {
+        this.hashToken = hashToken;
     }
 
     public RefreshToken run(Token token, String plainTextToken, Long secondsToExpiration) {
 
-        byte[] hashedToken = hashText.run(plainTextToken).getBytes();
+        byte[] hashedToken = hashToken.run(plainTextToken).getBytes();
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());

@@ -6,7 +6,7 @@
 
     <resultMap id="nonce" type="net.tokensmith.authorization.persistence.entity.Nonce">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="nonce" property="nonce"/>
+        <result column="active_nonce" property="nonce"/>
         <result column="revoked" property="revoked"/>
         <result column="spent" property="spent"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -23,7 +23,7 @@
     </resultMap>
 
     <insert id="insert">
-        insert into nonce (id, nonce_type_id, resource_owner_id, nonce, expires_at)
+        insert into nonce (id, nonce_type_id, resource_owner_id, active_nonce, expires_at)
         values (
             #{nonce.id},
             #{nonce.nonceType.id},
@@ -36,7 +36,7 @@
     <select id="getById" resultMap="nonce">
         select
             nonce.id,
-            nonce.nonce,
+            nonce.active_nonce,
             nonce.revoked,
             nonce.spent,
             nonce.expires_at,
@@ -45,9 +45,10 @@
             nonce_type.name as nonce_type_name,
             nonce_type.seconds_to_expiry as nonce_type_seconds_to_expiry,
             nonce_type.created_at as nonce_type_created_at,
+
             resource_owner.id as resource_owner_id,
             resource_owner.email as resource_owner_email,
-            resource_owner.password as resource_owner_password,
+            resource_owner.active_password as resource_owner_active_password,
             resource_owner.email_verified as resource_owner_email_verified,
             resource_owner.created_at as resource_owner_created_at
         from nonce
@@ -59,24 +60,26 @@
     <select id="getByTypeAndNonce" resultMap="nonce">
         select
         nonce.id,
-        nonce.nonce,
+        nonce.active_nonce,
         nonce.revoked,
         nonce.spent,
         nonce.expires_at,
         nonce.created_at,
+
         nonce_type.id as nonce_type_id,
         nonce_type.name as nonce_type_name,
         nonce_type.seconds_to_expiry as nonce_type_seconds_to_expiry,
         nonce_type.created_at as nonce_type_created_at,
+
         resource_owner.id as resource_owner_id,
         resource_owner.email as resource_owner_email,
-        resource_owner.password as resource_owner_password,
+        resource_owner.active_password as resource_owner_active_password,
         resource_owner.email_verified as resource_owner_email_verified,
         resource_owner.created_at as resource_owner_created_at
         from nonce
         join nonce_type on nonce_type.id = nonce.nonce_type_id
         join resource_owner on resource_owner.id = nonce.resource_owner_id
-        where nonce.nonce = decode(#{nonce}, 'escape')
+        where nonce.active_nonce = #{nonce}
         and nonce_type.name = #{type}
         and nonce.revoked = false
         and nonce.spent = false
@@ -87,7 +90,7 @@
     <select id="getByNonce" resultMap="nonce">
         select
         nonce.id,
-        nonce.nonce,
+        nonce.active_nonce,
         nonce.revoked,
         nonce.spent,
         nonce.expires_at,
@@ -96,15 +99,17 @@
         nonce_type.name as nonce_type_name,
         nonce_type.seconds_to_expiry as nonce_type_seconds_to_expiry,
         nonce_type.created_at as nonce_type_created_at,
+
         resource_owner.id as resource_owner_id,
         resource_owner.email as resource_owner_email,
-        resource_owner.password as resource_owner_password,
+        resource_owner.active_password as resource_owner_active_password,
         resource_owner.email_verified as resource_owner_email_verified,
         resource_owner.created_at as resource_owner_created_at
+
         from nonce
         join nonce_type on nonce_type.id = nonce.nonce_type_id
         join resource_owner on resource_owner.id = nonce.resource_owner_id
-        where nonce.nonce = decode(#{nonce}, 'escape')
+        where nonce.active_nonce = #{nonce}
     </select>
 
     <update id="revokeUnSpent">

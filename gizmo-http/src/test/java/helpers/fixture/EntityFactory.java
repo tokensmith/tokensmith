@@ -36,7 +36,7 @@ public class EntityFactory {
         confidentialClient.setClient(client);
         HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
         String hashedPassword = textHasher.run("password");
-        confidentialClient.setPassword(hashedPassword.getBytes());
+        confidentialClient.setPassword(hashedPassword);
 
         return confidentialClient;
     }

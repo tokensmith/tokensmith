@@ -48,7 +48,7 @@
             refresh_token.created_at,
 
             token.id as token_id,
-            token.token as token_token,
+            token.active_token as token_active_token,
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
             token.expires_at as token_expires_at,

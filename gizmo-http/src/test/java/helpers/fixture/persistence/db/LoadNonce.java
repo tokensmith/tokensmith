@@ -22,16 +22,16 @@ public class LoadNonce {
         this.nonceRepository = nonceRepository;
     }
 
-    public Nonce welcome(ResourceOwner ro, byte[] nonceValue) {
+    public Nonce welcome(ResourceOwner ro, String nonceValue) {
         return insertNonce(ro, nonceValue, NonceName.WELCOME);
 
     }
 
-    public Nonce resetPassword(ResourceOwner ro, byte[] nonceValue) {
+    public Nonce resetPassword(ResourceOwner ro, String nonceValue) {
         return insertNonce(ro, nonceValue, NonceName.RESET_PASSWORD);
     }
 
-    protected Nonce insertNonce(ResourceOwner ro, byte[] nonceValue, NonceName nonceName) {
+    protected Nonce insertNonce(ResourceOwner ro, String nonceValue, NonceName nonceName) {
         NonceType nonceType;
 
         try {
@@ -55,7 +55,7 @@ public class LoadNonce {
         return nonceType;
     }
 
-    protected Nonce insertNonce(NonceType nonceType, ResourceOwner ro, byte[] nonceValue) {
+    protected Nonce insertNonce(NonceType nonceType, ResourceOwner ro, String nonceValue) {
         Nonce nonce = new Nonce();
 
         nonce.setId(UUID.randomUUID());

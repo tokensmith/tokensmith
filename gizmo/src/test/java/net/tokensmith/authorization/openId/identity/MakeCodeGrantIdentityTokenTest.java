@@ -13,7 +13,7 @@ import net.tokensmith.authorization.openId.identity.translator.PrivateKeyTransla
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.*;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 
@@ -36,7 +36,7 @@ public class MakeCodeGrantIdentityTokenTest {
     private MakeCodeGrantIdentityToken subject;
 
     @Mock
-    private HashTextStaticSalt mockHashText;
+    private HashToken mockHashToken;
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
     @Mock
@@ -50,7 +50,7 @@ public class MakeCodeGrantIdentityTokenTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         subject = new MakeCodeGrantIdentityToken(
-                mockHashText,
+                mockHashToken,
                 mockResourceOwnerRepository,
                 mockRsaPrivateKeyRepository,
                 mockPrivateKeyTranslator,
@@ -82,7 +82,7 @@ public class MakeCodeGrantIdentityTokenTest {
 
         IdToken idToken = new IdToken();
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);
@@ -107,7 +107,7 @@ public class MakeCodeGrantIdentityTokenTest {
         String accessToken = "accessToken";
         String hashedAccessToken = "hashedAccessToken";
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenThrow(RecordNotFoundException.class);
@@ -128,7 +128,7 @@ public class MakeCodeGrantIdentityTokenTest {
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);
@@ -150,7 +150,7 @@ public class MakeCodeGrantIdentityTokenTest {
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         ro.getTokens().add(token);
 
-        when(mockHashText.run(accessToken)).thenReturn(hashedAccessToken);
+        when(mockHashToken.run(accessToken)).thenReturn(hashedAccessToken);
 
         when(mockResourceOwnerRepository.getByAccessTokenWithProfileAndTokens(hashedAccessToken))
                 .thenReturn(ro);

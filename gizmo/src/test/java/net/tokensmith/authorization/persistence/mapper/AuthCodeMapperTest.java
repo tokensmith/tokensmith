@@ -3,6 +3,7 @@ package net.tokensmith.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
 import helper.fixture.persistence.LoadConfClientTokenReady;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.tokensmith.authorization.persistence.entity.*;
@@ -17,6 +18,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -70,6 +72,7 @@ public class AuthCodeMapperTest {
 
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, false, plainTextAuthCode);
+        // id, active_code, revoked, access_request_id, expires_at
         subject.insert(authCode);
     }
 
@@ -104,7 +107,7 @@ public class AuthCodeMapperTest {
             actual = dke;
         }
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getMessage().contains("Detail: Key (code)"), is(true));
+        assertThat(actual.getMessage().contains("Detail: Key (active_code)"), is(true));
     }
 
     @Test
@@ -179,7 +182,10 @@ public class AuthCodeMapperTest {
         String plainTextAuthCode = randomString.run();
         AuthCode authCode = loadConfClientTokenReady.run(false, false, plainTextAuthCode);
 
-        String accessToken = "access-token";
+        String plainTextToken = randomString.run();
+        HashToken hashToken = FixtureFactory.hashToken();
+        String accessToken = hashToken.run(plainTextToken);
+
         Token token = FixtureFactory.makeOpenIdToken(accessToken, authCode.getAccessRequest().getClientId(), new ArrayList<>());
         tokenRepository.insert(token);
 
@@ -191,9 +197,7 @@ public class AuthCodeMapperTest {
         authCodeTokenRepository.insert(authCodeToken);
         // end - prepare db for test.
 
-        String code = new String(authCode.getCode());
-
-        AuthCode actual = subject.getByClientIdAndAuthCode(authCode.getAccessRequest().getClientId(), code);
+        AuthCode actual = subject.getByClientIdAndAuthCode(authCode.getAccessRequest().getClientId(), authCode.getCode());
         assertThat(actual, is(notNullValue()));
 
         // this test is just to make sure a token is present

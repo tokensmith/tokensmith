@@ -8,7 +8,7 @@ import java.util.UUID;
  */
 public class AuthCode {
     private UUID id;
-    private byte[] code;
+    private String code;
     private Boolean revoked;
     private AccessRequest accessRequest;
     private Token token;
@@ -17,7 +17,7 @@ public class AuthCode {
 
     public AuthCode() {}
 
-    public AuthCode(UUID id, byte[] code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+    public AuthCode(UUID id, String code, AccessRequest accessRequest, OffsetDateTime expiresAt) {
         this.id = id;
         this.code = code;
         this.revoked = false;
@@ -25,7 +25,7 @@ public class AuthCode {
         this.expiresAt = expiresAt;
     }
 
-    public AuthCode(UUID id, byte[] code, Boolean revoked, AccessRequest accessRequest, OffsetDateTime expiresAt) {
+    public AuthCode(UUID id, String code, Boolean revoked, AccessRequest accessRequest, OffsetDateTime expiresAt) {
         this.id = id;
         this.code = code;
         this.revoked = revoked;
@@ -41,11 +41,11 @@ public class AuthCode {
         this.id = uuid;
     }
 
-    public byte[] getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(byte[] code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

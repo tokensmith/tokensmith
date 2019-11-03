@@ -21,7 +21,7 @@ import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
 import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
 import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.repository.TokenRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
@@ -55,7 +55,7 @@ public class UserInfoResourceOpenIdRefreshTest {
     private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfidentialClientWithScopes;
     private static PostAuthorizationForm postAuthorizationForm;
     private static PostTokenCodeGrant postTokenCodeGrant;
-    private static HashTextStaticSalt hashText;
+    private static HashToken hashToken;
     private static TokenRepository tokenRepository;
     private static PostTokenRefreshGrant postTokenRefreshGrant;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
@@ -75,7 +75,7 @@ public class UserInfoResourceOpenIdRefreshTest {
         loadOpenIdResourceOwner = ac.getBean(LoadOpenIdResourceOwner.class);
         postAuthorizationForm = factoryForPersistence.makePostAuthorizationForm();
         postTokenCodeGrant = factoryForPersistence.makePostTokenCodeGrant();
-        hashText = ac.getBean(HashTextStaticSalt.class);
+        hashToken = ac.getBean(HashToken.class);
         tokenRepository = ac.getBean(TokenRepository.class);
         postTokenRefreshGrant = factoryForPersistence.makePostTokenRefreshGrant();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
@@ -90,7 +90,7 @@ public class UserInfoResourceOpenIdRefreshTest {
     }
 
     public void expireAccessToken(String accessToken) {
-        String hashedAccessToken = hashText.run(accessToken);
+        String hashedAccessToken = hashToken.run(accessToken);
         tokenRepository.updateExpiresAtByAccessToken(OffsetDateTime.now().minusDays(1), hashedAccessToken);
     }
 

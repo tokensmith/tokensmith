@@ -57,7 +57,7 @@
         join token on token.id = resource_owner_token.token_id
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
-        where token.token = decode(#{accessToken}, 'escape')
+        where token.active_token = #{accessToken}
     </select>
     
 </mapper>

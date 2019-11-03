@@ -7,7 +7,7 @@ import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
 import net.tokensmith.authorization.persistence.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -24,13 +24,13 @@ import static org.mockito.Mockito.when;
 public class MakeBearerTokenTest {
 
     @Mock
-    private HashTextStaticSalt mockHashText;
+    private HashToken mockHashToken;
     private MakeBearerToken subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
         MockitoAnnotations.initMocks(this);
-        subject = new MakeBearerToken(mockHashText);
+        subject = new MakeBearerToken(mockHashToken);
     }
 
     @Test
@@ -38,14 +38,14 @@ public class MakeBearerTokenTest {
         UUID clientId = UUID.randomUUID();
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
-        when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
+        when(mockHashToken.run(plainTextToken)).thenReturn(hashedToken);
 
         Token actual = subject.run(clientId, plainTextToken, 3600L);
         assertThat(actual.getId(), is(notNullValue()));
 
         assertThat(actual.getClientId(), is(clientId));
         assertThat(actual.getToken(), is(notNullValue()));
-        assertThat(actual.getToken(), is(hashedToken.getBytes()));
+        assertThat(actual.getToken(), is(hashedToken));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
         assertThat(actual.getSecondsToExpiration(), is(3600L));
         assertThat(actual.getTokenScopes(), is(notNullValue()));

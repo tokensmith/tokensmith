@@ -11,7 +11,7 @@ import java.util.UUID;
 public class ResourceOwner {
     private UUID id;
     private String email;
-    private byte[] password;
+    private String password;
     private Boolean emailVerified;
     private Profile profile; // optional
     private List<Token> tokens = new ArrayList<>();
@@ -19,7 +19,7 @@ public class ResourceOwner {
 
     public ResourceOwner() {}
 
-    public ResourceOwner(UUID id, String email, byte[] password) {
+    public ResourceOwner(UUID id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -41,11 +41,11 @@ public class ResourceOwner {
         this.email = email;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
