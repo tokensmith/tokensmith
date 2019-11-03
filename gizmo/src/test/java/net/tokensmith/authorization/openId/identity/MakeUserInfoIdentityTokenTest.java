@@ -24,6 +24,7 @@ import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 
 
+import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class MakeUserInfoIdentityTokenTest {
         when(mockIdTokenFactory.make(tcArgumentCaptor.capture(), eq(scopesForIdToken), eq(ro)))
                 .thenReturn(idToken);
 
-        String actual = subject.make(accessToken);
+        ByteArrayOutputStream actual = subject.make(accessToken);
 
         assertThat(actual, is(notNullValue()));
 
@@ -167,7 +168,7 @@ public class MakeUserInfoIdentityTokenTest {
         when(mockIdTokenFactory.make(tcArgumentCaptor.capture(), eq(scopesForIdToken), eq(ro)))
                 .thenReturn(idToken);
 
-        String actual = subject.make(accessToken);
+        ByteArrayOutputStream actual = subject.make(accessToken);
 
         assertThat(actual, is(notNullValue()));
 

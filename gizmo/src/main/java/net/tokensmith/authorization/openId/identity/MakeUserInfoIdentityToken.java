@@ -24,6 +24,7 @@ import net.tokensmith.jwt.entity.jwt.header.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class MakeUserInfoIdentityToken {
     }
 
 
-    public String make(String accessToken) throws IdTokenException, KeyNotFoundException, ResourceOwnerNotFoundException {
+    public ByteArrayOutputStream make(String accessToken) throws IdTokenException, KeyNotFoundException, ResourceOwnerNotFoundException {
         String hashedAccessToken = hashToken.run(accessToken);
 
         ResourceOwner ro;
@@ -94,13 +95,13 @@ public class MakeUserInfoIdentityToken {
           */
         IdToken idToken = idTokenFactory.make(tc, scopesForIdToken, ro);
 
-        String encodedJwt;
+        ByteArrayOutputStream encodedJwt;
         SecureCompactBuilder compactBuilder = new SecureCompactBuilder();
         try {
             encodedJwt = compactBuilder.alg(Algorithm.RS256)
                     .key(rsaKeyPair)
                     .claims(idToken)
-                    .build().toString();
+                    .build();
         } catch (CompactException e) {
             throw new IdTokenException(ID_TOKEN_ERROR_MSG, e);
         }
