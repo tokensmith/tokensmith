@@ -36,7 +36,7 @@ public class LoadResourceOwner {
         ro.setEmail("test-" + UUID.randomUUID().toString() + "@rootservices.org");
 
         String hashedPassword = textHasher.run("password");
-        ro.setPassword(hashedPassword.getBytes());
+        ro.setPassword(hashedPassword);
 
         return ro;
     }

@@ -30,6 +30,8 @@ dependencies {
     compile(group: 'org.springframework', name: 'spring-jdbc', version: "${springVersion}") {
         exclude(module: 'commons-logging')
     }
+
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.13'
     compile group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcpVersion}"
     compile group: 'org.mindrot', name: 'jbcrypt', version: "${bcryptVersion}"
     compile group: 'net.tokensmith', name: 'jwt', version: "${jwtVersion}"

@@ -6,7 +6,7 @@
 
     <resultMap id="authCode" type="net.tokensmith.authorization.persistence.entity.AuthCode">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="code" property="code" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="active_code" property="code" />
         <result column="revoked" property="revoked" javaType="Boolean"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -19,7 +19,7 @@
     </resultMap>
 
     <insert id="insert" >
-        insert into auth_code (id, code, revoked, access_request_id, expires_at)
+        insert into auth_code (id, active_code, revoked, access_request_id, expires_at)
         values (
         #{authCode.id},
         #{authCode.code},
@@ -60,7 +60,7 @@
         left join auth_code_token on auth_code_token.auth_code_id = auth_code.id
         left join token on token.id = auth_code_token.token_id
         where ar.client_id = #{clientId}
-        and auth_code.code = decode(#{code}, 'escape')
+        and auth_code.active_code = #{code}
         and auth_code.expires_at > current_timestamp
         and auth_code.revoked = FALSE
     </select>
@@ -68,7 +68,8 @@
     <select id="getById" resultMap="authCode">
         select
             auth_code.id,
-            auth_code.code,
+            auth_code.active_code,
+            auth_code.active_code,
             auth_code.expires_at,
             auth_code.created_at,
             auth_code.revoked

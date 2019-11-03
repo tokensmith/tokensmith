@@ -5,7 +5,7 @@ import helper.fixture.persistence.LoadConfClientTokenReady;
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
 import net.tokensmith.authorization.persistence.repository.*;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class LoadOpenIdConfClientAll {
     private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, HashTextStaticSalt hashText, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, TokenAudienceRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
+    public LoadOpenIdConfClientAll(LoadConfClientTokenReady loadConfClientOpendIdTokenReady, RandomString randomString, HashToken hashToken, TokenRepository tokenRepository, TokenScopeRepository tokenScopeRepository, AuthCodeTokenRepository authCodeTokenRepository, TokenAudienceRepository clientTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, RefreshTokenRepository refreshTokenRepository){
         this.loadConfClientOpendIdTokenReady = loadConfClientOpendIdTokenReady;
         this.randomString = randomString;
         this.tokenRepository = tokenRepository;
@@ -101,7 +101,7 @@ public class LoadOpenIdConfClientAll {
     public RefreshToken loadRefreshTokenForClient(String refreshAccessToken, OffsetDateTime tokenExpiresAt, UUID authCodeId, UUID clientId, List<Scope> scopesForToken) throws DuplicateRecordException {
         String accessToken = randomString.run();
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
-        token.setToken(accessToken.getBytes());
+        token.setToken(accessToken);
         token.setExpiresAt(tokenExpiresAt);
 
         // TODO: need to change this once client_credentials is done.

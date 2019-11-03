@@ -7,7 +7,7 @@
     <resultMap id="resourceOwner" type="net.tokensmith.authorization.persistence.entity.ResourceOwner">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
-        <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="active_password" property="password" />
         <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
@@ -15,7 +15,7 @@
     <resultMap id="resourceOwnerWithProfileAndToken" type="net.tokensmith.authorization.persistence.entity.ResourceOwner">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="email" property="email"/>
-        <result column="password" property="password" javaType="byte[]" jdbcType="BINARY" typeHandler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+        <result column="active_password" property="password" />
         <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
@@ -30,7 +30,7 @@
     </resultMap>
 
     <insert id="insert" >
-        insert into resource_owner (id, email, password)
+        insert into resource_owner (id, email, active_password)
         values (
             #{resourceOwner.id},
             #{resourceOwner.email},
@@ -42,7 +42,7 @@
         select
             resource_owner.id,
             resource_owner.email,
-            resource_owner.password,
+            resource_owner.active_password,
             resource_owner.email_verified,
             resource_owner.created_at
         from resource_owner
@@ -53,7 +53,7 @@
         select
             resource_owner.id,
             resource_owner.email,
-            resource_owner.password,
+            resource_owner.active_password,
             resource_owner.email_verified,
             resource_owner.created_at
         from resource_owner
@@ -64,20 +64,20 @@
         select
             resource_owner.id,
             resource_owner.email,
-            resource_owner.password,
+            resource_owner.active_password,
             resource_owner.email_verified,
             resource_owner.created_at
         from resource_owner
         join resource_owner_token on resource_owner_token.resource_owner_id = resource_owner.id
         join token on token.id = resource_owner_token.token_id
-        where token.token = decode(#{accessToken}, 'escape')
+        where token.active_token = #{accessToken}
     </select>
 
     <select id="getByAccessTokenWithProfileAndTokens" resultMap="resourceOwnerWithProfileAndToken">
         select
             resource_owner.id,
             resource_owner.email,
-            resource_owner.password,
+            resource_owner.active_password,
             resource_owner.email_verified,
             resource_owner.created_at,
 
@@ -132,11 +132,13 @@
             address.country as profile_address_country,
             address.updated_at as profile_address_updated_at,
             address.created_at as profile_address_created_at,
+
             given_name.id as profile_given_name_id,
             given_name.resource_owner_profile_id as profile_given_name_resource_owner_profile_id,
             given_name.given_name as profile_given_name_given_name,
             given_name.created_at as profile_given_name_created_at,
             given_name.updated_at as profile_given_name_updated_at,
+
             family_name.id as profile_family_name_id,
             family_name.resource_owner_profile_id as profile_family_name_resource_owner_profile_id,
             family_name.family_name as profile_family_name_family_name,
@@ -165,7 +167,7 @@
         join token_audience on token_audience.token_id = token.id
         join client audience on audience.id = token_audience.client_id
 
-        where token.token = decode(#{accessToken}, 'escape')
+        where token.active_token = #{accessToken}
         and token.expires_at > current_timestamp
         and token.revoked = false
     </select>
@@ -178,7 +180,7 @@
 
     <update id="updatePassword">
         update resource_owner
-        set password = #{password}
+        set active_password = #{password}
         where id = #{id}
     </update>
 

@@ -13,7 +13,7 @@ import net.tokensmith.authorization.persistence.entity.NonceType;
 import net.tokensmith.authorization.persistence.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.repository.NonceRepository;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.jwt.exception.InvalidJWT;
@@ -34,14 +34,14 @@ public class SpendNonceTest {
     private SpendNonce subject;
 
     @Mock
-    private HashTextStaticSalt mockHashTextStaticSalt;
+    private HashToken mockHashToken;
     @Mock
     private NonceRepository mockNonceRepository;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new SpendNonce(mockHashTextStaticSalt, mockNonceRepository);
+        subject = new SpendNonce(mockHashToken, mockNonceRepository);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class SpendNonceTest {
         nonce.setResourceOwner(ro);
         nonce.setNonceType(nonceType);
 
-        when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
+        when(mockHashToken.run("nonce")).thenReturn("hashedNonce");
         when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenReturn(nonce);
 
         subject.spend(jwt, NonceName.WELCOME);
@@ -98,7 +98,7 @@ public class SpendNonceTest {
 
         String jwt = compactBuilder.claims(nonceClaim).build().toString();
 
-        when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
+        when(mockHashToken.run("nonce")).thenReturn("hashedNonce");
         when(mockNonceRepository.getByTypeAndNonce(NonceName.WELCOME, "hashedNonce")).thenThrow(RecordNotFoundException.class);
 
         NotFoundException actual = null;

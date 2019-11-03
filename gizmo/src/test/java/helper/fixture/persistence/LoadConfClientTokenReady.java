@@ -4,6 +4,9 @@ import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.persistence.entity.*;
 import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
 import net.tokensmith.authorization.persistence.repository.*;
+import org.apache.log4j.LogManager;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,7 @@ import java.util.UUID;
  */
 @Component
 public class LoadConfClientTokenReady {
+    private static final Logger LOGGER = LogManager.getLogger(LoadConfClientTokenReady.class);
     private LoadCodeClientWithScopes loadCodeClientWithScopes;
     private ConfidentialClientRepository confidentialClientRepository;
     private ResourceOwnerRepository resourceOwnerRepository;
@@ -66,8 +70,19 @@ public class LoadConfClientTokenReady {
             accessRequest.getAccessRequestScopes().add(ars);
         }
 
+
         AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked, plainTextAuthCode);
-        authCodeRepository.insert(authCode);
+
+        String logMsgTemplate = "authorization code, id: %s, code: %s, revoked: %s, access_request_id: %s,  expires_at: %s";
+        String logMsg = String.format(logMsgTemplate, authCode.getId().toString(), authCode.getCode(), authCode.isRevoked().toString(), authCode.getAccessRequest().getId().toString(), authCode.getExpiresAt().toString());
+        LOGGER.info(logMsg);
+
+        try {
+            authCodeRepository.insert(authCode);
+        } catch (Exception e) {
+            LOGGER.error("Could not insert authorization code.");
+            throw e;
+        }
 
         authCode.setAccessRequest(accessRequest);
 

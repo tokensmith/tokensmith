@@ -171,8 +171,8 @@ public class ResourceOwnerRepositoryImplTest {
         UUID id = UUID.randomUUID();
         String password = "plainTextPassword";
 
-        subject.updatePassword(id, password.getBytes());
+        subject.updatePassword(id, password);
 
-        verify(mockMapper).updatePassword(id, password.getBytes());
+        verify(mockMapper).updatePassword(id, password);
     }
 }

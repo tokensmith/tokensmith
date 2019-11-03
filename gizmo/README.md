@@ -1,12 +1,6 @@
 Use cases for, [OAuth 2.0](http://tools.ietf.org/html/rfc6749)
 ---------------------------------------------------------------------------------------------------------------------
 
-Dependencies
-------------
- - Postgres 9.3
- - Java 1.8
- - Gradle 4.4
-
 Contributing
 ------------
  - All code changes must have a story or bug written in Gherkin.
@@ -25,7 +19,6 @@ Environment Variables for configuring db connection
 $ export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
 $ export AUTH_DB_USER="postgres";
 $ export AUTH_DB_PASSWORD="";
-$ export AUTH_SALT="\$2a\$10\$oBKpYtNOYLWIlZHBXU/Vhe"
 $ export ISSUER="https://sso.rootservices.org"
 $ export ALLOW_LOCAL_URLS="true"
 $ export ALLOW_HTTP_URLS="true"

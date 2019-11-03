@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
 import net.tokensmith.authorization.persistence.entity.RefreshToken;
 import net.tokensmith.authorization.persistence.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.when;
 public class MakeRefreshTokenTest {
 
     @Mock
-    private HashTextStaticSalt mockHashText;
+    private HashToken mockHashToken;
     private MakeRefreshToken subject;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException {
         MockitoAnnotations.initMocks(this);
-        subject = new MakeRefreshToken(mockHashText);
+        subject = new MakeRefreshToken(mockHashToken);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class MakeRefreshTokenTest {
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         String plainTextToken = "token";
         String hashedToken = "hashedToken";
-        when(mockHashText.run(plainTextToken)).thenReturn(hashedToken);
+        when(mockHashToken.run(plainTextToken)).thenReturn(hashedToken);
 
         RefreshToken actual = subject.run(token, plainTextToken, 1209600L);
 

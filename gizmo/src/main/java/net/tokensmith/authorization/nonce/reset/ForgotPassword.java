@@ -95,7 +95,7 @@ public class ForgotPassword {
 
         UUID resourceOwnerId = nonce.getResourceOwner().getId();
         String hashedPassword = hashTextRandomSalt.run(password);
-        resourceOwnerRepository.updatePassword(resourceOwnerId, hashedPassword.getBytes());
+        resourceOwnerRepository.updatePassword(resourceOwnerId, hashedPassword);
 
         tokenRepository.revokeActive(resourceOwnerId);
         refreshTokenRepository.revokeActive(resourceOwnerId);

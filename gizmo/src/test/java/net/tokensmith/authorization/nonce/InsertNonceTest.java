@@ -13,7 +13,7 @@ import net.tokensmith.authorization.persistence.repository.NonceRepository;
 import net.tokensmith.authorization.persistence.repository.NonceTypeRepository;
 import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.security.RandomString;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class InsertNonceTest {
     @Mock
     private RandomString mockRandomString;
     @Mock
-    private HashTextStaticSalt mockHashTextStaticSalt;
+    private HashToken mockHashToken;
     @Mock
     private NonceTypeRepository mockNonceTypeRepository;
     @Mock
@@ -40,7 +40,7 @@ public class InsertNonceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new InsertNonce(mockResourceOwnerRepository, mockRandomString, mockHashTextStaticSalt, mockNonceTypeRepository, mockNonceRepository);
+        subject = new InsertNonce(mockResourceOwnerRepository, mockRandomString, mockHashToken, mockNonceTypeRepository, mockNonceRepository);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class InsertNonceTest {
         when(mockResourceOwnerRepository.getByEmail(email)).thenReturn(ro);
 
         when(mockRandomString.run()).thenReturn(nonce);
-        when(mockHashTextStaticSalt.run(nonce)).thenReturn(hashedNonce);
+        when(mockHashToken.run(nonce)).thenReturn(hashedNonce);
 
         NonceType nonceType = new NonceType(UUID.randomUUID(), "welcome", 120, OffsetDateTime.now());
         when(mockNonceTypeRepository.getByName(NonceName.WELCOME)).thenReturn(nonceType);
@@ -69,7 +69,7 @@ public class InsertNonceTest {
         assertThat(nonceCaptor.getValue().getId(), is(notNullValue()));
         assertThat(nonceCaptor.getValue().getResourceOwner(), is(ro));
         assertThat(nonceCaptor.getValue().getNonceType(), is(nonceType));
-        assertThat(nonceCaptor.getValue().getNonce(), is(hashedNonce.getBytes()));
+        assertThat(nonceCaptor.getValue().getNonce(), is(hashedNonce));
         assertThat(nonceCaptor.getValue().getExpiresAt(), is(notNullValue()));
 
     }
@@ -82,7 +82,7 @@ public class InsertNonceTest {
         ResourceOwner ro = new ResourceOwner();
 
         when(mockRandomString.run()).thenReturn(nonce);
-        when(mockHashTextStaticSalt.run(nonce)).thenReturn(hashedNonce);
+        when(mockHashToken.run(nonce)).thenReturn(hashedNonce);
 
         NonceType nonceType = new NonceType(UUID.randomUUID(), "welcome", 120, OffsetDateTime.now());
         when(mockNonceTypeRepository.getByName(NonceName.WELCOME)).thenReturn(nonceType);
@@ -98,7 +98,7 @@ public class InsertNonceTest {
         assertThat(nonceCaptor.getValue().getId(), is(notNullValue()));
         assertThat(nonceCaptor.getValue().getResourceOwner(), is(ro));
         assertThat(nonceCaptor.getValue().getNonceType(), is(nonceType));
-        assertThat(nonceCaptor.getValue().getNonce(), is(hashedNonce.getBytes()));
+        assertThat(nonceCaptor.getValue().getNonce(), is(hashedNonce));
         assertThat(nonceCaptor.getValue().getExpiresAt(), is(notNullValue()));
     }
 }

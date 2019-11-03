@@ -3,7 +3,6 @@ package net.tokensmith.authorization.register;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.nonce.entity.NonceName;
@@ -19,12 +18,11 @@ import net.tokensmith.authorization.persistence.repository.ResourceOwnerReposito
 import net.tokensmith.authorization.register.exception.RegisterException;
 import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
-import net.tokensmith.authorization.security.ciphers.HashTextStaticSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.pelican.Publish;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,7 +48,7 @@ public class RegisterTest {
     @Mock
     private RandomString mockRandomString;
     @Mock
-    private HashTextStaticSalt mockHashTextStaticSalt;
+    private HashToken mockHashToken;
     @Mock
     private NonceTypeRepository mockNonceTypeRepository;
     @Mock
@@ -63,7 +61,7 @@ public class RegisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Register(mockResourceOwnerRepository, mockProfileRepository, mockHashTextRandomSalt, mockRandomString, mockHashTextStaticSalt, mockNonceTypeRepository, mockNonceRepository, mockPublish, ISSUER);
+        subject = new Register(mockResourceOwnerRepository, mockProfileRepository, mockHashTextRandomSalt, mockRandomString, mockHashToken, mockNonceTypeRepository, mockNonceRepository, mockPublish, ISSUER);
     }
 
     @Test
@@ -75,7 +73,7 @@ public class RegisterTest {
         when(mockHashTextRandomSalt.run(password)).thenReturn(hashedPassword);
 
         when(mockRandomString.run()).thenReturn("nonce");
-        when(mockHashTextStaticSalt.run("nonce")).thenReturn("hashedNonce");
+        when(mockHashToken.run("nonce")).thenReturn("hashedNonce");
 
         NonceType nonceType = new NonceType(UUID.randomUUID(), "welcome", 120, OffsetDateTime.now());
         when(mockNonceTypeRepository.getByName(NonceName.WELCOME)).thenReturn(nonceType);
@@ -87,7 +85,7 @@ public class RegisterTest {
 
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getEmail(), is(email));
-        assertThat(actual.getPassword(), is(hashedPassword.getBytes()));
+        assertThat(actual.getPassword(), is(hashedPassword));
 
         ArgumentCaptor<Profile> profileCaptor = ArgumentCaptor.forClass(Profile.class);
         verify(mockProfileRepository).insert(profileCaptor.capture());
@@ -103,7 +101,7 @@ public class RegisterTest {
         assertThat(nonceCaptor.getValue().getId(), is(notNullValue()));
         assertThat(nonceCaptor.getValue().getResourceOwner(), is(roCaptor.getValue()));
         assertThat(nonceCaptor.getValue().getNonceType(), is(nonceType));
-        assertThat(nonceCaptor.getValue().getNonce(), is("hashedNonce".getBytes()));
+        assertThat(nonceCaptor.getValue().getNonce(), is("hashedNonce"));
         assertThat(nonceCaptor.getValue().getExpiresAt(), is(notNullValue()));
 
         verify(mockPublish).send(eq("mailer"), anyMap());
