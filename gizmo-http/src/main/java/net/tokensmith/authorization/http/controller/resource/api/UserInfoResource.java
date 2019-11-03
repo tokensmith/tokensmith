@@ -68,9 +68,8 @@ public class UserInfoResource extends RestResource<APIUser, UserInfo> {
             response.getHeaders().put(Header.AUTH_MISSING.getValue(), AuthScheme.BEARER.getScheme());
             return response;
         }
-
-        // TODO: idToken should be a ByteArrayOutputStream
-        String idToken;
+        
+        ByteArrayOutputStream idToken;
         try {
             idToken = makeUserInfoIdentityToken.make(accessToken);
         } catch (ResourceOwnerNotFoundException e) {
@@ -87,12 +86,8 @@ public class UserInfoResource extends RestResource<APIUser, UserInfo> {
             return response;
         }
 
-        ByteArrayOutputStream payload = new ByteArrayOutputStream();
-        for (int i = 0; i < idToken.length(); ++i)
-            payload.write(idToken.charAt(i));
-
         response.setStatusCode(StatusCode.OK);
-        response.setRawPayload(Optional.of(payload.toByteArray()));
+        response.setRawPayload(Optional.of(idToken.toByteArray()));
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.JWT_UTF_8.getValue());
 
         return response;
