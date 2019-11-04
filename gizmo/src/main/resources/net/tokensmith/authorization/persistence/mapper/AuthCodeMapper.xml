@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.AuthCodeMapper">
 
-    <resultMap id="authCode" type="net.tokensmith.authorization.persistence.entity.AuthCode">
+    <resultMap id="authCode" type="net.tokensmith.repository.entity.AuthCode">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="active_code" property="code" />
         <result column="revoked" property="revoked" javaType="Boolean"/>

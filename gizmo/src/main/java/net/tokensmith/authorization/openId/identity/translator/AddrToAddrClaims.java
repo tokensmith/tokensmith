@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AddrToAddrClaims {
 
-    public Address to(net.tokensmith.authorization.persistence.entity.Address profileAddress) {
+    public Address to(net.tokensmith.repository.entity.Address profileAddress) {
 
         Address address = new Address();
 

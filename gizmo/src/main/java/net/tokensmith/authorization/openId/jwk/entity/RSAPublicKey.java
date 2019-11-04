@@ -1,6 +1,6 @@
 package net.tokensmith.authorization.openId.jwk.entity;
 
-import net.tokensmith.authorization.persistence.entity.KeyUse;
+import net.tokensmith.repository.entity.KeyUse;
 import net.tokensmith.otter.translatable.Translatable;
 
 import java.math.BigInteger;

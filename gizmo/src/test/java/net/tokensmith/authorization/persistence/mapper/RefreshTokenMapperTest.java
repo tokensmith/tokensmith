@@ -5,7 +5,7 @@ import helper.fixture.TestAppConfig;
 import helper.fixture.persistence.LoadConfClientTokenReady;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;

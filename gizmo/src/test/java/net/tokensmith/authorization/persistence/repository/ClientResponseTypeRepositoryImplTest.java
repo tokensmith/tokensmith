@@ -1,10 +1,11 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.ClientResponseTypeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.ClientResponseType;
+import net.tokensmith.repository.entity.ClientResponseType;
 import net.tokensmith.authorization.persistence.mapper.ClientResponseTypeMapper;
 
 import static org.mockito.Mockito.times;

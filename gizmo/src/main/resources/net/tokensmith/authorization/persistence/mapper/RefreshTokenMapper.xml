@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper">
 
-    <resultMap id="refreshToken" type="net.tokensmith.authorization.persistence.entity.RefreshToken">
+    <resultMap id="refreshToken" type="net.tokensmith.repository.entity.RefreshToken">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <id column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="access_token" property="accessToken"/>

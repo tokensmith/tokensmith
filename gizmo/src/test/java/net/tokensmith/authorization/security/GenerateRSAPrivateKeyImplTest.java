@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.KeyUse;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;

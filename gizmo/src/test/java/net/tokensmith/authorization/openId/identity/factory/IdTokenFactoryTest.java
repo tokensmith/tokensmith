@@ -11,7 +11,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
 import net.tokensmith.authorization.openId.identity.translator.AddrToAddrClaims;
 import net.tokensmith.authorization.openId.identity.translator.ProfileToIdToken;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,9 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.authorization.persistence.mapper.ConfidentialClientMapper;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

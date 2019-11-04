@@ -15,9 +15,9 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ClientRepository;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ClientRepository;
 
 
 import java.util.*;

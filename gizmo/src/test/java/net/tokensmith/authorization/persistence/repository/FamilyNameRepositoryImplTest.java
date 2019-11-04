@@ -1,10 +1,11 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.FamilyNameRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.FamilyName;
+import net.tokensmith.repository.entity.FamilyName;
 import net.tokensmith.authorization.persistence.mapper.FamilyNameMapper;
 
 import static org.mockito.Mockito.times;

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.TokenMapper">
 
-    <resultMap id="token" type="net.tokensmith.authorization.persistence.entity.Token">
+    <resultMap id="token" type="net.tokensmith.repository.entity.Token">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="active_token" property="token"/>
         <result column="revoked" property="revoked"/>
@@ -21,7 +21,7 @@
                     columnPrefix="audience_"/>
     </resultMap>
 
-    <resultMap id="tokenWithLeadToken" extends="token" type="net.tokensmith.authorization.persistence.entity.Token">
+    <resultMap id="tokenWithLeadToken" extends="token" type="net.tokensmith.repository.entity.Token">
         <association property="leadToken"
                      resultMap="token"
                      columnPrefix="lead_token_"

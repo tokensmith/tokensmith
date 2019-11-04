@@ -1,5 +1,6 @@
 package net.tokensmith.authorization.persistence.entity;
 
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.junit.Before;
 import org.junit.Test;
 

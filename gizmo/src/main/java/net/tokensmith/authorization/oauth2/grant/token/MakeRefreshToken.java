@@ -1,8 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.token;
 
-import net.tokensmith.authorization.persistence.entity.RefreshToken;
-import net.tokensmith.authorization.persistence.entity.Token;
+
 import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

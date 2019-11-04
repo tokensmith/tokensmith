@@ -1,8 +1,9 @@
 package net.tokensmith.authorization.persistence.repository;
 
 
-import net.tokensmith.authorization.persistence.entity.GivenName;
+import net.tokensmith.repository.entity.GivenName;
 import net.tokensmith.authorization.persistence.mapper.GivenNameMapper;
+import net.tokensmith.repository.repo.GivenNameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

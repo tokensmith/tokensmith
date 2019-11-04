@@ -5,8 +5,8 @@ import integration.authorization.oauth2.grant.code.request.ValidateParams.BaseTe
 import org.junit.Test;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.parse.exception.OptionalException;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ResponseType;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResponseType;
 
 import java.util.List;
 import java.util.Map;

@@ -10,10 +10,10 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
 import net.tokensmith.authorization.parse.exception.OptionalException;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ConfidentialClientRepository;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;

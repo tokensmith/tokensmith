@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.RefreshToken;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.RefreshToken;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

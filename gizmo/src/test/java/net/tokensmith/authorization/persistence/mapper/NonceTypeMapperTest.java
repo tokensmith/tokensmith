@@ -3,7 +3,7 @@ package net.tokensmith.authorization.persistence.mapper;
 import helper.fixture.TestAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.authorization.persistence.entity.NonceType;
+import net.tokensmith.repository.entity.NonceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

@@ -1,12 +1,13 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.NonceTypeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.nonce.entity.NonceName;
-import net.tokensmith.authorization.persistence.entity.NonceType;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.NonceName;
+import net.tokensmith.repository.entity.NonceType;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.mapper.NonceTypeMapper;
 
 import java.util.UUID;

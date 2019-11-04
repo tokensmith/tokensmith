@@ -2,8 +2,8 @@ package net.tokensmith.authorization.register.translator;
 
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.authorization.persistence.entity.Gender;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.authorization.register.request.Address;
 import net.tokensmith.authorization.register.request.UserInfo;
 

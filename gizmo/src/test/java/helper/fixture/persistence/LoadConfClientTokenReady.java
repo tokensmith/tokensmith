@@ -1,9 +1,9 @@
 package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.*;
 import org.apache.log4j.LogManager;
 
 import org.apache.log4j.Logger;

@@ -1,12 +1,13 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.AuthCodeTokenRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.AuthCodeToken;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.AuthCodeToken;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.mapper.AuthCodeTokenMapper;
 
 import java.util.UUID;

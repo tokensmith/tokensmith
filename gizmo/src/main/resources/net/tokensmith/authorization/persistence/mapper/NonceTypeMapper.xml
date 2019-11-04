@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.NonceTypeMapper">
 
-    <resultMap id="nonceType" type="net.tokensmith.authorization.persistence.entity.NonceType">
+    <resultMap id="nonceType" type="net.tokensmith.repository.entity.NonceType">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <id column="name" property="name"/>
         <id column="seconds_to_expiry" property="secondsToExpiry"/>

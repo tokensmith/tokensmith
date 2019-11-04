@@ -1,15 +1,16 @@
 package net.tokensmith.authorization.nonce;
 
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import net.tokensmith.authorization.nonce.entity.NonceName;
-import net.tokensmith.authorization.persistence.entity.Nonce;
-import net.tokensmith.authorization.persistence.entity.NonceType;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.NonceRepository;
-import net.tokensmith.authorization.persistence.repository.NonceTypeRepository;
-import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
+import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.NonceName;
+import net.tokensmith.repository.entity.NonceType;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.NonceRepository;
+import net.tokensmith.repository.repo.NonceTypeRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.authorization.security.ciphers.HashToken;

@@ -26,6 +26,7 @@ ext {
 }
 
 dependencies {
+    compile project(':gizmo-repo')
     compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"
     compile(group: 'org.springframework', name: 'spring-jdbc', version: "${springVersion}") {
         exclude(module: 'commons-logging')

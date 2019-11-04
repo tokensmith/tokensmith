@@ -3,7 +3,7 @@ package net.tokensmith.authorization.openId.identity.translator;
 import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.authorization.persistence.entity.Address;
+import net.tokensmith.repository.entity.Address;
 
 import java.util.UUID;
 

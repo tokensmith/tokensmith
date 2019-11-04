@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.GivenNameMapper">
 
-    <resultMap id="givenName" type="net.tokensmith.authorization.persistence.entity.GivenName">
+    <resultMap id="givenName" type="net.tokensmith.repository.entity.GivenName">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="resource_owner_profile_id" property="resourceOwnerProfileId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="given_name" property="name" />

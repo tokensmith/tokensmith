@@ -2,7 +2,7 @@ package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

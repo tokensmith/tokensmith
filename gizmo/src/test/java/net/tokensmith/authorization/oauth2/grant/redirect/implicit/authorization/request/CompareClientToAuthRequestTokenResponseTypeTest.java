@@ -10,10 +10,10 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ResponseType;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ClientRepository;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResponseType;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;

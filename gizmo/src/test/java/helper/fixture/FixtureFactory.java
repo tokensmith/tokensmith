@@ -6,7 +6,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 import net.tokensmith.authorization.security.ciphers.HashToken;

@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request.context;
 
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ClientRepository;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

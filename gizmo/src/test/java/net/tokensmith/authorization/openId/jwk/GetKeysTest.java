@@ -8,10 +8,10 @@ import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.authorization.exception.NotFoundException;
 import net.tokensmith.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
-import net.tokensmith.authorization.persistence.entity.KeyUse;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 
 
 import java.math.BigInteger;

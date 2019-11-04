@@ -1,9 +1,9 @@
 package helper.fixture.persistence;
 
 
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.*;
 
 
 import java.net.URISyntaxException;

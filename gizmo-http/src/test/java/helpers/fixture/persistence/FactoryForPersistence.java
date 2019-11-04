@@ -4,7 +4,7 @@ import helpers.fixture.persistence.http.*;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.suite.IntegrationTestSuite;
 import net.tokensmith.authorization.security.GenerateRSAPrivateKey;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.repo.*;
 import net.tokensmith.config.AppConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

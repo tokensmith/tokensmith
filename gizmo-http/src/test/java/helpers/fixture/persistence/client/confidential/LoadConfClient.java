@@ -1,8 +1,8 @@
 package helpers.fixture.persistence.client.confidential;
 
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

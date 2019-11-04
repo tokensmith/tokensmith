@@ -7,12 +7,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import net.tokensmith.authorization.persistence.entity.AccessRequest;
-import net.tokensmith.authorization.persistence.entity.AuthCode;
-import net.tokensmith.authorization.persistence.entity.Configuration;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.AuthCodeRepository;
-import net.tokensmith.authorization.persistence.repository.ConfigurationRepository;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AuthCode;
+import net.tokensmith.repository.entity.Configuration;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.AuthCodeRepository;
+import net.tokensmith.repository.repo.ConfigurationRepository;
 import net.tokensmith.authorization.security.RandomString;
 
 import java.util.Optional;

@@ -1,14 +1,15 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.repository.repo.RefreshTokenRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.RefreshToken;
-import net.tokensmith.authorization.persistence.entity.Token;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.dao.DuplicateKeyException;

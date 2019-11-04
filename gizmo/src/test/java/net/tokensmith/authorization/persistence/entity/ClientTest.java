@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.persistence.entity;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResponseType;
 import org.junit.Before;
 import org.junit.Test;
 

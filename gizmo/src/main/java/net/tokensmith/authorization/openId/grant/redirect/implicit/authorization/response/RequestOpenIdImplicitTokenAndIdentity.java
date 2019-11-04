@@ -21,9 +21,9 @@ import net.tokensmith.authorization.openId.identity.MakeImplicitIdentityToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
 import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
 import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ClientRepository;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

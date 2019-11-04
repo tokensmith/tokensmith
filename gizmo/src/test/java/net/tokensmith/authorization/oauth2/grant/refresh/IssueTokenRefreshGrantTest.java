@@ -12,9 +12,9 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.*;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

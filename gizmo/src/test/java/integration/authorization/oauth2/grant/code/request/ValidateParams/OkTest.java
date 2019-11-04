@@ -3,8 +3,8 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
 import org.junit.Test;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ResponseType;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResponseType;
 
 import java.util.List;
 import java.util.Map;

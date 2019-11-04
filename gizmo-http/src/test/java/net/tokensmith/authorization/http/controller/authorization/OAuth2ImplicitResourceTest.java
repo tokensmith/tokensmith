@@ -14,8 +14,8 @@ import helpers.suite.IntegrationTestSuite;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
