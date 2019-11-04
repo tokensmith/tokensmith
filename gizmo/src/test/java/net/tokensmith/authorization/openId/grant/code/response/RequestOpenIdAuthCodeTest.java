@@ -14,8 +14,8 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
 
 import java.net.URI;
 import java.util.*;

@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
-import net.tokensmith.authorization.persistence.entity.RefreshToken;
-import net.tokensmith.authorization.persistence.entity.Token;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Token;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;

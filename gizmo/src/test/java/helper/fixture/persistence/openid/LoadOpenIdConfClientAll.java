@@ -2,9 +2,9 @@ package helper.fixture.persistence.openid;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadConfClientTokenReady;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.*;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;

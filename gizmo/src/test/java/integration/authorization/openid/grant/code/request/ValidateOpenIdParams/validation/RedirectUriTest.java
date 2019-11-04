@@ -4,7 +4,7 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
 import org.junit.Test;
 import net.tokensmith.authorization.parse.exception.RequiredException;
-import net.tokensmith.authorization.persistence.entity.Client;
+import net.tokensmith.repository.entity.Client;
 
 
 import java.util.List;

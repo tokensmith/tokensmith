@@ -1,6 +1,6 @@
 package net.tokensmith.authorization.register.translator;
 
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.register.request.UserInfo;
 import org.springframework.stereotype.Component;
 

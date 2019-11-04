@@ -4,7 +4,7 @@ import helper.fixture.FixtureFactory;
 import org.junit.Before;
 import org.junit.Test;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

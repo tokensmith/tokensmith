@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwner;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,6 @@
 package net.tokensmith.authorization.persistence.factory;
 
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 

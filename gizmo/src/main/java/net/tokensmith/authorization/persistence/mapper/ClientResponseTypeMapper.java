@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.ClientResponseType;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.ClientResponseType;
 
 /**
  * Created by tommackenzie on 8/9/16.

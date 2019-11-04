@@ -4,10 +4,10 @@ import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ResponseType;
-import net.tokensmith.authorization.persistence.entity.Scope;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResponseType;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 
 import java.net.URI;
 import java.util.List;

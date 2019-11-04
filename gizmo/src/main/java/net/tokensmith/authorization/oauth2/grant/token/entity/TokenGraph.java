@@ -1,6 +1,6 @@
 package net.tokensmith.authorization.oauth2.grant.token.entity;
 
-import net.tokensmith.authorization.persistence.entity.Token;
+import net.tokensmith.repository.entity.Token;
 
 import java.util.Optional;
 import java.util.UUID;

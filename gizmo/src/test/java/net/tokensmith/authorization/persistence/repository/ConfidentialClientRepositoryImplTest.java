@@ -1,13 +1,14 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.mapper.ConfidentialClientMapper;
 
 import java.net.URISyntaxException;

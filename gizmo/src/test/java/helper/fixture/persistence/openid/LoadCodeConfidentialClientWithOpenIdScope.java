@@ -1,9 +1,9 @@
 package helper.fixture.persistence.openid;
 
 import helper.fixture.FixtureFactory;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
-import net.tokensmith.authorization.persistence.repository.ConfidentialClientRepository;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

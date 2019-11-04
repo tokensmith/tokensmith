@@ -1,9 +1,9 @@
 package helpers.fixture.persistence.db;
 
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.security.GenerateRSAPrivateKey;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
-import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 
 /**
  * Created by tommackenzie on 2/21/16.

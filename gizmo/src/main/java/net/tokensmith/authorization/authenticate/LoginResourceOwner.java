@@ -2,9 +2,9 @@ package net.tokensmith.authorization.authenticate;
 
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

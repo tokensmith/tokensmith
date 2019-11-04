@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.RSAPrivateKey;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
 
 import java.util.List;
 import java.util.UUID;

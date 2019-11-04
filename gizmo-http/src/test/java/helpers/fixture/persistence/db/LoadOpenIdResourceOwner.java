@@ -1,10 +1,11 @@
 package helpers.fixture.persistence.db;
 
-import net.tokensmith.authorization.persistence.entity.Gender;
-import net.tokensmith.authorization.persistence.entity.Profile;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.ProfileRepository;
+
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

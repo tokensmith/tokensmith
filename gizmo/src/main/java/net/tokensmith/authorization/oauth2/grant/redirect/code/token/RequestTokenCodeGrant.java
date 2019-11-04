@@ -1,5 +1,11 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token;
 
+import net.tokensmith.repository.entity.AuthCode;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.AuthCodeRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
@@ -13,9 +19,6 @@ import net.tokensmith.authorization.oauth2.grant.token.RequestTokenGrant;
 import net.tokensmith.authorization.oauth2.grant.token.exception.*;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.token.exception.CompromisedCodeException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.*;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

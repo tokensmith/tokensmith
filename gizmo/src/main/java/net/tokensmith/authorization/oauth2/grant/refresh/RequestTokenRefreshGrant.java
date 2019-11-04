@@ -1,5 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.RefreshTokenRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
@@ -13,10 +17,6 @@ import net.tokensmith.authorization.oauth2.grant.refresh.factory.TokenInputRefre
 import net.tokensmith.authorization.oauth2.grant.token.RequestTokenGrant;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.exception.*;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.RefreshTokenRepository;
-import net.tokensmith.authorization.persistence.repository.ResourceOwnerRepository;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

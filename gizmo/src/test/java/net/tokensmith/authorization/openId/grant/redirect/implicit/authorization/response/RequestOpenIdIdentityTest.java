@@ -17,7 +17,7 @@ import net.tokensmith.authorization.openId.identity.MakeImplicitIdentityToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
 import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
 import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwner;
 
 import java.util.List;
 import java.util.Map;

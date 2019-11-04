@@ -2,7 +2,7 @@ package net.tokensmith.authorization.persistence.factory;
 
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import org.springframework.dao.DuplicateKeyException;
 
 import static org.hamcrest.CoreMatchers.notNullValue;

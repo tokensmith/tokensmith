@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.AccessRequest;
-import net.tokensmith.authorization.persistence.entity.AuthCode;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AuthCode;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;

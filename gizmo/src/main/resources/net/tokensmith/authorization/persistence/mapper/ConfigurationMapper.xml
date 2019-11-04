@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.ConfigurationMapper">
 
-    <resultMap id="configuration" type="net.tokensmith.authorization.persistence.entity.Configuration">
+    <resultMap id="configuration" type="net.tokensmith.repository.entity.Configuration">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="access_token_size" property="accessTokenSize" />
         <result column="authorization_code_size" property="authorizationCodeSize" />

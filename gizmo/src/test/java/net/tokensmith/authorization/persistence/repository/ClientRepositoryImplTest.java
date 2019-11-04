@@ -1,11 +1,12 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.ClientRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.mapper.ClientMapper;
 
 import java.net.URI;

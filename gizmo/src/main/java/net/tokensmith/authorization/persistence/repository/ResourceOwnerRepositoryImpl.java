@@ -1,11 +1,12 @@
 package net.tokensmith.authorization.persistence.repository;
 
 
-import net.tokensmith.authorization.persistence.entity.ResourceOwner;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import net.tokensmith.authorization.persistence.mapper.ResourceOwnerMapper;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;

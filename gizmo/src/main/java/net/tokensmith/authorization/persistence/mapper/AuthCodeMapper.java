@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.AuthCode;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.AuthCode;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;

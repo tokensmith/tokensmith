@@ -2,8 +2,8 @@ package net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.
 
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 
 import java.net.URI;
 import java.util.Optional;

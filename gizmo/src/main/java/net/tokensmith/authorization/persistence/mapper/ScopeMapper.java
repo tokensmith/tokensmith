@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.Scope;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.Scope;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

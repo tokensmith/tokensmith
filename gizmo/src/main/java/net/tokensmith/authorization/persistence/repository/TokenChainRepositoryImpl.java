@@ -1,8 +1,9 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.authorization.persistence.entity.TokenChain;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.entity.TokenChain;
 import net.tokensmith.authorization.persistence.mapper.TokenChainMapper;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.TokenChainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;

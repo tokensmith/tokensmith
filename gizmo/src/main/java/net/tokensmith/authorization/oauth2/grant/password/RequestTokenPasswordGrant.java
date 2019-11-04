@@ -15,7 +15,7 @@ import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyExcep
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

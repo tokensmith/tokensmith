@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.security;
 
-import net.tokensmith.authorization.persistence.entity.KeyUse;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.AccessRequestScope;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.AccessRequestScope;
 
 /**
  * Created by tommackenzie on 5/19/15.

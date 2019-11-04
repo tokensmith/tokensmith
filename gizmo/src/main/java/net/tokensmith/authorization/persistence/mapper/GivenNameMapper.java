@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper;
 
+import net.tokensmith.repository.entity.GivenName;
 import org.apache.ibatis.annotations.Param;
-import net.tokensmith.authorization.persistence.entity.GivenName;
 
 import java.util.UUID;
 

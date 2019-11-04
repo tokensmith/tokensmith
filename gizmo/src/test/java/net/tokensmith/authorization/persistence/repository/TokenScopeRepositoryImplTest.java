@@ -1,10 +1,11 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.TokenScopeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.TokenScope;
+import net.tokensmith.repository.entity.TokenScope;
 import net.tokensmith.authorization.persistence.mapper.TokenScopeMapper;
 
 import static org.mockito.Mockito.times;

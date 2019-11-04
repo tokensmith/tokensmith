@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.RSAPrivateKey;
 
 
 import static org.hamcrest.core.Is.is;

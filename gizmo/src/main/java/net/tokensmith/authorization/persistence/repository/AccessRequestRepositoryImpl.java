@@ -1,7 +1,8 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.authorization.persistence.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequest;
 import net.tokensmith.authorization.persistence.mapper.AccessRequestMapper;
+import net.tokensmith.repository.repo.AccessRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

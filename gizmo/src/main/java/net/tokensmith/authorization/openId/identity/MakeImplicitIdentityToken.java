@@ -7,10 +7,10 @@ import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundExcepti
 import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
 import net.tokensmith.authorization.openId.identity.factory.IdTokenFactory;
 import net.tokensmith.authorization.openId.identity.translator.PrivateKeyTranslator;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.repository.ProfileRepository;
-import net.tokensmith.authorization.persistence.repository.RsaPrivateKeyRepository;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ProfileRepository;
+import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;
 import net.tokensmith.jwt.builder.exception.CompactException;
 import net.tokensmith.jwt.config.JwtAppFactory;

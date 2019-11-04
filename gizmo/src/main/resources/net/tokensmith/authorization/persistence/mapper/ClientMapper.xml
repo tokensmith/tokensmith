@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.ClientMapper">
 
-    <resultMap id="client" type="net.tokensmith.authorization.persistence.entity.Client">
+    <resultMap id="client" type="net.tokensmith.repository.entity.Client">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" javaType="java.net.URI" jdbcType="VARCHAR" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.URITypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.RSAPrivateKeyMapper">
 
-    <resultMap id="rsaPrivateKey" type="net.tokensmith.authorization.persistence.entity.RSAPrivateKey">
+    <resultMap id="rsaPrivateKey" type="net.tokensmith.repository.entity.RSAPrivateKey">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="use" property="use" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="modulus" property="modulus" javaType="java.math.BigInteger" jdbcType="BINARY" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.BigIntegerToBytesTypeHandler"/>

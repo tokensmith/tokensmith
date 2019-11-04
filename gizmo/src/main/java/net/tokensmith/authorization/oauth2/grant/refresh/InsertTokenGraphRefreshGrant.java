@@ -1,5 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.repo.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.tokensmith.authorization.exception.ServerException;
@@ -7,11 +9,10 @@ import net.tokensmith.authorization.oauth2.grant.token.InsertTokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
 import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.repository.*;
 import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.util.List;
 import java.util.UUID;

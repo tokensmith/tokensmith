@@ -1,12 +1,13 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.repository.repo.AuthCodeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.entity.AuthCode;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.entity.AuthCode;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import net.tokensmith.authorization.persistence.mapper.AuthCodeMapper;
 import org.springframework.dao.DuplicateKeyException;

@@ -5,7 +5,7 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import net.tokensmith.authorization.http.response.OpenIdToken;
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.ConfidentialClient;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

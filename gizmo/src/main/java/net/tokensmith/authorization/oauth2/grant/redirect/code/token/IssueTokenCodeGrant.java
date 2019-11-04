@@ -7,9 +7,9 @@ import net.tokensmith.authorization.oauth2.grant.redirect.code.token.exception.C
 import net.tokensmith.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.authorization.persistence.entity.*;
-import net.tokensmith.authorization.persistence.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.*;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;

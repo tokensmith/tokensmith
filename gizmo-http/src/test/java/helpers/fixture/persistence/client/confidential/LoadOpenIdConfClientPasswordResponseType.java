@@ -1,9 +1,9 @@
 package helpers.fixture.persistence.client.confidential;
 
 import helpers.fixture.EntityFactory;
-import net.tokensmith.authorization.persistence.entity.Client;
-import net.tokensmith.authorization.persistence.entity.ConfidentialClient;
-import net.tokensmith.authorization.persistence.repository.*;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

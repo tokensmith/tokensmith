@@ -2,8 +2,8 @@ package net.tokensmith.authorization.openId.identity.translator;
 
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.authorization.persistence.entity.RSAPrivateKey;
-import net.tokensmith.authorization.persistence.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.KeyUse;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;

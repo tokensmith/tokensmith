@@ -4,7 +4,7 @@ import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.authorization.persistence.entity.*;
+import net.tokensmith.repository.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
