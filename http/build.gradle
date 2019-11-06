@@ -5,7 +5,7 @@ plugins {
     id 'war'
 }
 
-description = """gizmo-http"""
+description = """http for authentication"""
 
 sourceCompatibility = 12
 targetCompatibility = 12
@@ -31,7 +31,7 @@ ext {
 
 
 dependencies {
-    compile project (':gizmo')
+    compile project (':core')
 
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: "${servletApiVersion}"
     compile group: 'net.tokensmith', name: 'otter', version: "${otterVersion}"
