@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.GivenNameMapper">
+
+    <resultMap id="givenName" type="net.tokensmith.repository.entity.GivenName">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="resource_owner_profile_id" property="resourceOwnerProfileId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="given_name" property="name" />
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into resource_owner_profile_given_name
+        (id, given_name, resource_owner_profile_id)
+        values
+        (#{givenName.id}, #{givenName.name}, #{givenName.resourceOwnerProfileId})
+    </insert>
+
+    <select id="findById" resultMap="givenName">
+        select
+            id,
+            resource_owner_profile_id,
+            given_name,
+            created_at,
+            updated_at
+        from resource_owner_profile_given_name
+        where id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.TokenMapper">
+
+    <resultMap id="token" type="net.tokensmith.repository.entity.Token">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="active_token" property="token"/>
+        <result column="revoked" property="revoked"/>
+        <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result column="client_id" property="clientId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <collection property="tokenScopes"
+                    resultMap="net.tokensmith.authorization.persistence.mapper.TokenScopeMapper.tokenScope"
+                    columnPrefix="ts_"
+                    javaType="ArrayList"/>
+        <collection property="audience"
+                    resultMap="net.tokensmith.authorization.persistence.mapper.ClientMapper.client"
+                    columnPrefix="audience_"/>
+    </resultMap>
+
+    <resultMap id="tokenWithLeadToken" extends="token" type="net.tokensmith.repository.entity.Token">
+        <association property="leadToken"
+                     resultMap="token"
+                     columnPrefix="lead_token_"
+        />
+    </resultMap>
+
+    <select id="getByAuthCodeId" resultMap="token">
+        select
+            token.id,
+            token.active_token,
+            token.revoked,
+            token.grant_type,
+            token.client_id,
+            token.expires_at,
+            token.created_at
+        from token
+        join auth_code_token on auth_code_token.token_id = token.id
+        where auth_code_token.auth_code_id = #{authCodeId}
+    </select>
+
+    <select id="getById" resultMap="token">
+        select
+            token.id,
+            token.active_token,
+            token.revoked,
+            token.grant_type,
+            token.client_id,
+            token.expires_at,
+            token.created_at
+        from token
+        where token.id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
+        insert into token (id, active_token, grant_type, client_id, revoked, expires_at)
+        values (
+        #{token.id},
+        #{token.token},
+        #{token.grantType},
+        #{token.clientId},
+        #{token.revoked},
+        #{token.expiresAt, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
+        )
+    </insert>
+
+    <update id="revokeByAuthCodeId">
+        update token
+        set revoked = true
+        from auth_code_token, auth_code
+        where auth_code_token.token_id = token.id
+        and auth_code.id = auth_code_token.auth_code_id
+        and auth_code.id = #{authCodeId}
+    </update>
+
+    <update id="revokeById">
+        update token
+        set revoked = true
+        where id = #{id}
+    </update>
+
+    <update id="updateExpiresAtByAccessToken">
+        update token
+        set expires_at = #{expiresAt}
+        where active_token = #{accessToken}
+    </update>
+
+    <update id="revokeActive">
+        update token
+        set revoked = true
+        from resource_owner_token
+        where resource_owner_token.token_id = token.id
+        and token.expires_at > current_timestamp
+        and resource_owner_token.resource_owner_id = #{resourceOwnerId}
+    </update>
+
+</mapper>

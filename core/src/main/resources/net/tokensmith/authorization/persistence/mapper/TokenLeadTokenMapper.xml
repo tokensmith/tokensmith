@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.TokenLeadTokenMapper">
+
+    <resultMap id="tokenLeadToken" type="net.tokensmith.repository.entity.TokenLeadToken">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="lead_token_id" property="leadTokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <insert id="insert" >
+        insert into token_lead_token (id, token_id, lead_token_id)
+        values (
+            #{tokenLeadToken.id},
+            #{tokenLeadToken.tokenId},
+            #{tokenLeadToken.leadTokenId}
+        )
+    </insert>
+
+    <select id="getById" resultMap="tokenLeadToken">
+        select
+        token_lead_token.id,
+        token_lead_token.token_id,
+        token_lead_token.lead_token_id,
+        token_lead_token.created_at
+        from token_lead_token
+        where token_lead_token.id = #{id}
+    </select>
+
+</mapper>

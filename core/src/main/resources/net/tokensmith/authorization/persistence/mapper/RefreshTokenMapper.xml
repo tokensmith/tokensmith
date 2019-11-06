@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper">
+
+    <resultMap id="refreshToken" type="net.tokensmith.repository.entity.RefreshToken">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <id column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="access_token" property="accessToken"/>
+        <result column="revoked" property="revoked"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <association property="token"
+                     resultMap="net.tokensmith.authorization.persistence.mapper.TokenMapper.tokenWithLeadToken"
+                     columnPrefix="token_"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into refresh_token (id, token_id, access_token, expires_at)
+        values (
+            #{refreshToken.id},
+            #{refreshToken.token.id},
+            #{refreshToken.accessToken},
+            #{refreshToken.expiresAt}
+        )
+    </insert>
+
+    <select id="getByTokenId" resultMap="refreshToken">
+        select
+        refresh_token.id,
+        refresh_token.token_id,
+        refresh_token.access_token,
+        refresh_token.revoked,
+        refresh_token.expires_at,
+        refresh_token.created_at
+        from refresh_token
+        where refresh_token.token_id = #{tokenId}
+    </select>
+
+    <select id="getByClientIdAndAccessToken" resultMap="refreshToken">
+        select
+            refresh_token.id,
+            refresh_token.token_id,
+            refresh_token.access_token,
+            refresh_token.revoked,
+            refresh_token.expires_at,
+            refresh_token.created_at,
+
+            token.id as token_id,
+            token.active_token as token_active_token,
+            token.revoked as token_revoked,
+            token.grant_type as token_grant_type,
+            token.expires_at as token_expires_at,
+            token.created_at as token_created_at,
+
+            token_scope.id as token_ts_id,
+            token_scope.token_id as token_ts_token_id,
+            token_scope.created_at as token_ts_created_at,
+            token_scope.updated_at as token_ts_updated_at,
+
+            scope.id as token_ts_scope_id,
+            scope.name as token_ts_scope_name,
+            scope.created_at as token_ts_scope_created_at,
+
+            audience.id as token_audience_id,
+            audience.redirect_uri as token_audience_redirect_uri,
+            audience.created_at as token_audience_created_at,
+
+            lead_token.id as token_lead_token_id,
+            lead_token.revoked as token_lead_token_revoked,
+            lead_token.grant_type as token_lead_token_grant_type,
+            lead_token.client_id as token_lead_token_client_id,
+            lead_token.expires_at as token_lead_token_expires_at,
+            lead_token.created_at as token_lead_token_created_at
+
+        from refresh_token
+        join token on token.id = refresh_token.token_id
+        join token_scope on token_scope.token_id = token.id
+        join scope on scope.id = token_scope.scope_id
+
+        join token_audience on token_audience.token_id = token.id
+        join client audience on audience.id = token_audience.client_id
+
+        left join token_lead_token tlt on tlt.token_id = token.id
+        left join token lead_token on lead_token.id = tlt.lead_token_id
+
+        where refresh_token.access_token = decode(#{accessToken}, 'escape')
+        and refresh_token.revoked = FALSE
+        and refresh_token.expires_at > current_timestamp
+        and token.revoked = FALSE
+        and token.expires_at <![CDATA[<]]> current_timestamp
+        and token.client_id = #{clientId}
+    </select>
+
+    <select id="getByResourceOwner" resultMap="refreshToken">
+        select *
+        from refresh_token
+        join token on token.id = refresh_token.token_id
+        join resource_owner_token on resource_owner_token.token_id = token.id
+        where resource_owner_token.resource_owner_id = #{resourceOwnerId}
+    </select>
+
+    <update id="revokeByAuthCodeId">
+        update refresh_token
+        set revoked = true
+        from token, auth_code_token, auth_code
+        where token.id = refresh_token.token_id
+        and auth_code_token.token_id = token.id
+        and auth_code.id = auth_code_token.auth_code_id
+        and auth_code.id = #{authCodeId}
+    </update>
+
+    <update id="revokeByTokenId">
+        update refresh_token
+        set revoked = true
+        where token_id = #{tokenId}
+    </update>
+
+    <update id="revokeActive">
+        update refresh_token
+        set revoked = true
+        from token, resource_owner_token
+        where token.id = refresh_token.token_id
+        and resource_owner_token.token_id = token.id
+        and resource_owner_token.resource_owner_id = #{resourceOwnerId}
+        and refresh_token.expires_at > current_timestamp
+        and refresh_token.revoked = false
+    </update>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.AddressMapper">
+
+    <resultMap id="address" type="net.tokensmith.repository.entity.Address">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="resource_owner_profile_id" property="profileId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="street_address" property="streetAddress" />
+        <result column="street_address2" property="streetAddress2" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
+        <result column="locality" property="locality" />
+        <result column="region" property="region" />
+        <result column="postal_code" property="postalCode" />
+        <result column="country" property="country" />
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into resource_owner_profile_address (
+        id,
+        resource_owner_profile_id,
+        street_address,
+        street_address2,
+        locality,
+        region,
+        postal_code,
+        country
+        ) values (
+        #{address.id},
+        #{address.profileId},
+        #{address.streetAddress},
+        #{address.streetAddress2, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+        #{address.locality},
+        #{address.region},
+        #{address.postalCode},
+        #{address.country}
+        )
+    </insert>
+
+    <select id="getById" resultMap="address">
+        select
+            id,
+            resource_owner_profile_id,
+            street_address,
+            street_address2,
+            locality,
+            region,
+            postal_code,
+            country,
+            updated_at,
+            created_at
+        from resource_owner_profile_address
+        where id = #{id}
+    </select>
+</mapper>
