@@ -1,5 +1,5 @@
 rootProject.name = 'gizmo'
-include 'gizmo'
-include 'gizmo-http'
-include 'gizmo-repo'
+include 'core'
+include 'http'
+include 'repository'
 
