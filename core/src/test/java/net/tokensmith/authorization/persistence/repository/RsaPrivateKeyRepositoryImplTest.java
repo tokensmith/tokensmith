@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.repository.entity.RSAPrivateKeyBytes;
 import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,14 +12,13 @@ import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.authorization.persistence.mapper.RSAPrivateKeyMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.notNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +34,7 @@ public class RsaPrivateKeyRepositoryImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RsaPrivateKeyRepositoryImpl(mockRsaPrivateKeyMapper);
+        subject = new RsaPrivateKeyRepositoryImpl(mockRsaPrivateKeyMapper, new JwtAppFactory());
     }
 
     @Test
@@ -41,12 +42,12 @@ public class RsaPrivateKeyRepositoryImplTest {
         RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
         subject.insert(rsaPrivateKey);
 
-        verify(mockRsaPrivateKeyMapper).insert(rsaPrivateKey);
+        verify(mockRsaPrivateKeyMapper).insert(any(RSAPrivateKeyBytes.class));
     }
 
     @Test
     public void getMostRecentAndActiveForSigningShouldFindRecord() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         when(mockRsaPrivateKeyMapper.getMostRecentAndActiveForSigning()).thenReturn(rsaPrivateKey);
 
         RSAPrivateKey actual = subject.getMostRecentAndActiveForSigning();
@@ -62,9 +63,6 @@ public class RsaPrivateKeyRepositoryImplTest {
 
     @Test
     public void getWhereActiveAndUseIsSignShouldReturnList() throws Exception {
-        List<RSAPrivateKey> keys = new ArrayList<>();
-        when(mockRsaPrivateKeyMapper.getWhereActiveAndUseIsSign(10, 0)).thenReturn(keys);
-
         List<RSAPrivateKey> actual = subject.getWhereActiveAndUseIsSign(10, 0);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(0));
@@ -72,7 +70,7 @@ public class RsaPrivateKeyRepositoryImplTest {
 
     @Test
     public void getByIdActiveSignShouldReturnRecord() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         when(mockRsaPrivateKeyMapper.getByIdActiveSign(rsaPrivateKey.getId())).thenReturn(rsaPrivateKey);
 
         RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());

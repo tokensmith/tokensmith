@@ -39,6 +39,7 @@ public class InsertNonceTest {
 
     @Before
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
         subject = new InsertNonce(mockResourceOwnerRepository, mockRandomString, mockHashToken, mockNonceTypeRepository, mockNonceRepository);
     }
