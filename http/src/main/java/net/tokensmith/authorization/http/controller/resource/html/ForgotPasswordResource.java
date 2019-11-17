@@ -4,8 +4,8 @@ import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.http.controller.security.TokenSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Component
 public class ForgotPasswordResource extends Resource<TokenSession, WebSiteUser> {
-    private static final Logger logger = LogManager.getLogger(ForgotPasswordResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordResource.class);
     public static String URL = "/forgot-password(.*)";
 
     private ForgotPassword forgotPassword;

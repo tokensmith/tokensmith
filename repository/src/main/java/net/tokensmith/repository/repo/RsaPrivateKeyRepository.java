@@ -2,6 +2,7 @@ package net.tokensmith.repository.repo;
 
 
 import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.RSAPrivateKeyBytes;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface RsaPrivateKeyRepository {
     RSAPrivateKey getMostRecentAndActiveForSigning() throws RecordNotFoundException;
     List<RSAPrivateKey> getWhereActiveAndUseIsSign(Integer limit, Integer offset);
     RSAPrivateKey getByIdActiveSign(UUID id) throws RecordNotFoundException;
+    RSAPrivateKeyBytes encrypt(RSAPrivateKey from);
 }

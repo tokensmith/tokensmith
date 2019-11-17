@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestOpenIdImplicitTokenAndIdentity {
-    private static final Logger logger = LogManager.getLogger(RequestOpenIdImplicitTokenAndIdentity.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestOpenIdImplicitTokenAndIdentity.class);
 
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;

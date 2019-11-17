@@ -5,21 +5,21 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
- * Represents how an RSA Private Key is used in the domain.
+ * Represents the data stored in the database.
  *
- * RSAPrivateKeyBytes is how its transferred to/from the db.
+ * The key fields are stored encrypted
  */
-public class RSAPrivateKey {
+public class RSAPrivateKeyBytes {
     private UUID id;
     private KeyUse use;
-    private BigInteger modulus;
-    private BigInteger publicExponent;
-    private BigInteger privateExponent;
-    private BigInteger primeP;
-    private BigInteger primeQ;
-    private BigInteger primeExponentP;
-    private BigInteger primeExponentQ;
-    private BigInteger crtCoefficient;
+    private byte[] modulus;
+    private byte[] publicExponent;
+    private byte[] privateExponent;
+    private byte[] primeP;
+    private byte[] primeQ;
+    private byte[] primeExponentP;
+    private byte[] primeExponentQ;
+    private byte[] crtCoefficient;
     private Boolean active;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
@@ -40,67 +40,67 @@ public class RSAPrivateKey {
         this.use = use;
     }
 
-    public BigInteger getModulus() {
+    public byte[] getModulus() {
         return modulus;
     }
 
-    public void setModulus(BigInteger modulus) {
+    public void setModulus(byte[] modulus) {
         this.modulus = modulus;
     }
 
-    public BigInteger getPublicExponent() {
+    public byte[] getPublicExponent() {
         return publicExponent;
     }
 
-    public void setPublicExponent(BigInteger publicExponent) {
+    public void setPublicExponent(byte[] publicExponent) {
         this.publicExponent = publicExponent;
     }
 
-    public BigInteger getPrivateExponent() {
+    public byte[] getPrivateExponent() {
         return privateExponent;
     }
 
-    public void setPrivateExponent(BigInteger privateExponent) {
+    public void setPrivateExponent(byte[] privateExponent) {
         this.privateExponent = privateExponent;
     }
 
-    public BigInteger getPrimeP() {
+    public byte[] getPrimeP() {
         return primeP;
     }
 
-    public void setPrimeP(BigInteger primeP) {
+    public void setPrimeP(byte[] primeP) {
         this.primeP = primeP;
     }
 
-    public BigInteger getPrimeQ() {
+    public byte[] getPrimeQ() {
         return primeQ;
     }
 
-    public void setPrimeQ(BigInteger primeQ) {
+    public void setPrimeQ(byte[] primeQ) {
         this.primeQ = primeQ;
     }
 
-    public BigInteger getPrimeExponentP() {
+    public byte[] getPrimeExponentP() {
         return primeExponentP;
     }
 
-    public void setPrimeExponentP(BigInteger primeExponentP) {
+    public void setPrimeExponentP(byte[] primeExponentP) {
         this.primeExponentP = primeExponentP;
     }
 
-    public BigInteger getPrimeExponentQ() {
+    public byte[] getPrimeExponentQ() {
         return primeExponentQ;
     }
 
-    public void setPrimeExponentQ(BigInteger primeExponentQ) {
+    public void setPrimeExponentQ(byte[] primeExponentQ) {
         this.primeExponentQ = primeExponentQ;
     }
 
-    public BigInteger getCrtCoefficient() {
+    public byte[] getCrtCoefficient() {
         return crtCoefficient;
     }
 
-    public void setCrtCoefficient(BigInteger crtCoefficient) {
+    public void setCrtCoefficient(byte[] crtCoefficient) {
         this.crtCoefficient = crtCoefficient;
     }
 

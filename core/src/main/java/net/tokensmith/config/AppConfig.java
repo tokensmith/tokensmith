@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.Use;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
@@ -13,6 +15,7 @@ import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.req
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request.context.GetPublicClientRedirectUri;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.pelican.Publish;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
@@ -21,6 +24,7 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Optional;
 
 
 /**
@@ -37,10 +41,13 @@ public class AppConfig {
     private Boolean allowLocalUrls;
     @Value("${allowHttpUrls}")
     private Boolean allowHttpUrls;
-    @Value("${salt}")
-    private String salt;
     @Value("${issuer}")
     private String issuer;
+    @Value("${db.key.id}")
+    private String keyId;
+    @Value("${db.key.secret}")
+    private String secret;
+
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -80,11 +87,6 @@ public class AppConfig {
         } else {
             return new UrlValidator(schemes);
         }
-    }
-
-    @Bean
-    public String salt() {
-        return this.salt;
     }
 
     @Bean
@@ -157,5 +159,13 @@ public class AppConfig {
     public Publish publish() {
         GizmoPelicanAppConfig pelicanAppConfig = new GizmoPelicanAppConfig();
         return pelicanAppConfig.publish("auth-1");
+    }
+
+    @Bean
+    @Qualifier("dbKey")
+    public SymmetricKey dbKey() {
+        return new SymmetricKey(
+                Optional.of(keyId), secret, Use.ENCRYPTION
+        );
     }
 }

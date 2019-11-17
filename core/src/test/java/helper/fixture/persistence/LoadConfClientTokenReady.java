@@ -4,9 +4,9 @@ import helper.fixture.FixtureFactory;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.*;
-import org.apache.log4j.LogManager;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Component
 public class LoadConfClientTokenReady {
-    private static final Logger LOGGER = LogManager.getLogger(LoadConfClientTokenReady.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadConfClientTokenReady.class);
     private LoadCodeClientWithScopes loadCodeClientWithScopes;
     private ConfidentialClientRepository confidentialClientRepository;
     private ResourceOwnerRepository resourceOwnerRepository;

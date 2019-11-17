@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.oauth2.grant.token.InsertTokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
 import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class InsertTokenGraphCodeGrant extends InsertTokenGraph {
-    protected static final Logger logger = LogManager.getLogger(InsertTokenGraphCodeGrant.class);
+    protected static final Logger logger = LoggerFactory.getLogger(InsertTokenGraphCodeGrant.class);
 
     @Autowired
     public InsertTokenGraphCodeGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenAudienceRepository tokenAudienceRepository) {
