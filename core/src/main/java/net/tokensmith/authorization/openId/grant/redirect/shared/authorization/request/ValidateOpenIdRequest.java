@@ -33,26 +33,21 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
     private Class<T> type;
     private List<ParamEntity> fields;
 
-    protected Parser parser;
+    protected Parser<T> parser;
     protected UrlValidator urlValidator;
     protected GetOpenIdClientRedirectUri getOpenIdClientRedirectUri;
     protected CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdRequest(Parser parser, UrlValidator urlValidator, GetOpenIdClientRedirectUri getOpenIdClientRedirectUri, CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest) {
+    public ValidateOpenIdRequest(Parser<T> parser, Class<T> type, UrlValidator urlValidator, GetOpenIdClientRedirectUri getOpenIdClientRedirectUri, CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest) {
         this.parser = parser;
         this.getOpenIdClientRedirectUri = getOpenIdClientRedirectUri;
         this.urlValidator = urlValidator;
         this.compareClientToOpenIdAuthRequest = compareClientToOpenIdAuthRequest;
+        this.type = type;
     }
 
     public T run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, ServerException {
-
-        // this could have been a constructor param too.
-        if(type == null) {
-            type = (Class<T>) ((ParameterizedType) getClass()
-                    .getGenericSuperclass()).getActualTypeArguments()[0];
-        }
 
         if (fields == null) {
             fields = parser.reflect(type);
@@ -60,7 +55,7 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
 
         T request = null;
         try {
-            request = (T) parser.to(type, fields, parameters);
+            request = parser.to(type, fields, parameters);
         } catch (RequiredException e) {
             handleRequired(e);
         } catch (OptionalException e) {

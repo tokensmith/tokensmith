@@ -30,13 +30,13 @@ public class ValidateRequest {
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
 
-    protected Parser parser;
+    protected Parser<AuthRequest> parser;
     protected UrlValidator urlValidator;
     protected GetClientRedirectUri getClientRedirect;
     protected CompareClientToAuthRequest compareClientToAuthRequest;
     private List<ParamEntity> fields;
 
-    public ValidateRequest(Parser parser, UrlValidator urlValidator, GetClientRedirectUri getClientRedirect, CompareClientToAuthRequest compareClientToAuthRequest) {
+    public ValidateRequest(Parser<AuthRequest> parser, UrlValidator urlValidator, GetClientRedirectUri getClientRedirect, CompareClientToAuthRequest compareClientToAuthRequest) {
         this.parser = parser;
         this.urlValidator = urlValidator;
         this.getClientRedirect = getClientRedirect;
@@ -51,7 +51,7 @@ public class ValidateRequest {
 
         AuthRequest request = null;
         try {
-            request = (AuthRequest) parser.to(AuthRequest.class, fields, parameters);
+            request = parser.to(AuthRequest.class, fields, parameters);
         } catch (RequiredException e) {
             handleRequired(e);
         } catch (OptionalException e) {
