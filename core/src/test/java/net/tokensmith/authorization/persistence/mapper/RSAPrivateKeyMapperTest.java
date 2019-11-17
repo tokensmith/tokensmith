@@ -2,6 +2,7 @@ package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
+import net.tokensmith.repository.entity.RSAPrivateKeyBytes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.tokensmith.repository.entity.KeyUse;
@@ -32,10 +33,10 @@ public class RSAPrivateKeyMapperTest {
 
     @Test
     public void insert() {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getById(rsaPrivateKey.getId());
+        RSAPrivateKeyBytes actual = subject.getById(rsaPrivateKey.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
@@ -44,18 +45,18 @@ public class RSAPrivateKeyMapperTest {
 
     @Test
     public void getMostRecentAndActiveForSigningShouldFindRecord() {
-        RSAPrivateKey rsaPrivateKeyA = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKeyA = FixtureFactory.makeRSAPrivateKeyBytes();
         subject.insert(rsaPrivateKeyA);
         rsaPrivateKeyA = subject.getById(rsaPrivateKeyA.getId());
 
-        RSAPrivateKey rsaPrivateKeyB = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKeyB = FixtureFactory.makeRSAPrivateKeyBytes();
 
         // make sure B is the latest.
         rsaPrivateKeyB.setCreatedAt(rsaPrivateKeyA.getCreatedAt().plusSeconds(1));
         rsaPrivateKeyB.setUpdatedAt(rsaPrivateKeyA.getUpdatedAt().plusSeconds(1));
         subject.insertWithDateTimeValues(rsaPrivateKeyB);
 
-        RSAPrivateKey actual = subject.getMostRecentAndActiveForSigning();
+        RSAPrivateKeyBytes actual = subject.getMostRecentAndActiveForSigning();
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(rsaPrivateKeyB.getId()));
@@ -78,16 +79,16 @@ public class RSAPrivateKeyMapperTest {
     @Test
     public void getWhereActiveAndUseIsSignShouldReturnMany() throws Exception {
         for(int i=0; i<10; i++) {
-            RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+            RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
             subject.insert(rsaPrivateKey);
         }
 
-        List<RSAPrivateKey> actual = subject.getWhereActiveAndUseIsSign(10, 0);
+        List<RSAPrivateKeyBytes> actual = subject.getWhereActiveAndUseIsSign(10, 0);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.size(), is(10));
 
-        for(RSAPrivateKey key: actual) {
+        for(RSAPrivateKeyBytes key: actual) {
             assertThat(key.getUse(), is(KeyUse.SIGNATURE));
             assertThat(key.isActive(), is(true));
         }
@@ -95,10 +96,10 @@ public class RSAPrivateKeyMapperTest {
 
     @Test
     public void getByIdActiveSignShouldReturnKey() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+        RSAPrivateKeyBytes actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
@@ -107,34 +108,34 @@ public class RSAPrivateKeyMapperTest {
 
     @Test
     public void getByIdActiveSignWhenNotActiveShouldReturnNull() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         rsaPrivateKey.setActive(false);
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+        RSAPrivateKeyBytes actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void getByIdActiveSignWhenNotSignShouldReturnNull() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         rsaPrivateKey.setUse(KeyUse.ENCRYPTION);
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+        RSAPrivateKeyBytes actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
 
         assertThat(actual, is(nullValue()));
     }
 
     @Test
     public void getByIdActiveSignWhenNotSignNotActiveShouldReturnNull() throws Exception {
-        RSAPrivateKey rsaPrivateKey = FixtureFactory.makeRSAPrivateKey();
+        RSAPrivateKeyBytes rsaPrivateKey = FixtureFactory.makeRSAPrivateKeyBytes();
         rsaPrivateKey.setUse(KeyUse.ENCRYPTION);
         rsaPrivateKey.setActive(false);
         subject.insert(rsaPrivateKey);
 
-        RSAPrivateKey actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
+        RSAPrivateKeyBytes actual = subject.getByIdActiveSign(rsaPrivateKey.getId());
 
         assertThat(actual, is(nullValue()));
     }

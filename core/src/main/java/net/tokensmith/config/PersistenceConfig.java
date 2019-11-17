@@ -3,8 +3,8 @@ package net.tokensmith.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 @MapperScan("net.tokensmith.authorization.persistence.mapper")
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class PersistenceConfig {
-    protected static Logger LOGGER = LogManager.getLogger(PersistenceConfig.class);
+    protected static Logger LOGGER = LoggerFactory.getLogger(PersistenceConfig.class);
 
     @Value("${db.user}")
     private String userName;

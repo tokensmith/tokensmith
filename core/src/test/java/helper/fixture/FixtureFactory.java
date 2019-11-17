@@ -6,6 +6,9 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
+import net.tokensmith.jwt.jwk.KeyAlgorithm;
+import net.tokensmith.jwt.jwk.SecretKeyFactory;
+import net.tokensmith.jwt.jwk.exception.SecretKeyException;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
@@ -17,6 +20,7 @@ import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
 import org.mockito.Mockito;
 
+import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,6 +35,25 @@ public class FixtureFactory {
     public static String PLAIN_TEXT_PASSWORD = "password";
     public static String SECURE_REDIRECT_URI = "https://rootservices.org";
     public static String REDIRECT_URI = "http://www.rootservices.org";
+
+    /**
+     * Used to generate an AES encryption key.
+     *
+     * @return a base64 encoded AES encryption key
+     */
+    public static String key() {
+        SecretKeyFactory secretKeyFactory = new SecretKeyFactory();
+        SecretKey cek = null;
+        try {
+            cek = secretKeyFactory.makeKey(KeyAlgorithm.AES);
+        } catch (SecretKeyException e) {
+            e.printStackTrace();
+        }
+
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String key = encoder.encodeToString(cek.getEncoded());
+        return key;
+    }
 
     // used to eliminate mockito warnings.
     public static Optional<String> anyOptionalString() {
@@ -442,6 +465,25 @@ public class FixtureFactory {
 
         return rsaPrivateKey;
     }
+
+    public static RSAPrivateKeyBytes makeRSAPrivateKeyBytes() {
+        RSAPrivateKeyBytes rsaPrivateKey = new RSAPrivateKeyBytes();
+        rsaPrivateKey.setId(UUID.randomUUID());
+        rsaPrivateKey.setUse(KeyUse.SIGNATURE);
+        rsaPrivateKey.setModulus(new BigInteger("1").toByteArray());
+        rsaPrivateKey.setPublicExponent(new BigInteger("2").toByteArray());
+        rsaPrivateKey.setPrivateExponent(new BigInteger("3").toByteArray());
+        rsaPrivateKey.setPrimeP(new BigInteger("4").toByteArray());
+        rsaPrivateKey.setPrimeQ(new BigInteger("5").toByteArray());
+        rsaPrivateKey.setPrimeExponentP(new BigInteger("6").toByteArray());
+        rsaPrivateKey.setPrimeExponentQ(new BigInteger("7").toByteArray());
+        rsaPrivateKey.setCrtCoefficient(new BigInteger("8").toByteArray());
+        rsaPrivateKey.setActive(true);
+
+        return rsaPrivateKey;
+    }
+
+    // 134: need to add an encryption method for, makeRSAPrivateKeyBytes
 
     public static RSAKeyPair makeRSAKeyPair() {
         return new RSAKeyPair(

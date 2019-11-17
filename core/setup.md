@@ -1,15 +1,3 @@
-Environment Variables
----------------------
- - Edit, `~/.profile`
- 
-   ```bash
-   export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
-   export AUTH_DB_USER="postgres";
-   export AUTH_DB_PASSWORD="";
-   export ISSUER="https://sso.rootservices.org"
-   ```
- - Run the command, `source ~/.profile`
-
 Postgres
 --------
  - install Postgres

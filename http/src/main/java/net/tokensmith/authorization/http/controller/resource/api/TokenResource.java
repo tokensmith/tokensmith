@@ -12,8 +12,8 @@ import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.http.controller.security.APIUser;
@@ -40,7 +40,7 @@ import java.util.Optional;
 
 @Component
 public class TokenResource extends Resource<TokenSession, APIUser> {
-    private static final Logger logger = LogManager.getLogger(TokenResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenResource.class);
     public static String URL = "/api/v1/token(?!/).*";
 
     private JsonTranslator<Error> errorTranslator;

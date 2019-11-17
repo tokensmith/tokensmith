@@ -9,9 +9,13 @@ sourceCompatibility = 12
 targetCompatibility = 12
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVerion}"
+    compile group: 'net.tokensmith', name: 'jwt', version: "${jwtVersion}"
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
