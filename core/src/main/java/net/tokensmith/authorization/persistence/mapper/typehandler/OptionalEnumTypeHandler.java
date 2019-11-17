@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * Created by tommackenzie on 2/27/16.
  */
-public class OptionalEnumTypeHandler<T extends Enum> extends OptionalTypeHandler<T> {
+public class OptionalEnumTypeHandler<T extends Enum<T>> extends OptionalTypeHandler<T> {
 
     private Class<T> type;
 

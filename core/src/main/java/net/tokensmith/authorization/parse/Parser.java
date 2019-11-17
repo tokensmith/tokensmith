@@ -20,7 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 @Component
-public class Parser {
+public class Parser<T> {
     private static String TO_OBJ_ERROR = "Could not construct to object";
     private static String FIELD_ERROR = "Could not set field value";
     private static String CNF_ERROR = "Could not find target class";
@@ -50,8 +50,8 @@ public class Parser {
      * @throws OptionalException
      * @throws ParseException
      */
-    public Object to(Class clazz, List<ParamEntity> fields, Map<String, List<String>> params) throws RequiredException, OptionalException, ParseException {
-        Object o;
+    public T to(Class<T> clazz, List<ParamEntity> fields, Map<String, List<String>> params) throws RequiredException, OptionalException, ParseException {
+        T o;
         try {
             o = clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -76,6 +76,8 @@ public class Parser {
 
             try {
                 if (f.getGenericType() instanceof ParameterizedType) {
+                    // this is a List or Optional
+
                     ParameterizedType pt = (ParameterizedType) f.getGenericType();
                     String rawType = pt.getRawType().getTypeName();
                     String argType = pt.getActualTypeArguments()[0].getTypeName();
@@ -83,7 +85,7 @@ public class Parser {
                     if (from == null || from.size() == 0) {
                         // these will be optional parameters.
                         if (RawType.LIST.getTypeName().equals(rawType)) {
-                            ArrayList arrayList = new ArrayList<>();
+                            ArrayList<Object> arrayList = new ArrayList<>();
                             f.set(o, arrayList);
                         } else if (RawType.OPTIONAL.getTypeName().equals(rawType)) {
                             f.set(o, Optional.empty());

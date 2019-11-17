@@ -1,5 +1,6 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request;
 
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.ValidateRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ValidateCodeGrant extends ValidateRequest {
 
     @Autowired
-    public ValidateCodeGrant(Parser parser, UrlValidator urlValidator, GetClientRedirectUri getConfidentialClientRedirectUri, CompareConfidentialClientToAuthRequest compareConfidentialClientToAuthRequest) {
+    public ValidateCodeGrant(Parser<AuthRequest> parser, UrlValidator urlValidator, GetClientRedirectUri getConfidentialClientRedirectUri, CompareConfidentialClientToAuthRequest compareConfidentialClientToAuthRequest) {
         super(parser, urlValidator, getConfidentialClientRedirectUri, compareConfidentialClientToAuthRequest);
     }
 }
