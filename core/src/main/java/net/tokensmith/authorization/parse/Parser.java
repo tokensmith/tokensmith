@@ -99,7 +99,8 @@ public class Parser<T> {
                             if (RawType.LIST.getTypeName().equals(rawType)) {
                                 ArrayList arrayList = new ArrayList<>();
                                 for (String parsedValue : parsedValues) {
-                                    Object item = make(argType, parsedValue);
+                                    // this could be a factory with static implementations
+                                    var item = make(argType, parsedValue);
                                     arrayList.add(item);
                                 }
                                 f.set(o, arrayList);
