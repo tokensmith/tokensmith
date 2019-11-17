@@ -3,7 +3,7 @@ package net.tokensmith.authorization.oauth2.grant.token;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.*;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;

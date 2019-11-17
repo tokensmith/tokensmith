@@ -11,8 +11,8 @@ import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.http.controller.exception.BadRequestException;
 import net.tokensmith.authorization.http.controller.security.APIUser;
 import net.tokensmith.authorization.openId.jwk.GetKeys;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @Component
 public class RSAPublicKeysResource extends RestResource<APIUser, RSAPublicKey[]> {
-    private static final Logger LOGGER = LogManager.getLogger(RSAPublicKeysResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RSAPublicKeysResource.class);
     public static String URL = "/api/v1/jwk/rsa(?!/)(.*)";
 
     private JsonTranslator<ClientError> clientErrorTranslator;

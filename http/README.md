@@ -30,7 +30,6 @@ mvn flyway:migrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdb
 Running the tests from the terminal.
 ------------------------------------
  - Install all dependencies.
- - Set environment variables (see, Running Migrations).
  - Create the db specified in, `application-default.properties`.
  - Run migrations against the test db (see, Running Migrations)
  - Use gradle to run the tests, `./gradlew clean test`

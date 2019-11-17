@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.openId.identity;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class MakeUserInfoIdentityToken {
-    private static final Logger logger = LogManager.getLogger(MakeUserInfoIdentityToken.class);
+    private static final Logger logger = LoggerFactory.getLogger(MakeUserInfoIdentityToken.class);
 
     private HashToken hashToken;
     private ResourceOwnerRepository resourceOwnerRepository;

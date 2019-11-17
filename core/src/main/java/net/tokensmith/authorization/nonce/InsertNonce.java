@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.nonce;
 
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Component
 public class InsertNonce {
-    private static final Logger logger = LogManager.getLogger(InsertNonce.class);
+    private static final Logger logger = LoggerFactory.getLogger(InsertNonce.class);
     private ResourceOwnerRepository resourceOwnerRepository;
     private RandomString randomString;
     private HashToken hashToken;

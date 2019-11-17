@@ -13,8 +13,8 @@ import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.http.controller.security.APIUser;
 import net.tokensmith.authorization.openId.identity.MakeUserInfoIdentityToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
@@ -32,7 +32,7 @@ import java.util.*;
 
 @Component
 public class UserInfoResource extends RestResource<APIUser, UserInfo> {
-    private static final Logger logger = LogManager.getLogger(UserInfoResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserInfoResource.class);
     public static String URL = "/api/v1/userinfo";
 
     private JsonTranslator<ServerError> serverErrorTranslator;

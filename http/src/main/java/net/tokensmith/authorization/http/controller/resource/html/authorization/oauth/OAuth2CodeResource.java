@@ -7,8 +7,8 @@ import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
-    private static final Logger logger = LogManager.getLogger(OAuth2CodeResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(OAuth2CodeResource.class);
 
     private static String JSP_PATH = "/WEB-INF/jsp/authorization.jsp";
     protected static String EMAIL = "email";

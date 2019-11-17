@@ -1,32 +1,22 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.jwt.builder.compact.EncryptedCompactBuilder;
-import net.tokensmith.jwt.builder.exception.CompactException;
+
 import net.tokensmith.jwt.config.JwtAppFactory;
-import net.tokensmith.jwt.entity.jwe.EncryptionAlgorithm;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
-import net.tokensmith.jwt.entity.jwk.Use;
-import net.tokensmith.jwt.entity.jwt.header.Algorithm;
-import net.tokensmith.jwt.jwe.entity.JWE;
-import net.tokensmith.jwt.jwe.factory.exception.CipherException;
 import net.tokensmith.jwt.jwe.serialization.JweDeserializer;
-import net.tokensmith.jwt.jwe.serialization.exception.KeyException;
-import net.tokensmith.jwt.serialization.exception.DecryptException;
-import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.authorization.persistence.mapper.RSAPrivateKeyMapper;
 import net.tokensmith.repository.entity.RSAPrivateKeyBytes;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.CipherRepository;
 import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,18 +24,18 @@ import java.util.stream.Collectors;
  * Created by tommackenzie on 1/28/16.
  */
 @Component
-public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository {
-    private static final Logger LOGGER = LogManager.getLogger(RsaPrivateKeyRepositoryImpl.class);
+public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository, CipherRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RsaPrivateKeyRepositoryImpl.class);
 
     private RSAPrivateKeyMapper rsaPrivateKeyMapper;
     private JwtAppFactory jwtAppFactory;
-    private static String KEY_ID = "XXX";
-    private static String SECRET = "LjF8D5qi24-dJQRFeAshXmJLhtQzn62iLt8f5ftDR_Q";
+    private SymmetricKey dbKey;
 
     @Autowired
-    public RsaPrivateKeyRepositoryImpl(RSAPrivateKeyMapper rsaPrivateKeyMapper, JwtAppFactory jwtAppFactory) {
+    public RsaPrivateKeyRepositoryImpl(RSAPrivateKeyMapper rsaPrivateKeyMapper, JwtAppFactory jwtAppFactory, SymmetricKey dbKey) {
         this.rsaPrivateKeyMapper = rsaPrivateKeyMapper;
         this.jwtAppFactory = jwtAppFactory;
+        this.dbKey = dbKey;
     }
 
     @Override
@@ -82,13 +72,29 @@ public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository {
         return key;
     }
 
+    @Override
+    public Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    public JweDeserializer getDeserializer() {
+        return jwtAppFactory.jweDirectDesializer();
+    }
+
+    @Override
+    public SymmetricKey getKey() {
+        return this.dbKey;
+    }
+
     /**
      * Encrypts a RSAPrivateKey and returns a RSAPrivateKeyBytes
      *
      * @param from an instance of RSAPrivateKey
      * @return an instance of RSAPrivateKeyBytes that is encrypted
      */
-    protected RSAPrivateKeyBytes encrypt(RSAPrivateKey from) {
+    @Override
+    public RSAPrivateKeyBytes encrypt(RSAPrivateKey from) {
         RSAPrivateKeyBytes to = from(from);
 
         to.setModulus(encrypt(to.getModulus()));
@@ -223,51 +229,5 @@ public class RsaPrivateKeyRepositoryImpl implements RsaPrivateKeyRepository {
 
     protected byte[] toBytes(BigInteger from) {
         return from.toByteArray();
-    }
-
-    protected byte[] encrypt(byte[] payload) {
-        EncryptedCompactBuilder compactBuilder = new EncryptedCompactBuilder();
-
-        SymmetricKey key = new SymmetricKey(
-                Optional.of(KEY_ID), SECRET, Use.ENCRYPTION
-        );
-
-        ByteArrayOutputStream jwe = null;
-        try {
-            jwe = compactBuilder.encAlg(EncryptionAlgorithm.AES_GCM_256)
-                    .alg(Algorithm.DIRECT)
-                    .encAlg(EncryptionAlgorithm.AES_GCM_256)
-                    .payload(payload)
-                    .cek(key)
-                    .build();
-        } catch (CompactException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-
-        return jwe.toByteArray();
-    }
-
-    protected byte[] decrypt(byte[] cipherText) {
-        SymmetricKey key = new SymmetricKey(
-                Optional.of(KEY_ID), SECRET, Use.ENCRYPTION
-        );
-
-        JweDeserializer jweDeserializer = jwtAppFactory.jweDirectDesializer();
-
-        JWE to = null;
-        try {
-            String cipher = new String(cipherText);
-            to = jweDeserializer.stringToJWE(cipher, key);
-        } catch (JsonToJwtException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (DecryptException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (CipherException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (KeyException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-
-        return to.getPayload();
     }
 }

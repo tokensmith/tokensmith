@@ -483,6 +483,8 @@ public class FixtureFactory {
         return rsaPrivateKey;
     }
 
+    // 134: need to add an encryption method for, makeRSAPrivateKeyBytes
+
     public static RSAKeyPair makeRSAKeyPair() {
         return new RSAKeyPair(
                 Optional.of("test-key-id"),
