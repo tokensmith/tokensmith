@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.token.InsertTokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
@@ -10,6 +10,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.repo.*;
 import net.tokensmith.authorization.security.RandomString;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import java.util.UUID;
  */
 @Component
 public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
-    protected static final Logger logger = LogManager.getLogger(InsertTokenGraphImplicitGrant.class);
+    protected static final Logger logger = LoggerFactory.getLogger(InsertTokenGraphImplicitGrant.class);
 
     @Autowired
     public InsertTokenGraphImplicitGrant(ConfigurationRepository configurationRepository, RandomString randomString, MakeBearerToken makeBearerToken, TokenRepository tokenRepository, MakeRefreshToken makeRefreshToken, RefreshTokenRepository refreshTokenRepository, TokenScopeRepository tokenScopeRepository, TokenAudienceRepository tokenAudienceRepository) {

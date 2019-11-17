@@ -9,8 +9,8 @@ import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.router.entity.Regex;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.http.controller.security.APIUser;
 import net.tokensmith.authorization.openId.jwk.GetKeys;
 import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @Component
 public class RSAPublicKeyResource extends RestResource<APIUser, RSAPublicKey> {
-    private static final Logger logger = LogManager.getLogger(RSAPublicKeyResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(RSAPublicKeyResource.class);
     private static String ID_NAME = "id";
     public static String URL = "/api/v1/jwk/rsa/(?<" + ID_NAME + ">" + Regex.UUID.getRegex() + ")";
 

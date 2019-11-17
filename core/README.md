@@ -13,17 +13,6 @@ Requesting Features and reporting bugs
  - Features are reported and tracked in [pivotal tracker](https://www.pivotaltracker.com/n/projects/1199316).
  - Reporting issues through github is acceptable. We will probably transfer them to PT.
 
-Environment Variables for configuring db connection
----------------------------------------------------
-```bash
-$ export AUTH_DB_URL="jdbc:postgresql://127.0.0.1:5432/auth";
-$ export AUTH_DB_USER="postgres";
-$ export AUTH_DB_PASSWORD="";
-$ export ISSUER="https://sso.rootservices.org"
-$ export ALLOW_LOCAL_URLS="true"
-$ export ALLOW_HTTP_URLS="true"
-```
-
 Environment Variable for publishing to a message queue
 ----------------------------------------------
 
@@ -43,10 +32,9 @@ $ ./gradlew flywayMigrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.u
 Running the tests from the terminal.
 ------------------------------------
  - Install all dependencies.
- - Set environment variables.
- - Create the db specified in AUTH_DB_URL.
+ - Create the db specified in application-default.properties.
  - Run migrations against the test db (see, Running Migrations)
- - Use maven to run the tests, `mvn test`
+ - run the tests `.gradlew clean core:test`
 
 Interact with postgres
 -----------------------

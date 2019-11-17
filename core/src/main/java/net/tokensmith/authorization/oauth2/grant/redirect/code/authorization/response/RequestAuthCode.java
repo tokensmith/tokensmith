@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 @Component
 public class RequestAuthCode {
-    private static final Logger logger = LogManager.getLogger(RequestAuthCode.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestAuthCode.class);
 
     private ValidateCodeGrant validateCodeGrant;
     protected LoginResourceOwner loginResourceOwner;

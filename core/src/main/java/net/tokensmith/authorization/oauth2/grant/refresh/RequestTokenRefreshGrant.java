@@ -4,8 +4,8 @@ import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.RefreshTokenRepository;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestTokenRefreshGrant implements RequestTokenGrant {
-    protected static final Logger logger = LogManager.getLogger(RequestTokenRefreshGrant.class);
+    protected static final Logger logger = LoggerFactory.getLogger(RequestTokenRefreshGrant.class);
 
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputRefreshGrantFactory tokenInputRefreshGrantFactory;

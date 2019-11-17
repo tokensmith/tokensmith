@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.nonce.reset;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.exception.NotFoundException;
 import net.tokensmith.authorization.nonce.SpendNonce;
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Component
 public class ForgotPassword {
-    private static final Logger logger = LogManager.getLogger(ForgotPassword.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForgotPassword.class);
     private InsertNonce insertNonce;
     private Publish publish;
     private String issuer;

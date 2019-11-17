@@ -6,8 +6,8 @@ import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.AuthCodeRepository;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RequestTokenCodeGrant implements RequestTokenGrant {
-    private static final Logger LOGGER = LogManager.getLogger(RequestTokenCodeGrant.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestTokenCodeGrant.class);
     private LoginConfidentialClient loginConfidentialClient;
     private TokenInputCodeGrantFactory tokenInputCodeGrantFactory;
     private HashToken hashToken;
