@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class ValidateOpenIdCodeResponseType extends ValidateOpenIdRequest<OpenIdAuthRequest> {
 
     @Autowired
-    public ValidateOpenIdCodeResponseType(Parser parser, UrlValidator urlValidator, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
-        super(parser, urlValidator, getOpenIdConfidentialClientRedirectUri, compareConfidentialClientToOpenIdAuthRequest);
+    public ValidateOpenIdCodeResponseType(Parser<OpenIdAuthRequest> parser, UrlValidator urlValidator, GetOpenIdConfidentialClientRedirectUri getOpenIdConfidentialClientRedirectUri, CompareConfidentialClientToOpenIdAuthRequest compareConfidentialClientToOpenIdAuthRequest) {
+        super(parser, OpenIdAuthRequest.class, urlValidator, getOpenIdConfidentialClientRedirectUri, compareConfidentialClientToOpenIdAuthRequest);
     }
 }
