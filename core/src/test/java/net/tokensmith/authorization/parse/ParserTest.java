@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 
 public class ParserTest {
-    private Parser subject;
+    private Parser<Dummy> subject;
 
     // names of fields expected
     private List<String> names = Arrays.asList(
@@ -36,7 +36,7 @@ public class ParserTest {
 
     @Before
     public void setUp() {
-        subject = new Parser(
+        subject = new Parser<Dummy>(
             new OptionalParam(), new RequiredParam()
         );
     }
