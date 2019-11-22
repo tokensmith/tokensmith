@@ -34,6 +34,8 @@ import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
@@ -46,7 +48,8 @@ import static org.junit.Assert.assertThat;
 
 
 @Category(ServletContainerTest.class)
-public class TokenServletResponseTypePasswordTest {
+public class TokenResourceResponseTypePasswordTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceResponseTypePasswordTest.class);
 
     private static LoadConfClientPasswordResponseType loadConfClientPasswordResponseType;
     private static LoadResourceOwner loadResourceOwner;
@@ -139,6 +142,17 @@ public class TokenServletResponseTypePasswordTest {
                 "UTF-8"
         );
 
+        StringBuilder requestLog = new StringBuilder()
+                .append("POST ").append(servletURI).append("\n")
+                .append(Header.CONTENT_TYPE.getValue()).append(": ").append(ContentType.FORM_URL_ENCODED.getValue()).append("\n")
+                .append("Authorization:" ).append("Basic ").append(encodedCredentials).append("\n")
+                .append(form);
+
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid token with password request.\n{}", requestLog.toString()
+        );
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue())
@@ -147,6 +161,12 @@ public class TokenServletResponseTypePasswordTest {
                 .execute();
 
         Response response = f.get();
+
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid token with password response. headers: {}, body: {}",
+                response.getHeaders(), response.getResponseBody()
+        );
 
         assertThat(response.getStatusCode(), is(200));
         assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
@@ -164,6 +184,11 @@ public class TokenServletResponseTypePasswordTest {
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+
+        LOGGER.trace(
+                "get openid token with password, public key. id: {}, modulus: {}, publicExponent: {}",
+                key.getId().toString(), key.getModulus(), key.getPublicExponent()
+        );
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
