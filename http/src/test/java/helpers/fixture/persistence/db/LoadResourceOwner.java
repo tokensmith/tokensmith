@@ -33,7 +33,7 @@ public class LoadResourceOwner {
     protected ResourceOwner makeResourceOwner() {
         ResourceOwner ro = new ResourceOwner();
         ro.setId(UUID.randomUUID());
-        ro.setEmail("test-" + UUID.randomUUID().toString() + "@rootservices.org");
+        ro.setEmail("test-" + UUID.randomUUID().toString() + "@tokensmith.net");
 
         String hashedPassword = textHasher.run("password");
         ro.setPassword(hashedPassword);

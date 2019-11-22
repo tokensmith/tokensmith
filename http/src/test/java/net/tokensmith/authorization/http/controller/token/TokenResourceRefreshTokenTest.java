@@ -5,24 +5,31 @@ import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
-import helpers.fixture.persistence.*;
+import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.client.confidential.LoadConfClientCodeResponseType;
 import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeResponseType;
 import helpers.fixture.persistence.http.PostTokenCodeGrant;
 import helpers.fixture.persistence.http.PostAuthorizationForm;
+import helpers.fixture.persistence.http.PostTokenPasswordGrant;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.otter.controller.header.Header;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.openId.identity.entity.IdToken;
+import net.tokensmith.authorization.http.response.Error;
 import net.tokensmith.authorization.http.response.OpenIdToken;
 import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.http.response.TokenType;
+import net.tokensmith.authorization.openId.identity.entity.IdToken;
+import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.repo.TokenRepository;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.config.AppConfig;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
@@ -31,33 +38,40 @@ import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.jwt.jws.verifier.VerifySignature;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
-import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.authorization.http.response.Error;
-import net.tokensmith.repository.entity.ConfidentialClient;
-import net.tokensmith.config.AppConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-
+/**
+ * Created by tommackenzie on 10/16/16.
+ */
 @Category(ServletContainerTest.class)
-public class TokenServletResponseTypeCodeTest {
+public class TokenResourceRefreshTokenTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceRefreshTokenTest.class);
 
-    private static LoadConfClientCodeResponseType loadConfidentialClientWithScopes;
-    private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfidentialClientWithScopes;
+    private static LoadConfClientCodeResponseType loadConfClientWithScopes;
+    private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfClientWithScopes;
     private static LoadResourceOwner loadResourceOwner;
     private static LoadOpenIdResourceOwner loadOpenIdResourceOwner;
     private static PostAuthorizationForm postAuthorizationForm;
     private static PostTokenCodeGrant postTokenCodeGrant;
+    private static PostTokenPasswordGrant postTokenPasswordGrant;
+    private static HashToken hashToken;
+    private static TokenRepository tokenRepository;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
-    protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
+
     protected static String servletURI;
+    protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String authServletURI;
+
 
     @BeforeClass
     public static void beforeClass() {
@@ -66,82 +80,53 @@ public class TokenServletResponseTypeCodeTest {
                 IntegrationTestSuite.getContext()
         );
 
-        loadConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadConfClientCodeResponseType.class);
-        loadOpenIdConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadOpenIdConfClientCodeResponseType.class);
-        servletURI = baseURI + "api/v1/token";
-        authServletURI = baseURI + "authorization";
+        loadConfClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadConfClientCodeResponseType.class);
+        loadOpenIdConfClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadOpenIdConfClientCodeResponseType.class);
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         loadOpenIdResourceOwner = IntegrationTestSuite.getContext().getBean(LoadOpenIdResourceOwner.class);
         postAuthorizationForm = factoryForPersistence.makePostAuthorizationForm();
         postTokenCodeGrant = factoryForPersistence.makePostTokenCodeGrant();
+        postTokenPasswordGrant = factoryForPersistence.postPasswordGrant();
+        hashToken = IntegrationTestSuite.getContext().getBean(HashToken.class);
+        tokenRepository = IntegrationTestSuite.getContext().getBean(TokenRepository.class);
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+
+        servletURI = baseURI + "api/v1/token";
+        authServletURI = baseURI + "authorization";
     }
 
-    public Map<String, List<String>> makeForm(String grantType, String code, String redirectUri) {
+    public void expireAccessToken(String accessToken) {
+        String hashedAccessToken = hashToken.run(accessToken);
+        tokenRepository.updateExpiresAtByAccessToken(OffsetDateTime.now().minusDays(1), hashedAccessToken);
+    }
+
+    public Map<String, List<String>> makeForm(String grantType, String refreshToken) {
 
         Map<String, List<String>> form = new HashMap<>();
         form.put("grant_type", Arrays.asList(grantType));
-        form.put("code", Arrays.asList(code));
-        form.put("redirect_uri", Arrays.asList(redirectUri));
+        form.put("refresh_token", Arrays.asList(refreshToken));
 
         return form;
     }
 
     @Test
     public void getTokenShouldReturn200() throws Exception {
+        ConfidentialClient cc = loadConfClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
 
-        AppConfig config = new AppConfig();
-        ObjectMapper om = config.objectMapper();
-
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString());
-
-        String credentials = confidentialClient.getClient().getId().toString() + ":password";
-
-        String encodedCredentials = new String(
-                Base64.getEncoder().encode(credentials.getBytes()),
-                "UTF-8"
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader("Content-Type", "application/x-www-form-urlencoded")
-                .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(200));
-        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
-        assertThat(response.getHeader("Cache-Control"), is("no-store"));
-        assertThat(response.getHeader("Pragma"), is("no-cache"));
-
-        Token token = om.readValue(response.getResponseBody(), Token.class);
-        assertThat(token.getTokenType(), is(TokenType.BEARER));
-        assertThat(token.getExpiresIn(), is(3600L));
-        assertThat(token.getAccessToken(), is(notNullValue()));
-        assertThat(token.getRefreshToken(), is(notNullValue()));
-    }
-
-    @Test
-    public void getOpenIdTokenShouldReturn200() throws Exception {
         List<String> scopes = new ArrayList<>();
-        scopes.add("openid");
-        scopes.add("email");
+        scopes.add("profile");
 
-        RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
-        ResourceOwner ro = loadOpenIdResourceOwner.run();
-        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
-
+        // generate a token with a auth code.
         String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        Token token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
 
+        // prepare the request
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
 
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, cc.getClient().getRedirectURI().toString());
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
 
         String credentials = cc.getClient().getId().toString() + ":password";
 
@@ -160,22 +145,92 @@ public class TokenServletResponseTypeCodeTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(200));
+
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        Token actual = om.readValue(response.getResponseBody(), Token.class);
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+    }
+
+    @Test
+    public void getOpenIdTokenShouldReturn200() throws Exception {
+        RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
+
+        // generate a token with a auth code.
+        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
+
+        // prepare the request
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
+
+        String credentials = cc.getClient().getId().toString() + ":password";
+
+        String encodedCredentials = new String(
+                Base64.getEncoder().encode(credentials.getBytes()),
+                "UTF-8"
+        );
+
+        StringBuilder requestLog = new StringBuilder()
+                .append("POST ").append(servletURI).append("\n")
+                .append(Header.CONTENT_TYPE.getValue()).append(": ").append(ContentType.FORM_URL_ENCODED.getValue()).append("\n")
+                .append("Authorization:" ).append("Basic ").append(encodedCredentials).append("\n")
+                .append(form);
+
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid token with refresh token request.\n{}", requestLog.toString()
+        );
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form)
+                .execute();
+
+        Response response = f.get();
+
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid token with refresh token response. headers: {}, body: {}",
+                response.getHeaders(), response.getResponseBody()
+        );
+
+        assertThat(response.getStatusCode(), is(200));
         assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
         assertThat(response.getHeader("Cache-Control"), is("no-store"));
         assertThat(response.getHeader("Pragma"), is("no-cache"));
 
-        OpenIdToken token = om.readValue(response.getResponseBody(), OpenIdToken.class);
-        assertThat(token.getTokenType(), is(TokenType.BEARER));
-        assertThat(token.getExpiresIn(), is(3600L));
-        assertThat(token.getAccessToken(), is(notNullValue()));
-        assertThat(token.getRefreshToken(), is(notNullValue()));
-        assertThat(token.getIdToken(), is(notNullValue()));
+        OpenIdToken actual = om.readValue(response.getResponseBody(), OpenIdToken.class);
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+        assertThat(actual.getRefreshToken(), is(notNullValue()));
+        assertThat(actual.getIdToken(), is(notNullValue()));
 
         // verify id token
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+        JsonWebToken jwt = jwtSerde.stringToJwt(actual.getIdToken(), IdToken.class);
+
+        LOGGER.trace(
+                "get openid token with refresh token, public key. id: {}, modulus: {}, publicExponent: {}",
+                key.getId().toString(), key.getModulus(), key.getPublicExponent()
+        );
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
@@ -208,24 +263,79 @@ public class TokenServletResponseTypeCodeTest {
     }
 
     @Test
-    public void getTokenWhenCodeIsMissingShouldReturn400() throws Exception {
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
+    public void getTokenWhenOriginalWasPasswordGrantShouldReturn200() throws Exception {
+        ConfidentialClient cc = loadConfClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
 
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+        OpenIdToken token = postTokenPasswordGrant.post(
+                ro.getEmail(),
+                "password",
+                "profile",
+                cc.getClient().getId().toString(),
+                "password",
+                servletURI
+        );
+        expireAccessToken(token.getAccessToken());
 
+        // prepare the request
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
 
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString());
-        form.remove("code");
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
 
-
-        String credentials = confidentialClient.getClient().getId().toString() + ":password";
+        String credentials = cc.getClient().getId().toString() + ":password";
 
         String encodedCredentials = new String(
                 Base64.getEncoder().encode(credentials.getBytes()),
-                StandardCharsets.UTF_8
+                "UTF-8"
+        );
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form)
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(200));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+
+        Token actual = om.readValue(response.getResponseBody(), Token.class);
+        assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getAccessToken(), is(notNullValue()));
+    }
+
+    @Test
+    public void getTokenWhenRefreshTokenIsMissingShouldReturn400() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
+
+        // generate a token with a auth code.
+        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
+
+        // prepare the request
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("refresh_token", null);
+        form.remove("refresh_token");
+
+        String credentials = cc.getClient().getId().toString() + ":password";
+
+        String encodedCredentials = new String(
+                Base64.getEncoder().encode(credentials.getBytes()),
+                "UTF-8"
         );
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -244,163 +354,113 @@ public class TokenServletResponseTypeCodeTest {
 
         Error error = om.readValue(response.getResponseBody(), Error.class);
         assertThat(error.getError(), is("invalid_request"));
-        assertThat(error.getDescription(), is("code is a required field"));
-    }
+        assertThat(error.getDescription(), is("refresh_token is a required field"));
 
-    @Test
-    public void getTokenWhenRedirectUriIsMissingShouldReturn400() throws Exception {
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-        ResourceOwner ro = loadResourceOwner.run();
-
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
-
-        AppConfig config = new AppConfig();
-        ObjectMapper om = config.objectMapper();
-
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, null);
-        form.remove("redirect_uri");
-
-        String credentials = confidentialClient.getClient().getId().toString() + ":password";
-
-        String encodedCredentials = new String(
-                Base64.getEncoder().encode(credentials.getBytes()),
-                StandardCharsets.UTF_8
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader("Content-Type", "application/x-www-form-urlencoded")
-                .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(400));
-        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
-        assertThat(response.getHeader("Cache-Control"), is("no-store"));
-        assertThat(response.getHeader("Pragma"), is("no-cache"));
-
-        Error error = om.readValue(response.getResponseBody(), Error.class);
-        assertThat(error.getError(), is("invalid_grant"));
-        assertThat(error.getDescription(), is(nullValue()));
     }
 
     @Test
     public void getTokenWhenMissingAuthenticationHeaderShouldReturn401() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader(Header.CONTENT_TYPE.getValue(), "application/x-www-form-urlencoded")
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(401));
-        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
-        assertThat(response.getHeader("Cache-Control"), is("no-store"));
-        assertThat(response.getHeader("Pragma"), is("no-cache"));
-        assertThat(response.getHeader("WWW-Authenticate"), is("Basic"));
-
-        AppConfig config = new AppConfig();
-        ObjectMapper om = config.objectMapper();
-
-        Error error = om.readValue(response.getResponseBody(), Error.class);
-        assertThat(error.getError(), is("invalid_client"));
-        assertThat(error.getDescription(), is(nullValue()));
-    }
-
-    @Test
-    public void getTokenWhenAuthenticationFailsWrongPasswordShouldReturn401() throws Exception {
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-        ResourceOwner ro = loadResourceOwner.run();
-
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
-
-        AppConfig config = new AppConfig();
-        ObjectMapper om = config.objectMapper();
-
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString());
-
-        String credentials = confidentialClient.getClient().getId().toString() + ":wrong-password";
-
-        String encodedCredentials = new String(
-                Base64.getEncoder().encode(credentials.getBytes()),
-                StandardCharsets.UTF_8
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader("Content-Type", "application/x-www-form-urlencoded")
-                .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(401));
-        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
-        assertThat(response.getHeader("Cache-Control"), is("no-store"));
-        assertThat(response.getHeader("Pragma"), is("no-cache"));
-        assertThat(response.getHeader("WWW-Authenticate"), is("Basic"));
-
-        Error error = om.readValue(response.getResponseBody(), Error.class);
-        assertThat(error.getError(), is("invalid_client"));
-        assertThat(error.getDescription(), is(nullValue()));
-    }
-
-    @Test
-    public void getTokenWhenAuthCodeNotFoundShouldReturn400() throws Exception {
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-
-        AppConfig config = new AppConfig();
-        ObjectMapper om = config.objectMapper();
-
-        Map<String, List<String>> form = makeForm("authorization_code", "invalid-authorization-code", confidentialClient.getClient().getRedirectURI().toString());
-
-        String credentials = confidentialClient.getClient().getId().toString() + ":password";
-
-        String encodedCredentials = new String(
-                Base64.getEncoder().encode(credentials.getBytes()),
-                StandardCharsets.UTF_8
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader("Content-Type", "application/x-www-form-urlencoded")
-                .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(400));
-
-        Error error = om.readValue(response.getResponseBody(), Error.class);
-        assertThat(error.getError(), is("invalid_grant"));
-        assertThat(error.getDescription(), is(nullValue()));
-    }
-
-    @Test
-    public void getTokenWhenCodeIsCompromisedShouldReturn400() throws Exception {
-        ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-        ResourceOwner ro = loadResourceOwner.run();
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
-        Token token = postTokenCodeGrant.run(confidentialClient, servletURI, authorizationCode);
+        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
 
-        // attempt to use the auth code a second time.
+        // prepare the request
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
 
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString());
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
 
-        String credentials = confidentialClient.getClient().getId().toString() + ":password";
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setFormParams(form)
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(401));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+
+        Error error = om.readValue(response.getResponseBody(), Error.class);
+        assertThat(error.getError(), is("invalid_client"));
+        assertThat(error.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void getTokenWhenClientAuthenticationFailsWrongPasswordShouldReturn401() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
+
+        // generate a token with a auth code.
+        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
+
+        // prepare the request
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
+
+        String credentials = cc.getClient().getId().toString() + ":wrong-password";
 
         String encodedCredentials = new String(
                 Base64.getEncoder().encode(credentials.getBytes()),
-                StandardCharsets.UTF_8
+                "UTF-8"
+        );
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form)
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(401));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+
+        Error error = om.readValue(response.getResponseBody(), Error.class);
+        assertThat(error.getError(), is("invalid_client"));
+        assertThat(error.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void getTokenWhenRefreshTokenNotFoundShouldReturn400() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
+
+        // prepare the request
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("refresh_token", "wrong-refresh-token");
+
+        String credentials = cc.getClient().getId().toString() + ":password";
+
+        String encodedCredentials = new String(
+                Base64.getEncoder().encode(credentials.getBytes()),
+                "UTF-8"
         );
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -419,6 +479,68 @@ public class TokenServletResponseTypeCodeTest {
 
         Error error = om.readValue(response.getResponseBody(), Error.class);
         assertThat(error.getError(), is("invalid_grant"));
-        assertThat(error.getDescription(), is("the authorization code was already used"));
+        assertThat(error.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void getTokenWhenRefreshTokenIsCompromisedShouldReturn400() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        List<String> scopes = new ArrayList<>();
+        scopes.add("email");
+        scopes.add("openid");
+
+        // generate a token with a auth code.
+        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
+        expireAccessToken(token.getAccessToken());
+
+        // prepare the request
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("refresh_token", token.getRefreshToken());
+
+        String credentials = cc.getClient().getId().toString() + ":password";
+
+        String encodedCredentials = new String(
+                Base64.getEncoder().encode(credentials.getBytes()),
+                "UTF-8"
+        );
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form)
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(200));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+        // end set up test.
+
+        // try to use the same refresh token again.
+        f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form)
+                .execute();
+
+        response = f.get();
+
+        assertThat(response.getStatusCode(), is(400));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+
+        Error error = om.readValue(response.getResponseBody(), Error.class);
+        assertThat(error.getError(), is("invalid_grant"));
+        assertThat(error.getDescription(), is("the refresh token was already used"));
     }
 }
