@@ -33,8 +33,8 @@ import java.util.*;
 public class FixtureFactory {
 
     public static String PLAIN_TEXT_PASSWORD = "password";
-    public static String SECURE_REDIRECT_URI = "https://rootservices.org";
-    public static String REDIRECT_URI = "http://www.rootservices.org";
+    public static String SECURE_REDIRECT_URI = "https://tokensmith.net";
+    public static String REDIRECT_URI = "http://www.tokensmith.net";
 
     /**
      * Used to generate an AES encryption key.
@@ -195,7 +195,7 @@ public class FixtureFactory {
     }
 
     public static String makeRandomEmail() {
-        return "test-" + UUID.randomUUID().toString() + "@rootservices.org";
+        return "test-" + UUID.randomUUID().toString() + "@tokensmith.net";
     }
 
     public static ResourceOwner makeOpenIdResourceOwner() throws Exception {
@@ -541,7 +541,7 @@ public class FixtureFactory {
 
     public static TokenClaims makeTokenClaims(List<String> audience) {
         TokenClaims tc = new TokenClaims();
-        tc.setIssuer("https://sso.rootservices.org");
+        tc.setIssuer("https://sso.tokensmith.net");
         tc.setAudience(audience);
         tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
         tc.setExpirationTime(OffsetDateTime.now().plusDays(1).toEpochSecond());

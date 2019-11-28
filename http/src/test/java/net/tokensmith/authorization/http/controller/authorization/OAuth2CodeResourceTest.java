@@ -78,7 +78,7 @@ public class OAuth2CodeResourceTest {
         String servletURI = this.servletURI +
                 "?client_id=" + confidentialClient.getClient().getId().toString() +
                 "&response_type=code" +
-                "&redirect_uri=http://rootservices.org/wrong";
+                "&redirect_uri=http://tokensmith.net/wrong";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
@@ -132,7 +132,7 @@ public class OAuth2CodeResourceTest {
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
-        List<Param> postData = FormFactory.makeLoginForm("invalid-user@rootservices.org", session.getCsrfToken());
+        List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)

@@ -111,7 +111,7 @@ public class ForgotPasswordResourceTest {
             fail("CSRF error - status code: " + e.getStatusCode() + ", redirect location: " + e.getRedirectUri() + ", response body: " + e.getResponseBody());
         }
 
-        List<Param> postData = FormFactory.makeForgotPasswordForm("some-email-not-found@rootservices.org", session.getCsrfToken());
+        List<Param> postData = FormFactory.makeForgotPasswordForm("some-email-not-found@tokensmith.net", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)

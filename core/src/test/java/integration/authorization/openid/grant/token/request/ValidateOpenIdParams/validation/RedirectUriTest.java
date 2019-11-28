@@ -88,7 +88,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParamsWithNonce(c);
-        p.get("redirect_uri").add("http://rootservices.org");
+        p.get("redirect_uri").add("http://tokensmith.net");
 
         Exception cause = new RequiredException();
         int expectedErrorCode = 1;
@@ -101,7 +101,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadClient();
 
         Map<String, List<String>> p = makeParamsWithNonce(c);
-        p.get("redirect_uri").add("https://rootservices.org/continue");
+        p.get("redirect_uri").add("https://tokensmith.net/continue");
 
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 

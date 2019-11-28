@@ -12,6 +12,7 @@ import helpers.fixture.persistence.http.PostTokenRefreshGrant;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.authorization.http.controller.token.TokenResourceResponseTypeCodeTest;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.entity.ResourceOwner;
@@ -31,6 +32,8 @@ import net.tokensmith.jwt.jws.verifier.VerifySignature;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +49,7 @@ import static org.junit.Assert.assertThat;
  */
 @Category(ServletContainerTest.class)
 public class UserInfoResourceOpenIdRefreshTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoResourceOpenIdRefreshTest.class);
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
     protected static String authServletURI;
@@ -105,6 +109,17 @@ public class UserInfoResourceOpenIdRefreshTest {
         scopes.add("email");
         String token = makeToken(cc, ro, scopes);
 
+        StringBuilder requestLog = new StringBuilder()
+                .append("GET ").append(servletURI).append("\n")
+                .append(Header.ACCEPT.getValue()).append(": ").append("application/jwt").append("\n")
+                .append("Authorization: Bearer " ).append(token)
+                .append("\n");
+
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid userinfo with refresh token.\n{}", requestLog.toString()
+        );
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader("Accept", "application/jwt")
@@ -119,11 +134,22 @@ public class UserInfoResourceOpenIdRefreshTest {
         assertThat(response.getHeader("Cache-Control"), is("no-store"));
         assertThat(response.getHeader("Pragma"), is("no-cache"));
 
+        // used to help write tests for SDK.
+        LOGGER.trace(
+                "get openid token with refresh token. headers: {}, body: {}",
+                response.getHeaders(), response.getResponseBody()
+        );
+
         // verify id token
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
+
+        LOGGER.trace(
+                "get openid userinfo with refresh token, public key. id: {}, modulus: {}, publicExponent: {}",
+                key.getId().toString(), key.getModulus(), key.getPublicExponent()
+        );
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),

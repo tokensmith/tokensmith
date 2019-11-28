@@ -55,7 +55,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
     @Test
     public void clientNotFoundShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
-        URI redirectURI = new URI("https://rootservices.org");
+        URI redirectURI = new URI("https://tokensmith.net");
         Exception rootCause = new OptionalException();
 
         when(mockConfidentialClientRepository.getByClientId(clientId)).thenThrow(RecordNotFoundException.class);
@@ -74,7 +74,7 @@ public class GetOpenIdConfidentialClientRedirectUriTest {
     @Test
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
 
-        URI redirectURI = new URI("https://rootservices.org/mismatch");
+        URI redirectURI = new URI("https://tokensmith.net/mismatch");
         Exception rootCause = new OptionalException();
 
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();

@@ -55,7 +55,7 @@ public class LoginResourceOwnerImplTest {
         ResourceOwner actual = null;
         try {
             actual = subject.run(
-                "test-" + UUID.randomUUID().toString() + "@rootservices.org", "password"
+                "test-" + UUID.randomUUID().toString() + "@tokensmith.net", "password"
             );
         } catch (UnauthorizedException e) {
             assertThat(e.getCause(), instanceOf(RecordNotFoundException.class));

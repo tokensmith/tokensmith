@@ -45,7 +45,7 @@ public class ClientTest {
 
     @Test
     public void redirectURI() throws URISyntaxException {
-        URI redirectUri = new URI("https://rootservices.org");
+        URI redirectUri = new URI("https://tokensmith.net");
         subject.setRedirectURI(redirectUri);
 
         assertThat(subject.getRedirectURI(), is(redirectUri));

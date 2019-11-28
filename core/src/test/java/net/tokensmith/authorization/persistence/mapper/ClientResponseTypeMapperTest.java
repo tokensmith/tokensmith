@@ -36,7 +36,7 @@ public class ClientResponseTypeMapperTest {
     private Client insertClient() throws URISyntaxException {
         Client client = new Client(
                 UUID.randomUUID(),
-                new URI("https://rootservices.org/continue")
+                new URI("https://tokensmith.net/continue")
         );
         clientRepository.insert(client);
         return client;

@@ -78,7 +78,7 @@ public class OpenIdImplicitIdentityResourceTest {
     public void getWhenOpenIdClientResponseTypeIsIdTokenRedirectUriIsWrongShouldReturn404() throws Exception {
         Client client = loadOpenIdPublicClientIdTokenWithScopes.run();
 
-        String servletURI = servletURI(client.getId(), new URI("http://rootservices.org/wrong"), "openid")
+        String servletURI = servletURI(client.getId(), new URI("http://tokensmith.net/wrong"), "openid")
             + "&nonce=some-nonce";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
@@ -127,7 +127,7 @@ public class OpenIdImplicitIdentityResourceTest {
                 + "&nonce=some-nonce";;
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
-        List<Param> postData = FormFactory.makeLoginForm("invalid-user@rootservices.org", session.getCsrfToken());
+        List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
@@ -189,7 +189,7 @@ public class OpenIdImplicitIdentityResourceTest {
         Response response = f.get();
         assertThat(response.getStatusCode(), is(302));
 
-        String expectedLocation = "https://rootservices.org" +
+        String expectedLocation = "https://tokensmith.net" +
                 "?error=invalid_scope" +
                 "&error_description=scope is not available for this client" +
                 "&state=some-state";

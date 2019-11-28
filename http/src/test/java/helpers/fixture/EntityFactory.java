@@ -20,8 +20,8 @@ import java.util.UUID;
 
 
 public class EntityFactory {
-    public static String SECURE_REDIRECT_URI = "https://rootservices.org";
-    public static String ISSUER = "https://sso.rootservices.org";
+    public static String SECURE_REDIRECT_URI = "https://tokensmith.net";
+    public static String ISSUER = "https://sso.tokensmith.net";
 
     public static Optional<String> anyOptionalString() {
         Optional<String> any = Mockito.any();
@@ -178,7 +178,7 @@ public class EntityFactory {
     public static UserInfo makeFullUserInfo() throws Exception {
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan-kenobi-" + UUID.randomUUID() + "@rootservices.org");
+        userInfo.setEmail("obi-wan-kenobi-" + UUID.randomUUID() + "@tokensmith.net");
         userInfo.setPassword("password");
         userInfo.setName(Optional.of("Obi-Wan Kenobi"));
         userInfo.setFamilyName(Optional.of("Kenobi"));

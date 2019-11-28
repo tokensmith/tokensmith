@@ -139,10 +139,10 @@ public class CompareConfidentialClientToAuthRequestImplTest {
     @Test
     public void runRedirectUriMismatch() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
-        client.setRedirectURI(new URI("https://rootservices.org/mismatch"));
+        client.setRedirectURI(new URI("https://tokensmith.net/mismatch"));
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
-        Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
+        Optional<URI> expectedRedirectURI = Optional.ofNullable(new URI("https://tokensmith.net"));
         AuthRequest authRequest = new AuthRequest();
         authRequest.setClientId(client.getId());
 
