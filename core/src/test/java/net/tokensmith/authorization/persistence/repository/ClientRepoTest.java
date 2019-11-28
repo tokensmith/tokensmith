@@ -35,7 +35,7 @@ public class ClientRepoTest {
 
     public Client clientBuilder() throws URISyntaxException {
         UUID uuid = UUID.randomUUID();
-        URI redirectUri = new URI("https://rootservices.org");
+        URI redirectUri = new URI("https://tokensmith.net");
         Client client = new Client(uuid, redirectUri);
         return client;
     }

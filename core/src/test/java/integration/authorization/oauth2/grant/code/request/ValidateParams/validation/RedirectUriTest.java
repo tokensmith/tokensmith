@@ -61,7 +61,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
-        p.get("redirect_uri").add("http://rootservices.org");
+        p.get("redirect_uri").add("http://tokensmith.net");
 
         Exception cause = new OptionalException();
 
@@ -73,7 +73,7 @@ public class RedirectUriTest extends BaseTest {
         Client c = loadConfidentialClient();
 
         Map<String, List<String>> p = makeParams(c.getId());
-        p.get("redirect_uri").add("https://rootservices.org/continue");
+        p.get("redirect_uri").add("https://tokensmith.net/continue");
 
         int expectedErrorCode = ErrorCode.REDIRECT_URI_MISMATCH.getCode();
 

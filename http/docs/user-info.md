@@ -31,7 +31,7 @@ Authorization Header missing
 
 ```
 GET /api/v1/userinfo
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
 ```
@@ -48,7 +48,7 @@ Authorization Scheme is not Bearer
 
 ```
 GET /api/v1/userinfo
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic some-basic-credentials
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
@@ -66,7 +66,7 @@ Failed Authentication
 
 ```
 GET /api/v1/userinfo
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
@@ -86,7 +86,7 @@ Key to sign JWT was not found
 
 ```
 GET /api/v1/userinfo
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
@@ -106,7 +106,7 @@ Failed to use key to sign JWT
 
 ```
 GET /api/v1/userinfo
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
@@ -130,7 +130,7 @@ POST /api/v1/userinfo
 Content-Type: application/json;charset=UTF-8
 Accept: application/json;charset=UTF-8
 {
-  "email": "obi-wan@rootservices.org",
+  "email": "obi-wan@tokensmith.net",
   "password": "password",
   "name": "Obi-Wan Kenobi",
   "family_name": "Kenobi",

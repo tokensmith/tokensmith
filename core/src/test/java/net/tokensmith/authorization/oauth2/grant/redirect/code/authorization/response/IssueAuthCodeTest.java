@@ -53,7 +53,7 @@ public class IssueAuthCodeTest {
         // parameters to pass into run method.
         UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
-        Optional<URI> redirectURI = Optional.of(new URI("https://rootservices.org"));
+        Optional<URI> redirectURI = Optional.of(new URI("https://tokensmith.net"));
 
         // scopes to add to the access request.
         List<String> scopeNames = new ArrayList<>();

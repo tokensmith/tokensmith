@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
-    public static String REDIRECT_URI = "https://rootservices.org/continue";
+    public static String REDIRECT_URI = "https://tokensmith.net/continue";
 
     public Map<String, List<String>> makeParamsWithNonce(Client c) {
         Map<String, List<String>> p = super.makeParamsWithNonce(c);

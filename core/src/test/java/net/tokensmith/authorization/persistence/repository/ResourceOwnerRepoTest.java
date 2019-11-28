@@ -57,7 +57,7 @@ public class ResourceOwnerRepoTest {
 
     @Test(expected= RecordNotFoundException.class)
     public void getByEmailNoRecordFound() throws RecordNotFoundException{
-        String email = "test@rootservices.org";
+        String email = "test@tokensmith.net";
         byte [] password = "plainTextPassword".getBytes();
 
         when(mockMapper.getByEmail(email)).thenReturn(null);

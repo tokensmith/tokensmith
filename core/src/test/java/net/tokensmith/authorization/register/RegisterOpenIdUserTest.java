@@ -66,7 +66,7 @@ public class RegisterOpenIdUserTest {
         ResourceOwner ro = FixtureFactory.makeOpenIdResourceOwner();
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword("password");
 
         String hashedPassword = "hashedPassword";
@@ -125,7 +125,7 @@ public class RegisterOpenIdUserTest {
     @Test
     public void runWhenPasswordBlankShouldThrowRegisterException() throws Exception {
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword("");
 
         RegisterException actual = null;
@@ -142,7 +142,7 @@ public class RegisterOpenIdUserTest {
     @Test
     public void runWhenPasswordNullShouldThrowRegisterException() throws Exception {
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword(null);
 
         RegisterException actual = null;
@@ -161,7 +161,7 @@ public class RegisterOpenIdUserTest {
         ResourceOwner ro = FixtureFactory.makeOpenIdResourceOwner();
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword("password");
 
         String hashedPassword = "hashedPassword";

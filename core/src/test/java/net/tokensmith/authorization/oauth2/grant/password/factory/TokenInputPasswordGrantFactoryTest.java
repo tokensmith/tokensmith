@@ -36,7 +36,7 @@ public class TokenInputPasswordGrantFactoryTest {
     public Map<String, String> makeRequest() {
         Map<String, String> request = new HashMap<>();
         request.put(GRANT_TYPE, GRANT_TYPE_PASSWORD);
-        request.put(subject.USER_NAME, "test@rootservices.org");
+        request.put(subject.USER_NAME, "test@tokensmith.net");
         request.put(subject.PASSWORD, "password");
         request.put(subject.SCOPE, "email address");
 
