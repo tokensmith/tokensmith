@@ -18,9 +18,9 @@ import net.tokensmith.authorization.http.controller.authorization.*;
 import net.tokensmith.authorization.http.controller.resource.ForgotPasswordResourceTest;
 import net.tokensmith.authorization.http.controller.resource.UpdatePasswordResourceTest;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.AuthorizationResource;
-import net.tokensmith.authorization.http.controller.token.TokenServletRefreshTokenTest;
-import net.tokensmith.authorization.http.controller.token.TokenServletResponseTypeCodeTest;
-import net.tokensmith.authorization.http.controller.token.TokenServletResponseTypePasswordTest;
+import net.tokensmith.authorization.http.controller.token.TokenResourceRefreshTokenTest;
+import net.tokensmith.authorization.http.controller.token.TokenResourceResponseTypeCodeTest;
+import net.tokensmith.authorization.http.controller.token.TokenResourceResponseTypePasswordTest;
 import net.tokensmith.authorization.http.controller.userInfo.*;
 import net.tokensmith.otter.config.OtterAppFactory;
 import net.tokensmith.otter.server.container.ServletContainer;
@@ -42,9 +42,9 @@ import java.util.List;
         OpenIdCodeResourceTest.class,
         OpenIdImplicitIdentityResourceTest.class,
         OpenIdImplicitResourceTest.class,
-        TokenServletResponseTypeCodeTest.class,
-        TokenServletResponseTypePasswordTest.class,
-        TokenServletRefreshTokenTest.class,
+        TokenResourceResponseTypeCodeTest.class,
+        TokenResourceResponseTypePasswordTest.class,
+        TokenResourceRefreshTokenTest.class,
         UserInfoResourceTest.class,
         UserInfoResourceOpenIdPasswordTest.class,
         UserInfoResourceOpenIdCodeTest.class,

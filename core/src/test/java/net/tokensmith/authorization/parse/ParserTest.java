@@ -57,7 +57,7 @@ public class ParserTest {
         parameters.put("uuids", uuids);
         parameters.put("opt_uuid", uuids);
 
-        List<String> uris = Arrays.asList("https://rootservices.org");
+        List<String> uris = Arrays.asList("https://tokensmith.net");
         parameters.put("uri", uris);
         parameters.put("uris", uris);
         parameters.put("opt_uri", uris);

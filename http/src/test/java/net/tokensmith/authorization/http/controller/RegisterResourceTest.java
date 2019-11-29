@@ -59,7 +59,7 @@ public class RegisterResourceTest {
             fail("CSRF error - status code: " + e.getStatusCode() + ", redirect location: " + e.getRedirectUri() + ", response body: " + e.getResponseBody());
         }
 
-        String email = UUID.randomUUID().toString() + "@rootservices.org";
+        String email = UUID.randomUUID().toString() + "@tokensmith.net";
         List<Param> postData = FormFactory.makeRegisterForm(email, "foo", "foo", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -83,7 +83,7 @@ public class RegisterResourceTest {
             fail("CSRF error - status code: " + e.getStatusCode() + ", redirect location: " + e.getRedirectUri() + "response body: " + e.getResponseBody());
         }
 
-        String email = UUID.randomUUID().toString() + "@rootservices.org";
+        String email = UUID.randomUUID().toString() + "@tokensmith.net";
         List<Param> postData = FormFactory.makeRegisterForm(email, "foo", "foo", "wrong-csrf-token");
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()

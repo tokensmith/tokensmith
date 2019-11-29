@@ -16,7 +16,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
     public Map<String, List<String>> makeValidateParamsWithNonce(Client c) {
         Map<String, List<String>> p = super.makeParamsWithNonce(c);
         p.get("redirect_uri").clear();
-        p.get("redirect_uri").add("https://rootservices.org/continue");
+        p.get("redirect_uri").add("https://tokensmith.net/continue");
 
         return p;
     }

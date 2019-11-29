@@ -99,7 +99,7 @@ public abstract class BaseTest {
 
         params.get("client_id").add(UUID.randomUUID().toString());
         params.get("response_type").add("TOKEN");
-        params.get("redirect_uri").add("https://rootservices.org");
+        params.get("redirect_uri").add("https://tokensmith.net");
         params.get("nonce").add("some-nonce");
 
         return params;

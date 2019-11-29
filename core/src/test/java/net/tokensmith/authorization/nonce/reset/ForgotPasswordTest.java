@@ -55,7 +55,7 @@ public class ForgotPasswordTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.issuer = "sso.rootservices.org";
+        this.issuer = "sso.tokensmith.net";
         subject = new ForgotPassword(mockInsertNonce, mockPublish, issuer, mockSpendNonce, mockHashTextRandomSalt, mockResourceOwnerRepository, mockTokenRepository, mockRefreshTokenRepository);
     }
 
@@ -66,7 +66,7 @@ public class ForgotPasswordTest {
 
     @Test
     public void sendMessageShouldBeOk() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String plainTextNonce = "plainTextNonce";
 
         when(mockInsertNonce.insert(email, NonceName.RESET_PASSWORD)).thenReturn(plainTextNonce);
@@ -133,7 +133,7 @@ public class ForgotPasswordTest {
 
     @Test
     public void sendMessageShouldThrowNonceException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
 
         when(mockInsertNonce.insert(email, NonceName.RESET_PASSWORD)).thenThrow(NonceException.class);
 

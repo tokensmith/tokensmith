@@ -32,13 +32,13 @@ public class TokenInputCodeGrantFactoryTest {
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "authorization_code");
         request.put("code", "some-code");
-        request.put("redirect_uri", "https://rootservices.org");
+        request.put("redirect_uri", "https://tokensmith.net");
 
         TokenInputCodeGrant actual = subject.run(request);
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getCode(), is("some-code"));
         assertThat(actual.getRedirectUri().isPresent(), is(true));
-        assertThat(actual.getRedirectUri().get(), is(new URI("https://rootservices.org")));
+        assertThat(actual.getRedirectUri().get(), is(new URI("https://tokensmith.net")));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class TokenInputCodeGrantFactoryTest {
         Map<String, String> request = new HashMap<>();
         request.put("grant_type", "authorization_code");
         request.put("code", "some-code");
-        request.put("redirect_uri", "https://rootservices.org");
+        request.put("redirect_uri", "https://tokensmith.net");
         request.put("foo", "banana");
 
         UnknownKeyException actual = null;

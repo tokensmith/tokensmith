@@ -136,7 +136,7 @@ public class ComparePublicClientToOpenIdAuthRequestTest {
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
 
-        URI requestRedirectUri = new URI("https://rootservices.org/mismatch");
+        URI requestRedirectUri = new URI("https://tokensmith.net/mismatch");
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getId());

@@ -41,7 +41,7 @@ public class GetPublicClientRedirectUriTest {
     @Test
     public void clientNotFound() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
-        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
+        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://tokensmith.net"));
         Exception rootCause = new OptionalException();
 
         when(mockClientRepository.getById(clientId)).thenThrow(RecordNotFoundException.class);
@@ -61,7 +61,7 @@ public class GetPublicClientRedirectUriTest {
         Client client = FixtureFactory.makeCodeClientWithScopes();
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
 
-        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org/will/not/match"));
+        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://tokensmith.net/will/not/match"));
         Exception rootCause = new OptionalException();
 
         try {

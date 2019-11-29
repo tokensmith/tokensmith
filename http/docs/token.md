@@ -22,13 +22,13 @@ Optional Fields:
  
 ```
 POST /token HTTP/1.1
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
 
 grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
-&redirect_uri=https%3a%2f%2frootservices.org
+&redirect_uri=https%3a%2f%2ftokensmith.net
 ```
 
 ```
@@ -58,12 +58,12 @@ Optional Fields:
  
 ```
 POST /token HTTP/1.1
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
 
-grant_type=password&username=obi-wan@rootservices.org&password=A3ddj3w&scope=openid%20profile
+grant_type=password&username=obi-wan@tokensmith.net&password=A3ddj3w&scope=openid%20profile
 ```
 
 ```
@@ -95,7 +95,7 @@ Optional Fields:
  
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -127,7 +127,7 @@ Authorization Header missing
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -152,7 +152,7 @@ Authorization Scheme is not Basic
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Bearer czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -177,7 +177,7 @@ Client failed authentication
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic wrong-client-credentials
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -224,7 +224,7 @@ Duplicate Field in message body
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -252,7 +252,7 @@ Missing Field in message body or a field's value is empty
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -278,7 +278,7 @@ Unknown Field in message body
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -305,7 +305,7 @@ Invalid Payload - most likely message is not the content-type, application/x-www
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -330,7 +330,7 @@ Invalid Value - scope has no value
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -356,13 +356,13 @@ Authorization Code is compromised (has already been used)
 
 ```
 POST /token HTTP/1.1
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
 
 grant_type=authorization_code&code=SplxlOBeZQQYbYS6WxSbIA
-&redirect_uri=https%3a%2f%2frootservices.org
+&redirect_uri=https%3a%2f%2ftokensmith.net
 ```
 
 ```
@@ -382,7 +382,7 @@ Refresh Token is compromised (has already been used)
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8
@@ -411,7 +411,7 @@ Requested scope is invalid
 
 ```
 POST /api/v1/token
-Host: sso.rootservices.org
+Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
 Accept: application/json;charset=UTF-8

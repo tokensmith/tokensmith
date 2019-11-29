@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ClientNotFoundTest extends BaseTest {
 
-    private static String REDIRECT_URI = "https://rootservices.org";
+    private static String REDIRECT_URI = "https://tokensmith.net";
 
     public Map<String, List<String>> makeParams() {
         Map<String, List<String>> p = super.makeParams();

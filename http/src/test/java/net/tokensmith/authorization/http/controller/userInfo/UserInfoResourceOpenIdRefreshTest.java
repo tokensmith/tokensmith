@@ -1,10 +1,12 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
+import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
+import helpers.fixture.persistence.TestUtils;
 import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeResponseType;
 import helpers.fixture.persistence.http.PostAuthorizationForm;
 import helpers.fixture.persistence.http.PostTokenCodeGrant;
@@ -31,6 +33,8 @@ import net.tokensmith.jwt.jws.verifier.VerifySignature;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +50,7 @@ import static org.junit.Assert.assertThat;
  */
 @Category(ServletContainerTest.class)
 public class UserInfoResourceOpenIdRefreshTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoResourceOpenIdRefreshTest.class);
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
     protected static String authServletURI;
@@ -59,6 +64,7 @@ public class UserInfoResourceOpenIdRefreshTest {
     private static TokenRepository tokenRepository;
     private static PostTokenRefreshGrant postTokenRefreshGrant;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
 
     @BeforeClass
     public static void beforeClass() {
@@ -79,6 +85,7 @@ public class UserInfoResourceOpenIdRefreshTest {
         tokenRepository = ac.getBean(TokenRepository.class);
         postTokenRefreshGrant = factoryForPersistence.makePostTokenRefreshGrant();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
     }
 
     public String makeToken(ConfidentialClient cc, ResourceOwner ro, List<String> scopes) throws Exception {
@@ -105,12 +112,13 @@ public class UserInfoResourceOpenIdRefreshTest {
         scopes.add("email");
         String token = makeToken(cc, ro, scopes);
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader("Accept", "application/jwt")
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setHeader("Authorization", "Bearer " + token)
-                .execute();
+                .setHeader("Authorization", "Bearer " + token);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
 
@@ -124,6 +132,9 @@ public class UserInfoResourceOpenIdRefreshTest {
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
+
+        String fileName = "build/user-info-open-id-from-refresh.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
