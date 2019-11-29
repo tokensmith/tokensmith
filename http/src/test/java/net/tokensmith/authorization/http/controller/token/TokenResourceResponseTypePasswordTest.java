@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
@@ -56,6 +57,7 @@ public class TokenResourceResponseTypePasswordTest {
     private static LoadOpenIdResourceOwner loadOpenIdResourceOwner;
     private static LoadOpenIdConfClientPasswordResponseType loadOpenIdConfClientPasswordResponseType;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
 
@@ -73,6 +75,7 @@ public class TokenResourceResponseTypePasswordTest {
         loadOpenIdConfClientPasswordResponseType = ap.getBean(LoadOpenIdConfClientPasswordResponseType.class);
         servletURI = baseURI + "api/v1/token";
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
     }
 
     @Test
@@ -142,31 +145,16 @@ public class TokenResourceResponseTypePasswordTest {
                 "UTF-8"
         );
 
-        StringBuilder requestLog = new StringBuilder()
-                .append("POST ").append(servletURI).append("\n")
-                .append(Header.CONTENT_TYPE.getValue()).append(": ").append(ContentType.FORM_URL_ENCODED.getValue()).append("\n")
-                .append("Authorization:" ).append("Basic ").append(encodedCredentials).append("\n")
-                .append(form);
-
-        // used to help write tests for SDK.
-        LOGGER.trace(
-                "get openid token with password request.\n{}", requestLog.toString()
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue())
                 .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
+                .setFormParams(form);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
 
-        // used to help write tests for SDK.
-        LOGGER.trace(
-                "get openid token with password response. headers: {}, body: {}",
-                response.getHeaders(), response.getResponseBody()
-        );
 
         assertThat(response.getStatusCode(), is(200));
         assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
@@ -185,10 +173,9 @@ public class TokenResourceResponseTypePasswordTest {
 
         JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
 
-        LOGGER.trace(
-                "get openid token with password, public key. id: {}, modulus: {}, publicExponent: {}",
-                key.getId().toString(), key.getModulus(), key.getPublicExponent()
-        );
+        // helps with SDK tests
+        String fileName = "build/token-open-id-from-password.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),

@@ -1,5 +1,6 @@
 package helper.fixture;
 
+
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
@@ -35,6 +36,7 @@ public class FixtureFactory {
     public static String PLAIN_TEXT_PASSWORD = "password";
     public static String SECURE_REDIRECT_URI = "https://tokensmith.net";
     public static String REDIRECT_URI = "http://www.tokensmith.net";
+
 
     /**
      * Used to generate an AES encryption key.

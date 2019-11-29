@@ -1,10 +1,12 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
+import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
+import helpers.fixture.persistence.TestUtils;
 import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeResponseType;
 import helpers.fixture.persistence.http.PostAuthorizationForm;
 import helpers.fixture.persistence.http.PostTokenCodeGrant;
@@ -12,7 +14,6 @@ import helpers.fixture.persistence.http.PostTokenRefreshGrant;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.suite.IntegrationTestSuite;
-import net.tokensmith.authorization.http.controller.token.TokenResourceResponseTypeCodeTest;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.entity.ResourceOwner;
@@ -63,6 +64,7 @@ public class UserInfoResourceOpenIdRefreshTest {
     private static TokenRepository tokenRepository;
     private static PostTokenRefreshGrant postTokenRefreshGrant;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
 
     @BeforeClass
     public static void beforeClass() {
@@ -83,6 +85,7 @@ public class UserInfoResourceOpenIdRefreshTest {
         tokenRepository = ac.getBean(TokenRepository.class);
         postTokenRefreshGrant = factoryForPersistence.makePostTokenRefreshGrant();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
     }
 
     public String makeToken(ConfidentialClient cc, ResourceOwner ro, List<String> scopes) throws Exception {
@@ -109,23 +112,13 @@ public class UserInfoResourceOpenIdRefreshTest {
         scopes.add("email");
         String token = makeToken(cc, ro, scopes);
 
-        StringBuilder requestLog = new StringBuilder()
-                .append("GET ").append(servletURI).append("\n")
-                .append(Header.ACCEPT.getValue()).append(": ").append("application/jwt").append("\n")
-                .append("Authorization: Bearer " ).append(token)
-                .append("\n");
-
-        // used to help write tests for SDK.
-        LOGGER.trace(
-                "get openid userinfo with refresh token.\n{}", requestLog.toString()
-        );
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader("Accept", "application/jwt")
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setHeader("Authorization", "Bearer " + token)
-                .execute();
+                .setHeader("Authorization", "Bearer " + token);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
 
@@ -134,22 +127,14 @@ public class UserInfoResourceOpenIdRefreshTest {
         assertThat(response.getHeader("Cache-Control"), is("no-store"));
         assertThat(response.getHeader("Pragma"), is("no-cache"));
 
-        // used to help write tests for SDK.
-        LOGGER.trace(
-                "get openid token with refresh token. headers: {}, body: {}",
-                response.getHeaders(), response.getResponseBody()
-        );
-
         // verify id token
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
 
-        LOGGER.trace(
-                "get openid userinfo with refresh token, public key. id: {}, modulus: {}, publicExponent: {}",
-                key.getId().toString(), key.getModulus(), key.getPublicExponent()
-        );
+        String fileName = "build/user-info-open-id-from-refresh.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
