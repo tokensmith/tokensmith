@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 
 public class RegisterTest {
-    private static String ISSUER = "https://sso.rootservices.org";
+    private static String ISSUER = "https://sso.tokensmith.net";
 
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
@@ -66,7 +66,7 @@ public class RegisterTest {
 
     @Test
     public void runShouldBeOk() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "password";
         String repeatPassword = "password";
         String hashedPassword = "hashedPassword";
@@ -143,7 +143,7 @@ public class RegisterTest {
 
     @Test
     public void runWhenPasswordBlankShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "";
         String repeatPassword = "password";
 
@@ -160,7 +160,7 @@ public class RegisterTest {
 
     @Test
     public void runWhenPasswordNullShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = null;
         String repeatPassword = "password";
 
@@ -177,7 +177,7 @@ public class RegisterTest {
 
     @Test
     public void runWhenRepeatPasswordBlankShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "password";
         String repeatPassword = "";
 
@@ -194,7 +194,7 @@ public class RegisterTest {
 
     @Test
     public void runWhenRepeatPasswordNullShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "password";
         String repeatPassword = null;
 
@@ -211,7 +211,7 @@ public class RegisterTest {
 
     @Test
     public void runWhenEmailAlreadyUsedShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "password";
         String repeatPassword = "password";
         String hashedPassword = "hashedPassword";
@@ -236,7 +236,7 @@ public class RegisterTest {
 
     @Test
     public void runPasswordMismatchShouldThrowRegisterException() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String password = "password";
         String repeatPassword = "mismatchPassword";
 

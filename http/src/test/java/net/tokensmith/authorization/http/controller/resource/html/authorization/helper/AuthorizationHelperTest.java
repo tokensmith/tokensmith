@@ -38,7 +38,7 @@ public class AuthorizationHelperTest {
     @Test
     public void prepareErrorResponseWhenNoState() throws Exception {
         Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
-        URI redirect = new URI("https://rootservices.org");
+        URI redirect = new URI("https://tokensmith.net");
         String error = "some-error";
         String desc = "some-description";
         Optional<String> state = Optional.empty();
@@ -48,13 +48,13 @@ public class AuthorizationHelperTest {
         assertThat(response.getStatusCode(), is(StatusCode.MOVED_TEMPORARILY));
         assertThat(response.getHeaders(), is(notNullValue()));
         assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is(notNullValue()));
-        assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is("https://rootservices.org?error=some-error&error_description=some-description"));
+        assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is("https://tokensmith.net?error=some-error&error_description=some-description"));
     }
 
     @Test
     public void prepareErrorResponseWhenState() throws Exception {
         Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
-        URI redirect = new URI("https://rootservices.org");
+        URI redirect = new URI("https://tokensmith.net");
         String error = "some-error";
         String desc = "some-description";
         Optional<String> state = Optional.of("some-state");
@@ -64,7 +64,7 @@ public class AuthorizationHelperTest {
         assertThat(response.getStatusCode(), is(StatusCode.MOVED_TEMPORARILY));
         assertThat(response.getHeaders(), is(notNullValue()));
         assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is(notNullValue()));
-        assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is("https://rootservices.org?error=some-error&error_description=some-description&state=some-state"));
+        assertThat(response.getHeaders().get(Header.LOCATION.getValue()), is("https://tokensmith.net?error=some-error&error_description=some-description&state=some-state"));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void makeAuthorizationPresenter() {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String csrf = "csrf-token";
 
         AuthorizationPresenter actual = subject.makeAuthorizationPresenter(email, csrf);
@@ -118,70 +118,70 @@ public class AuthorizationHelperTest {
 
     @Test
     public void makeRedirectURIForCodeGrantWhenNoState() throws Exception {
-        AuthResponse response = new AuthResponse(new URI("https://rootservices.org"), "code", Optional.empty());
+        AuthResponse response = new AuthResponse(new URI("https://tokensmith.net"), "code", Optional.empty());
 
         String actual = subject.makeRedirectURIForCodeGrant(response);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?code=code"));
+        assertThat(actual, is("https://tokensmith.net?code=code"));
     }
 
     @Test
     public void makeRedirectURIForCodeGrantWhenState() throws Exception {
-        AuthResponse response = new AuthResponse(new URI("https://rootservices.org"), "code", Optional.of("some-state"));
+        AuthResponse response = new AuthResponse(new URI("https://tokensmith.net"), "code", Optional.of("some-state"));
 
         String actual = subject.makeRedirectURIForCodeGrant(response);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?code=code&state=some-state"));
+        assertThat(actual, is("https://tokensmith.net?code=code&state=some-state"));
     }
 
     @Test
     public void makeRedirectURIForImplicitWhenNoStateNoScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://rootservices.org"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.empty()
+                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.empty()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&expires_in=100"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&expires_in=100"));
     }
 
     @Test
     public void makeRedirectURIForImplicitWhenNoStateAndScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://rootservices.org"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.empty()
+                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.empty()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&expires_in=100&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&expires_in=100&scope=profile+email"));
     }
 
     @Test
     public void makeRedirectURIForImplicitWhenState() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://rootservices.org"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.of("some-state")
+                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.of("some-state")
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&expires_in=100&state=some-state"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&expires_in=100&state=some-state"));
     }
 
     @Test
     public void makeRedirectURIForImplicitWhenStateAndScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://rootservices.org"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.of("some-state")
+                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.of("some-state")
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&expires_in=100&state=some-state&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&expires_in=100&state=some-state&scope=profile+email"));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdIdentity(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?id_token=idToken"));
+        assertThat(actual, is("https://tokensmith.net?id_token=idToken"));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdIdentity(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?id_token=idToken&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?id_token=idToken&scope=profile+email"));
     }
 
     @Test
@@ -223,7 +223,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdIdentity(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?id_token=idToken&state=state"));
+        assertThat(actual, is("https://tokensmith.net?id_token=idToken&state=state"));
     }
 
     @Test
@@ -237,7 +237,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdIdentity(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?id_token=idToken&state=state&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?id_token=idToken&state=state&scope=profile+email"));
     }
 
     @Test
@@ -254,7 +254,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600"));
     }
 
     @Test
@@ -271,7 +271,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&scope=profile+email"));
     }
 
     @Test
@@ -288,7 +288,7 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&state=state"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&state=state"));
     }
 
     @Test
@@ -305,6 +305,6 @@ public class AuthorizationHelperTest {
         String actual = subject.makeRedirectURIForOpenIdImplicit(accessToken);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual, is("https://rootservices.org?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&state=state&scope=profile+email"));
+        assertThat(actual, is("https://tokensmith.net?access_token=access-token&token_type=bearer&id_token=idToken&expires_in=3600&state=state&scope=profile+email"));
     }
 }

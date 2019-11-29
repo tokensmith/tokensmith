@@ -92,7 +92,7 @@ public class OpenIdCodeResourceTest {
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
-        List<Param> postData = FormFactory.makeLoginForm("invalid-user@rootservices.org", session.getCsrfToken());
+        List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
@@ -166,7 +166,7 @@ public class OpenIdCodeResourceTest {
         String servletURI = this.servletURI +
                 "?client_id=" + confidentialClient.getClient().getId().toString() +
                 "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=http://rootservices.org/wrong" +
+                "&redirect_uri=http://tokensmith.net/wrong" +
                 "&scope=openid";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
@@ -207,7 +207,7 @@ public class OpenIdCodeResourceTest {
         Response response = f.get();
         assertThat(response.getStatusCode(), Is.is(302));
 
-        String expectedLocation = "https://rootservices.org" +
+        String expectedLocation = "https://tokensmith.net" +
                 "?error=invalid_scope" +
                 "&error_description=scope is not available for this client" +
                 "&state=some-state";

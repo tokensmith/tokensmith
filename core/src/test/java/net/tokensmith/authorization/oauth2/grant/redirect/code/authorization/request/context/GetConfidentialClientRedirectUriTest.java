@@ -41,7 +41,7 @@ public class GetConfidentialClientRedirectUriTest {
     @Test
     public void clientNotFound() throws RecordNotFoundException, URISyntaxException {
         UUID clientId = UUID.randomUUID();
-        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org"));
+        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://tokensmith.net"));
         Exception rootCause = new OptionalException();
 
         when(mockConfidentialClientRepository.getByClientId(clientId)).thenThrow(RecordNotFoundException.class);
@@ -62,7 +62,7 @@ public class GetConfidentialClientRedirectUriTest {
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
         when(mockConfidentialClientRepository.getByClientId(client.getId())).thenReturn(confidentialClient);
 
-        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://rootservices.org/will/not/match"));
+        Optional<URI> redirectURI = Optional.ofNullable(new URI("https://tokensmith.net/will/not/match"));
         Exception rootCause = new OptionalException();
 
         try {

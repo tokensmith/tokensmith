@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
@@ -35,6 +36,8 @@ import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.authorization.http.response.Error;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.config.AppConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -46,7 +49,8 @@ import static org.junit.Assert.assertThat;
 
 
 @Category(ServletContainerTest.class)
-public class TokenServletResponseTypeCodeTest {
+public class TokenResourceResponseTypeCodeTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceResponseTypeCodeTest.class);
 
     private static LoadConfClientCodeResponseType loadConfidentialClientWithScopes;
     private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfidentialClientWithScopes;
@@ -55,9 +59,11 @@ public class TokenServletResponseTypeCodeTest {
     private static PostAuthorizationForm postAuthorizationForm;
     private static PostTokenCodeGrant postTokenCodeGrant;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
     protected static String authServletURI;
+
 
     @BeforeClass
     public static void beforeClass() {
@@ -75,6 +81,8 @@ public class TokenServletResponseTypeCodeTest {
         postAuthorizationForm = factoryForPersistence.makePostAuthorizationForm();
         postTokenCodeGrant = factoryForPersistence.makePostTokenCodeGrant();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
+
     }
 
     public Map<String, List<String>> makeForm(String grantType, String code, String redirectUri) {
@@ -150,12 +158,14 @@ public class TokenServletResponseTypeCodeTest {
                 StandardCharsets.UTF_8
         );
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
+                .setFormParams(form);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
 
@@ -163,6 +173,7 @@ public class TokenServletResponseTypeCodeTest {
         assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
         assertThat(response.getHeader("Cache-Control"), is("no-store"));
         assertThat(response.getHeader("Pragma"), is("no-cache"));
+
 
         OpenIdToken token = om.readValue(response.getResponseBody(), OpenIdToken.class);
         assertThat(token.getTokenType(), is(TokenType.BEARER));
@@ -176,6 +187,9 @@ public class TokenServletResponseTypeCodeTest {
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+
+        String fileName = "build/token-open-id-from-code.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),

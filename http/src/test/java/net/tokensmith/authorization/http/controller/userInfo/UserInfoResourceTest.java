@@ -119,7 +119,7 @@ public class UserInfoResourceTest {
     public void postWhenEmailTakenExistsShouldReturn400() throws Exception {
         UserInfo payload = new UserInfo();
 
-        String email = UUID.randomUUID().toString() + "@rootservices.org";
+        String email = UUID.randomUUID().toString() + "@tokensmith.net";
         String password = "password";
 
         payload.setEmail(email);
@@ -153,7 +153,7 @@ public class UserInfoResourceTest {
     public void postWhenMinPayloadShouldReturn200() throws Exception {
         UserInfo payload = new UserInfo();
 
-        String email = UUID.randomUUID().toString() + "@rootservices.org";
+        String email = UUID.randomUUID().toString() + "@tokensmith.net";
         String password = "password";
 
         payload.setEmail(email);
@@ -176,7 +176,7 @@ public class UserInfoResourceTest {
     public void postWhenMaxPayloadShouldReturn200() throws Exception {
         UserInfo payload = EntityFactory.makeFullUserInfo();
 
-        String email = UUID.randomUUID().toString() + "@rootservices.org";
+        String email = UUID.randomUUID().toString() + "@tokensmith.net";
         String password = "password";
 
         payload.setEmail(email);

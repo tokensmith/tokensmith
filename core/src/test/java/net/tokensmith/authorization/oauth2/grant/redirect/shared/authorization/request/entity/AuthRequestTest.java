@@ -32,7 +32,7 @@ public class AuthRequestTest {
 
     @Test
     public void redirectURI() throws Exception {
-        Optional<URI> redirectUri = Optional.ofNullable(new URI("https://rootservices.org"));
+        Optional<URI> redirectUri = Optional.ofNullable(new URI("https://tokensmith.net"));
         subject.setRedirectURI(redirectUri);
 
         assertThat(subject.getRedirectURI(), is(redirectUri));

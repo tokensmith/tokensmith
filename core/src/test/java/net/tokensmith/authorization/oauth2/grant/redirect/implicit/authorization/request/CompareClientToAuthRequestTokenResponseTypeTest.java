@@ -113,7 +113,7 @@ public class CompareClientToAuthRequestTokenResponseTypeTest {
     public void redirectUriMismatchShouldThrowInformResourceOwnerException() throws RecordNotFoundException, URISyntaxException {
         Client client = FixtureFactory.makeCodeClientWithScopes();
 
-        Optional<URI> requestRedirectUri = Optional.of(new URI("https://rootservices.org/mismatch"));
+        Optional<URI> requestRedirectUri = Optional.of(new URI("https://tokensmith.net/mismatch"));
         AuthRequest authRequest = makeAuthRequestFromClient(client);
         authRequest.setRedirectURI(requestRedirectUri);
 

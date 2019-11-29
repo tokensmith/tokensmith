@@ -1,11 +1,11 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import com.ning.http.client.*;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
+import helpers.fixture.persistence.TestUtils;
 import helpers.fixture.persistence.client.confidential.LoadConfClientCodeResponseType;
 import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeResponseType;
 import helpers.fixture.persistence.http.PostTokenCodeGrant;
@@ -15,6 +15,7 @@ import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.otter.controller.header.Header;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,7 +38,12 @@ import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.tokensmith.jwt.jws.verifier.VerifySignature;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.net.http.HttpHeaders;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -51,7 +57,9 @@ import static org.junit.Assert.assertThat;
  * Created by tommackenzie on 10/16/16.
  */
 @Category(ServletContainerTest.class)
-public class TokenServletRefreshTokenTest {
+public class TokenResourceRefreshTokenTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceRefreshTokenTest.class);
+
     private static LoadConfClientCodeResponseType loadConfClientWithScopes;
     private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfClientWithScopes;
     private static LoadResourceOwner loadResourceOwner;
@@ -62,6 +70,7 @@ public class TokenServletRefreshTokenTest {
     private static HashToken hashToken;
     private static TokenRepository tokenRepository;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
 
     protected static String servletURI;
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
@@ -85,6 +94,7 @@ public class TokenServletRefreshTokenTest {
         hashToken = IntegrationTestSuite.getContext().getBean(HashToken.class);
         tokenRepository = IntegrationTestSuite.getContext().getBean(TokenRepository.class);
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
 
         servletURI = baseURI + "api/v1/token";
         authServletURI = baseURI + "authorization";
@@ -178,12 +188,14 @@ public class TokenServletRefreshTokenTest {
                 "UTF-8"
         );
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
+                .setFormParams(form);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
 
@@ -204,6 +216,10 @@ public class TokenServletRefreshTokenTest {
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(actual.getIdToken(), IdToken.class);
+
+        // helps with SDK tests
+        String fileName = "build/token-open-id-from-refresh.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),

@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import helpers.category.ServletContainerTest;
@@ -34,6 +35,8 @@ import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
@@ -46,13 +49,15 @@ import static org.junit.Assert.assertThat;
 
 
 @Category(ServletContainerTest.class)
-public class TokenServletResponseTypePasswordTest {
+public class TokenResourceResponseTypePasswordTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceResponseTypePasswordTest.class);
 
     private static LoadConfClientPasswordResponseType loadConfClientPasswordResponseType;
     private static LoadResourceOwner loadResourceOwner;
     private static LoadOpenIdResourceOwner loadOpenIdResourceOwner;
     private static LoadOpenIdConfClientPasswordResponseType loadOpenIdConfClientPasswordResponseType;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static TestUtils testUtils;
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
 
@@ -70,6 +75,7 @@ public class TokenServletResponseTypePasswordTest {
         loadOpenIdConfClientPasswordResponseType = ap.getBean(LoadOpenIdConfClientPasswordResponseType.class);
         servletURI = baseURI + "api/v1/token";
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        testUtils = new TestUtils();
     }
 
     @Test
@@ -139,14 +145,16 @@ public class TokenServletResponseTypePasswordTest {
                 "UTF-8"
         );
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue())
                 .setHeader("Authorization", "Basic " + encodedCredentials)
-                .setFormParams(form)
-                .execute();
+                .setFormParams(form);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
 
         Response response = f.get();
+
 
         assertThat(response.getStatusCode(), is(200));
         assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
@@ -164,6 +172,10 @@ public class TokenServletResponseTypePasswordTest {
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
         JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+
+        // helps with SDK tests
+        String fileName = "build/token-open-id-from-password.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),

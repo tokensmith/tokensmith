@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {
 
-    public static String REDIRECT_URI = "https://rootservices.org/continue";
+    public static String REDIRECT_URI = "https://tokensmith.net/continue";
 
     public Map<String, List<String>> makeParams(UUID clientId) {
         Map<String, List<String>> p = super.makeParams();

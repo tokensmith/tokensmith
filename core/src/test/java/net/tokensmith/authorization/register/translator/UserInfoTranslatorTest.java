@@ -31,7 +31,7 @@ public class UserInfoTranslatorTest {
     @Test
     public void fromWhenRequiredFieldsOnly() {
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword("password");
 
         userInfo.setName(Optional.empty());
@@ -54,7 +54,7 @@ public class UserInfoTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getEmail(), is("obi-wan@rootservices.org"));
+        assertThat(actual.getEmail(), is("obi-wan@tokensmith.net"));
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getPassword(), is(nullValue()));
 
@@ -91,7 +91,7 @@ public class UserInfoTranslatorTest {
     public void fromWhenRequiredAndOptionalFields() throws Exception {
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setEmail("obi-wan@rootservices.org");
+        userInfo.setEmail("obi-wan@tokensmith.net");
         userInfo.setPassword("password");
 
         userInfo.setName(Optional.of("Obi-Wan Kenobi"));
@@ -123,7 +123,7 @@ public class UserInfoTranslatorTest {
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
-        assertThat(actual.getEmail(), is("obi-wan@rootservices.org"));
+        assertThat(actual.getEmail(), is("obi-wan@tokensmith.net"));
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getPassword(), is(nullValue()));
 

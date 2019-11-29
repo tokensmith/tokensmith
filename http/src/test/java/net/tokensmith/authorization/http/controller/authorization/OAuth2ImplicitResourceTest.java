@@ -60,7 +60,7 @@ public class OAuth2ImplicitResourceTest {
         String servletURI = this.servletURI +
                 "?client_id=" + client.getId().toString() +
                 "&response_type=token" +
-                "&redirect_uri=http://rootservices.org/wrong";
+                "&redirect_uri=http://tokensmith.net/wrong";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
@@ -117,7 +117,7 @@ public class OAuth2ImplicitResourceTest {
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
-        List<Param> postData = FormFactory.makeLoginForm("invalid-user@rootservices.org", session.getCsrfToken());
+        List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
@@ -189,7 +189,7 @@ public class OAuth2ImplicitResourceTest {
         Response response = f.get();
         assertThat(response.getStatusCode(), is(302));
 
-        String expectedLocation = "https://rootservices.org?error=invalid_scope" +
+        String expectedLocation = "https://tokensmith.net?error=invalid_scope" +
                 "&error_description=scope is not available for this client" +
                 "&state=some-state";
         assertThat(response.getHeader("location"), is(notNullValue()));

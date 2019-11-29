@@ -140,7 +140,7 @@ public class CompareConfidentialClientToOpenIdAuthRequestTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         ConfidentialClient confidentialClient = FixtureFactory.makeConfidentialClient(client);
 
-        URI requestRedirectUri = new URI("https://rootservices.org/mismatch");
+        URI requestRedirectUri = new URI("https://tokensmith.net/mismatch");
 
         OpenIdAuthRequest openIdAuthRequest = new OpenIdAuthRequest();
         openIdAuthRequest.setClientId(client.getId());

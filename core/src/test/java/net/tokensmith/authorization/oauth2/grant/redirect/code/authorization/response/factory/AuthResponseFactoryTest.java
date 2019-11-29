@@ -43,7 +43,7 @@ public class AuthResponseFactoryTest {
         UUID clientUUID = UUID.randomUUID();
         String authCode = "authorization-code";
         Optional<String> state = Optional.of("csrf");
-        Optional<URI> redirectUri = Optional.of(new URI("https://rootservices.org"));
+        Optional<URI> redirectUri = Optional.of(new URI("https://tokensmith.net"));
 
         AuthResponse actual = subject.makeAuthResponse(
                 clientUUID,

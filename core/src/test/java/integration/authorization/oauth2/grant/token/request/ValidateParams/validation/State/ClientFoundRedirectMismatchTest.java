@@ -20,7 +20,7 @@ public class ClientFoundRedirectMismatchTest extends BaseTest {
         Map<String, List<String>> p = super.makeParams();
         p.get("client_id").add(clientId.toString());
         p.get("response_type").add("TOKEN");
-        p.get("redirect_uri").add("https://rootservices.org/continue");
+        p.get("redirect_uri").add("https://tokensmith.net/continue");
 
         return p;
     }

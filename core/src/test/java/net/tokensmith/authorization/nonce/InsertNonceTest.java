@@ -46,7 +46,7 @@ public class InsertNonceTest {
 
     @Test
     public void insertByEmailShouldInsertNonce() throws Exception {
-        String email = "obi-wan@rootservices.org";
+        String email = "obi-wan@tokensmith.net";
         String nonce = "nonce";
         String hashedNonce = "hashedNonce";
 

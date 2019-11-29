@@ -51,7 +51,7 @@ public class RequestOpenIdIdentityTest {
                 mockValidateOpenIdIdImplicitGrant,
                 mockLoginResourceOwner,
                 mockMakeImplicitIdentityToken,
-                "https://sso.rootservices.org"
+                "https://sso.tokensmith.net"
         );
     }
 
@@ -84,7 +84,7 @@ public class RequestOpenIdIdentityTest {
         assertThat(actual.getState(), is(Optional.of("state")));
         assertThat(actual.getScope(), is(Optional.empty()));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.tokensmith.net"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
@@ -132,7 +132,7 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getCause(), instanceOf(ProfileNotFoundException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.tokensmith.net"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
@@ -180,7 +180,7 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getCause(), instanceOf(KeyNotFoundException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.tokensmith.net"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
@@ -228,7 +228,7 @@ public class RequestOpenIdIdentityTest {
         assertThat(expected.getState(), is(request.getState()));
         assertThat(expected.getCause(), instanceOf(IdTokenException.class));
 
-        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.rootservices.org"));
+        assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.tokensmith.net"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));
         assertThat(tcArgumentCaptor.getValue().getAudience().size(), is(1));
         assertThat(tcArgumentCaptor.getValue().getAudience().get(0), is(request.getClientId().toString()));
