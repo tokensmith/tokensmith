@@ -2,6 +2,7 @@ package net.tokensmith.repository.entity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,6 +16,7 @@ public class Token {
     private UUID clientId;
     private List<TokenScope> tokenScopes;
     private List<Client> audience;
+    private Optional<String> nonce;
     private Long secondsToExpiration;
     private Token leadToken; // optional
     private OffsetDateTime expiresAt;
@@ -82,6 +84,14 @@ public class Token {
 
     public void setAudience(List<Client> audience) {
         this.audience = audience;
+    }
+
+    public Optional<String> getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(Optional<String> nonce) {
+        this.nonce = nonce;
     }
 
     public OffsetDateTime getExpiresAt() {

@@ -60,7 +60,8 @@ public class RequestAccessToken {
                     authRequest.getClientId(),
                     resourceOwner,
                     authRequest.getScopes(),
-                    audience
+                    audience,
+                    Optional.empty()
             );
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);

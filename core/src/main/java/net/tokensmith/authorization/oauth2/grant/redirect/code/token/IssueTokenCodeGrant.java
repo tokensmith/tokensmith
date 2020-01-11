@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,22 +30,21 @@ public class IssueTokenCodeGrant {
     private AuthCodeTokenRepository authCodeTokenRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
     private AuthCodeRepository authCodeRepository;
-    private TokenResponseBuilder tokenResponseBuilder;
     private String issuer;
 
-    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenCodeGrant(InsertTokenGraphCodeGrant insertTokenGraph, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository, AuthCodeTokenRepository authCodeTokenRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, AuthCodeRepository authCodeRepository, String issuer) {
         this.insertTokenGraph = insertTokenGraph;
         this.tokenRepository = tokenRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.authCodeTokenRepository = authCodeTokenRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
         this.authCodeRepository = authCodeRepository;
-        this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience) throws CompromisedCodeException, ServerException {
-        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes, audience);
+    public TokenResponse run(UUID clientId, UUID authCodeId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience, Optional<String> nonce) throws CompromisedCodeException, ServerException {
+
+        TokenGraph tokenGraph = insertTokenGraph.insertTokenGraph(clientId, scopes, audience, nonce);
         relateTokenGraphToAuthCode(tokenGraph.getToken(), authCodeId, resourceOwnerId, clientId);
 
         List<String> responseAudience = tokenGraph.getToken().getAudience()
@@ -52,7 +52,7 @@ public class IssueTokenCodeGrant {
                 .map(i->i.getId().toString())
                 .collect(Collectors.toList());
 
-        TokenResponse tr = tokenResponseBuilder
+        TokenResponse tr = new TokenResponseBuilder()
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
                 .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken().get())
                 .setTokenType(TokenType.BEARER)
@@ -63,6 +63,7 @@ public class IssueTokenCodeGrant {
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond())
+                .nonce(nonce)
                 .build();
 
         return tr;

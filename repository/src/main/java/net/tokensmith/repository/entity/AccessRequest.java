@@ -14,16 +14,18 @@ public class AccessRequest {
     private UUID resourceOwnerId;
     private UUID clientId;
     private Optional<URI> redirectURI;
+    private Optional<String> nonce;
     private List<AccessRequestScope> accessRequestScopes;
     private OffsetDateTime createdAt;
 
     public AccessRequest() {}
 
-    public AccessRequest(UUID id, UUID resourceOwnerId, UUID clientId, Optional<URI> redirectURI) {
+    public AccessRequest(UUID id, UUID resourceOwnerId, UUID clientId, Optional<URI> redirectURI, Optional<String> nonce) {
         this.id = id;
         this.resourceOwnerId = resourceOwnerId;
         this.clientId = clientId;
         this.redirectURI = redirectURI;
+        this.nonce = nonce;
     }
 
     public UUID getId() {
@@ -58,6 +60,13 @@ public class AccessRequest {
         this.redirectURI = redirectURI;
     }
 
+    public Optional<String> getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(Optional<String> nonce) {
+        this.nonce = nonce;
+    }
 
     public List<AccessRequestScope> getAccessRequestScopes() {
         return accessRequestScopes;

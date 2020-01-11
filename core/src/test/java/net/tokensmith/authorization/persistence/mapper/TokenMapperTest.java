@@ -149,6 +149,9 @@ public class TokenMapperTest {
         assertThat(actual.getClientId(), is(authCode.getAccessRequest().getClientId()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt().toEpochSecond(), is(token.getExpiresAt().toEpochSecond()));
+        assertThat(actual.getNonce(), is(notNullValue()));
+        assertThat(actual.getNonce().isPresent(), is(true));
+        assertThat(actual.getNonce().get(), is("nonce-123"));
     }
 
     @Test

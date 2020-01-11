@@ -60,14 +60,11 @@ public class RequestAuthCode {
         return makeAuthResponse(
             username,
             password,
-            authRequest.getClientId(),
-            authRequest.getRedirectURI(),
-            authRequest.getScopes(),
-            authRequest.getState()
+            authRequest
         );
     }
 
-    protected AuthResponse makeAuthResponse(String userName, String password, UUID clientId, Optional<URI> redirectUri, List<String> scopes, Optional<String> state) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
+    protected AuthResponse makeAuthResponse(String userName, String password, AuthRequest authRequest) throws UnauthorizedException, InformResourceOwnerException, InformClientException {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
@@ -75,14 +72,15 @@ public class RequestAuthCode {
         try {
             authorizationCode = issueAuthCode.run(
                     resourceOwner.getId(),
-                    clientId,
-                    redirectUri,
-                    scopes
+                    authRequest.getClientId(),
+                    authRequest.getRedirectURI(),
+                    authRequest.getScopes(),
+                    Optional.empty()
             );
         } catch (AuthCodeInsertException e) {
             logger.error(e.getMessage(), e);
 
-            URI redirectURI = getConfidentialClientRedirectUri.run(clientId, redirectUri, e);
+            URI redirectURI = getConfidentialClientRedirectUri.run(authRequest.getClientId(), authRequest.getRedirectURI(), e);
             ErrorCode ec = ErrorCode.SERVER_ERROR;
             throw new InformClientExceptionBuilder()
                     .setMessage(MSG_TOKEN)
@@ -90,16 +88,16 @@ public class RequestAuthCode {
                     .setDescription(ec.getDescription())
                     .setErrorCode(ec.getCode())
                     .setRedirectURI(redirectURI)
-                    .setState(state)
+                    .setState(authRequest.getState())
                     .setCause(e)
                     .build();
         }
 
         return authResponseFactory.makeAuthResponse(
-                clientId,
+                authRequest.getClientId(),
                 authorizationCode,
-                state,
-                redirectUri
+                authRequest.getState(),
+                authRequest.getRedirectURI()
         );
     }
 }

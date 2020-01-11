@@ -14,6 +14,8 @@ import helpers.fixture.persistence.http.PostAuthorizationForm;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.fixture.persistence.db.LoadResourceOwner;
+import helpers.fixture.persistence.http.input.AuthEndpointProps;
+import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
 import helpers.suite.IntegrationTestSuite;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,12 +101,17 @@ public class TokenResourceResponseTypeCodeTest {
     public void getTokenShouldReturn200() throws Exception {
         ResourceOwner ro = loadResourceOwner.run();
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+
+        String authorizationCode = postAuthorizationForm.run(
+                confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail()
+        );
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
 
-        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString());
+        Map<String, List<String>> form = makeForm(
+                "authorization_code", authorizationCode, confidentialClient.getClient().getRedirectURI().toString()
+        );
 
         String credentials = confidentialClient.getClient().getId().toString() + ":password";
 
@@ -220,6 +227,106 @@ public class TokenResourceResponseTypeCodeTest {
         assertThat(claims.getIssuedAt().isPresent(), is(true));
         assertThat(claims.getAuthenticationTime(), is(notNullValue()));
     }
+
+    @Test
+    public void getOpenIdTokenShouldReturn200AndStateAndNonce() throws Exception {
+        List<String> scopes = new ArrayList<>();
+        scopes.add("openid");
+        scopes.add("email");
+
+        RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .email(ro.getEmail())
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .addQueryParam("state", "state-123")
+                .addQueryParam("nonce", "nonce-123")
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
+
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+
+        Map<String, List<String>> form = makeForm("authorization_code", authorizationCode, cc.getClient().getRedirectURI().toString());
+
+        String credentials = cc.getClient().getId().toString() + ":password";
+
+        String encodedCredentials = new String(
+                Base64.getEncoder().encode(credentials.getBytes()),
+                StandardCharsets.UTF_8
+        );
+
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI)
+                .setHeader("Content-Type", "application/x-www-form-urlencoded")
+                .setHeader("Authorization", "Basic " + encodedCredentials)
+                .setFormParams(form);
+
+        ListenableFuture<Response> f = requestBuilder.execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(200));
+        assertThat(response.getContentType(), is(ContentType.JSON_UTF_8.getValue()));
+        assertThat(response.getHeader("Cache-Control"), is("no-store"));
+        assertThat(response.getHeader("Pragma"), is("no-cache"));
+
+
+        OpenIdToken token = om.readValue(response.getResponseBody(), OpenIdToken.class);
+        assertThat(token.getTokenType(), is(TokenType.BEARER));
+        assertThat(token.getExpiresIn(), is(3600L));
+        assertThat(token.getAccessToken(), is(notNullValue()));
+        assertThat(token.getRefreshToken(), is(notNullValue()));
+        assertThat(token.getIdToken(), is(notNullValue()));
+
+        // verify id token
+        JwtAppFactory appFactory = new JwtAppFactory();
+        JwtSerde jwtSerde = appFactory.jwtSerde();
+
+        JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+
+        String fileName = "build/token-open-id-from-code-with-state-and-nonce.txt";
+        testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
+
+        RSAPublicKey publicKey = new RSAPublicKey(
+                Optional.of(key.getId().toString()),
+                KeyType.RSA,
+                Use.SIGNATURE,
+                key.getModulus(),
+                key.getPublicExponent()
+        );
+
+        VerifySignature verifySignature = appFactory.verifySignature(jwt.getHeader().getAlgorithm(), publicKey);
+        Boolean signatureVerified = verifySignature.run(jwt);
+
+        assertThat(signatureVerified, is(true));
+
+        IdToken claims = (IdToken) jwt.getClaims();
+        assertThat(claims.getEmail().isPresent(), is(true));
+        assertThat(claims.getEmail().get(), is(ro.getEmail()));
+        assertThat(claims.getEmailVerified().isPresent(), is(true));
+        assertThat(claims.getEmailVerified().get(), is(false));
+
+        // required claims.
+        assertThat(claims.getIssuer().isPresent(), is(true));
+        assertThat(claims.getIssuer().get(), is(EntityFactory.ISSUER));
+        assertThat(claims.getAudience(), is(notNullValue()));
+        assertThat(claims.getAudience().size(), is(1));
+        assertThat(claims.getAudience().get(0), is(cc.getClient().getId().toString()));
+        assertThat(claims.getExpirationTime().isPresent(), is(true));
+        assertThat(claims.getIssuedAt().isPresent(), is(true));
+        assertThat(claims.getAuthenticationTime(), is(notNullValue()));
+        assertThat(claims.getNonce(), is(notNullValue()));
+        assertThat(claims.getNonce().isPresent(), is(true));
+        assertThat(claims.getNonce().get(), is("nonce-123"));
+    }
+
 
     @Test
     public void getTokenWhenCodeIsMissingShouldReturn400() throws Exception {

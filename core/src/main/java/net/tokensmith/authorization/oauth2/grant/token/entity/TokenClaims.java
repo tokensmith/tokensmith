@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.token.entity;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by tommackenzie on 10/21/16.
@@ -11,6 +12,7 @@ public class TokenClaims {
     private Long issuedAt;
     private Long expirationTime; // 130584847 optional
     private Long authTime; // 130584847 optional
+    private Optional<String> nonce;
 
     public String getIssuer() {
         return issuer;
@@ -50,5 +52,13 @@ public class TokenClaims {
 
     public void setAuthTime(Long authTime) {
         this.authTime = authTime;
+    }
+
+    public void setNonce(Optional<String> nonce) {
+        this.nonce = nonce;
+    }
+
+    public Optional<String> getNonce() {
+        return nonce;
     }
 }

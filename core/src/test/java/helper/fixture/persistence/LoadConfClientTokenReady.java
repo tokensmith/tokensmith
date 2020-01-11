@@ -70,7 +70,6 @@ public class LoadConfClientTokenReady {
             accessRequest.getAccessRequestScopes().add(ars);
         }
 
-
         AuthCode authCode = FixtureFactory.makeAuthCode(accessRequest, isRevoked, plainTextAuthCode);
 
         String logMsgTemplate = "authorization code, id: %s, code: %s, revoked: %s, access_request_id: %s,  expires_at: %s";

@@ -8,6 +8,7 @@
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <id column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="redirect_uri" property="redirectURI" jdbcType="VARCHAR" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
+        <result column="nonce" property="nonce" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="auth_code_id" property="authCodeId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
 
@@ -18,12 +19,13 @@
     </resultMap>
 
     <insert id="insert">
-        insert into access_request (id, resource_owner_id, client_id, redirect_URI)
+        insert into access_request (id, resource_owner_id, client_id, redirect_URI, nonce)
         values (
-        #{accessRequest.id},
-        #{accessRequest.resourceOwnerId},
-        #{accessRequest.clientId},
-        #{accessRequest.redirectURI,  typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler}
+            #{accessRequest.id},
+            #{accessRequest.resourceOwnerId},
+            #{accessRequest.clientId},
+            #{accessRequest.redirectURI,  typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{accessRequest.nonce, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler}
         )
     </insert>
 

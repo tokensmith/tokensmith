@@ -15,6 +15,7 @@ import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.repo.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -41,7 +42,6 @@ public class IssueTokenPasswordGrantTest {
         subject = new IssueTokenPasswordGrant(
                 mockInsertTokenGraphPasswordGrant,
                 mockResourceOwnerTokenRepository,
-                new TokenResponseBuilder(),
                 "https://sso.tokensmith.net"
         );
     }
@@ -54,11 +54,11 @@ public class IssueTokenPasswordGrantTest {
         List<Client> audience = FixtureFactory.makeAudience(clientId);
 
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
-        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience, Optional.empty())).thenReturn(tokenGraph);
 
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
 
-        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes, audience);
+        TokenResponse actual = subject.run(clientId, resourceOwner.getId(), scopes, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -76,6 +76,8 @@ public class IssueTokenPasswordGrantTest {
         assertThat(actual.getTokenClaims().getIssuedAt(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getExpirationTime(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(actual.getTokenClaims().getNonce(), is(notNullValue()));
+        assertThat(actual.getTokenClaims().getNonce().isPresent(), is(false));
 
         verify(mockResourceOwnerTokenRepository, times(1)).insert(resourceOwnerTokenCaptor.capture());
         ResourceOwnerToken actualRot = resourceOwnerTokenCaptor.getValue();

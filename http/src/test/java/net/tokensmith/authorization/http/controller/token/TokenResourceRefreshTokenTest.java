@@ -14,6 +14,8 @@ import helpers.fixture.persistence.http.PostTokenPasswordGrant;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.fixture.persistence.db.LoadResourceOwner;
+import helpers.fixture.persistence.http.input.AuthEndpointProps;
+import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
 import helpers.suite.IntegrationTestSuite;
 import net.tokensmith.otter.controller.header.Header;
 import org.junit.BeforeClass;
@@ -123,7 +125,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("profile");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .email(ro.getEmail())
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         Token token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 

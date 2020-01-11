@@ -39,6 +39,7 @@
             ar.id as ar_id,
             ar.resource_owner_id as ar_resource_owner_id,
             ar.redirect_uri as ar_redirect_uri,
+            ar.nonce as ar_nonce,
             ar.created_at as ar_created_at,
 
             ars.id as ar_ars_id,

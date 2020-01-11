@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,12 +46,13 @@ public class InsertTokenGraphImplicitGrant extends InsertTokenGraph {
     }
 
     @Override
-    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience) throws ServerException {
+    public TokenGraph insertTokenGraph(UUID clientId, List<Scope> scopes, List<Client> audience, Optional<String> nonce) throws ServerException {
         Configuration config = configurationRepository.get();
 
         TokenGraph tokenGraph = insertToken(
                 1,
                 clientId,
+                nonce,
                 config.getId(),
                 config.getAccessTokenSize(),
                 getSecondsToExpiration(config)
