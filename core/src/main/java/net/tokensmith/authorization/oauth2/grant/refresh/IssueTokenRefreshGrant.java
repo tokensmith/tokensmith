@@ -24,17 +24,15 @@ public class IssueTokenRefreshGrant {
     private InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant;
     private TokenChainRepository tokenChainRepository;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
     private static String COMPROMISED_MESSAGE = "refresh token was already used";
 
     @Autowired
-    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenRefreshGrant(InsertTokenGraphRefreshGrant insertTokenGraphRefreshGrant, TokenChainRepository tokenChainRepository, ResourceOwnerTokenRepository resourceOwnerTokenRepository, String issuer) {
         this.insertTokenGraphRefreshGrant = insertTokenGraphRefreshGrant;
         this.tokenChainRepository = tokenChainRepository;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
@@ -57,7 +55,7 @@ public class IssueTokenRefreshGrant {
                 .map(i->i.getId().toString())
                 .collect(Collectors.toList());
 
-        TokenResponse tr = tokenResponseBuilder
+        TokenResponse tr = new TokenResponseBuilder()
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
                 .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken().get())
                 .setTokenType(TokenType.BEARER)
@@ -68,6 +66,7 @@ public class IssueTokenRefreshGrant {
                 .setIssuedAt(OffsetDateTime.now().toEpochSecond())
                 .setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond())
                 .setAuthTime(leadToken.getCreatedAt().toEpochSecond())
+                .nonce(tokenGraph.getToken().getNonce())
                 .build();
         return tr;
     }

@@ -50,12 +50,14 @@ public class AccessRequestScopesMapperTest {
         ResourceOwner ro =  new ResourceOwner(resourceOwnerId, email, password);
         resourceOwnerRepository.insert(ro);
 
-        // finally, create the access reqeust.
+        // finally, create the access request.
         AccessRequest accessRequest = new AccessRequest(
                 UUID.randomUUID(),
                 ro.getId(),
                 client.getId(),
-                Optional.of(redirectURI)
+                Optional.of(redirectURI),
+                // TODO: 150
+                Optional.empty()
         );
         accessRequestRepository.insert(accessRequest);
 

@@ -19,6 +19,7 @@ import net.tokensmith.repository.entity.ResourceOwner;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -92,10 +93,11 @@ public class RequestAuthCodeTest {
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
-                        resourceOwner.getId(),
-                        authRequest.getClientId(),
-                        authRequest.getRedirectURI(),
-                        authRequest.getScopes())
+            resourceOwner.getId(),
+            authRequest.getClientId(),
+            authRequest.getRedirectURI(),
+            authRequest.getScopes(),
+            Optional.empty())
         ).thenReturn(randomString);
 
         when(mockAuthResponseFactory.makeAuthResponse(
@@ -133,7 +135,7 @@ public class RequestAuthCodeTest {
             authResponse = subject.run(userName, password, params);
         } catch (UnauthorizedException e) {
             verify(mockIssueAuthCode, never()).run(
-                any(UUID.class), any(UUID.class), FixtureFactory.anyOptionalURI(), anyList()
+                any(UUID.class), any(UUID.class), FixtureFactory.anyOptionalURI(), anyList(), FixtureFactory.anyOptionalString()
             );
             actual = e;
         }
@@ -163,7 +165,8 @@ public class RequestAuthCodeTest {
                 resourceOwner.getId(),
                 clientId,
                 authRequest.getRedirectURI(),
-                authRequest.getScopes()))
+                authRequest.getScopes(),
+                Optional.empty()))
         .thenThrow(aci);
 
         when(mockGetConfidentialClientRedirectUri.run(

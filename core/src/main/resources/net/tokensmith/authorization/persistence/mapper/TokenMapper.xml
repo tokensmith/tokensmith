@@ -10,6 +10,7 @@
         <result column="revoked" property="revoked"/>
         <result column="grant_type" property="grantType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         <result column="client_id" property="clientId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="nonce" property="nonce" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <collection property="tokenScopes"
@@ -35,6 +36,7 @@
             token.revoked,
             token.grant_type,
             token.client_id,
+            token.nonce,
             token.expires_at,
             token.created_at
         from token
@@ -49,6 +51,7 @@
             token.revoked,
             token.grant_type,
             token.client_id,
+            token.nonce,
             token.expires_at,
             token.created_at
         from token
@@ -56,13 +59,14 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="token.createdAt" keyColumn="created_at">
-        insert into token (id, active_token, grant_type, client_id, revoked, expires_at)
+        insert into token (id, active_token, grant_type, client_id, revoked, nonce, expires_at)
         values (
         #{token.id},
         #{token.token},
         #{token.grantType},
         #{token.clientId},
         #{token.revoked},
+        #{token.nonce, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
         #{token.expiresAt, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
         )
     </insert>

@@ -22,6 +22,7 @@ public class OpenIdImplicitAccessTokenBuilder {
     private Optional<String> scope;
     private Optional<String> state;
 
+
     public OpenIdImplicitAccessTokenBuilder setRedirectUri(URI redirectUri) {
         this.redirectUri = redirectUri;
         return this;

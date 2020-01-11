@@ -13,6 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -39,7 +41,7 @@ public class AccessRequestMapperTest {
     private AccessRequestMapper subject;
 
     @Test
-    public void insert() throws Exception {
+    public void insertWhenNonceIsEmpty() throws Exception {
         // prepare db for test.
         Client client = FixtureFactory.makeCodeClientWithScopes();
         clientRepository.insert(client);
@@ -52,6 +54,25 @@ public class AccessRequestMapperTest {
                 resourceOwner.getId(),
                 client.getId()
         );
+
+        subject.insert(accessRequest);
+    }
+
+    @Test
+    public void insertWhenNonceHasValue() throws Exception {
+        // prepare db for test.
+        Client client = FixtureFactory.makeCodeClientWithScopes();
+        clientRepository.insert(client);
+
+        ResourceOwner resourceOwner = FixtureFactory.makeResourceOwner();
+        resourceOwnerRepository.insert(resourceOwner);
+        // end prepare db for test
+
+        AccessRequest accessRequest = FixtureFactory.makeAccessRequest(
+                resourceOwner.getId(),
+                client.getId()
+        );
+        accessRequest.setNonce(Optional.of("nonce-123"));
 
         subject.insert(accessRequest);
     }

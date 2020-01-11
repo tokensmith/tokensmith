@@ -45,7 +45,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenProfileShouldOnlyAddProfileClaims() throws Exception {
+    public void makeWhenNoNonceAndProfileShouldOnlyAddProfileClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
@@ -73,6 +73,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(1)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -81,7 +82,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenHasProfileScopeAndProfileIsNullShouldNotAddProfileClaims() throws Exception {
+    public void makeWhenNoNonceAndHasProfileScopeAndProfileIsNullShouldNotAddProfileClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
         List<String> scopes = new ArrayList<>();
@@ -107,6 +108,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -116,7 +118,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenEmailShouldOnlyAddEmailClaims() throws Exception {
+    public void makeWhenNoNonceAndEmailShouldOnlyAddEmailClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
@@ -144,6 +146,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(1)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -152,7 +155,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenPhoneShouldOnlyAddPhoneClaims() throws Exception {
+    public void makeWhenNoNonceAndPhoneShouldOnlyAddPhoneClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
@@ -180,6 +183,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -188,7 +192,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenHasPhoneScopeAndProfileIsNullShouldNotAddPhoneClaims() throws Exception {
+    public void makeWhenNoNonceAndHasPhoneScopeAndProfileIsNullShouldNotAddPhoneClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
         List<String> scopes = new ArrayList<>();
@@ -214,6 +218,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -222,7 +227,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenAddressShouldOnlyAddAddressClaims() throws Exception {
+    public void makeWhenNoNonceAndAddressShouldOnlyAddAddressClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         Address address = FixtureFactory.makeAddress(profile.getId());
@@ -256,6 +261,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -264,7 +270,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenHasAddressScopeAndProfileIsNullShouldNotAddAddAddressClaims() throws Exception {
+    public void makeWhenNoNonceAndHasAddressScopeAndProfileIsNullShouldNotAddAddAddressClaims() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
 
         List<String> scopes = new ArrayList<>();
@@ -289,6 +295,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));
@@ -297,7 +304,7 @@ public class IdTokenFactoryTest {
     }
 
     @Test
-    public void makeWhenAddressAndProfileHasNoAddressShouldNotAddAddressClaim() throws Exception {
+    public void makeWhenNoNonceAndAddressAndProfileHasNoAddressShouldNotAddAddressClaim() throws Exception {
         ResourceOwner ro = FixtureFactory.makeResourceOwner();
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         ro.setProfile(profile);
@@ -325,6 +332,7 @@ public class IdTokenFactoryTest {
         assertThat(actual.getExpirationTime().get(), is(tc.getExpirationTime()));
         assertThat(actual.getAuthenticationTime(), is(notNullValue()));
         assertThat(actual.getAuthenticationTime(), is(tc.getAuthTime()));
+        assertThat(actual.getNonce().isPresent(), is(false));
 
         verify(mockProfileToIdToken, times(0)).toProfileClaims(any(IdToken.class), any(Profile.class));
         verify(mockProfileToIdToken, times(0)).toEmailClaims(any(IdToken.class), any(String.class), any(Boolean.class));

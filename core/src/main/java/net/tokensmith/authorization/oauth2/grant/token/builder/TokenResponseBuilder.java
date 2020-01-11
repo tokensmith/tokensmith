@@ -8,12 +8,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by tommackenzie on 10/20/16.
  */
-@Scope("prototype")
-@Component
 public class TokenResponseBuilder {
     private String accessToken;
     private String refreshAccessToken;
@@ -25,6 +24,7 @@ public class TokenResponseBuilder {
     private Long issuedAt;
     private Long expirationTime;
     private Long authTime;
+    private Optional<String> nonce = Optional.empty();
 
     public TokenResponseBuilder setAccessToken(String accessToken) {
         this.accessToken = accessToken;
@@ -76,6 +76,11 @@ public class TokenResponseBuilder {
         return this;
     }
 
+    public TokenResponseBuilder nonce(Optional<String> nonce) {
+        this.nonce = nonce;
+        return this;
+    }
+
     public TokenResponse build() {
         TokenResponse tr = new TokenResponse();
         tr.setAccessToken(this.accessToken);
@@ -90,6 +95,7 @@ public class TokenResponseBuilder {
         tc.setIssuedAt(this.issuedAt);
         tc.setExpirationTime(this.expirationTime);
         tc.setAuthTime(this.authTime);
+        tc.setNonce(this.nonce);
         tr.setTokenClaims(tc);
 
         return tr;

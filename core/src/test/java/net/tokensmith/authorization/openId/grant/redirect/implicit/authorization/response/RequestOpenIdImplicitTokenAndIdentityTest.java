@@ -63,7 +63,6 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 mockLoginResourceOwner,
                 mockIssueTokenImplicitGrant,
                 mockMakeImplicitIdentityToken,
-                new OpenIdImplicitAccessTokenBuilder(),
                 mockClientRepository,
                 "https://sso.tokensmith.net"
         );
@@ -96,7 +95,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockValidateOpenIdIdImplicitGrant.run(params)).thenReturn(request);
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
         when(mockClientRepository.getById(clientId)).thenReturn(audience.get(0));
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce()))).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenReturn(idToken);
@@ -120,6 +119,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(tokenGraph.getToken().getExpiresAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getNonce(), is(notNullValue()));
+        assertThat(tcArgumentCaptor.getValue().getNonce().isPresent(), is(true));
+        assertThat(tcArgumentCaptor.getValue().getNonce().get(), is("nonce"));
     }
 
     @Test
@@ -143,7 +145,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockClientRepository.getById(clientId)).thenReturn(audience.get(0));
 
         ServerException se = new ServerException("test", null);
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience)).thenThrow(se);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce()))).thenThrow(se);
 
         InformClientException expected = null;
         try {
@@ -189,7 +191,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockValidateOpenIdIdImplicitGrant.run(params)).thenReturn(request);
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
         when(mockClientRepository.getById(clientId)).thenReturn(audience.get(0));
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce()))).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(pnfe);
@@ -247,7 +249,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockValidateOpenIdIdImplicitGrant.run(params)).thenReturn(request);
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
         when(mockClientRepository.getById(clientId)).thenReturn(audience.get(0));
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce()))).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(knfe);
@@ -304,7 +306,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         when(mockValidateOpenIdIdImplicitGrant.run(params)).thenReturn(request);
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
         when(mockClientRepository.getById(clientId)).thenReturn(audience.get(0));
-        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce()))).thenReturn(tokenGraph);
         when(mockMakeImplicitIdentityToken.makeForAccessToken(
                 eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenThrow(ide);

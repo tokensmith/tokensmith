@@ -65,7 +65,7 @@ public class RequestTokenPasswordGrant implements RequestTokenGrant {
 
         TokenResponse tokenResponse;
         try {
-            tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), scopes, audience);
+            tokenResponse = issueTokenPasswordGrant.run(cc.getClient().getId(), resourceOwner.getId(), scopes, audience, Optional.empty());
         } catch (ServerException e) {
             throw e;
         }
