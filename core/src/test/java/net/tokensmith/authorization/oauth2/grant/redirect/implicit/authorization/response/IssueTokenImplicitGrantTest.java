@@ -11,8 +11,10 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.repository.repo.*;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -49,7 +51,6 @@ public class IssueTokenImplicitGrantTest {
         List<String> scopeNames = new ArrayList<>();
         scopeNames.add("profile");
 
-
         ArgumentCaptor<ResourceOwnerToken> resourceOwnerTokenCaptor = ArgumentCaptor.forClass(ResourceOwnerToken.class);
 
         List<Scope> scopes = FixtureFactory.makeScopes();
@@ -57,9 +58,9 @@ public class IssueTokenImplicitGrantTest {
 
         List<Client> audience = FixtureFactory.makeAudience(clientId);
         TokenGraph tokenGraph = FixtureFactory.makeImplicitTokenGraph(clientId, audience);
-        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience, Optional.empty())).thenReturn(tokenGraph);
 
-        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames, audience);
+        TokenGraph actual = subject.run(clientId, resourceOwner, scopeNames, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual, is(tokenGraph));

@@ -23,7 +23,6 @@ public class OpenIdImplicitAccessToken {
     private Long issuedAt;
     private Long expirationTime;
     private Long authTime;
-    private String nonce;
 
     public OpenIdImplicitAccessToken() {
     }
@@ -114,13 +113,5 @@ public class OpenIdImplicitAccessToken {
 
     public void setAuthTime(Long authTime) {
         this.authTime = authTime;
-    }
-
-    public String getNonce() {
-        return nonce;
-    }
-
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
     }
 }

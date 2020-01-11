@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Component
 public class InsertNonce {
-    private static final Logger logger = LoggerFactory.getLogger(InsertNonce.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InsertNonce.class);
     private ResourceOwnerRepository resourceOwnerRepository;
     private RandomString randomString;
     private HashToken hashToken;

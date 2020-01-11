@@ -34,10 +34,10 @@ public class IssueAuthCode {
         this.insertAuthCodeWithRetry = insertAuthCodeWithRetry;
     }
 
-    public String run(UUID resourceOwnerId, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames) throws AuthCodeInsertException {
+    public String run(UUID resourceOwnerId, UUID ClientUUID, Optional<URI> redirectURI, List<String> scopeNames, Optional<String> nonce) throws AuthCodeInsertException {
 
         AccessRequest accessRequest = new AccessRequest(
-                UUID.randomUUID(), resourceOwnerId, ClientUUID, redirectURI
+                UUID.randomUUID(), resourceOwnerId, ClientUUID, redirectURI, nonce
         );
         accessRequestRepository.insert(accessRequest);
 

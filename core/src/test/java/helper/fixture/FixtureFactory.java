@@ -299,6 +299,7 @@ public class FixtureFactory {
         accessRequest.setResourceOwnerId(resourceOwnerId);
         accessRequest.setClientId(clientUUID);
         accessRequest.setRedirectURI(Optional.of(new URI(SECURE_REDIRECT_URI)));
+        accessRequest.setNonce(Optional.empty());
 
         return accessRequest;
     }
@@ -315,6 +316,7 @@ public class FixtureFactory {
         token.setClientId(clientId);
         token.setTokenScopes(new ArrayList<>());
         token.setSecondsToExpiration(3600L);
+        token.setNonce(Optional.empty());
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -331,6 +333,7 @@ public class FixtureFactory {
 
     public static Token makeOpenIdToken(String accessToken, UUID clientId, List<Client> audience) {
         Token token = makeOAuthToken(accessToken, clientId, audience);
+        token.setNonce(Optional.of("nonce-123"));
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -548,6 +551,7 @@ public class FixtureFactory {
         tc.setIssuedAt(OffsetDateTime.now().toEpochSecond());
         tc.setExpirationTime(OffsetDateTime.now().plusDays(1).toEpochSecond());
         tc.setAuthTime(OffsetDateTime.now().toEpochSecond());
+        tc.setNonce(Optional.empty());
 
         return tc;
     }

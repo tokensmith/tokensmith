@@ -57,6 +57,7 @@ public class IdTokenFactory {
         idToken.setIssuedAt(Optional.of(tokenClaims.getIssuedAt()));
         idToken.setExpirationTime(Optional.of(tokenClaims.getExpirationTime()));
         idToken.setAuthenticationTime(tokenClaims.getAuthTime());
+        idToken.setNonce(tokenClaims.getNonce());
 
         if (shouldIncludeProfile(scopes, ro)) {
             profileToIdToken.toProfileClaims(idToken, ro.getProfile());

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -53,6 +54,7 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
         TokenGraph tokenGraph = insertToken(
                 1,
                 clientId,
+                leadToken.getNonce(),
                 config.getId(),
                 config.getAccessTokenSize(),
                 getSecondsToExpiration(config)

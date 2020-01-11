@@ -181,7 +181,7 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -189,6 +189,8 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getToken().getAudience(), is(notNullValue()));
         assertThat(actual.getToken().getAudience(), is(audience));
+        assertThat(actual.getToken().getNonce(), is(notNullValue()));
+        assertThat(actual.getToken().getNonce().isPresent(), is(false));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));
@@ -234,7 +236,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -257,7 +259,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -280,7 +282,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -317,7 +319,7 @@ public class InsertTokenGraphRefreshGrantTest {
         doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
         when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -325,6 +327,8 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getToken().getAudience(), is(notNullValue()));
         assertThat(actual.getToken().getAudience(), is(audience));
+        assertThat(actual.getToken().getNonce(), is(notNullValue()));
+        assertThat(actual.getToken().getNonce().isPresent(), is(false));
         assertThat(actual.getRefreshTokenId().isPresent(), is(true));
         assertThat(actual.getRefreshTokenId().get(), is(refreshToken.getId()));
         assertThat(actual.getPlainTextRefreshToken().isPresent(), is(true));

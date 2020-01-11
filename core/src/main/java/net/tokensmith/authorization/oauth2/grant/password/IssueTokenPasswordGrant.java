@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,19 +22,17 @@ import java.util.stream.Collectors;
 public class IssueTokenPasswordGrant {
     private InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant;
     private ResourceOwnerTokenRepository resourceOwnerTokenRepository;
-    private TokenResponseBuilder tokenResponseBuilder;
 
     private String issuer;
 
-    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, TokenResponseBuilder tokenResponseBuilder, String issuer) {
+    public IssueTokenPasswordGrant(InsertTokenGraphPasswordGrant insertTokenGraphPasswordGrant, ResourceOwnerTokenRepository resourceOwnerTokenRepository, String issuer) {
         this.insertTokenGraphPasswordGrant = insertTokenGraphPasswordGrant;
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
-        this.tokenResponseBuilder = tokenResponseBuilder;
         this.issuer = issuer;
     }
 
-    public TokenResponse run(UUID clientId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience) throws ServerException {
-        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience);
+    public TokenResponse run(UUID clientId, UUID resourceOwnerId, List<Scope> scopes, List<Client> audience, Optional<String> nonce) throws ServerException {
+        TokenGraph tokenGraph = insertTokenGraphPasswordGrant.insertTokenGraph(clientId, scopes, audience, nonce);
 
         ResourceOwner resourceOwner = new ResourceOwner();
         resourceOwner.setId(resourceOwnerId);
@@ -50,7 +49,7 @@ public class IssueTokenPasswordGrant {
                 .map(i->i.getId().toString())
                 .collect(Collectors.toList());
 
-        TokenResponse tr = tokenResponseBuilder
+        TokenResponse tr = new TokenResponseBuilder()
                 .setAccessToken(tokenGraph.getPlainTextAccessToken())
                 .setRefreshAccessToken(tokenGraph.getPlainTextRefreshToken().get())
                 .setTokenType(TokenType.BEARER)

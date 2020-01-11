@@ -67,7 +67,7 @@ public class RequestAccessTokenTest {
 
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
-        when(mockIssueTokenImplicitGrant.run(client.getId(), resourceOwner, authRequest.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(client.getId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty())).thenReturn(tokenGraph);
 
         ImplicitAccessToken actual = subject.requestToken(userName, password, parameters);
         assertThat(actual, is(notNullValue()));
@@ -103,7 +103,7 @@ public class RequestAccessTokenTest {
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
         ServerException se = new ServerException("test", null);
-        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience))
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty()))
                 .thenThrow(se);
 
         InformClientException actual = null;
@@ -144,7 +144,7 @@ public class RequestAccessTokenTest {
 
         when(mockValidateImplicitGrant.run(parameters)).thenReturn(authRequest);
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
-        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty())).thenReturn(tokenGraph);
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
         ImplicitAccessToken actual = subject.requestToken(userName, password, parameters);
@@ -180,7 +180,7 @@ public class RequestAccessTokenTest {
 
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
-        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience)).thenReturn(tokenGraph);
+        when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty())).thenReturn(tokenGraph);
 
         when(mockClientRepository.getById(authRequest.getClientId())).thenThrow(RecordNotFoundException.class);
 

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.core.Is.is;
@@ -92,7 +93,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes(), audience))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), client.getScopes(), audience, Optional.empty()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -131,7 +132,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience, Optional.empty()))
                 .thenReturn(tokenResponse);
 
         TokenResponse actual = subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
@@ -333,7 +334,7 @@ public class RequestTokenPasswordGrantTest {
 
         when(mockRandomString.run()).thenReturn("access-token");
 
-        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience))
+        when(mockIssueTokenPasswordGrant.run(cc.getClient().getId(), ro.getId(), openIdClient.getScopes(), audience, Optional.empty()))
                 .thenThrow(ServerException.class);
 
         subject.request(cc.getId(),FixtureFactory.PLAIN_TEXT_PASSWORD, request);
