@@ -51,6 +51,7 @@
             token.active_token as token_active_token,
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
+            token.nonce as token_nonce,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
 
@@ -70,6 +71,7 @@
             lead_token.id as token_lead_token_id,
             lead_token.revoked as token_lead_token_revoked,
             lead_token.grant_type as token_lead_token_grant_type,
+            lead_token.nonce as token_lead_token_nonce,
             lead_token.client_id as token_lead_token_client_id,
             lead_token.expires_at as token_lead_token_expires_at,
             lead_token.created_at as token_lead_token_created_at

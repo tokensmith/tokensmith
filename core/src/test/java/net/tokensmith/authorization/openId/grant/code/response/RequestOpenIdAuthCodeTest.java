@@ -78,17 +78,18 @@ public class RequestOpenIdAuthCodeTest {
         when(mockLoginResourceOwner.run(userName, password)).thenReturn(resourceOwner);
 
         when(mockIssueAuthCode.run(
-                        resourceOwner.getId(),
-                        authRequest.getClientId(),
-                        Optional.of(authRequest.getRedirectURI()),
-                        authRequest.getScopes())
+            resourceOwner.getId(),
+            authRequest.getClientId(),
+            Optional.of(authRequest.getRedirectURI()),
+            authRequest.getScopes(),
+            authRequest.getNonce())
         ).thenReturn(randomString);
 
         when(mockAuthResponseFactory.makeAuthResponse(
-                authRequest.getClientId(),
-                randomString,
-                authRequest.getState(),
-                Optional.of(authRequest.getRedirectURI())
+            authRequest.getClientId(),
+            randomString,
+            authRequest.getState(),
+            Optional.of(authRequest.getRedirectURI())
         )).thenReturn(expectedAuthResponse);
 
         AuthResponse actual = subject.run(userName, password, params);
@@ -128,10 +129,11 @@ public class RequestOpenIdAuthCodeTest {
         AuthCodeInsertException cause = new AuthCodeInsertException("test", dre);
 
         when(mockIssueAuthCode.run(
-                resourceOwner.getId(),
-                authRequest.getClientId(),
-                Optional.of(authRequest.getRedirectURI()),
-                authRequest.getScopes())
+            resourceOwner.getId(),
+            authRequest.getClientId(),
+            Optional.of(authRequest.getRedirectURI()),
+            authRequest.getScopes(),
+            authRequest.getNonce())
         ).thenThrow(cause);
 
         InformClientException actual = null;

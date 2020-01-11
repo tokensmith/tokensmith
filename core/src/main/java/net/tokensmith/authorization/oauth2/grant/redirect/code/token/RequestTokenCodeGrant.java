@@ -53,7 +53,7 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
         // login in a confidential client.
         ConfidentialClient cc = loginConfidentialClient.run(clientId, clientPassword);
 
-        TokenInputCodeGrant input = null;
+        TokenInputCodeGrant input;
         try {
             input = tokenInputCodeGrantFactory.run(request);
         } catch (UnknownKeyException e) {
@@ -82,7 +82,8 @@ public class RequestTokenCodeGrant implements RequestTokenGrant {
                     authCode.getId(),
                     resourceOwnerId,
                     scopes,
-                    audience
+                    audience,
+                    authCode.getAccessRequest().getNonce()
             );
         } catch (CompromisedCodeException e) {
             throw new BadRequestExceptionBuilder().CompromisedCode(e.getCode(), e).build();

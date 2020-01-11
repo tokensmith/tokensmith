@@ -47,32 +47,43 @@ public class IssueAuthCodeTest {
         );
     }
 
-    // TODO: this test is too complex come back and fix it.
+    public List<String> scopeNames() {
+        List<String> scopeNames = new ArrayList<>();
+        scopeNames.add("profile");
+
+        return scopeNames;
+    }
+
+    public List<Scope> scopes(List<String> scopeNames) {
+        List<Scope> scopes = new ArrayList<>();
+        for(String scopeName: scopeNames) {
+            Scope scope = new Scope(UUID.randomUUID(), scopeName);
+            scopes.add(scope);
+        }
+
+        return scopes;
+    }
+
     @Test
-    public void testRun() throws Exception {
+    public void testRunWhenEmptyNonce() throws Exception {
         // parameters to pass into run method.
         UUID resourceOwnerId = UUID.randomUUID();
         UUID clientUUID = UUID.randomUUID();
         Optional<URI> redirectURI = Optional.of(new URI("https://tokensmith.net"));
 
-        // scopes to add to the access request.
-        List<String> scopeNames = new ArrayList<>();
-        scopeNames.add("profile");
 
-        List<Scope> scopes = new ArrayList<>();
-        Scope scope = new Scope(UUID.randomUUID(), "profile");
-        scopes.add(scope);
-
+        List<String> scopeNames = scopeNames();
+        List<Scope> scopes = scopes(scopeNames);
         when(mockScopeRepository.findByNames(scopeNames)).thenReturn(scopes);
 
         ArgumentCaptor<AccessRequest> ARCaptor = ArgumentCaptor.forClass(AccessRequest.class);
         ArgumentCaptor<AccessRequestScope> ARSCaptor = ArgumentCaptor.forClass(AccessRequestScope.class);
 
-        when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class))).thenReturn("randomString");
+        when(mockInsertAuthCodeWithRetry.run(any(AccessRequest.class))).thenReturn("auth-code");
 
-        String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames);
+        String actual = subject.run(resourceOwnerId, clientUUID, redirectURI, scopeNames, Optional.empty());
 
-        assertThat(actual, is("randomString"));
+        assertThat(actual, is("auth-code"));
 
         verify(mockAccessRequestRepository).insert(ARCaptor.capture());
         verify(mockAccessRequestScopesRepository).insert(ARSCaptor.capture());
@@ -81,11 +92,12 @@ public class IssueAuthCodeTest {
         assertThat(ARCaptor.getValue().getId(), is(notNullValue()));
         assertThat(ARCaptor.getValue().getRedirectURI(), is(redirectURI));
         assertThat(ARCaptor.getValue().getClientId(), is(clientUUID));
+        assertThat(ARCaptor.getValue().getNonce().isPresent(), is(false));
 
         // check that access request scope assigned correct values.
         assertThat(ARSCaptor.getValue().getId(), is(notNullValue()));
         assertThat(ARSCaptor.getValue().getAccessRequestId(), is(ARCaptor.getValue().getId()));
-        assertThat(ARSCaptor.getValue().getScope().getId(), is(scope.getId()));
+        assertThat(ARSCaptor.getValue().getScope().getId(), is(scopes.get(0).getId()));
 
     }
 }

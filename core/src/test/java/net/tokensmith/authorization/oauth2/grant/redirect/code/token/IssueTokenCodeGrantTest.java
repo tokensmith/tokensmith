@@ -18,6 +18,7 @@ import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -55,7 +56,6 @@ public class IssueTokenCodeGrantTest {
                 mockAuthCodeTokenRepository,
                 mockResourceOwnerTokenRepository,
                 mockAuthCodeRepository,
-                new TokenResponseBuilder(),
                 "https://sso.tokensmith.net"
         );
     }
@@ -65,14 +65,15 @@ public class IssueTokenCodeGrantTest {
         UUID clientId = UUID.randomUUID();
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
+        Optional<String> nonce = Optional.of("nonce-123");
 
         List<Scope> scopes = FixtureFactory.makeScopes();
 
         List<Client> audience = FixtureFactory.makeAudience(clientId);
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
-        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience, nonce)).thenReturn(tokenGraph);
 
-        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes,audience);
+        TokenResponse actual = subject.run(clientId, authCodeId, resourceOwnerId, scopes, audience, nonce);
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getAccessToken(), is(tokenGraph.getPlainTextAccessToken()));
@@ -90,6 +91,8 @@ public class IssueTokenCodeGrantTest {
         assertThat(actual.getTokenClaims().getIssuedAt(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getExpirationTime(), is(notNullValue()));
         assertThat(actual.getTokenClaims().getAuthTime(), is(tokenGraph.getToken().getCreatedAt().toEpochSecond()));
+        assertThat(actual.getTokenClaims().getNonce().isPresent(), is(true));
+        assertThat(actual.getTokenClaims().getNonce(), is(nonce));
 
         // should insert a authCodeToken
         ArgumentCaptor<AuthCodeToken> authCodeTokenCaptor = ArgumentCaptor.forClass(AuthCodeToken.class);
@@ -118,10 +121,11 @@ public class IssueTokenCodeGrantTest {
         UUID authCodeId = UUID.randomUUID();
         UUID resourceOwnerId = UUID.randomUUID();
         List<Scope> scopes = FixtureFactory.makeScopes();
+        Optional<String> nonce = Optional.of("nonce-123");
 
         List<Client> audience = FixtureFactory.makeAudience(clientId);
         TokenGraph tokenGraph = FixtureFactory.makeTokenGraph(clientId, audience);
-        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience)).thenReturn(tokenGraph);
+        when(mockInsertTokenGraph.insertTokenGraph(clientId, scopes, audience, nonce)).thenReturn(tokenGraph);
 
         DuplicateRecordException duplicateRecordException = new DuplicateRecordException("", null);
         doThrow(duplicateRecordException).when(mockAuthCodeTokenRepository).insert(any(AuthCodeToken.class));
@@ -129,7 +133,7 @@ public class IssueTokenCodeGrantTest {
         CompromisedCodeException expected = null;
 
         try {
-            subject.run(clientId, authCodeId, resourceOwnerId, scopes, audience);
+            subject.run(clientId, authCodeId, resourceOwnerId, scopes, audience, nonce);
         } catch (CompromisedCodeException e) {
             expected = e;
             assertThat(expected.getError(), is("invalid_grant"));

@@ -42,7 +42,6 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private LoginResourceOwner loginResourceOwner;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
-    private OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder;
     private ClientRepository clientRepository;
 
     private String issuer;
@@ -51,12 +50,11 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, OpenIdImplicitAccessTokenBuilder openIdImplicitAccessTokenBuilder, ClientRepository clientRepository, String issuer) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, ClientRepository clientRepository, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
-        this.openIdImplicitAccessTokenBuilder = openIdImplicitAccessTokenBuilder;
         this.clientRepository = clientRepository;
         this.issuer = issuer;
     }
@@ -69,7 +67,9 @@ public class RequestOpenIdImplicitTokenAndIdentity {
 
         TokenGraph tokenGraph;
         try {
-            tokenGraph = issueTokenImplicitGrant.run(request.getClientId(), resourceOwner, request.getScopes(), audience);
+            tokenGraph = issueTokenImplicitGrant.run(
+                request.getClientId(), resourceOwner, request.getScopes(), audience, Optional.of(request.getNonce())
+            );
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
 
@@ -100,6 +100,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
         tc.setIssuedAt(tokenGraph.getToken().getCreatedAt().toEpochSecond());
         tc.setExpirationTime(tokenGraph.getToken().getExpiresAt().toEpochSecond());
         tc.setAuthTime(tokenGraph.getToken().getCreatedAt().toEpochSecond());
+        tc.setNonce(Optional.of(request.getNonce()));
 
         String idToken;
         try {
@@ -120,7 +121,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         }
 
-        OpenIdImplicitAccessToken response = openIdImplicitAccessTokenBuilder
+        OpenIdImplicitAccessToken response = new OpenIdImplicitAccessTokenBuilder()
             .setAccessToken(tokenGraph.getPlainTextAccessToken())
             .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
             .setIdToken(idToken)

@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
 import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
+import net.tokensmith.repository.entity.AccessRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -44,15 +45,16 @@ public class RequestTokenRefreshGrantTest {
     @Autowired
     private LoadOpenIdConfClientAll loadOpenIdConfClientAll;
 
+
     @Test
-    public void requestShouldBeOk() throws Exception {
+    public void requestWhenCurrentTokenIsCodeShouldBeOk() throws Exception {
         String plainTextAuthCode = "plain-text-auth-code";
         AuthCode authCode = loadOpenIdConfClientAll.loadAuthCode(plainTextAuthCode);
         UUID clientId = authCode.getAccessRequest().getClientId();
         UUID resourceOwnerId = authCode.getAccessRequest().getResourceOwnerId();
 
         List<Scope> scopesForToken = authCode.getAccessRequest().getAccessRequestScopes().stream()
-                .map(item -> item.getScope())
+                .map(AccessRequestScope::getScope)
                 .collect(Collectors.toList());
 
         String refreshAccessToken = "refresh-access-token";

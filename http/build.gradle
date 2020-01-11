@@ -58,6 +58,40 @@ dependencies {
     testCompile group: 'com.ning', name: 'async-http-client', version:'1.9.15'
 }
 
+tasks.create("depsize") {
+    listConfigurationDependencies(configurations.default)
+}
+
+tasks.create("depsize-all-configurations") {
+    configurations.each {
+        if (it.isCanBeResolved()) {
+            listConfigurationDependencies(it)
+        }
+    }
+}
+
+def listConfigurationDependencies(Configuration configuration) {
+    def formatStr = "%,10.2f"
+
+    def size = configuration.collect { it.length() / (1024 * 1024) }.sum()
+
+    def out = new StringBuffer()
+    out << "\nConfiguration name: \"${configuration.name}\"\n"
+    if (size) {
+        out << 'Total dependencies size:'.padRight(65)
+        out << "${String.format(formatStr, size)} Mb\n\n"
+
+        configuration.sort { -it.length() }
+                .each {
+                    out << "${it.name}".padRight(65)
+                    out << "${String.format(formatStr, (it.length() / 1024))} kb\n"
+                }
+    } else {
+        out << 'No dependencies found';
+    }
+    println(out)
+}
+
 test {
     mkdir 'logs/jetty'
     filter {
@@ -85,7 +119,7 @@ war {
         configurations.executableWarDeps.collect { it.isDirectory() ? it : project.zipTree(it) }
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
-    // having trouble expolding the war file.
+    // having trouble exploding the war file.
     exclude "license/LICENSE*.txt"
     exclude "license/README*.txt"
 

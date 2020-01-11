@@ -72,14 +72,18 @@ public class RequestTokenRefreshGrant implements RequestTokenGrant {
         RefreshToken refreshToken = getRefreshToken(cc.getClient().getId(), hashedRefreshToken);
         List<Scope> scopes = matchScopes(input.getScopes(), refreshToken.getToken().getTokenScopes());
 
-        String accessToken = new String(refreshToken.getToken().getToken());
+        String accessToken = refreshToken.getToken().getToken();
         UUID resourceOwnerId = getResourceOwnerId(accessToken);
 
         Token leadToken;
-        if (refreshToken.getToken().getLeadToken() == null) {
-            leadToken = refreshToken.getToken();
-        } else {
+        if (GrantType.REFRESSH.equals(refreshToken.getToken().getGrantType())) {
+            // must have a lead token since it's token is a refresh grant.
+            // the first refresh grant inserts a lead token.
             leadToken = refreshToken.getToken().getLeadToken();
+        } else {
+            // first time using refresh so no lead token is available.
+            // it's token was the original token issued.
+            leadToken = refreshToken.getToken();
         }
 
         TokenResponse tokenResponse = null;

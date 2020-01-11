@@ -87,7 +87,7 @@ public class InsertTokenGraphImplicitGrantTest {
         when(mockMakeBearerToken.run(clientId, plainTextToken, configuration.getAccessTokenTokenSecondsToExpiry())).thenReturn(token);
         when(mockRandomString.run(32)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -157,7 +157,7 @@ public class InsertTokenGraphImplicitGrantTest {
         doThrow(dre).doNothing().when(mockTokenRepository).insert(any(Token.class));
         when(mockRandomString.run(33)).thenReturn(plainTextToken);
 
-        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience);
+        TokenGraph actual = subject.insertTokenGraph(clientId, scopes, audience, Optional.empty());
 
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getPlainTextAccessToken(), is(plainTextToken));
@@ -210,7 +210,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -233,7 +233,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;
@@ -256,7 +256,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, configId, tokenSize, secondsToExpiration
+                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
             );
         } catch (ServerException e) {
             actual = e;

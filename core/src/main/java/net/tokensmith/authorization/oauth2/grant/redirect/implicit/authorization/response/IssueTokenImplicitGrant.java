@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,10 +29,10 @@ public class IssueTokenImplicitGrant {
         this.resourceOwnerTokenRepository = resourceOwnerTokenRepository;
     }
 
-    public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, List<Client> audience) throws ServerException {
+    public TokenGraph run(UUID clientId, ResourceOwner resourceOwner, List<String> scopeNames, List<Client> audience, Optional<String> nonce) throws ServerException {
 
         List<Scope> scopes = scopeRepository.findByNames(scopeNames);
-        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience);
+        TokenGraph tokenGraph = insertTokenGraphImplicitGrant.insertTokenGraph(clientId, scopes, audience, nonce);
 
         ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
         resourceOwnerToken.setId(UUID.randomUUID());

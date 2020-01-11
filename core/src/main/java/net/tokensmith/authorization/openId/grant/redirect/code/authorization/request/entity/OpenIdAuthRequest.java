@@ -11,9 +11,6 @@ import java.util.UUID;
 
 public class OpenIdAuthRequest extends BaseOpenIdAuthRequest {
 
-    @Parameter(name = "nonce", required = false)
-    private Optional<String> nonce;
-
     public OpenIdAuthRequest() {}
 
     public OpenIdAuthRequest(UUID clientId, List<String> responseTypes, URI redirectURI, List<String> scopes, Optional<String> state) {
@@ -23,6 +20,9 @@ public class OpenIdAuthRequest extends BaseOpenIdAuthRequest {
         this.scopes = scopes;
         this.state = state;
     }
+
+    @Parameter(name = "nonce", required = false)
+    private Optional<String> nonce;
 
     public Optional<String> getNonce() {
         return nonce;

@@ -47,7 +47,6 @@ public class IssueTokenRefreshGrantTest {
                 mockInsertTokenGraphRefreshGrant,
                 mockTokenChainRepository,
                 mockResourceOwnerTokenRepository,
-                new TokenResponseBuilder(),
                 "https://sso.tokensmith.net"
         );
     }
