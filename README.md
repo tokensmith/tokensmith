@@ -42,17 +42,18 @@ XXX - recommendations for configuration
  - Include links to the RFCs that relate to the feature or bug.
 
 ## Project layout
-This repo has [n] sub projects.
+This repo has 4 sub projects.
 
-### http
+### [http](http)
 Everything related to handling http.
-### core
+### [core](core)
 Use cases for supporting OAuth2 and OIDC
-### repository
+### [repository](repository)
 Entities and Repository interfaces
+### [login](login)
+A SDK to interact with Tokensmith (OIDC ID Server).
 
 ## TODO
- - import SDK
  - document configuration
  - document how to run/build
  - website
