@@ -10,7 +10,7 @@ public class RefreshToken {
     private UUID id;
     private UUID tokenId;
     private Token token;
-    private byte[] accessToken;
+    private String accessToken;
     private OffsetDateTime expiresAt;
     private boolean revoked;
     private OffsetDateTime createdAt;
@@ -39,11 +39,11 @@ public class RefreshToken {
         this.token = token;
     }
 
-    public byte[] getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(byte[] accessToken) {
+    public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 

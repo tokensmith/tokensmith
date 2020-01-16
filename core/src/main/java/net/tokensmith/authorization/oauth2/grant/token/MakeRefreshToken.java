@@ -24,7 +24,7 @@ public class MakeRefreshToken {
 
     public RefreshToken run(Token token, String plainTextToken, Long secondsToExpiration) {
 
-        byte[] hashedToken = hashToken.run(plainTextToken).getBytes();
+        String hashedToken = hashToken.run(plainTextToken);
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setId(UUID.randomUUID());
