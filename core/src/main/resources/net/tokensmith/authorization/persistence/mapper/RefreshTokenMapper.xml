@@ -7,7 +7,7 @@
     <resultMap id="refreshToken" type="net.tokensmith.repository.entity.RefreshToken">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <id column="token_id" property="tokenId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
-        <result column="access_token" property="accessToken"/>
+        <result column="active_token" property="accessToken"/>
         <result column="revoked" property="revoked"/>
         <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
@@ -17,7 +17,7 @@
     </resultMap>
 
     <insert id="insert">
-        insert into refresh_token (id, token_id, access_token, expires_at)
+        insert into refresh_token (id, token_id, active_token, expires_at)
         values (
             #{refreshToken.id},
             #{refreshToken.token.id},
@@ -30,7 +30,7 @@
         select
         refresh_token.id,
         refresh_token.token_id,
-        refresh_token.access_token,
+        refresh_token.active_token,
         refresh_token.revoked,
         refresh_token.expires_at,
         refresh_token.created_at
@@ -42,7 +42,7 @@
         select
             refresh_token.id,
             refresh_token.token_id,
-            refresh_token.access_token,
+            refresh_token.active_token,
             refresh_token.revoked,
             refresh_token.expires_at,
             refresh_token.created_at,
@@ -52,6 +52,7 @@
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
             token.nonce as token_nonce,
+            token.lead_auth_time as token_lead_auth_time,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
 
@@ -73,6 +74,7 @@
             lead_token.grant_type as token_lead_token_grant_type,
             lead_token.nonce as token_lead_token_nonce,
             lead_token.client_id as token_lead_token_client_id,
+            lead_token.lead_auth_time as token_lead_token_lead_auth_time,
             lead_token.expires_at as token_lead_token_expires_at,
             lead_token.created_at as token_lead_token_created_at
 
@@ -87,7 +89,7 @@
         left join token_lead_token tlt on tlt.token_id = token.id
         left join token lead_token on lead_token.id = tlt.lead_token_id
 
-        where refresh_token.access_token = decode(#{accessToken}, 'escape')
+        where refresh_token.active_token = #{accessToken}
         and refresh_token.revoked = FALSE
         and refresh_token.expires_at > current_timestamp
         and token.revoked = FALSE

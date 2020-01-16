@@ -57,7 +57,8 @@ public class InsertTokenGraphRefreshGrant extends InsertTokenGraph {
                 leadToken.getNonce(),
                 config.getId(),
                 config.getAccessTokenSize(),
-                getSecondsToExpiration(config)
+                getSecondsToExpiration(config),
+                leadToken.getLeadAuthTime()
         );
 
         UUID tokenId = tokenGraph.getToken().getId();

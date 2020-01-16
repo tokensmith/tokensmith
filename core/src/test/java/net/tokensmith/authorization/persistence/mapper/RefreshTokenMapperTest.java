@@ -170,6 +170,7 @@ public class RefreshTokenMapperTest {
         subject.insert(refreshToken);
 
         refreshToken.setId(UUID.randomUUID());
+
         subject.insert(refreshToken);
     }
 
@@ -222,6 +223,8 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getToken().getAudience().get(0).getRedirectURI(), is(notNullValue()));
         assertThat(actual.getToken().getAudience().get(0).getCreatedAt(), is(notNullValue()));
 
+
+        assertThat(actual.getToken().getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getToken().getExpiresAt(), is(notNullValue()));
         assertThat(actual.getToken().getCreatedAt(), is(notNullValue()));
 
@@ -230,6 +233,7 @@ public class RefreshTokenMapperTest {
         assertThat(actual.getToken().getLeadToken().isRevoked(), is(false));
         assertThat(actual.getToken().getLeadToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
         assertThat(actual.getToken().getLeadToken().getClientId(), is(refreshToken.getToken().getClientId()));
+        assertThat(actual.getToken().getLeadToken().getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getToken().getLeadToken().getCreatedAt(), is(notNullValue()));
         assertThat(actual.getToken().getLeadToken().getExpiresAt(), is(notNullValue()));
 
