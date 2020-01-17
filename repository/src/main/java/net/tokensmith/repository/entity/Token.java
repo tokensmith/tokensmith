@@ -19,6 +19,7 @@ public class Token {
     private Optional<String> nonce;
     private Long secondsToExpiration;
     private Token leadToken; // optional
+    private OffsetDateTime leadAuthTime;
     private OffsetDateTime expiresAt;
     private OffsetDateTime createdAt;
 
@@ -94,14 +95,6 @@ public class Token {
         this.nonce = nonce;
     }
 
-    public OffsetDateTime getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(OffsetDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
     public Long getSecondsToExpiration() {
         return secondsToExpiration;
     }
@@ -116,6 +109,22 @@ public class Token {
 
     public void setLeadToken(Token leadToken) {
         this.leadToken = leadToken;
+    }
+
+    public OffsetDateTime getLeadAuthTime() {
+        return leadAuthTime;
+    }
+
+    public void setLeadAuthTime(OffsetDateTime leadAuthTime) {
+        this.leadAuthTime = leadAuthTime;
+    }
+
+    public OffsetDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(OffsetDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     public OffsetDateTime getCreatedAt() {

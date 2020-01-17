@@ -9,6 +9,7 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.security.RandomString;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public abstract class InsertTokenGraph {
     private static String TOKEN_SCHEMA = "token";
     private static String TOKEN_KEY = "token";
     private static String REFRESH_TOKEN_SCHEMA = "refresh_token";
-    private static String REFRESH_TOKEN_KEY = "access_token";
+    private static String REFRESH_TOKEN_KEY = "active_token";
     private static Integer MAX_ATTEMPTS = 2;
     private static String KEY_KNOWN_FAILED_MSG = "Failed to insert %s. Attempted %s times. Token size is, %s.";
     private static String KEY_UNKNOWN_FAILED_MSG = "Failed to insert %s. Unknown key, %s. Did not retry. Attempted %s times. Token size is, %s.";
@@ -58,7 +59,8 @@ public abstract class InsertTokenGraph {
                 nonce,
                 config.getId(),
                 config.getAccessTokenSize(),
-                getSecondsToExpiration(config)
+                getSecondsToExpiration(config),
+                OffsetDateTime.now()
         );
 
         insertRefreshToken(
@@ -77,17 +79,18 @@ public abstract class InsertTokenGraph {
         return tokenGraph;
     }
 
-    public TokenGraph insertToken(Integer attempt, UUID clientId, Optional<String> nonce, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
+    public TokenGraph insertToken(Integer attempt, UUID clientId, Optional<String> nonce, UUID configId, Integer atSize, Long secondsToExpiration, OffsetDateTime leadAuthTime) throws ServerException {
 
         String plainTextToken = randomString.run(atSize);
         Token token = makeBearerToken.run(clientId, plainTextToken, secondsToExpiration);
         token.setGrantType(getGrantType());
         token.setNonce(nonce);
+        token.setLeadAuthTime(leadAuthTime);
 
         try {
             tokenRepository.insert(token);
         } catch (DuplicateRecordException e) {
-            return handleDuplicateToken(e, attempt, clientId, nonce, configId, atSize, secondsToExpiration);
+            return handleDuplicateToken(e, attempt, clientId, nonce, configId, atSize, secondsToExpiration, leadAuthTime);
         }
 
         TokenGraph tokenGraph = new TokenGraph();
@@ -147,13 +150,13 @@ public abstract class InsertTokenGraph {
         }
     }
 
-    public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID clientId, Optional<String> nonce, UUID configId, Integer atSize, Long secondsToExpiration) throws ServerException {
+    public TokenGraph handleDuplicateToken(DuplicateRecordException e, Integer attempt, UUID clientId, Optional<String> nonce, UUID configId, Integer atSize, Long secondsToExpiration, OffsetDateTime leadAuthTime) throws ServerException {
         Boolean isDuplicateToken = e.getKey().isPresent() && TOKEN_KEY.equals(e.getKey().get());
 
         if(isDuplicateToken && attempt < MAX_ATTEMPTS) {
             getLogger().warn(e.getMessage(), e);
             configurationRepository.updateAccessTokenSize(configId, atSize+1);
-            return insertToken(attempt+1, clientId, nonce, configId, atSize+1, secondsToExpiration);
+            return insertToken(attempt+1, clientId, nonce, configId, atSize+1, secondsToExpiration, leadAuthTime);
         } else if (isDuplicateToken && attempt >= MAX_ATTEMPTS) {
             String msg = String.format(KEY_KNOWN_FAILED_MSG, TOKEN_SCHEMA, attempt, atSize);
             getLogger().error(msg, e);

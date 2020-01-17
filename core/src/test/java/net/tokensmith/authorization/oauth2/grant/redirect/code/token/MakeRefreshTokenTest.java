@@ -48,7 +48,7 @@ public class MakeRefreshTokenTest {
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getId(), is(notNullValue()));
         assertThat(actual.getToken(), is(token));
-        assertThat(actual.getAccessToken(), is(hashedToken.getBytes()));
+        assertThat(actual.getAccessToken(), is(hashedToken));
         assertThat(actual.getExpiresAt(), is(notNullValue()));
     }
 

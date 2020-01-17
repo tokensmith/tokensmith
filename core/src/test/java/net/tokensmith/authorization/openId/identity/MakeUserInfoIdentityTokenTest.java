@@ -137,13 +137,9 @@ public class MakeUserInfoIdentityTokenTest {
         UUID clientId = UUID.randomUUID();
         Token token = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
         token.setCreatedAt(OffsetDateTime.now());
+        token.setLeadToken(null);
+
         ro.getTokens().add(token);
-
-        // lead token
-        Token leadToken = FixtureFactory.makeOpenIdToken(accessToken, clientId, new ArrayList<>());
-        leadToken.setCreatedAt(token.getCreatedAt().minusSeconds(1));
-
-        token.setLeadToken(leadToken);
 
         RSAPrivateKey key = FixtureFactory.makeRSAPrivateKey();
         RSAKeyPair keyPair = FixtureFactory.makeRSAKeyPair();
@@ -178,7 +174,7 @@ public class MakeUserInfoIdentityTokenTest {
 
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is(FixtureFactory.makeSecureRedirectUri().toString()));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(expectedAudience));
-        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(leadToken.getCreatedAt().toEpochSecond()));
+        assertThat(tcArgumentCaptor.getValue().getAuthTime(), is(token.getLeadAuthTime().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getExpirationTime(), is(token.getExpiresAt().toEpochSecond()));
         assertThat(tcArgumentCaptor.getValue().getIssuedAt(), is(token.getCreatedAt().toEpochSecond()));
 

@@ -108,6 +108,8 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getToken().getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getToken().getAudience(), is(notNullValue()));
         assertThat(actual.getToken().getAudience(), is(audience));
+        assertThat(actual.getToken().getLeadAuthTime(), is(notNullValue()));
+        assertThat(actual.getToken().getLeadAuthTime(), is(leadToken.getLeadAuthTime()));
 
         assertThat(actual.getToken().getTokenScopes(), is(notNullValue()));
         assertThat(actual.getToken().getTokenScopes().size(), is(scopes.size()));
@@ -123,8 +125,16 @@ public class InsertTokenGraphRefreshGrantTest {
         assertThat(actual.getPlainTextRefreshToken().get(), is(refreshAccessToken));
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
-        // should insert a token
-        verify(mockTokenRepository).insert(token);
+        // should insert a token with values from the lead token.
+        ArgumentCaptor<Token> tokenCaptor = ArgumentCaptor.forClass(Token.class);
+        verify(mockTokenRepository).insert(tokenCaptor.capture());
+        assertThat(tokenCaptor.getValue().getGrantType(), is(GrantType.REFRESSH));
+        assertThat(tokenCaptor.getValue().getLeadAuthTime(), is(notNullValue()));
+        assertThat(tokenCaptor.getValue().getLeadAuthTime(), is(leadToken.getLeadAuthTime()));
+        assertThat(tokenCaptor.getValue().getNonce(), is(notNullValue()));
+        assertThat(tokenCaptor.getValue().getNonce().isPresent(), is(true));
+        assertThat(tokenCaptor.getValue().getNonce(), is(leadToken.getNonce()));
+
 
         // should insert a token lead token
         ArgumentCaptor<TokenLeadToken> tltArgumentCaptor = ArgumentCaptor.forClass(TokenLeadToken.class);
@@ -236,7 +246,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;
@@ -259,7 +269,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;
@@ -282,7 +292,7 @@ public class InsertTokenGraphRefreshGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;
@@ -315,7 +325,7 @@ public class InsertTokenGraphRefreshGrantTest {
 
         // force a retry.
         DuplicateKeyException dke = new DuplicateKeyException("test");
-        DuplicateRecordException dre = new DuplicateRecordException("test", dke, Optional.of("access_token"));
+        DuplicateRecordException dre = new DuplicateRecordException("test", dke, Optional.of("active_token"));
         doThrow(dre).doNothing().when(mockRefreshTokenRepository).insert(any(RefreshToken.class));
         when(mockRandomString.run(33)).thenReturn(refreshAccessToken);
 
@@ -359,7 +369,7 @@ public class InsertTokenGraphRefreshGrantTest {
         UUID clientId = UUID.randomUUID();
 
         DuplicateKeyException dke = new DuplicateKeyException("msg");
-        DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("access_token"));
+        DuplicateRecordException dre = new DuplicateRecordException("msg", dke, Optional.of("active_token"));
         Integer attempt = 3;
         UUID configId = UUID.randomUUID();
         Integer tokenSize = 32;

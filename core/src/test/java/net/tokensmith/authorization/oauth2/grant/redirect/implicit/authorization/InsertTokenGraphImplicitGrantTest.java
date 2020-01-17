@@ -110,7 +110,12 @@ public class InsertTokenGraphImplicitGrantTest {
         assertThat(actual.getExtension(), is(Extension.IDENTITY));
 
         // should insert a token
-        verify(mockTokenRepository).insert(token);
+        ArgumentCaptor<Token> tokenCaptor = ArgumentCaptor.forClass(Token.class);
+        verify(mockTokenRepository).insert(tokenCaptor.capture());
+        assertThat(tokenCaptor.getValue().getGrantType(), is(GrantType.TOKEN));
+        assertThat(tokenCaptor.getValue().getLeadAuthTime(), is(notNullValue()));
+        assertThat(tokenCaptor.getValue().getNonce(), is(notNullValue()));
+        assertThat(tokenCaptor.getValue().getNonce().isPresent(), is(false));
 
         // should not insert a refresh token.
         verify(mockRefreshTokenRepository, never()).insert(any(RefreshToken.class));
@@ -210,7 +215,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;
@@ -233,7 +238,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;
@@ -256,7 +261,7 @@ public class InsertTokenGraphImplicitGrantTest {
         ServerException actual = null;
         try {
             subject.handleDuplicateToken(
-                    dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration
+                dre, attempt, clientId, Optional.empty(), configId, tokenSize, secondsToExpiration, OffsetDateTime.now()
             );
         } catch (ServerException e) {
             actual = e;

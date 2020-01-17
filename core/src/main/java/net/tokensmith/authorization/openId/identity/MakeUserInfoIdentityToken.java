@@ -118,12 +118,8 @@ public class MakeUserInfoIdentityToken {
         tc.setIssuer(issuer);
         tc.setExpirationTime(token.getExpiresAt().toEpochSecond());
         tc.setIssuedAt(token.getCreatedAt().toEpochSecond());
+        tc.setAuthTime(token.getLeadAuthTime().toEpochSecond());
 
-        if (token.getLeadToken() != null) {
-            tc.setAuthTime(token.getLeadToken().getCreatedAt().toEpochSecond());
-        } else {
-            tc.setAuthTime(token.getCreatedAt().toEpochSecond());
-        }
         return tc;
     }
 }
