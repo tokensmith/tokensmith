@@ -317,6 +317,7 @@ public class FixtureFactory {
         token.setTokenScopes(new ArrayList<>());
         token.setSecondsToExpiration(3600L);
         token.setNonce(Optional.empty());
+        token.setLeadAuthTime(OffsetDateTime.now());
 
         TokenScope ts1 = new TokenScope();
         ts1.setId(UUID.randomUUID());
@@ -356,7 +357,7 @@ public class FixtureFactory {
         refreshToken.setId(UUID.randomUUID());
         refreshToken.setTokenId(token.getId());
         refreshToken.setToken(token);
-        refreshToken.setAccessToken(hashedRefreshAccessToken.getBytes());
+        refreshToken.setAccessToken(hashedRefreshAccessToken);
         refreshToken.setExpiresAt(OffsetDateTime.now().plusSeconds(1209600));
         refreshToken.setRevoked(false);
         return refreshToken;

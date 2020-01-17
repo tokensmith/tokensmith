@@ -25,7 +25,7 @@
                      notNullColumn="id"/>
 
         <association property="tokens"
-                     resultMap="net.tokensmith.authorization.persistence.mapper.TokenMapper.tokenWithLeadToken"
+                     resultMap="net.tokensmith.authorization.persistence.mapper.TokenMapper.token"
                      columnPrefix="token_"/>
     </resultMap>
 
@@ -85,15 +85,9 @@
             token.revoked as token_revoked,
             token.grant_type as token_grant_type,
             token.client_id as token_client_id,
+            token.lead_auth_time as token_lead_auth_time,
             token.expires_at as token_expires_at,
             token.created_at as token_created_at,
-
-            lead_token.id as token_lead_token_id,
-            lead_token.revoked as token_lead_token_revoked,
-            lead_token.grant_type as token_lead_token_grant_type,
-            lead_token.client_id as token_lead_token_client_id,
-            lead_token.expires_at as token_lead_token_expires_at,
-            lead_token.created_at as token_lead_token_created_at,
 
             token_scope.id as token_ts_id,
             token_scope.token_id as token_ts_token_id,
@@ -155,9 +149,6 @@
         join token on token.id = resource_owner_token.token_id
         join token_scope on token_scope.token_id = token.id
         join scope on scope.id = token_scope.scope_id
-
-        left join token_lead_token tlt on tlt.token_id = token.id
-        left join token lead_token on lead_token.id = tlt.lead_token_id
 
         left join resource_owner_profile profile on profile.resource_owner_id = resource_owner.id
         left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id

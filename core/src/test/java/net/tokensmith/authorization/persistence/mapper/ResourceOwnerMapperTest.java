@@ -219,6 +219,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).isRevoked(), is(false));
         assertThat(actual.getTokens().get(0).getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getTokens().get(0).getClientId(), is(client.getId()));
+        assertThat(actual.getTokens().get(0).getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getExpiresAt(), is(notNullValue()));
 
@@ -229,13 +230,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getAudience().get(0).getRedirectURI(), is(client.getRedirectURI()));
         assertThat(actual.getTokens().get(0).getAudience().get(0).getCreatedAt(), is(notNullValue()));
 
-        assertThat(actual.getTokens().get(0).getLeadToken(), is(notNullValue()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getId(), is(leadToken.getId()));
-        assertThat(actual.getTokens().get(0).getLeadToken().isRevoked(), is(false));
-        assertThat(actual.getTokens().get(0).getLeadToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getTokens().get(0).getLeadToken().getClientId(), is(client.getId()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getExpiresAt(), is(notNullValue()));
+        assertThat(actual.getTokens().get(0).getLeadToken(), is(nullValue()));
 
         assertThat(actual.getTokens().get(0).getTokenScopes(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getTokenScopes().size(), is(1));
@@ -340,7 +335,7 @@ public class ResourceOwnerMapperTest {
         resourceOwnerTokenMapper.insert(resourceOwnerToken);
         // end: prepare database for the test
 
-        // fc791f60877f4953c6bb272145b7c430af846ba942670d4d4ad7a1ab351b9683696e257ed445b69c5fafa1611891ad1d32d5773ff427459972e5f61bb5aeffae
+
         ResourceOwner actual = subject.getByAccessTokenWithProfileAndTokens(token.getToken());
 
         assertThat(actual, is(notNullValue()));
@@ -356,6 +351,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).isRevoked(), is(false));
         assertThat(actual.getTokens().get(0).getGrantType(), is(GrantType.REFRESSH));
         assertThat(actual.getTokens().get(0).getClientId(), is(client.getId()));
+        assertThat(actual.getTokens().get(0).getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getCreatedAt(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getExpiresAt(), is(notNullValue()));
 
@@ -366,13 +362,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getAudience().get(0).getRedirectURI(), is(client.getRedirectURI()));
         assertThat(actual.getTokens().get(0).getAudience().get(0).getCreatedAt(), is(notNullValue()));
 
-        assertThat(actual.getTokens().get(0).getLeadToken(), is(notNullValue()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getId(), is(leadToken.getId()));
-        assertThat(actual.getTokens().get(0).getLeadToken().isRevoked(), is(false));
-        assertThat(actual.getTokens().get(0).getLeadToken().getGrantType(), is(GrantType.AUTHORIZATION_CODE));
-        assertThat(actual.getTokens().get(0).getLeadToken().getClientId(), is(client.getId()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getCreatedAt(), is(notNullValue()));
-        assertThat(actual.getTokens().get(0).getLeadToken().getExpiresAt(), is(notNullValue()));
+        assertThat(actual.getTokens().get(0).getLeadToken(), is(nullValue()));
 
         assertThat(actual.getTokens().get(0).getTokenScopes(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getTokenScopes().size(), is(1));

@@ -53,6 +53,7 @@ public class TokenMapperTest {
         subject.insert(token);
 
         assertThat(token.getCreatedAt(), is(notNullValue()));
+        assertThat(token.getLeadAuthTime(), is(notNullValue()));
     }
 
     @Test
@@ -147,6 +148,7 @@ public class TokenMapperTest {
         assertThat(actual.isRevoked(), is(false));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
         assertThat(actual.getClientId(), is(authCode.getAccessRequest().getClientId()));
+        assertThat(token.getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt().toEpochSecond(), is(token.getExpiresAt().toEpochSecond()));
         assertThat(actual.getNonce(), is(notNullValue()));
@@ -200,6 +202,7 @@ public class TokenMapperTest {
         assertThat(actual.isRevoked(), is(false));
         assertThat(actual.getGrantType(), is(token.getGrantType()));
         assertThat(actual.getClientId(), is(client.getId()));
+        assertThat(token.getLeadAuthTime(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
         assertThat(actual.getExpiresAt().toEpochSecond(), is(expiresAt.toEpochSecond()));
     }
