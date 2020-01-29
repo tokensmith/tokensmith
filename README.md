@@ -12,13 +12,6 @@ The server is mostly configured in a [properties file](http/src/main/resources/a
  - Arguments can passed in as, `-DallowLocalUrls=false`
  - Environment variables can be set as, `export allowLocalUrls=false`
 
-
-
-The following is required to instruct Token Smith where to publish messages.
-```bash
-export MESSAGE_QUEUE_HOST='localhost:9092'
-```
-
 Hard coded config exists in [TokenSmithConfig](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithConfig.java).
 Contributions are welcome to make that dynamic.
 

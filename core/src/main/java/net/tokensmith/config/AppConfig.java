@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.pelican.config.PelicanAppConfig;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
@@ -50,6 +51,8 @@ public class AppConfig {
 
     @Value("${messaging.clientId}")
     private String clientId;
+    @Value("${messaging.host}")
+    private String messageQueueHost;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -159,7 +162,8 @@ public class AppConfig {
 
     @Bean
     public Publish publish() {
-        GizmoPelicanAppConfig pelicanAppConfig = new GizmoPelicanAppConfig();
+        PelicanAppConfig pelicanAppConfig = new PelicanAppConfig();
+        pelicanAppConfig.setMessageQueueHost(messageQueueHost);
         return pelicanAppConfig.publish(clientId);
     }
 
