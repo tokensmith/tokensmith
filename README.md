@@ -7,13 +7,10 @@ Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html
 
 #### Configuration
 
-The server is mostly configured in a [properties file](http/src/main/resources/application-default.properties). The values can be overidden with command line arguments or environemnt variables. More information for how to overide the default values is  available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
+The server is configured in a [properties file](http/src/main/resources/application-default.properties). The values can be overidden with command line arguments or environemnt variables. More information for how to overide the default values is  available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
 
  - Arguments can passed in as, `-DallowLocalUrls=false`
  - Environment variables can be set as, `export allowLocalUrls=false`
-
-Hard coded config exists in [TokenSmithConfig](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithConfig.java).
-Contributions are welcome to make that dynamic.
 
 #### Start Postgres and Kafka 
 Start database and kafka.
