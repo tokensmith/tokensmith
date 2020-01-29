@@ -1,1 +1,0 @@
-CREATE INDEX token_expires_at on token (expires_at);

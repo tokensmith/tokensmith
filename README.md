@@ -5,9 +5,20 @@ Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html
 
 ### locally
 
-Configuration
+#### Configuration
 
-XXX - I think these are in properties files now.
+The server is configured in a [properties file](http/src/main/resources/application-default.properties) which can be 
+overridden by either using environment variables or command line arguments.
+
+Arguments are passed in as, `-DallowLocalUrls=false`
+Environment variables would be set as, `export allowLocalUrls=false`
+
+More information is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html).
+
+One item is required to set as an environment variable which instructs Token Smith where to publish messages.
+```bash
+export MESSAGE_QUEUE_HOST='localhost:9092'
+```
 
 Start database and kafka.
 ```bash
@@ -31,12 +42,14 @@ Start the application
 java -jar http/build/libs/http-0.0.1-SNAPSHOT.war
 ```
 
-Or, from an IDE the main method is located at..
-`net.tokensmith.authorization.http.server.GizmoServer`
+Or, from an IDE the main method is in [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
 
-### else where
-XXX - recommendations for configuration
+## Seeding the database
 
+The database is initially seeded with a [database migration](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
+To interact with the server its required to add clients and resource owners. XXX add seed.sql
+
+## Interaction
 
 ## Request features and report bugs
  - Include links to the RFCs that relate to the feature or bug.
@@ -45,15 +58,10 @@ XXX - recommendations for configuration
 This repo has 4 sub projects.
 
 ### [http](http)
-Everything related to handling http.
+Everything related to accepting and responding to HTTP requests
 ### [core](core)
-Use cases for supporting OAuth2 and OIDC
+Use cases for supporting OAuth2 and OIDC.
 ### [repository](repository)
 Entities and Repository interfaces
 ### [login](login)
 A SDK to interact with Tokensmith (OIDC ID Server).
-
-## TODO
- - document configuration
- - document how to run/build
- - website
