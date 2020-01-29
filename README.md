@@ -7,15 +7,14 @@ Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html
 
 #### Configuration
 
-The server is configured in a [properties file](http/src/main/resources/application-default.properties) which can be 
-overridden by either using environment variables or command line arguments.
+The server is mostly configured in a [properties file](http/src/main/resources/application-default.properties). The values can be overidden with command line arguments or environemnt variables. More information for how to overide the default values is  available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
 
-Arguments are passed in as, `-DallowLocalUrls=false`
-Environment variables would be set as, `export allowLocalUrls=false`
+ - Arguments can passed in as, `-DallowLocalUrls=false`
+ - Environment variables can be set as, `export allowLocalUrls=false`
 
-More information is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html).
 
-One item is required to set as an environment variable which instructs Token Smith where to publish messages.
+
+The following is required to set as an environment variable which instructs Token Smith where to publish messages.
 ```bash
 export MESSAGE_QUEUE_HOST='localhost:9092'
 ```
