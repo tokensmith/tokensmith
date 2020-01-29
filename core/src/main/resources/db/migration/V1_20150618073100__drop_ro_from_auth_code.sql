@@ -1,1 +1,0 @@
-alter table auth_code drop resource_owner_uuid;

@@ -48,6 +48,8 @@ public class AppConfig {
     @Value("${db.key.secret}")
     private String secret;
 
+    @Value("${messaging.clientId}")
+    private String clientId;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -158,7 +160,7 @@ public class AppConfig {
     @Bean
     public Publish publish() {
         GizmoPelicanAppConfig pelicanAppConfig = new GizmoPelicanAppConfig();
-        return pelicanAppConfig.publish("auth-1");
+        return pelicanAppConfig.publish(clientId);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package net.tokensmith.authorization.http.controller.gizmo;
+package net.tokensmith.authorization.http.server;
 
 
 
@@ -13,6 +13,6 @@ public class EntryServlet extends OtterEntryServlet {
 
     @Override
     public Configure makeConfigure() {
-        return new GizmoConfig();
+        return new TokenSmithConfig();
     }
 }
