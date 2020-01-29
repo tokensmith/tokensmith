@@ -20,6 +20,9 @@ One item is required to set as an environment variable which instructs Token Smi
 export MESSAGE_QUEUE_HOST='localhost:9092'
 ```
 
+Hard coded config exists in [TokenSmithConfig](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithConfig.java).
+Contributions are welcome to make that dynamic.
+
 Start database and kafka.
 ```bash
 docker-compose build
@@ -46,10 +49,11 @@ Or, from an IDE the main method is in [TokenSmithServer](http/src/main/java/net/
 
 ## Seeding the database
 
-The database is initially seeded with a [database migration](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
-To interact with the server its required to add clients and resource owners. XXX add seed.sql
+The database is initially seeded with a few [database migration](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
 
 ## Interaction
+
+See the [http](http/README.md) readme for documents on interacting.
 
 ## Request features and report bugs
  - Include links to the RFCs that relate to the feature or bug.
