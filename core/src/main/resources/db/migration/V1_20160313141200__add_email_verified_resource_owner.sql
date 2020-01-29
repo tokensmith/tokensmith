@@ -1,1 +1,0 @@
-alter table resource_owner add column email_verified boolean default false NOT NULL;

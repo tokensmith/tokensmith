@@ -1,1 +1,0 @@
-alter table refresh_token drop head_token_id;

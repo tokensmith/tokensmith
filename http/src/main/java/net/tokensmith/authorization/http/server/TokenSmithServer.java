@@ -14,10 +14,10 @@ import java.util.List;
 /**
  * Created by tommackenzie on 12/9/16.
  */
-public class GizmoServer extends HttpServer {
-    private static final Logger logger = LoggerFactory.getLogger(GizmoServer.class);
+public class TokenSmithServer extends HttpServer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenSmithServer.class);
     public static String DOCUMENT_ROOT = "/";
-    public static int PORT = 8080;
+    public static int PORT = 8081;
     private static String REQUEST_LOG = "logs/jetty/jetty-yyyy_mm_dd.request.log";
 
     public static void main(String[] args) {

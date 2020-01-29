@@ -1,4 +1,4 @@
-package net.tokensmith.authorization.http.controller.gizmo;
+package net.tokensmith.authorization.http.server;
 
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.ClientError;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GizmoConfig implements Configure {
+public class TokenSmithConfig implements Configure {
     public static final String WEB_SITE_GROUP = "WebSite";
     public static final String API_GROUP_V1 = "API_V1";
     public static MimeType JSON = new MimeTypeBuilder().json().build();
