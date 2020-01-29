@@ -4,7 +4,7 @@
  - [User Info Error Responses](user-info-error-responses)
     - [UnAuthorized](#unauthorized)
     - [Server Error](#server-error)
- - [Create a user}(#create-a-user)
+ - [Create a user](#create-a-user)
 
 ### Find out if a user is logged in
 ```
