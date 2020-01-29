@@ -12,6 +12,7 @@ import net.tokensmith.authorization.http.response.Error;
 import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.register.request.UserInfo;
 import net.tokensmith.config.AppConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
 
@@ -23,6 +24,34 @@ import org.springframework.context.annotation.*;
 @Import({AppConfig.class, HttpPersistenceConfig.class})
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class HttpAppConfig {
+
+    @Value("${csrf.key.id}")
+    private String csrfKeyId;
+
+    @Value("${csrf.key.value}")
+    private String csrfKeyValue;
+
+    @Value("${session.key.id}")
+    private String sessionKeyId;
+
+    @Value("${session.key.value}")
+    private String sessionKeyValue;
+
+    public String getCsrfKeyId() {
+        return csrfKeyId;
+    }
+
+    public String getCsrfKeyValue() {
+        return csrfKeyValue;
+    }
+
+    public String getSessionKeyId() {
+        return sessionKeyId;
+    }
+
+    public String getSessionKeyValue() {
+        return sessionKeyValue;
+    }
 
     private TranslatorAppFactory translatorAppFactory() {
         return new TranslatorAppFactory();
