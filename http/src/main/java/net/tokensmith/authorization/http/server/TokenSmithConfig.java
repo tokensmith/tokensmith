@@ -46,20 +46,22 @@ public class TokenSmithConfig implements Configure {
     public static final String WEB_SITE_GROUP = "WebSite";
     public static final String API_GROUP_V1 = "API_V1";
     public static MimeType JSON = new MimeTypeBuilder().json().build();
+    private ApplicationContext appContext;
 
     @Override
     public Shape shape() {
+        ApplicationContext appContext = applicationContext();
+        HttpAppConfig httpAppConfig = appContext.getBean(HttpAppConfig.class);
 
-        // TODO: add vaulting
         SymmetricKey csrfKey = new SymmetricKey(
-                Optional.of("key-1"),
-                "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+                Optional.of(httpAppConfig.getCsrfKeyId()),
+                httpAppConfig.getCsrfKeyValue(),
                 Use.SIGNATURE
         );
 
         SymmetricKey encKey = new SymmetricKey(
-                Optional.of("key-2"),
-                "MMNj8rE5m7NIDhwKYDmHSnlU1wfKuVvW6G--GKPYkRA",
+                Optional.of(httpAppConfig.getSessionKeyId()),
+                httpAppConfig.getSessionKeyValue(),
                 Use.ENCRYPTION
         );
 
@@ -110,10 +112,18 @@ public class TokenSmithConfig implements Configure {
 
     @Override
     public void routes(Gateway gateway) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(HttpAppConfig.class);
+        ApplicationContext context = applicationContext();
         webSiteRoutes(gateway, context);
         apiRoutes(gateway, context);
     }
+
+    protected ApplicationContext applicationContext() {
+        if(appContext == null) {
+            this.appContext = new AnnotationConfigApplicationContext(HttpAppConfig.class);
+        }
+        return this.appContext;
+    }
+
 
     protected void webSiteRoutes(Gateway gateway, ApplicationContext context) {
         AuthorizationResource authorizationResource = context.getBean(AuthorizationResource.class);
