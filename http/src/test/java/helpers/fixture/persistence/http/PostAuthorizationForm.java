@@ -34,18 +34,6 @@ public class PostAuthorizationForm {
         this.getSessionAndCsrfToken = getSessionAndCsrfToken;
     }
 
-    @Deprecated
-    public String run(ConfidentialClient confidentialClient, String baseURI, List<String> scopes, String email) throws IOException, ExecutionException, InterruptedException, URISyntaxException, GetCsrfException {
-        AuthEndpointProps props = new AuthEndpointPropsBuilder()
-                .confidentialClient(confidentialClient)
-                .baseURI(baseURI)
-                .scopes(scopes)
-                .email(email)
-                .build();
-
-        return this.run(props);
-    }
-
     public String run(AuthEndpointProps props) throws IOException, ExecutionException, InterruptedException, URISyntaxException, GetCsrfException {
 
         String authEndpoint = authEndpoint(props);
