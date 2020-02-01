@@ -10,6 +10,8 @@ import helpers.fixture.persistence.http.PostAuthorizationForm;
 import helpers.fixture.persistence.http.PostTokenCodeGrant;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.fixture.persistence.db.LoadResourceOwner;
+import helpers.fixture.persistence.http.input.AuthEndpointProps;
+import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
 import helpers.suite.IntegrationTestSuite;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,7 +76,13 @@ public class UserInfoResourceOAuth2CodeTest {
     }
 
     public String makeToken(ConfidentialClient cc, ResourceOwner ro, List<String> scopes) throws Exception {
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, tokenServletURI, authorizationCode);
 
         return token.getAccessToken();

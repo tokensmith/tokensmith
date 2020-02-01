@@ -180,7 +180,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 
@@ -318,7 +325,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 
@@ -366,7 +380,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 
@@ -404,7 +425,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 
@@ -490,7 +518,14 @@ public class TokenResourceRefreshTokenTest {
         scopes.add("openid");
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         OpenIdToken token = postTokenCodeGrant.run(cc, servletURI, authorizationCode);
         expireAccessToken(token.getAccessToken());
 
