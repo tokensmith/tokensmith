@@ -1,5 +1,7 @@
 # Tokensmith
-Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html/rfc6749) and [OIDC](https://openid.net/) Identity server. 
+Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html/rfc6749) and [OIDC](https://openid.net/) Identity server.
+
+This documentation is intended for a developer audience. More detailed documentaion is [in progress](https://github.com/tokensmith/website).
 
 - [Run the server](#run-the-server)
 - [Seed the database](#seed-the-database)
