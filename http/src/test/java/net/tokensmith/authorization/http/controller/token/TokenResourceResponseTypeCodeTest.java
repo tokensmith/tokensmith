@@ -102,9 +102,14 @@ public class TokenResourceResponseTypeCodeTest {
         ResourceOwner ro = loadResourceOwner.run();
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String authorizationCode = postAuthorizationForm.run(
-                confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail()
-        );
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(confidentialClient)
+                .baseURI(authServletURI)
+                .scopes(new ArrayList<>())
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
@@ -151,7 +156,14 @@ public class TokenResourceResponseTypeCodeTest {
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
 
-        String authorizationCode = postAuthorizationForm.run(cc, authServletURI, scopes, ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
@@ -333,7 +345,14 @@ public class TokenResourceResponseTypeCodeTest {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
 
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(confidentialClient)
+                .baseURI(authServletURI)
+                .scopes(new ArrayList<>())
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
@@ -373,7 +392,14 @@ public class TokenResourceResponseTypeCodeTest {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
 
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(confidentialClient)
+                .baseURI(authServletURI)
+                .scopes(new ArrayList<>())
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
@@ -436,7 +462,14 @@ public class TokenResourceResponseTypeCodeTest {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
 
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(confidentialClient)
+                .baseURI(authServletURI)
+                .scopes(new ArrayList<>())
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
 
         AppConfig config = new AppConfig();
         ObjectMapper om = config.objectMapper();
@@ -508,7 +541,14 @@ public class TokenResourceResponseTypeCodeTest {
         ResourceOwner ro = loadResourceOwner.run();
 
         // generate a token with a auth code.
-        String authorizationCode = postAuthorizationForm.run(confidentialClient, authServletURI, new ArrayList<>(), ro.getEmail());
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(confidentialClient)
+                .baseURI(authServletURI)
+                .scopes(new ArrayList<>())
+                .email(ro.getEmail())
+                .build();
+
+        String authorizationCode = postAuthorizationForm.run(props);
         Token token = postTokenCodeGrant.run(confidentialClient, servletURI, authorizationCode);
 
         // attempt to use the auth code a second time.

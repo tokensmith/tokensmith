@@ -56,12 +56,12 @@ ALTER TABLE public.access_request_scopes OWNER TO postgres;
 
 CREATE TABLE public.auth_code (
     id uuid NOT NULL,
-    expires_at timestamp with time zone NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     access_request_id uuid,
     revoked boolean DEFAULT false,
     active_code character varying(1024) NOT NULL,
-    rotate_code character varying(1024)
+    rotate_code character varying(1024),
+    expires_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -131,9 +131,9 @@ ALTER TABLE public.client_scopes OWNER TO postgres;
 CREATE TABLE public.confidential_client (
     id uuid NOT NULL,
     client_id uuid NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     active_password character varying(1024) NOT NULL,
-    rotate_password character varying(1024)
+    rotate_password character varying(1024),
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -172,10 +172,10 @@ CREATE TABLE public.nonce (
     resource_owner_id uuid NOT NULL,
     revoked boolean DEFAULT false NOT NULL,
     spent boolean DEFAULT false NOT NULL,
-    expires_at timestamp with time zone NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     active_nonce character varying(1024) NOT NULL,
-    rotate_nonce character varying(1024)
+    rotate_nonce character varying(1024),
+    expires_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -203,10 +203,10 @@ CREATE TABLE public.refresh_token (
     id uuid NOT NULL,
     token_id uuid NOT NULL,
     revoked boolean DEFAULT false,
-    expires_at timestamp with time zone NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     active_token character varying(1024) NOT NULL,
-    rotate_token character varying(1024)
+    rotate_token character varying(1024),
+    expires_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -219,10 +219,10 @@ ALTER TABLE public.refresh_token OWNER TO postgres;
 CREATE TABLE public.resource_owner (
     id uuid NOT NULL,
     email character varying(245) NOT NULL,
-    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     email_verified boolean DEFAULT false NOT NULL,
     active_password character varying(1024) NOT NULL,
-    rotate_password character varying(1024)
+    rotate_password character varying(1024),
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
