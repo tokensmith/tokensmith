@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +55,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
     @Mock
     private MakeImplicitIdentityToken mockMakeImplicitIdentityToken;
     @Mock
+    private CreateLocalToken mockCreateLocalToken;
+    @Mock
     private ClientRepository mockClientRepository;
 
     @Before
@@ -63,6 +67,7 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 mockLoginResourceOwner,
                 mockIssueTokenImplicitGrant,
                 mockMakeImplicitIdentityToken,
+                mockCreateLocalToken,
                 mockClientRepository,
                 "https://sso.tokensmith.net"
         );
@@ -100,6 +105,9 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
                 eq(tokenGraph.getPlainTextAccessToken()), eq(request.getNonce()), tcArgumentCaptor.capture(), eq(resourceOwner), eq(scopesForIdToken))
         ).thenReturn(idToken);
 
+        Session localSession = new Session("local-token", OffsetDateTime.now().toEpochSecond());
+        when(mockCreateLocalToken.makeAndRevokeSession(eq(resourceOwner.getId()), eq(1))).thenReturn(localSession);
+
         OpenIdImplicitAccessToken actual = subject.request(userName, password, params);
 
         assertThat(actual, is(notNullValue()));
@@ -110,6 +118,8 @@ public class RequestOpenIdImplicitTokenAndIdentityTest {
         assertThat(actual.getState(), is(Optional.of("state")));
         assertThat(actual.getScope(), is(Optional.empty()));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
+        assertThat(actual.getSessionToken(), is(localSession.getToken()));
+        assertThat(actual.getSessionTokenIssuedAt(), is(localSession.getIssuedAt()));
 
         assertThat(tcArgumentCaptor.getValue().getIssuer(), is("https://sso.tokensmith.net"));
         assertThat(tcArgumentCaptor.getValue().getAudience(), is(notNullValue()));

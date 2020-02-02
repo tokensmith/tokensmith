@@ -3,10 +3,13 @@
 <html lang="en">
 <head>
 <title>Forgot Password</title>
+<link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
 
+<div class="main">
 <form id="forgot" method="POST">
+<div class="form">
     <c:choose>
         <c:when test="${presenter.getErrorMessage().isPresent()}">
            <div id="error" data-status="form-error">>
@@ -15,12 +18,13 @@
         </c:when>
     </c:choose>
 
-    <label for="email">Email:</label>
-    <input id="email" type="text" name="email" required="true" value="${presenter.getEmail()}" />
+    <input id="email" type="text" name="email" required="true" placeholder="email" value="${presenter.getEmail()}" />
 
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getEncodedCsrfToken()}" />
-    <input type="submit"/>
+    <button>reset password</button>
+</div>
 </form>
+</div>
 
 </body>
 </html>

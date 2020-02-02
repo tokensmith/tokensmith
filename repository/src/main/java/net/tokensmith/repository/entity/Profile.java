@@ -1,6 +1,7 @@
 package net.tokensmith.repository.entity;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +22,15 @@ public class Profile {
     private Optional<URI> picture;
     private Optional<URI> website;
     private Optional<Gender> gender;
-    private Optional<OffsetDateTime> birthDate;
+    private Optional<LocalDate> birthDate;
     private Optional<String> zoneInfo;
     private Optional<String> locale;
     private Optional<String> phoneNumber;
     private Boolean phoneNumberVerified;
     
     private List<Address> addresses = new ArrayList<>();
-    private List<GivenName> givenNames = new ArrayList<>();
-    private List<FamilyName> familyNames = new ArrayList<>();
+    private List<Name> givenNames = new ArrayList<>();
+    private List<Name> familyNames = new ArrayList<>();
 
     private OffsetDateTime updatedAt;
     private OffsetDateTime createdAt;
@@ -134,11 +135,11 @@ public class Profile {
         this.gender = gender;
     }
 
-    public Optional<OffsetDateTime> getBirthDate() {
+    public Optional<LocalDate> getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Optional<OffsetDateTime> birthDate) {
+    public void setBirthDate(Optional<LocalDate> birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -182,20 +183,20 @@ public class Profile {
         this.addresses = addresses;
     }
 
-    public List<GivenName> getGivenNames() {
+    public List<Name> getGivenNames() {
         return givenNames;
     }
 
-    public void setGivenNames(List<GivenName> givenNames) {
+    public void setGivenNames(List<Name> givenNames) {
         this.givenNames = givenNames;
     }
 
-    public List<FamilyName> getFamilyNames() {
+    public List<Name> getFamilyNames() {
         return familyNames;
     }
 
-    public void setFamilyNames(List<FamilyName> familyNames) {
-        this.familyNames = familyNames;
+    public void setFamilyNames(List<Name> names) {
+        this.familyNames = names;
     }
 
     public OffsetDateTime getUpdatedAt() {

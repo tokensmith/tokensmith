@@ -73,7 +73,7 @@ public class TokenSmithLoginTest {
     public void stubToken(WireMockRule toStub, Map<String, String> secrets, String form, com.github.tomakehurst.wiremock.http.HttpHeaders responseHeaders, byte[] response) {
         toStub.stubFor(
             post(
-                urlEqualTo("/api/v1/token")
+                urlEqualTo("/api/public/v1/token")
             )
             .withBasicAuth(secrets.get("CLIENT_USER_NAME"), secrets.get("CLIENT_PASSWORD"))
             .withHeader("Content-Type", equalTo("application/x-www-form-urlencoded"))
@@ -93,7 +93,7 @@ public class TokenSmithLoginTest {
     }
 
     public void stubKey(WireMockRule toStub, String keyId, com.github.tomakehurst.wiremock.http.HttpHeaders responseHeaders, byte[] response) {
-        String keyUri = String.format("/api/v1/jwk/rsa/%s", keyId);
+        String keyUri = String.format("/api/public/v1/jwk/rsa/%s", keyId);
         toStub.stubFor(
             get(
                 urlEqualTo(keyUri)
@@ -283,7 +283,7 @@ public class TokenSmithLoginTest {
 
         IdServer.stubFor(
             get(
-                urlEqualTo("/api/v1/userinfo")
+                urlEqualTo("/api/public/v1/userinfo")
             )
             .withHeader("Authorization", equalTo("Bearer foo"))
             .withHeader("Content-Type", equalTo("application/json;charset=UTF-8"))

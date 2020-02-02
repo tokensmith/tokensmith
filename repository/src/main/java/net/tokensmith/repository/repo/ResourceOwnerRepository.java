@@ -9,10 +9,13 @@ import java.util.UUID;
 
 public interface ResourceOwnerRepository {
     ResourceOwner getById(UUID id) throws RecordNotFoundException;
+    ResourceOwner getByLocalToken(String token) throws RecordNotFoundException;
     ResourceOwner getByEmail(String email) throws RecordNotFoundException;
     ResourceOwner getByAccessToken(String accessToken) throws RecordNotFoundException;
     ResourceOwner getByAccessTokenWithProfileAndTokens(String accessToken) throws RecordNotFoundException;
+    ResourceOwner getByIdWithProfile(UUID id) throws RecordNotFoundException;
     void insert(ResourceOwner resourceOwner) throws DuplicateRecordException;
     void setEmailVerified(UUID id);
     void updatePassword(UUID id, String password);
+    void updateEmail(UUID id, String email);
 }

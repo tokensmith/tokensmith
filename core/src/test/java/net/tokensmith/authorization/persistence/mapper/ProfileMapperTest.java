@@ -115,10 +115,10 @@ public class ProfileMapperTest {
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         subject.insert(profile);
 
-        GivenName  givenName = FixtureFactory.makeGivenName(profile.getId());
+        Name givenName = FixtureFactory.makeGivenName(profile.getId());
         givenNameMapper.insert(givenName);
 
-        FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
+        Name familyName = FixtureFactory.makeFamilyName(profile.getId());
         familyNameMapper.insert(familyName);
 
         Address address = FixtureFactory.makeAddress(profile.getId());
@@ -179,5 +179,33 @@ public class ProfileMapperTest {
 
         assertThat(actual.getUpdatedAt(), is(notNullValue()));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
+    }
+
+
+    @Test
+    public void updateWhenUpdateResourceOwnerIdShouldNotDoIt() throws Exception {
+        ResourceOwner legit = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(legit);
+
+        // the one that tries to steal it.
+        ResourceOwner stealer = FixtureFactory.makeResourceOwner();
+        resourceOwnerMapper.insert(stealer);
+
+        Profile profile = FixtureFactory.makeProfile(legit.getId());
+        subject.insert(profile);
+
+        // try to re-assign to a different resource owner.
+        profile.setResourceOwnerId(stealer.getId());
+
+        subject.update(profile.getResourceOwnerId(), profile);
+
+        Profile actual = subject.getById(profile.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getId(), is(notNullValue()));
+
+        // make sure it did not happen.
+        assertThat(actual.getResourceOwnerId(), is(legit.getId()));
+
     }
 }

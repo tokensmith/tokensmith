@@ -73,7 +73,7 @@ public class TokenResourceResponseTypePasswordTest {
         loadResourceOwner = ap.getBean(LoadResourceOwner.class);
         loadOpenIdResourceOwner = ap.getBean(LoadOpenIdResourceOwner.class);
         loadOpenIdConfClientPasswordResponseType = ap.getBean(LoadOpenIdConfClientPasswordResponseType.class);
-        servletURI = baseURI + "api/v1/token";
+        servletURI = baseURI + "api/public/v1/token";
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
         testUtils = new TestUtils();
     }

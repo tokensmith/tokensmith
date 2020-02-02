@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.tokensmith.authorization.persistence.mapper.LocalTokenMapper">
+
+    <resultMap id="localToken" type="net.tokensmith.repository.entity.LocalToken">
+        <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
+        <result column="active_token" property="token"/>
+        <result column="resource_owner_id" property="resourceOwnerId"/>
+        <result column="revoked" property="revoked"/>
+        <result column="expires_at" property="expiresAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="TIMESTAMP" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="getById" resultMap="localToken">
+        select
+            local_token.id,
+            local_token.active_token,
+            local_token.resource_owner_id,
+            local_token.revoked,
+            local_token.expires_at,
+            local_token.created_at
+        from local_token
+        where local_token.id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="localToken.createdAt" keyColumn="created_at">
+        insert into local_token (id, active_token, revoked, resource_owner_id, expires_at, created_at)
+        values (
+        #{localToken.id},
+        #{localToken.token},
+        #{localToken.revoked},
+        #{localToken.resourceOwnerId},
+        #{localToken.expiresAt, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler},
+        #{localToken.createdAt, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler}
+        )
+    </insert>
+
+    <update id="revokeActive">
+        update local_token
+        set revoked = true
+        where local_token.expires_at > current_timestamp
+        and local_token.resource_owner_id = #{resourceOwnerId}
+    </update>
+
+</mapper>

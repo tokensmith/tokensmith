@@ -31,7 +31,7 @@ public class ResourceOwnerTest {
 
     @Test
     public void email() {
-        String email = "test@rootservices.com";
+        String email = "test@tokensmith.net";
         subject.setEmail(email);
 
         assertThat(subject.getEmail(), is(email));
@@ -48,7 +48,7 @@ public class ResourceOwnerTest {
     @Test
     public void constructWithParams() {
         UUID uuid = UUID.randomUUID();
-        String email = "test@rootservices.com";
+        String email = "test@tokensmith.net";
         String password = "plainTextPassword";
         subject = new ResourceOwner(uuid, email, password);
 

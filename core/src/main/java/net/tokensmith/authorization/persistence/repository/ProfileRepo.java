@@ -35,4 +35,9 @@ public class ProfileRepo implements ProfileRepository {
         }
         return profile;
     }
+
+    @Override
+    public void update(UUID resourceOwnerId, Profile profile) {
+        profileMapper.update(resourceOwnerId, profile);
+    }
 }

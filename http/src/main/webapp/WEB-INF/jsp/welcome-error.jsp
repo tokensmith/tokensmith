@@ -3,10 +3,15 @@
 <html lang="en">
 <head>
 <title>Welcome</title>
+<link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
-
-Oops, something went wrong. The link may have expired, please login and resend the email verification email.
-
+<div class="main">
+    <div class="message-container">
+        <div id="message" data-status="error">
+        Oops, something went wrong. The link may have expired, please login and resend the email verification email.
+        </div>
+    </div>
+</div>
 </body>
 </html>

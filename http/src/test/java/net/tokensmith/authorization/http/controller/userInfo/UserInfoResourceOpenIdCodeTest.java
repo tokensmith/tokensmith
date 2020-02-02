@@ -57,9 +57,9 @@ public class UserInfoResourceOpenIdCodeTest {
 
     @BeforeClass
     public static void beforeClass() {
-        servletURI = baseURI + "api/v1/userinfo";
+        servletURI = baseURI + "api/public/v1/userinfo";
         authServletURI = baseURI + "authorization";
-        tokenServletURI = baseURI + "api/v1/token";
+        tokenServletURI = baseURI + "api/public/v1/token";
 
         FactoryForPersistence factoryForPersistence = new FactoryForPersistence(
                 IntegrationTestSuite.getContext()

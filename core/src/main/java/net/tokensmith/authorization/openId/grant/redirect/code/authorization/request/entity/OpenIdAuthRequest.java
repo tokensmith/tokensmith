@@ -1,7 +1,8 @@
 package net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity;
 
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
-import net.tokensmith.authorization.parse.Parameter;
+import net.tokensmith.parser.Parameter;
+
 
 import java.net.URI;
 import java.util.List;

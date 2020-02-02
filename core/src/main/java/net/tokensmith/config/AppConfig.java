@@ -7,6 +7,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.parser.Parser;
+import net.tokensmith.parser.config.ParserConfig;
 import net.tokensmith.pelican.config.PelicanAppConfig;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
@@ -53,6 +55,9 @@ public class AppConfig {
     private String clientId;
     @Value("${messaging.host}")
     private String messageQueueHost;
+
+    @Value("${session.expiration:2592000}")
+    private String sessionExpirationInSeconds;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -173,5 +178,16 @@ public class AppConfig {
         return new SymmetricKey(
                 Optional.of(keyId), secret, Use.ENCRYPTION
         );
+    }
+
+    @Bean
+    @Qualifier("sessionExpirationInSeconds")
+    public Long sessionExpirationInSeconds() {
+        return Long.valueOf(sessionExpirationInSeconds);
+    }
+
+    @Bean
+    public Parser parser() {
+        return new ParserConfig().parser();
     }
 }

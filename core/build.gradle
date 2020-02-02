@@ -15,7 +15,8 @@ tasks.withType(JavaCompile) {
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases" }
+    maven { url "https://repo.maven.apache.org/maven2" }
     mavenCentral()
     mavenLocal()
 }
@@ -35,9 +36,12 @@ dependencies {
     compile group: 'commons-codec', name: 'commons-codec', version: '1.13'
     compile group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcpVersion}"
     compile group: 'org.mindrot', name: 'jbcrypt', version: "${bcryptVersion}"
+
     compile group: 'net.tokensmith', name: 'jwt', version: "${jwtVersion}"
     compile group: 'net.tokensmith', name: 'otter-translatable', version: "${otterVersion}"
     compile group: 'net.tokensmith', name: 'pelican', version: "${pelicanVersion}"
+    compile group: 'net.tokensmith', name: 'parser', version: "${parserVersion}"
+
     compile group: 'org.postgresql', name: 'postgresql', version: "${postgresDriverVersion}"
     compile group: 'org.mybatis', name: 'mybatis', version: "${mybatisVersion}"
     compile(group: 'org.mybatis', name: 'mybatis-spring', version: "${mybatisSpringVersion}") {

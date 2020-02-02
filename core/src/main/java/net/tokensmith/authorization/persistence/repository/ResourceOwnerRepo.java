@@ -36,6 +36,26 @@ public class ResourceOwnerRepo implements ResourceOwnerRepository {
         throw new RecordNotFoundException("Resource Owner: " + id.toString());
     }
 
+    @Override
+    public ResourceOwner getByIdWithProfile(UUID id) throws RecordNotFoundException {
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByIdWithProfile(id);
+        if (resourceOwner != null) {
+            return resourceOwner;
+        }
+
+        throw new RecordNotFoundException("Resource Owner: " + id.toString());
+    }
+
+    @Override
+    public ResourceOwner getByLocalToken(String token) throws RecordNotFoundException {
+        ResourceOwner resourceOwner = resourceOwnerMapper.getByLocalToken(token);
+        if (resourceOwner != null) {
+            return resourceOwner;
+        }
+
+        throw new RecordNotFoundException("Resource Owner was not found");
+    }
+
     public ResourceOwner getByEmail(String email) throws RecordNotFoundException {
         ResourceOwner resourceOwner = resourceOwnerMapper.getByEmail(email);
         if (resourceOwner != null) {
@@ -81,5 +101,10 @@ public class ResourceOwnerRepo implements ResourceOwnerRepository {
     @Override
     public void updatePassword(UUID id, String password) {
         resourceOwnerMapper.updatePassword(id, password);
+    }
+
+    @Override
+    public void updateEmail(UUID id, String email) {
+        resourceOwnerMapper.updateEmail(id, email);
     }
 }

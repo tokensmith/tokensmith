@@ -2,6 +2,9 @@ package helpers.suite;
 
 import helpers.category.ServletContainerTest;
 import helpers.category.UnitTests;
+import net.tokensmith.authorization.http.service.ProfileServiceTest;
+import net.tokensmith.authorization.http.service.translator.AddressTranslatorTest;
+import net.tokensmith.authorization.http.service.translator.ProfileTranslatorTest;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -25,7 +28,10 @@ import net.tokensmith.authorization.http.factory.MakeTokenFactoryTest;
         MakeOAuthTokenTest.class,
         AuthorizationFactoryTest.class,
         AuthorizationHelperTest.class,
-        WelcomeResourceRegexTest.class
+        WelcomeResourceRegexTest.class,
+        AddressTranslatorTest.class,
+        ProfileTranslatorTest.class,
+        ProfileServiceTest.class
 })
 public class UnitTestSuite {
 }

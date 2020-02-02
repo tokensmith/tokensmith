@@ -1,5 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
@@ -34,16 +37,18 @@ public class RequestAccessToken {
     private LoginResourceOwner loginResourceOwner;
     private ValidateImplicitGrant validateImplicitGrant;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
+    private CreateLocalToken createLocalToken;
     private ClientRepository clientRepository;
 
     private static String MSG_TOKEN = "Failed to issue token";
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateImplicitGrant validateImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, ClientRepository clientRepository) {
+    public RequestAccessToken(LoginResourceOwner loginResourceOwner, ValidateImplicitGrant validateImplicitGrant, IssueTokenImplicitGrant issueTokenImplicitGrant, CreateLocalToken createLocalToken, ClientRepository clientRepository) {
         this.loginResourceOwner = loginResourceOwner;
         this.validateImplicitGrant = validateImplicitGrant;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
+        this.createLocalToken = createLocalToken;
         this.clientRepository = clientRepository;
     }
 
@@ -55,6 +60,7 @@ public class RequestAccessToken {
         List<Client> audience = makeAudience(authRequest.getClientId());
 
         TokenGraph tokenGraph;
+        Session localSession;
         try {
             tokenGraph = issueTokenImplicitGrant.run(
                     authRequest.getClientId(),
@@ -63,7 +69,9 @@ public class RequestAccessToken {
                     audience,
                     Optional.empty()
             );
-        } catch (ServerException e) {
+
+            localSession = createLocalToken.makeAndRevokeSession(resourceOwner.getId(), 1);
+        } catch (ServerException | LocalSessionException e) {
             logger.error(e.getMessage(), e);
 
             ErrorCode ec = ErrorCode.SERVER_ERROR;
@@ -77,7 +85,14 @@ public class RequestAccessToken {
                     .setCause(e)
                     .build();
         }
-        return translate(redirectURI, tokenGraph.getPlainTextAccessToken(), tokenGraph.getToken().getSecondsToExpiration(), authRequest.getScopes(), authRequest.getState());
+        return translate(
+                redirectURI,
+                tokenGraph.getPlainTextAccessToken(),
+                tokenGraph.getToken().getSecondsToExpiration(),
+                authRequest.getScopes(),
+                authRequest.getState(),
+                localSession
+        );
     }
 
     private URI getRedirectURI(Optional<URI> requestRedirectURI, UUID clientId) throws InformResourceOwnerException {
@@ -117,13 +132,22 @@ public class RequestAccessToken {
         return audience;
     }
 
-    private ImplicitAccessToken translate(URI redirectUri, String accessToken, Long secondsToExpiration, List<String> scopes, Optional<String> state) {
+    private ImplicitAccessToken translate(URI redirectUri, String accessToken, Long secondsToExpiration, List<String> scopes, Optional<String> state, Session localSession) {
 
         Optional<String> scopesForToken = Optional.empty();
         if (scopes != null && scopes.size() > 0) {
             scopesForToken = Optional.of(scopes.stream().map(i -> i.toString()).collect(Collectors.joining(" ")));
         }
 
-        return new ImplicitAccessToken(redirectUri, accessToken, TokenType.BEARER, secondsToExpiration, scopesForToken, state);
+        return new ImplicitAccessToken(
+                redirectUri,
+                accessToken,
+                TokenType.BEARER,
+                secondsToExpiration,
+                scopesForToken,
+                state,
+                localSession.getToken(),
+                localSession.getIssuedAt()
+        );
     }
 }

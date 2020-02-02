@@ -12,6 +12,10 @@ public class OpenIdImplicitIdentity {
     private Optional<String> scope;
     private Optional<String> state;
 
+    // used to let the user update their profile via local token
+    private String sessionToken;
+    private Long sessionTokenIssuedAt;
+
     public URI getRedirectUri() {
         return redirectUri;
     }
@@ -42,5 +46,21 @@ public class OpenIdImplicitIdentity {
 
     public void setState(Optional<String> state) {
         this.state = state;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
+    public Long getSessionTokenIssuedAt() {
+        return sessionTokenIssuedAt;
+    }
+
+    public void setSessionTokenIssuedAt(Long sessionTokenIssuedAt) {
+        this.sessionTokenIssuedAt = sessionTokenIssuedAt;
     }
 }

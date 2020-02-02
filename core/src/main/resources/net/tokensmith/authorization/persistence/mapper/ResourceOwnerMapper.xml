@@ -10,6 +10,7 @@
         <result column="active_password" property="password" />
         <result column="email_verified" property="emailVerified"/>
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+        <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
     <resultMap id="resourceOwnerWithProfileAndToken" type="net.tokensmith.repository.entity.ResourceOwner">
@@ -27,6 +28,10 @@
         <association property="tokens"
                      resultMap="net.tokensmith.authorization.persistence.mapper.TokenMapper.token"
                      columnPrefix="token_"/>
+
+        <association property="localTokens"
+                     resultMap="net.tokensmith.authorization.persistence.mapper.LocalTokenMapper.localToken"
+                     columnPrefix="local_token_"/>
     </resultMap>
 
     <insert id="insert" >
@@ -47,6 +52,20 @@
             resource_owner.created_at
         from resource_owner
         where id = #{id}
+    </select>
+
+    <select id="getByLocalToken" resultMap="resourceOwner">
+        select
+            resource_owner.id,
+            resource_owner.email,
+            resource_owner.active_password,
+            resource_owner.email_verified,
+            resource_owner.created_at
+        from resource_owner
+        join local_token on local_token.resource_owner_id = resource_owner.id
+        where local_token.active_token = #{token}
+        and local_token.expires_at > current_timestamp
+        and local_token.revoked = false
     </select>
 
     <select id="getByEmail" resultMap="resourceOwner">
@@ -163,15 +182,89 @@
         and token.revoked = false
     </select>
 
+
+    <select id="getByIdWithProfile" resultMap="resourceOwnerWithProfileAndToken">
+        select
+            resource_owner.id,
+            resource_owner.email,
+            resource_owner.active_password,
+            resource_owner.email_verified,
+            resource_owner.created_at,
+
+            profile.id as profile_id,
+            profile.resource_owner_id,
+            profile.name as profile_name,
+            profile.middle_name as profile_middle_name,
+            profile.nick_name as profile_nick_name,
+            profile.preferred_user_name as profile_preferred_user_name,
+            profile.profile as profile_profile,
+            profile.picture as profile_picture,
+            profile.website as profile_website,
+            profile.gender as profile_gender,
+            profile.birth_date as profile_birth_date,
+            profile.zone_info as profile_zone_info,
+            profile.locale as profile_locale,
+            profile.phone_number as profile_phone_number,
+            profile.phone_number_verified as profile_phone_number_verified,
+            profile.updated_at as profile_updated_at,
+            profile.created_at as profile_created_at,
+
+            address.id as profile_address_id,
+            address.resource_owner_profile_id as profile_address_resource_owner_profile_id,
+            address.street_address as profile_address_street_address,
+            address.street_address2 as profile_address_street_address2,
+            address.locality as profile_address_locality,
+            address.region as profile_address_region,
+            address.postal_code as profile_address_postal_code,
+            address.country as profile_address_country,
+            address.updated_at as profile_address_updated_at,
+            address.created_at as profile_address_created_at,
+
+            given_name.id as profile_given_name_id,
+            given_name.resource_owner_profile_id as profile_given_name_resource_owner_profile_id,
+            given_name.given_name as profile_given_name_given_name,
+            given_name.created_at as profile_given_name_created_at,
+            given_name.updated_at as profile_given_name_updated_at,
+
+            family_name.id as profile_family_name_id,
+            family_name.resource_owner_profile_id as profile_family_name_resource_owner_profile_id,
+            family_name.family_name as profile_family_name_family_name,
+            family_name.created_at as profile_family_name_created_at,
+            family_name.updated_at as profile_family_name_updated_at
+
+        from resource_owner
+
+        left join local_token on local_token.resource_owner_id = resource_owner.id
+        left join resource_owner_profile profile on profile.resource_owner_id = resource_owner.id
+        left join resource_owner_profile_address address on address.resource_owner_profile_id = profile.id
+        left join resource_owner_profile_given_name given_name on given_name.resource_owner_profile_id = profile.id
+        left join resource_owner_profile_family_name family_name on family_name.resource_owner_profile_id = profile.id
+
+        where resource_owner.id = #{id}
+    </select>
+
     <update id="setEmailVerified">
         update resource_owner
-        set email_verified = true
+        set
+            email_verified = true,
+            updated_at = now()
         where id = #{id}
     </update>
 
     <update id="updatePassword">
         update resource_owner
-        set active_password = #{password}
+        set
+            active_password = #{password},
+            updated_at = now()
+        where id = #{id}
+    </update>
+
+    <update id="updateEmail">
+        update resource_owner
+        set
+            email = #{email},
+            email_verified = false,
+            updated_at = now()
         where id = #{id}
     </update>
 

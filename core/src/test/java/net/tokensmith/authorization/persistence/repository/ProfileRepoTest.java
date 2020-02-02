@@ -64,4 +64,14 @@ public class ProfileRepoTest {
         subject.getByResourceOwnerId(id);
     }
 
+    @Test
+    public void updateShouldBeOK() {
+        UUID resourceOwnerId = UUID.randomUUID();
+        Profile profile = new Profile();
+
+        subject.update(resourceOwnerId, profile);
+
+        verify(mockProfileMapper, times(1)).update(resourceOwnerId, profile);
+    }
+
 }

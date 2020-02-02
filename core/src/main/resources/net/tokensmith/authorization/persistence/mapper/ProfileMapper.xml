@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.ProfileMapper">
 
-    <resultMap id="profile" type="net.tokensmith.repository.entity.Profile">
+    <resultMap id="profileLean" type="net.tokensmith.repository.entity.Profile">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="resource_owner_id" property="resourceOwnerId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="name" property="name" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
@@ -15,64 +15,94 @@
         <result column="picture" property="picture" jdbcType="VARCHAR" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="website" property="website" jdbcType="VARCHAR" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler"/>
         <result column="gender" property="gender" javaType="net.tokensmith.repository.entity.Gender" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler"/>
-        <result column="birth_date" property="birthDate" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler"/>
+        <result column="birth_date" property="birthDate" javaType="java.time.LocalDate" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalLocalDateTypeHandler"/>
         <result column="zone_info" property="zoneInfo" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="locale" property="locale" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="phone_number" property="phoneNumber" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler"/>
         <result column="phone_number_verified" property="phoneNumberVerified" />
         <result column="created_at" property="createdAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
+    </resultMap>
 
-        <association property="addresses"
-                     resultMap="net.tokensmith.authorization.persistence.mapper.AddressMapper.address"
-                     columnPrefix="address_"/>
+    <resultMap id="profile" type="net.tokensmith.repository.entity.Profile" extends="profileLean">
         <association property="givenNames"
                      resultMap="net.tokensmith.authorization.persistence.mapper.GivenNameMapper.givenName"
                      columnPrefix="given_name_"/>
         <association property="familyNames"
                      resultMap="net.tokensmith.authorization.persistence.mapper.FamilyNameMapper.familyName"
                      columnPrefix="family_name_"/>
+        <collection property="addresses"
+                    resultMap="net.tokensmith.authorization.persistence.mapper.AddressMapper.address"
+                    columnPrefix="address_"
+                    javaType="ArrayList"
+                    notNullColumn="id"/>
     </resultMap>
 
     <insert id="insert">
         insert into resource_owner_profile
         (
-        id,
-        resource_owner_id,
-        name,
-        middle_name,
-        nick_name,
-        preferred_user_name,
-        profile,
-        picture,
-        website,
-        gender,
-        birth_date,
-        zone_info,
-        locale,
-        phone_number,
-        phone_number_verified
+            id,
+            resource_owner_id,
+            name,
+            middle_name,
+            nick_name,
+            preferred_user_name,
+            profile,
+            picture,
+            website,
+            gender,
+            birth_date,
+            zone_info,
+            locale,
+            phone_number,
+            phone_number_verified
         )
         values (
-        #{profile.id},
-        #{profile.resourceOwnerId},
-        #{profile.name, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.middleName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.nickName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.preferredUserName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.profile, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-        #{profile.picture, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-        #{profile.website, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
-        #{profile.gender, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler},
-        #{profile.birthDate, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler},
-        #{profile.zoneInfo, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.locale, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.phoneNumber, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{profile.phoneNumberVerified}
+            #{profile.id},
+            #{profile.resourceOwnerId},
+            #{profile.name, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.middleName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.nickName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.preferredUserName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.profile, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.picture, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.website, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            #{profile.gender, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler},
+            #{profile.birthDate, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalOffsetDateTimeTypeHandler},
+            #{profile.zoneInfo, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.locale, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.phoneNumber, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{profile.phoneNumberVerified}
         )
     </insert>
 
-    <select id="getById" resultMap="profile">
+    <update id="update">
+        update resource_owner_profile
+            set name =              #{profile.name, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            middle_name =           #{profile.middleName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            nick_name =             #{profile.nickName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            preferred_user_name =   #{profile.preferredUserName, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            profile =               #{profile.profile, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            picture =               #{profile.picture, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            website =               #{profile.website, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalURITypeHandler},
+            gender =                #{profile.gender, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalEnumTypeHandler},
+            birth_date =            #{profile.birthDate, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalLocalDateTypeHandler},
+            zone_info =             #{profile.zoneInfo, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            locale =                #{profile.locale, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            phone_number =          #{profile.phoneNumber, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            phone_number_verified = #{profile.phoneNumberVerified},
+            updated_at =            now()
+        from resource_owner as ro
+        where
+
+        resource_owner_profile.resource_owner_id = ro.id and
+
+        resource_owner_profile.id = #{profile.id} and
+        ro.id = #{resourceOwnerId}
+
+    </update>
+
+    <select id="getById" resultMap="profileLean">
         select
             profile.id,
             profile.resource_owner_id,

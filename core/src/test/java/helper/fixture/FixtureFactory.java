@@ -260,8 +260,8 @@ public class FixtureFactory {
         return address;
     }
 
-    public static GivenName makeGivenName(UUID profileId){
-        GivenName givenName = new GivenName();
+    public static Name makeGivenName(UUID profileId){
+        Name givenName = new Name();
         givenName.setId(UUID.randomUUID());
         givenName.setResourceOwnerProfileId(profileId);
         givenName.setName("Obi-Wan");
@@ -269,13 +269,13 @@ public class FixtureFactory {
         return givenName;
     }
 
-    public static FamilyName makeFamilyName(UUID profileId){
-        FamilyName familyName = new FamilyName();
-        familyName.setId(UUID.randomUUID());
-        familyName.setResourceOwnerProfileId(profileId);
-        familyName.setName("Kenobi");
+    public static Name makeFamilyName(UUID profileId){
+        Name name = new Name();
+        name.setId(UUID.randomUUID());
+        name.setResourceOwnerProfileId(profileId);
+        name.setName("Kenobi");
 
-        return familyName;
+        return name;
     }
 
     public static AuthCode makeAuthCode(AccessRequest accessRequest, boolean isRevoked, String plainTextAuthCode) {

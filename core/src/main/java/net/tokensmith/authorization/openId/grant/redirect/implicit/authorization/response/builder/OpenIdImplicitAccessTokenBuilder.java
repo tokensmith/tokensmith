@@ -11,8 +11,6 @@ import java.util.Optional;
 /**
  * Created by tommackenzie on 10/21/16.
  */
-@Scope("prototype")
-@Component
 public class OpenIdImplicitAccessTokenBuilder {
     private URI redirectUri;
     private String accessToken;
@@ -21,6 +19,10 @@ public class OpenIdImplicitAccessTokenBuilder {
     private Long expiresIn;
     private Optional<String> scope;
     private Optional<String> state;
+    // used to let the user update their profile via local token
+    private String sessionToken;
+    private Long sessionTokenIssuedAt;
+
 
 
     public OpenIdImplicitAccessTokenBuilder setRedirectUri(URI redirectUri) {
@@ -58,6 +60,16 @@ public class OpenIdImplicitAccessTokenBuilder {
         return this;
     }
 
+    public OpenIdImplicitAccessTokenBuilder setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+        return this;
+    }
+
+    public OpenIdImplicitAccessTokenBuilder setSessionTokenIssuedAt(Long sessionTokenIssuedAt) {
+        this.sessionTokenIssuedAt = sessionTokenIssuedAt;
+        return this;
+    }
+
     public OpenIdImplicitAccessToken build() {
         OpenIdImplicitAccessToken token = new OpenIdImplicitAccessToken();
         token.setRedirectUri(this.redirectUri);
@@ -67,6 +79,8 @@ public class OpenIdImplicitAccessTokenBuilder {
         token.setExpiresIn(this.expiresIn);
         token.setScope(this.scope);
         token.setState(this.state);
+        token.setSessionToken(this.sessionToken);
+        token.setSessionTokenIssuedAt(this.sessionTokenIssuedAt);
         return token;
     }
 }
