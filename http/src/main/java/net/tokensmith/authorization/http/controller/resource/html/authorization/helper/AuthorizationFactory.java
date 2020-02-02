@@ -7,7 +7,7 @@ import net.tokensmith.authorization.http.controller.resource.html.authorization.
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdCodeResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitIdentityResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitResource;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,14 +43,14 @@ public class AuthorizationFactory {
         this.openIdImplicitIdentityResource = openIdImplicitIdentityResource;
     }
 
-    public Resource<TokenSession, WebSiteUser> makeResource(List<String> scopes, List<String> responseTypes) {
+    public Resource<WebSiteSession, WebSiteUser> makeResource(List<String> scopes, List<String> responseTypes) {
 
         List<String> scopesSplit = splitInput(scopes);
         List<String> responseTypesSplit = splitInput(responseTypes);
 
         boolean isOpenId = isOpenId(scopesSplit);
 
-        Resource<TokenSession, WebSiteUser> resource = oAuth2CodeResource;
+        Resource<WebSiteSession, WebSiteUser> resource = oAuth2CodeResource;
 
         if (isOpenIdCodeGrant(isOpenId, responseTypesSplit)) {
             resource = openIdCodeResource;

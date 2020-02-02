@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.tokensmith.jwt.entity.jwt.Claims;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class IdToken extends Claims {
 
     // [ISO8601‑2004] YYYY-MM-DD format
     @JsonProperty(value="birthdate")
-    private Optional<OffsetDateTime> birthdate;
+    private Optional<LocalDate> birthdate;
 
     // http://www.twinsun.com/tz/tz-link.htm
     @JsonProperty(value="zoneinfo")
@@ -198,11 +199,11 @@ public class IdToken extends Claims {
         this.gender = gender;
     }
 
-    public Optional<OffsetDateTime> getBirthdate() {
+    public Optional<LocalDate> getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Optional<OffsetDateTime> birthdate) {
+    public void setBirthdate(Optional<LocalDate> birthdate) {
         this.birthdate = birthdate;
     }
 

@@ -17,30 +17,8 @@
         <result column="updated_at" property="updatedAt" javaType="java.time.OffsetDateTime" jdbcType="DATE" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.OffsetDateTimeTypeHandler"/>
     </resultMap>
 
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="createdAt,updatedAt" keyColumn="created_at,updated_at">
         insert into resource_owner_profile_address (
-        id,
-        resource_owner_profile_id,
-        street_address,
-        street_address2,
-        locality,
-        region,
-        postal_code,
-        country
-        ) values (
-        #{address.id},
-        #{address.profileId},
-        #{address.streetAddress},
-        #{address.streetAddress2, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
-        #{address.locality},
-        #{address.region},
-        #{address.postalCode},
-        #{address.country}
-        )
-    </insert>
-
-    <select id="getById" resultMap="address">
-        select
             id,
             resource_owner_profile_id,
             street_address,
@@ -48,10 +26,69 @@
             locality,
             region,
             postal_code,
-            country,
-            updated_at,
-            created_at
-        from resource_owner_profile_address
-        where id = #{id}
+            country
+        ) values (
+            #{address.id},
+            #{address.profileId},
+            #{address.streetAddress},
+            #{address.streetAddress2, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            #{address.locality},
+            #{address.region},
+            #{address.postalCode},
+            #{address.country}
+        )
+    </insert>
+
+    <select id="getByIdAndResourceOwnerId" resultMap="address">
+        select
+            address.id as id,
+            address.resource_owner_profile_id as resource_owner_profile_id,
+            address.street_address as street_address,
+            address.street_address2 as street_address2,
+            address.locality as locality,
+            address.region as region,
+            address.postal_code as postal_code,
+            address.country as country,
+            address.updated_at as updated_at,
+            address.created_at as created_at
+        from resource_owner_profile_address as address
+        join resource_owner_profile on resource_owner_profile.id = address.resource_owner_profile_id
+        join resource_owner on resource_owner.id = resource_owner_profile.resource_owner_id
+
+        where address.id = #{id} and
+        resource_owner.id = #{resourceOwnerId}
     </select>
+
+    <update id="update">
+        update resource_owner_profile_address
+        set
+            id = #{address.id},
+            street_address = #{address.streetAddress},
+            street_address2 = #{address.streetAddress2, typeHandler=net.tokensmith.authorization.persistence.mapper.typehandler.OptionalStringTypeHandler},
+            locality = #{address.locality},
+            region = #{address.region},
+            postal_code = #{address.postalCode},
+            country = #{address.country},
+            updated_at = now()
+        from resource_owner as ro, resource_owner_profile as rop
+        where
+
+            resource_owner_profile_address.resource_owner_profile_id = rop.id and
+            rop.resource_owner_id = ro.id and
+
+            resource_owner_profile_address.id = #{address.id}
+            and ro.id = #{resourceOwnerId}
+    </update>
+
+    <delete id="delete">
+        delete from resource_owner_profile_address ropa
+        using
+            resource_owner_profile rop, resource_owner ro
+        where
+            ropa.resource_owner_profile_id = rop.id and
+            rop.resource_owner_id = ro.id and
+
+            ropa.id = #{id} and
+            ro.id = #{resourceOwnerId}
+    </delete>
 </mapper>

@@ -94,7 +94,7 @@ Optional Fields:
  - scope
  
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -126,7 +126,7 @@ Pragma: no-cache
 Authorization Header missing
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -151,7 +151,7 @@ Pragma: no-cache
 Authorization Scheme is not Basic
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Bearer czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -176,7 +176,7 @@ Pragma: no-cache
 Client failed authentication
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic wrong-client-credentials
 Content-Type: application/x-www-form-urlencoded
@@ -223,7 +223,7 @@ Pragma: no-cache
 Duplicate Field in message body
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -251,7 +251,7 @@ Pragma: no-cache
 Missing Field in message body or a field's value is empty
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -277,7 +277,7 @@ Pragma: no-cache
 Unknown Field in message body
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -304,7 +304,7 @@ Pragma: no-cache
 Invalid Payload - most likely message is not the content-type, application/x-www-form-urlencoded
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -329,7 +329,7 @@ Pragma: no-cache
 Invalid Value - scope has no value
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -381,7 +381,7 @@ Pragma: no-cache
 Refresh Token is compromised (has already been used)
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded
@@ -410,7 +410,7 @@ Requested scope is invalid
  - The client does not have the requested scope associated with it.
 
 ```
-POST /api/v1/token
+POST /api/public/v1/token
 Host: sso.tokensmith.net
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/x-www-form-urlencoded

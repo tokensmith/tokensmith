@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.helper;
 
 
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.ContentType;
@@ -50,7 +52,7 @@ public class AuthorizationHelper {
         return value;
     }
 
-    public void prepareErrorResponse(Response<TokenSession> response, URI redirect, String error, String desc, Optional<String> state) {
+    public void prepareErrorResponse(Response<WebSiteSession> response, URI redirect, String error, String desc, Optional<String> state) {
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue());
 
         StringBuilder location = new StringBuilder();
@@ -69,24 +71,30 @@ public class AuthorizationHelper {
         response.getHeaders().put(Header.LOCATION.getValue(), location.toString());
     }
 
-    public void prepareNotFoundResponse(Response<TokenSession> response) {
+    public void prepareNotFoundResponse(String globalCssPath, Response<WebSiteSession> response) {
+        AssetPresenter presenter = new AssetPresenter(globalCssPath);
+        response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.NOT_FOUND);
         response.setTemplate(Optional.of(NOT_FOUND_JSP_PATH));
     }
 
-    public void prepareServerErrorResponse(Response<TokenSession> response) {
+    public void prepareServerErrorResponse(String globalCssPath, Response<WebSiteSession> response) {
+        AuthorizationPresenter presenter = new AuthorizationPresenter();
+        presenter.setGlobalCssPath(globalCssPath);
+        response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
         response.setTemplate(Optional.of(SERVER_ERROR_JSP_PATH));
     }
 
-    public AuthorizationPresenter makeAuthorizationPresenter(String defaultEmail, String csrfToken) {
+    public AuthorizationPresenter makeAuthorizationPresenter(String globalCssPath, String defaultEmail, String csrfToken) {
         AuthorizationPresenter presenter = new AuthorizationPresenter();
+        presenter.setGlobalCssPath(globalCssPath);
         presenter.setEmail(defaultEmail);
         presenter.setEncodedCsrfToken(csrfToken);
         return presenter;
     }
 
-    public void prepareResponse(Response<TokenSession> response, StatusCode statusCode, AuthorizationPresenter presenter, String template) {
+    public void prepareResponse(Response<WebSiteSession> response, StatusCode statusCode, AuthorizationPresenter presenter, String template) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
         response.setTemplate(Optional.of(template));

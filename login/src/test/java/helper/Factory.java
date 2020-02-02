@@ -207,11 +207,11 @@ public class Factory {
         secrets.put("CLIENT_ID", "123456789");
         secrets.put("CLIENT_USER_NAME", "username");
         secrets.put("CLIENT_PASSWORD", "password");
-        secrets.put("LOGIN_URL", String.format(baseUrl, port, "api/v1/token"));
-        secrets.put("TOKEN_URL", String.format(baseUrl, port, "api/v1/token"));
-        secrets.put("USER_INFO_URL", String.format(baseUrl, port, "api/v1/userinfo"));
+        secrets.put("LOGIN_URL", String.format(baseUrl, port, "api/public/v1/token"));
+        secrets.put("TOKEN_URL", String.format(baseUrl, port, "api/public/v1/token"));
+        secrets.put("USER_INFO_URL", String.format(baseUrl, port, "api/public/v1/userinfo"));
         secrets.put("AUTHORIZATION_URL", String.format(baseUrl, port, "authorization"));
-        secrets.put("PUBLIC_KEY_URL", String.format(baseUrl, port, "api/v1/jwk/rsa/%s"));
+        secrets.put("PUBLIC_KEY_URL", String.format(baseUrl, port, "api/public/v1/jwk/rsa/%s"));
         secrets.put("CORRELATION_ID_FIELD", "correlation-id");
         return secrets;
     }

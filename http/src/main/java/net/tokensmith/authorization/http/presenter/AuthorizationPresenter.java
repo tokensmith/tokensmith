@@ -3,7 +3,7 @@ package net.tokensmith.authorization.http.presenter;
 /**
  * Created by tommackenzie on 5/6/15.
  */
-public class AuthorizationPresenter {
+public class AuthorizationPresenter extends AssetPresenter {
 
     private String email;
     private String encodedCsrfToken;

@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ProfileRepository {
     void insert(Profile profile);
     Profile getByResourceOwnerId(UUID id) throws RecordNotFoundException;
+    void update(UUID resourceOwnerId, Profile profile);
 }

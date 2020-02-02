@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,6 +22,7 @@ import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;
 
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -41,12 +44,14 @@ public class RequestAccessTokenTest {
     @Mock
     private IssueTokenImplicitGrant mockIssueTokenImplicitGrant;
     @Mock
+    private CreateLocalToken mockCreateLocalToken;
+    @Mock
     private ClientRepository mockClientRepository;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateImplicitGrant, mockIssueTokenImplicitGrant, mockClientRepository);
+        subject = new RequestAccessToken(mockLoginResourceOwner, mockValidateImplicitGrant, mockIssueTokenImplicitGrant, mockCreateLocalToken, mockClientRepository);
     }
 
     @Test
@@ -69,6 +74,9 @@ public class RequestAccessTokenTest {
         when(mockClientRepository.getById(client.getId())).thenReturn(client);
         when(mockIssueTokenImplicitGrant.run(client.getId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty())).thenReturn(tokenGraph);
 
+        Session localSession = new Session("local-token", OffsetDateTime.now().toEpochSecond());
+        when(mockCreateLocalToken.makeAndRevokeSession(eq(resourceOwner.getId()), eq(1))).thenReturn(localSession);
+
         ImplicitAccessToken actual = subject.requestToken(userName, password, parameters);
         assertThat(actual, is(notNullValue()));
 
@@ -79,6 +87,8 @@ public class RequestAccessTokenTest {
         assertThat(actual.getState().get(), is("some-state"));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getSessionToken(), is(localSession.getToken()));
+        assertThat(actual.getSessionTokenIssuedAt(), is(localSession.getIssuedAt()));
 
         verify(mockClientRepository, times(1)).getById(authRequest.getClientId());
     }
@@ -147,6 +157,9 @@ public class RequestAccessTokenTest {
         when(mockIssueTokenImplicitGrant.run(authRequest.getClientId(), resourceOwner, authRequest.getScopes(), audience, Optional.empty())).thenReturn(tokenGraph);
         when(mockClientRepository.getById(authRequest.getClientId())).thenReturn(client);
 
+        Session localSession = new Session("local-token", OffsetDateTime.now().toEpochSecond());
+        when(mockCreateLocalToken.makeAndRevokeSession(eq(resourceOwner.getId()), eq(1))).thenReturn(localSession);
+
         ImplicitAccessToken actual = subject.requestToken(userName, password, parameters);
         assertThat(actual, is(notNullValue()));
 
@@ -157,6 +170,8 @@ public class RequestAccessTokenTest {
         assertThat(actual.getState().get(), is("some-state"));
         assertThat(actual.getTokenType(), is(TokenType.BEARER));
         assertThat(actual.getExpiresIn(), is(3600L));
+        assertThat(actual.getSessionToken(), is(localSession.getToken()));
+        assertThat(actual.getSessionTokenIssuedAt(), is(localSession.getIssuedAt()));
 
         // should fetch client for redirect uri.
         verify(mockClientRepository, times(2)).getById(authRequest.getClientId());

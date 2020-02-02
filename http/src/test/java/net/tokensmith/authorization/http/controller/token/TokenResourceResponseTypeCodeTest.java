@@ -76,7 +76,7 @@ public class TokenResourceResponseTypeCodeTest {
 
         loadConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadConfClientCodeResponseType.class);
         loadOpenIdConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadOpenIdConfClientCodeResponseType.class);
-        servletURI = baseURI + "api/v1/token";
+        servletURI = baseURI + "api/public/v1/token";
         authServletURI = baseURI + "authorization";
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         loadOpenIdResourceOwner = IntegrationTestSuite.getContext().getBean(LoadOpenIdResourceOwner.class);

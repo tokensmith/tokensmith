@@ -4,11 +4,10 @@
  - [User Info Error Responses](user-info-error-responses)
     - [UnAuthorized](#unauthorized)
     - [Server Error](#server-error)
- - [Create a user](#create-a-user)
 
 ### Find out if a user is logged in
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
 Authorization: Bearer some-access-token
@@ -30,7 +29,7 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjA0YjJiMDg0LTBhOTMtNDcxMC1hMzE2LWMx
 Authorization Header missing
 
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Host: sso.tokensmith.net
 Content-Type: application/jwt;charset=UTF-8
 Accept: application/jwt;charset=UTF-8
@@ -47,7 +46,7 @@ Pragma: no-cache
 Authorization Scheme is not Bearer
 
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Host: sso.tokensmith.net
 Authorization: Basic some-basic-credentials
 Content-Type: application/jwt;charset=UTF-8
@@ -65,7 +64,7 @@ Pragma: no-cache
 Failed Authentication
 
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
@@ -85,7 +84,7 @@ Pragma: no-cache
 Key to sign JWT was not found
 
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
@@ -105,7 +104,7 @@ Failed to use key to sign JWT
  - could not marshal jwt to json
 
 ```
-GET /api/v1/userinfo
+GET /api/public/v1/userinfo
 Host: sso.tokensmith.net
 Authorization: Bearer access-token
 Content-Type: application/jwt;charset=UTF-8
@@ -117,50 +116,4 @@ HTTP/1.1 500 SERVER ERROR
 Content-Type: application/json;charset=UTF-8
 Cache-Control: no-store
 Pragma: no-cache
-```
-
-### Create a user
-
-Required Fields:
- - email
- - password
-
-```
-POST /api/v1/userinfo
-Content-Type: application/json;charset=UTF-8
-Accept: application/json;charset=UTF-8
-{
-  "email": "obi-wan@tokensmith.net",
-  "password": "password",
-  "name": "Obi-Wan Kenobi",
-  "family_name": "Kenobi",
-  "given_name": "Obi-Wan",
-  "middle_name": "Wan",
-  "nick_name": "Ben",
-  "preferred_user_name": "Ben Kenobi",
-  "profile": "http://starwars.wikia.com/wiki/Obi-Wan_Kenobi",
-  "picture": "http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039",
-  "website": "http://starwars.wikia.com",
-  "gender": "male",
-  "birthdate": "3220-01-01",
-  "zoneinfo": "America/Chicago",
-  "locale": "en-US",
-  "phone_number": "123-456-7891",
-  "address" : {
-    "street_address1": "123 Best Jedi Lane",
-    "street_address2": "#1",
-    "locality": "Chicago",
-    "region": "IL",
-    "postal_code": "60606",
-    "country": "Coruscant"
-  }
-}
-```
-
-```
-HTTP/1.1 201 OK
-Content-Type: application/json;charset=UTF-8
-Cache-Control: no-store
-Pragma: no-cache
-location: /api/v1/userinfo
 ```

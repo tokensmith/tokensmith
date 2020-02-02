@@ -15,7 +15,9 @@ public class ResourceOwner {
     private Boolean emailVerified;
     private Profile profile; // optional
     private List<Token> tokens = new ArrayList<>();
+    private List<LocalToken> localTokens = new ArrayList<>();
     private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 
     public ResourceOwner() {}
 
@@ -65,6 +67,14 @@ public class ResourceOwner {
         this.createdAt = createdAt;
     }
 
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public Profile getProfile() {
         return profile;
     }
@@ -79,5 +89,13 @@ public class ResourceOwner {
 
     public void setTokens(List<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    public List<LocalToken> getLocalTokens() {
+        return localTokens;
+    }
+
+    public void setLocalTokens(List<LocalToken> localTokens) {
+        this.localTokens = localTokens;
     }
 }

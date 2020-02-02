@@ -33,17 +33,17 @@ public class ProfileToIdTokenTest {
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         profile.setUpdatedAt(OffsetDateTime.now());
 
-        FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
-        profile.getFamilyNames().add(familyName);
+        Name name = FixtureFactory.makeFamilyName(profile.getId());
+        profile.getFamilyNames().add(name);
 
-        GivenName givenName = FixtureFactory.makeGivenName(profile.getId());
+        Name givenName = FixtureFactory.makeGivenName(profile.getId());
         profile.getGivenNames().add(givenName);
 
         IdToken actual = new IdToken();
         subject.toProfileClaims(actual, profile);
 
         assertThat(actual.getLastName().isPresent(), is(true));
-        assertThat(actual.getLastName().get(), is(familyName.getName()));
+        assertThat(actual.getLastName().get(), is(name.getName()));
 
         assertThat(actual.getFirstName().isPresent(), is(true));
         assertThat(actual.getFirstName().get(), is(givenName.getName()));
@@ -144,10 +144,10 @@ public class ProfileToIdTokenTest {
 
     @Test
     public void makeGivenNamesClaimWhenManyShouldAssign() throws Exception {
-        GivenName firstGivenName = FixtureFactory.makeGivenName(UUID.randomUUID());
-        GivenName secondGivenName = FixtureFactory.makeGivenName(UUID.randomUUID());
+        Name firstGivenName = FixtureFactory.makeGivenName(UUID.randomUUID());
+        Name secondGivenName = FixtureFactory.makeGivenName(UUID.randomUUID());
 
-        List<GivenName> givenNames = new ArrayList<>();
+        List<Name> givenNames = new ArrayList<>();
         givenNames.add(firstGivenName);
         givenNames.add(secondGivenName);
 
@@ -158,9 +158,9 @@ public class ProfileToIdTokenTest {
 
     @Test
     public void makeGivenNamesClaimWhenOneShouldAssign() throws Exception {
-        GivenName givenName = FixtureFactory.makeGivenName(UUID.randomUUID());
+        Name givenName = FixtureFactory.makeGivenName(UUID.randomUUID());
 
-        List<GivenName> givenNames = new ArrayList<>();
+        List<Name> givenNames = new ArrayList<>();
         givenNames.add(givenName);
 
         Optional<String> actual = subject.makeGivenNamesClaim(givenNames);
@@ -170,7 +170,7 @@ public class ProfileToIdTokenTest {
 
     @Test
     public void makeGivenNamesClaimWhenEmptyShouldAssign() throws Exception {
-        List<GivenName> givenNames = new ArrayList<>();
+        List<Name> givenNames = new ArrayList<>();
 
         Optional<String> actual = subject.makeGivenNamesClaim(givenNames);
         assertThat(actual.isPresent(), is(false));
@@ -178,41 +178,41 @@ public class ProfileToIdTokenTest {
 
     @Test
     public void makeFamilyNamesClaimWhenManyShouldAssign() throws Exception {
-        FamilyName firstFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
-        FamilyName secondFamilyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+        Name firstName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+        Name secondName = FixtureFactory.makeFamilyName(UUID.randomUUID());
 
-        List<FamilyName> familyNames = new ArrayList<>();
-        familyNames.add(firstFamilyName);
-        familyNames.add(secondFamilyName);
+        List<Name> names = new ArrayList<>();
+        names.add(firstName);
+        names.add(secondName);
 
-        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(names);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Kenobi Kenobi"));
     }
 
     @Test
     public void makeFamilyNamesClaimWhenOneShouldAssign() throws Exception {
-        FamilyName familyName = FixtureFactory.makeFamilyName(UUID.randomUUID());
+        Name name = FixtureFactory.makeFamilyName(UUID.randomUUID());
 
-        List<FamilyName> familyNames = new ArrayList<>();
-        familyNames.add(familyName);
+        List<Name> names = new ArrayList<>();
+        names.add(name);
 
-        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(names);
         assertThat(actual.isPresent(), is(true));
         assertThat(actual.get(), is("Kenobi"));
     }
 
     @Test
     public void makeFamilyNamesClaimWhenEmptyShouldAssign() throws Exception {
-        List<FamilyName> familyNames = new ArrayList<>();
+        List<Name> names = new ArrayList<>();
 
-        Optional<String> actual = subject.makeFamilyNamesClaim(familyNames);
+        Optional<String> actual = subject.makeFamilyNamesClaim(names);
         assertThat(actual.isPresent(), is(false));
     }
 
     @Test
     public void makeGivenNamesClaimWhenEmptyShouldNotBePresent() throws Exception {
-        List<GivenName> givenNames = new ArrayList<>();
+        List<Name> givenNames = new ArrayList<>();
 
         Optional<String> actual = subject.makeGivenNamesClaim(givenNames);
         assertThat(actual.isPresent(), is(false));

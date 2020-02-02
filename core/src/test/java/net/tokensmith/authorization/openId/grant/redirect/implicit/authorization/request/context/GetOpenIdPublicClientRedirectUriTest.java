@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.parse.exception.OptionalException;
+import net.tokensmith.parser.exception.OptionalException;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;

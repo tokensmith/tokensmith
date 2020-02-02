@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Component
 public class ForgotPassword {
-    private static final Logger logger = LoggerFactory.getLogger(ForgotPassword.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForgotPassword.class);
     private InsertNonce insertNonce;
     private Publish publish;
     private String issuer;

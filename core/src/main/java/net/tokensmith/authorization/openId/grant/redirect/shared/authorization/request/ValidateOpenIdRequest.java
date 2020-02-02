@@ -1,24 +1,23 @@
 package net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request;
 
+import net.tokensmith.parser.Parser;
+import net.tokensmith.parser.exception.OptionalException;
+import net.tokensmith.parser.exception.ParseException;
+import net.tokensmith.parser.exception.RequiredException;
+import net.tokensmith.parser.exception.ValueException;
+import net.tokensmith.parser.validator.exception.EmptyValueError;
+import net.tokensmith.parser.validator.exception.MoreThanOneItemError;
+import net.tokensmith.parser.validator.exception.NoItemsError;
+import net.tokensmith.parser.validator.exception.ParamIsNullError;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.context.GetOpenIdClientRedirectUri;
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
-import net.tokensmith.authorization.parse.ParamEntity;
-import net.tokensmith.authorization.parse.Parser;
-import net.tokensmith.authorization.parse.exception.OptionalException;
-import net.tokensmith.authorization.parse.exception.ParseException;
-import net.tokensmith.authorization.parse.exception.RequiredException;
-import net.tokensmith.authorization.parse.exception.ValueException;
-import net.tokensmith.authorization.parse.validator.excpeption.EmptyValueError;
-import net.tokensmith.authorization.parse.validator.excpeption.MoreThanOneItemError;
-import net.tokensmith.authorization.parse.validator.excpeption.NoItemsError;
-import net.tokensmith.authorization.parse.validator.excpeption.ParamIsNullError;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.ParameterizedType;
+
 import java.util.List;
 import java.util.Map;
 
@@ -31,15 +30,14 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
     private Class<T> type;
-    private List<ParamEntity> fields;
 
-    protected Parser<T> parser;
+    protected Parser parser;
     protected UrlValidator urlValidator;
     protected GetOpenIdClientRedirectUri getOpenIdClientRedirectUri;
     protected CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest;
 
     @Autowired
-    public ValidateOpenIdRequest(Parser<T> parser, Class<T> type, UrlValidator urlValidator, GetOpenIdClientRedirectUri getOpenIdClientRedirectUri, CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest) {
+    public ValidateOpenIdRequest(Parser parser, Class<T> type, UrlValidator urlValidator, GetOpenIdClientRedirectUri getOpenIdClientRedirectUri, CompareClientToOpenIdAuthRequest compareClientToOpenIdAuthRequest) {
         this.parser = parser;
         this.getOpenIdClientRedirectUri = getOpenIdClientRedirectUri;
         this.urlValidator = urlValidator;
@@ -49,13 +47,9 @@ public class ValidateOpenIdRequest<T extends BaseOpenIdAuthRequest> {
 
     public T run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, ServerException {
 
-        if (fields == null) {
-            fields = parser.reflect(type);
-        }
-
         T request = null;
         try {
-            request = parser.to(type, fields, parameters);
+            request = parser.to(type, parameters);
         } catch (RequiredException e) {
             handleRequired(e);
         } catch (OptionalException e) {

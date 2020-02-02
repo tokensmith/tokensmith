@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity;
 
-import net.tokensmith.authorization.parse.Parameter;
+
+import net.tokensmith.parser.Parameter;
 
 import java.net.URI;
 import java.util.List;
@@ -18,10 +19,10 @@ public class BaseOpenIdAuthRequest {
     @Parameter(name = "state", required = false)
     protected Optional<String> state = Optional.empty();
 
-    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"})
+    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"}, parsable = true)
     protected List<String> responseTypes;
 
-    @Parameter(name = "scope", required = false)
+    @Parameter(name = "scope", required = false, parsable = true)
     protected List<String> scopes;
 
     public UUID getClientId() {

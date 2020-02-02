@@ -3,7 +3,7 @@ package net.tokensmith.authorization.http.presenter;
 import java.util.Optional;
 
 
-public class RegisterPresenter {
+public class RegisterPresenter extends AssetPresenter {
     private Optional<String> errorMessage;
     private String email;
     private String encodedCsrfToken;

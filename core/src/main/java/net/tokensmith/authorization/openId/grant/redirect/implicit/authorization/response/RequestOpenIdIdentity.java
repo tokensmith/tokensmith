@@ -1,7 +1,10 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response;
 
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -33,6 +36,7 @@ public class RequestOpenIdIdentity {
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private LoginResourceOwner loginResourceOwner;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
+    private CreateLocalToken createLocalToken;
 
     private String issuer;
     private static String EXCEPTION_MESSAGE = "Failed to create id_token";
@@ -40,10 +44,11 @@ public class RequestOpenIdIdentity {
     private static final Long SECONDS_TO_EXPIRATION = 3600L;
 
     @Autowired
-    public RequestOpenIdIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, MakeImplicitIdentityToken makeImplicitIdentityToken, String issuer) {
+    public RequestOpenIdIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, MakeImplicitIdentityToken makeImplicitIdentityToken, CreateLocalToken createLocalToken, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
+        this.createLocalToken = createLocalToken;
         this.issuer = issuer;
     }
 
@@ -79,11 +84,22 @@ public class RequestOpenIdIdentity {
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         }
 
+
+        Session localSession = null;
+        try {
+            localSession = createLocalToken.makeAndRevokeSession(resourceOwner.getId(), 1);
+        } catch (LocalSessionException e) {
+            ErrorCode ec = ErrorCode.SERVER_ERROR;
+            throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
+        }
+
         OpenIdImplicitIdentity response =  new OpenIdImplicitIdentity();
         response.setIdToken(idToken);
         response.setRedirectUri(request.getRedirectURI());
         response.setState(request.getState());
         response.setScope(Optional.empty());
+        response.setSessionToken(localSession.getToken());
+        response.setSessionTokenIssuedAt(localSession.getIssuedAt());
 
         return response;
     }

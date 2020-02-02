@@ -2,11 +2,12 @@ package net.tokensmith.authorization.http.presenter;
 
 import java.util.Optional;
 
-public class UpdatePasswordPresenter {
+public class UpdatePasswordPresenter extends AssetPresenter {
     private Optional<String> errorMessage;
     private String encodedCsrfToken;
 
-    public UpdatePasswordPresenter(String encodedCsrfToken) {
+    public UpdatePasswordPresenter(String globalCssPath, String encodedCsrfToken) {
+        super(globalCssPath);
         this.encodedCsrfToken = encodedCsrfToken;
     }
 

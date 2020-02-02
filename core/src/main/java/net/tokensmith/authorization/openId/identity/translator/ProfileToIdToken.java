@@ -43,13 +43,13 @@ public class ProfileToIdToken {
         idToken.setPhoneNumberVerified(Optional.of(isVerified));
     }
 
-    public Optional<String> makeFamilyNamesClaim(List<FamilyName> familyNames) {
+    public Optional<String> makeFamilyNamesClaim(List<Name> familyNames) {
         String names = null;
-        for(FamilyName familyName: familyNames) {
+        for(Name name : familyNames) {
             if (names == null) {
-                names = familyName.getName();
+                names = name.getName();
             } else {
-                names += " " + familyName.getName();
+                names += " " + name.getName();
             }
         }
 
@@ -60,9 +60,9 @@ public class ProfileToIdToken {
         return namesClaim;
     }
 
-    public Optional<String> makeGivenNamesClaim(List<GivenName> givenNames) {
+    public Optional<String> makeGivenNamesClaim(List<Name> givenNames) {
         String names = null;
-        for(GivenName givenName: givenNames) {
+        for(Name givenName: givenNames) {
             if (names == null) {
                 names = givenName.getName();
             } else {

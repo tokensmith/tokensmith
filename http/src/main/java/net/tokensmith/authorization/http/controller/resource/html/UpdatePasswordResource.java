@@ -1,5 +1,6 @@
 package net.tokensmith.authorization.http.controller.resource.html;
 
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -8,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.exception.NotFoundException;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.UpdatePasswordPresenter;
 import net.tokensmith.authorization.nonce.reset.ForgotPassword;
@@ -21,10 +22,11 @@ import java.util.Optional;
 
 
 @Component
-public class UpdatePasswordResource extends Resource<TokenSession, WebSiteUser> {
-    private static final Logger logger = LoggerFactory.getLogger(UpdatePasswordResource.class);
+public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpdatePasswordResource.class);
     public static String URL = "/update-password\\?nonce=(.*)";
 
+    private String globalCssPath;
     private ForgotPassword forgotPassword;
 
     private static String NONCE_URL_PARAM = "nonce";
@@ -36,14 +38,18 @@ public class UpdatePasswordResource extends Resource<TokenSession, WebSiteUser> 
     private static String JSP_EXPIRED_PATH = "/WEB-INF/jsp/password/update-password-expired.jsp";
 
     @Autowired
-    public UpdatePasswordResource(ForgotPassword forgotPassword) {
+    public UpdatePasswordResource(String globalCssPath, ForgotPassword forgotPassword) {
+        this.globalCssPath = globalCssPath;
         this.forgotPassword = forgotPassword;
     }
 
     @Override
-    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
 
-        UpdatePasswordPresenter presenter = new UpdatePasswordPresenter(request.getCsrfChallenge().get());
+        UpdatePasswordPresenter presenter = new UpdatePasswordPresenter(
+            globalCssPath,
+            request.getCsrfChallenge().get()
+        );
         response.setStatusCode(StatusCode.OK);
         response.setPresenter(Optional.of(presenter));
         response.setTemplate(Optional.of(JSP_FORM_PATH));
@@ -52,7 +58,7 @@ public class UpdatePasswordResource extends Resource<TokenSession, WebSiteUser> 
     }
 
     @Override
-    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         Map<String, List<String>> form = request.getFormData();
         Map<String, List<String>> params = request.getQueryParams();
 
@@ -69,18 +75,22 @@ public class UpdatePasswordResource extends Resource<TokenSession, WebSiteUser> 
             response.setStatusCode(StatusCode.BAD_REQUEST);
             return response;
         } catch (NotFoundException e) {
+            AssetPresenter presenter = new AssetPresenter(globalCssPath);
+            response.setPresenter(Optional.of(presenter));
             response.setStatusCode(StatusCode.NOT_FOUND);
             response.setTemplate(Optional.of(JSP_EXPIRED_PATH));
             return response;
         }
 
+        AssetPresenter presenter = new AssetPresenter(globalCssPath);
+        response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.OK);
         response.setTemplate(Optional.of(JSP_OK_PATH));
         return response;
     }
 
     protected UpdatePasswordPresenter makePresenterOnError(String encodedCsrfToken, String errorMessage) {
-        UpdatePasswordPresenter p = new UpdatePasswordPresenter(encodedCsrfToken);
+        UpdatePasswordPresenter p = new UpdatePasswordPresenter(globalCssPath, encodedCsrfToken);
         p.setErrorMessage(Optional.of(errorMessage));
         return p;
     }

@@ -37,7 +37,7 @@ public class UserInfoResourceTest {
     @BeforeClass
     public static void beforeClass() {
         getServletURI = new GetServletURI();
-        servletURI = baseURI + "api/v1/userinfo";
+        servletURI = baseURI + "api/public/v1/userinfo";
 
         // prepare the request
         AppConfig config = new AppConfig();
@@ -90,107 +90,6 @@ public class UserInfoResourceTest {
 
         assertThat(response.getStatusCode(), is(HttpServletResponse.SC_UNAUTHORIZED));
         assertThat(response.getHeader(Header.AUTH_MISSING.getValue()), is(HeaderValue.INVALID_TOKEN.getValue()));
-        assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
-        assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
-    }
-
-    @Test
-    public void postWhenNoPayloadShouldReturn400() throws Exception {
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(HttpServletResponse.SC_BAD_REQUEST));
-
-        // TODO: otter fix this test
-        /**
-        Error error = objectMapper.readValue(response.getResponseBody(), Error.class);
-        assertThat(error, is(notNullValue()));
-        assertThat(error.getError(), is("Invalid Payload"));
-        assertThat(error.getDescription(), is(nullValue()));
-         **/
-    }
-
-    @Test
-    public void postWhenEmailTakenExistsShouldReturn400() throws Exception {
-        UserInfo payload = new UserInfo();
-
-        String email = UUID.randomUUID().toString() + "@tokensmith.net";
-        String password = "password";
-
-        payload.setEmail(email);
-        payload.setPassword(password);
-
-        Response response = null;
-        for(int i=0; i<=1; i++) {
-            ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                    .preparePost(servletURI)
-                    .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                    .setBody(objectMapper.writeValueAsBytes(payload))
-                    .execute();
-
-            response = f.get();
-        }
-
-        assertThat(response.getStatusCode(), is(HttpServletResponse.SC_BAD_REQUEST));
-        assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
-        assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
-
-        // TODO: otter fix this test
-        /**
-        Error error = objectMapper.readValue(response.getResponseBody(), Error.class);
-        assertThat(error, is(notNullValue()));
-        assertThat(error.getError(), is("Registration Error"));
-        assertThat(error.getDescription(), is("Could not insert resource_owner"));
-         */
-    }
-
-    @Test
-    public void postWhenMinPayloadShouldReturn200() throws Exception {
-        UserInfo payload = new UserInfo();
-
-        String email = UUID.randomUUID().toString() + "@tokensmith.net";
-        String password = "password";
-
-        payload.setEmail(email);
-        payload.setPassword(password);
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setBody(objectMapper.writeValueAsBytes(payload))
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(HttpServletResponse.SC_CREATED));
-        assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
-        assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
-    }
-
-    @Test
-    public void postWhenMaxPayloadShouldReturn200() throws Exception {
-        UserInfo payload = EntityFactory.makeFullUserInfo();
-
-        String email = UUID.randomUUID().toString() + "@tokensmith.net";
-        String password = "password";
-
-        payload.setEmail(email);
-        payload.setPassword(password);
-
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
-                .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
-                .setBody(objectMapper.writeValueAsBytes(payload))
-                .execute();
-
-        Response response = f.get();
-
-        assertThat(response.getStatusCode(), is(HttpServletResponse.SC_CREATED));
         assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
         assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
     }

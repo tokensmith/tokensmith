@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,6 +19,7 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.repository.entity.ResourceOwner;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +32,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,6 +49,8 @@ public class RequestAuthCodeTest {
     @Mock
     private IssueAuthCode mockIssueAuthCode;
     @Mock
+    private CreateLocalToken mockCreateLocalToken;
+    @Mock
     private AuthResponseFactory mockAuthResponseFactory;
     @Mock
     private GetConfidentialClientRedirectUri mockGetConfidentialClientRedirectUri;
@@ -58,6 +64,7 @@ public class RequestAuthCodeTest {
                 mockValidateCodeGrant,
                 mockLoginResourceOwner,
                 mockIssueAuthCode,
+                mockCreateLocalToken,
                 mockAuthResponseFactory,
                 mockGetConfidentialClientRedirectUri
         );
@@ -100,11 +107,16 @@ public class RequestAuthCodeTest {
             Optional.empty())
         ).thenReturn(randomString);
 
+        Session localSession = new Session("local-token", OffsetDateTime.now().toEpochSecond());
+        when(mockCreateLocalToken.makeAndRevokeSession(eq(resourceOwner.getId()), eq(1))).thenReturn(localSession);
+
         when(mockAuthResponseFactory.makeAuthResponse(
                 authRequest.getClientId(),
                 randomString,
                 authRequest.getState(),
-                authRequest.getRedirectURI()
+                authRequest.getRedirectURI(),
+                localSession.getToken(),
+                localSession.getIssuedAt()
         )).thenReturn(expectedAuthResponse);
 
         AuthResponse actual = subject.run(userName, password, params);
