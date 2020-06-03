@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.openId.grant.code.response;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,11 +20,13 @@ import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -35,6 +39,8 @@ public class RequestOpenIdAuthCodeTest {
     @Mock
     private IssueAuthCode mockIssueAuthCode;
     @Mock
+    private CreateLocalToken mockCreateLocalToken;
+    @Mock
     private AuthResponseFactory mockAuthResponseFactory;
 
     private RequestOpenIdAuthCode subject;
@@ -46,6 +52,7 @@ public class RequestOpenIdAuthCodeTest {
                 mockValidateOpenIdCodeResponseType,
                 mockLoginResourceOwner,
                 mockIssueAuthCode,
+                mockCreateLocalToken,
                 mockAuthResponseFactory
         );
     }
@@ -85,11 +92,16 @@ public class RequestOpenIdAuthCodeTest {
             authRequest.getNonce())
         ).thenReturn(randomString);
 
+        Session localSession = new Session("local-token", OffsetDateTime.now().toEpochSecond());
+        when(mockCreateLocalToken.makeAndRevokeSession(eq(resourceOwner.getId()), eq(1))).thenReturn(localSession);
+
         when(mockAuthResponseFactory.makeAuthResponse(
             authRequest.getClientId(),
             randomString,
             authRequest.getState(),
-            Optional.of(authRequest.getRedirectURI())
+            Optional.of(authRequest.getRedirectURI()),
+            localSession.getToken(),
+             localSession.getIssuedAt()
         )).thenReturn(expectedAuthResponse);
 
         AuthResponse actual = subject.run(userName, password, params);

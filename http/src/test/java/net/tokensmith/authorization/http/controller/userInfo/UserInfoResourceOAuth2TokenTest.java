@@ -58,7 +58,7 @@ public class UserInfoResourceOAuth2TokenTest {
 
     @BeforeClass
     public static void beforeClass() {
-        servletURI = baseURI + "api/v1/userinfo";
+        servletURI = baseURI + "api/public/v1/userinfo";
         authServletURI = baseURI + "authorization";
 
         FactoryForPersistence factoryForPersistence = new FactoryForPersistence(

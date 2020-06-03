@@ -12,6 +12,7 @@ import net.tokensmith.repository.repo.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,17 +45,23 @@ public class AuthResponseFactoryTest {
         String authCode = "authorization-code";
         Optional<String> state = Optional.of("csrf");
         Optional<URI> redirectUri = Optional.of(new URI("https://tokensmith.net"));
+        String sessionToken = "local-token";
+        Long sessionIssuedAt = OffsetDateTime.now().toEpochSecond();
 
         AuthResponse actual = subject.makeAuthResponse(
                 clientUUID,
                 authCode,
                 state,
-                redirectUri
+                redirectUri,
+                sessionToken,
+                sessionIssuedAt
         );
 
         assertThat(actual.getState(), is(state));
         assertThat(actual.getRedirectUri(), is(redirectUri.get()));
         assertThat(actual.getCode(), is(authCode));
+        assertThat(actual.getSessionToken(), is(sessionToken));
+        assertThat(actual.getSessionTokenIssuedAt(), is(sessionIssuedAt));
     }
 
     @Test
@@ -63,6 +70,8 @@ public class AuthResponseFactoryTest {
         String authCode = "authorization-code";
         Optional<String> state = Optional.of("csrf");
         Optional<URI> redirectUri = Optional.empty();
+        String sessionToken = "local-token";
+        Long sessionIssuedAt = OffsetDateTime.now().toEpochSecond();
 
         when(clientRepository.getById(clientUUID)).thenThrow(RecordNotFoundException.class);
 
@@ -72,7 +81,9 @@ public class AuthResponseFactoryTest {
                     clientUUID,
                     authCode,
                     state,
-                    redirectUri
+                    redirectUri,
+                    sessionToken,
+                    sessionIssuedAt
             );
         } catch (InformResourceOwnerException e) {
             assertThat(e.getCode(), is(ErrorCode.CLIENT_NOT_FOUND.getCode()));

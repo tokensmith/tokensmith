@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity;
 
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
-import net.tokensmith.authorization.parse.Parameter;
+import net.tokensmith.parser.Parameter;
 
 /**
  * Created by tommackenzie on 8/12/16.

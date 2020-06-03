@@ -4,7 +4,7 @@ import net.tokensmith.otter.server.HttpServer;
 import net.tokensmith.otter.server.HttpServerConfig;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.resource.api.HealthResource;
+import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
 
 
 import java.util.ArrayList;
@@ -27,9 +27,14 @@ public class TokenSmithServer extends HttpServer {
                 "text/css", "application/javascript", "text/javascript",
                 "application/json");
 
-        HttpServerConfig config = new HttpServerConfig(
-                DOCUMENT_ROOT, PORT, REQUEST_LOG, HealthResource.class, gzipMimeTypes, new ArrayList<>()
-        );
+        HttpServerConfig config = new HttpServerConfig.Builder()
+                .documentRoot(DOCUMENT_ROOT)
+                .port(PORT)
+                .requestLog(REQUEST_LOG)
+                .clazz(HealthResource.class)
+                .gzipMimeTypes(gzipMimeTypes)
+                .build();
+
         run(config);
     }
 }

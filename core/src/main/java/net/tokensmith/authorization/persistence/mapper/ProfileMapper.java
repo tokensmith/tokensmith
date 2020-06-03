@@ -10,6 +10,7 @@ import java.util.UUID;
  */
 public interface ProfileMapper {
     void insert(@Param("profile") Profile profile);
+    void update(@Param("resourceOwnerId") UUID resourceOwnerId, @Param("profile") Profile profile);
     Profile getById(@Param("id") UUID id);
     Profile getByResourceId(@Param("resourceOwnerId") UUID resourceOwnerId);
 }

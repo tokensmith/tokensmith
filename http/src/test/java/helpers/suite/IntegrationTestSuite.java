@@ -4,6 +4,10 @@ import com.ning.http.client.AsyncHttpClient;
 import config.TestHttpAppConfig;
 import helpers.category.UnitTests;
 import helpers.category.ServletContainerTest;
+import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
+import net.tokensmith.authorization.http.controller.resource.api.site.RestAddressResourceTest;
+import net.tokensmith.authorization.http.controller.resource.api.site.RestProfileResourceTest;
+import net.tokensmith.otter.server.HttpServerConfig;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -59,7 +63,9 @@ import java.util.List;
         RegisterResourceTest.class,
         WelcomeResourceTest.class,
         ForgotPasswordResourceTest.class,
-        UpdatePasswordResourceTest.class
+        UpdatePasswordResourceTest.class,
+        RestProfileResourceTest.class,
+        RestAddressResourceTest.class
 })
 public class IntegrationTestSuite {
 
@@ -83,10 +89,17 @@ public class IntegrationTestSuite {
                 "text/css", "application/javascript", "text/javascript",
                 "application/json");
 
-        List<ErrorPage> errorPages = new ArrayList<>();
-        server = servletContainerFactory.makeServletContainer(
-                DOCUMENT_ROOT, AuthorizationResource.class, RANDOM_PORT, REQUEST_LOG, gzipMimeTypes, errorPages
-        );
+
+        HttpServerConfig config = new HttpServerConfig.Builder()
+                .documentRoot(DOCUMENT_ROOT)
+                .port(RANDOM_PORT)
+                .requestLog(REQUEST_LOG)
+                .clazz(AuthorizationResource.class)
+                .gzipMimeTypes(gzipMimeTypes)
+                .build();
+
+        server = servletContainerFactory.makeServletContainer(config);
+
         server.start();
 
         httpClient = new AsyncHttpClient();

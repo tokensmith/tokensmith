@@ -1,5 +1,14 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization;
 
+import net.tokensmith.parser.Parser;
+import net.tokensmith.parser.exception.OptionalException;
+import net.tokensmith.parser.exception.ParseException;
+import net.tokensmith.parser.exception.RequiredException;
+import net.tokensmith.parser.exception.ValueException;
+import net.tokensmith.parser.validator.exception.EmptyValueError;
+import net.tokensmith.parser.validator.exception.MoreThanOneItemError;
+import net.tokensmith.parser.validator.exception.NoItemsError;
+import net.tokensmith.parser.validator.exception.ParamIsNullError;
 import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
@@ -7,16 +16,6 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.parse.ParamEntity;
-import net.tokensmith.authorization.parse.Parser;
-import net.tokensmith.authorization.parse.exception.OptionalException;
-import net.tokensmith.authorization.parse.exception.ParseException;
-import net.tokensmith.authorization.parse.exception.RequiredException;
-import net.tokensmith.authorization.parse.exception.ValueException;
-import net.tokensmith.authorization.parse.validator.excpeption.EmptyValueError;
-import net.tokensmith.authorization.parse.validator.excpeption.MoreThanOneItemError;
-import net.tokensmith.authorization.parse.validator.excpeption.NoItemsError;
-import net.tokensmith.authorization.parse.validator.excpeption.ParamIsNullError;
 
 
 import java.net.URI;
@@ -30,13 +29,12 @@ public class ValidateRequest {
     private static String CLIENT_ID = "client_id";
     private static String REDIRECT_URI = "redirect_uri";
 
-    protected Parser<AuthRequest> parser;
+    protected Parser parser;
     protected UrlValidator urlValidator;
     protected GetClientRedirectUri getClientRedirect;
     protected CompareClientToAuthRequest compareClientToAuthRequest;
-    private List<ParamEntity> fields;
 
-    public ValidateRequest(Parser<AuthRequest> parser, UrlValidator urlValidator, GetClientRedirectUri getClientRedirect, CompareClientToAuthRequest compareClientToAuthRequest) {
+    public ValidateRequest(Parser parser, UrlValidator urlValidator, GetClientRedirectUri getClientRedirect, CompareClientToAuthRequest compareClientToAuthRequest) {
         this.parser = parser;
         this.urlValidator = urlValidator;
         this.getClientRedirect = getClientRedirect;
@@ -45,20 +43,15 @@ public class ValidateRequest {
 
     public AuthRequest run(Map<String, List<String>> parameters) throws InformResourceOwnerException, InformClientException, ServerException {
 
-        if (fields == null) {
-            fields = parser.reflect(AuthRequest.class);
-        }
-
         AuthRequest request = null;
         try {
-            request = parser.to(AuthRequest.class, fields, parameters);
+            request = parser.to(AuthRequest.class, parameters);
         } catch (RequiredException e) {
             handleRequired(e);
         } catch (OptionalException e) {
             if (REDIRECT_URI.equals(e.getParam())) {
                 throw new InformResourceOwnerException("", e, 1);
             }
-
             handleOptional(e);
         } catch (ParseException e) {
             throw new ServerException(PARSE_ERROR, e);

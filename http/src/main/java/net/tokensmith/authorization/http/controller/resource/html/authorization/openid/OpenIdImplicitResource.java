@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
@@ -23,8 +23,10 @@ import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
-public class OpenIdImplicitResource extends Resource<TokenSession, WebSiteUser> {
+public class OpenIdImplicitResource extends Resource<WebSiteSession, WebSiteUser> {
     private static final Logger logger = LoggerFactory.getLogger(OpenIdImplicitResource.class);
 
     private static String JSP_PATH = "/WEB-INF/jsp/authorization.jsp";
@@ -32,6 +34,7 @@ public class OpenIdImplicitResource extends Resource<TokenSession, WebSiteUser> 
     protected static String PASSWORD = "password";
     protected static String BLANK = "";
 
+    private String globalCssPath;
     private AuthorizationHelper authorizationHelper;
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private RequestOpenIdImplicitTokenAndIdentity requestOpenIdImplicitTokenAndIdentity;
@@ -39,35 +42,36 @@ public class OpenIdImplicitResource extends Resource<TokenSession, WebSiteUser> 
     public OpenIdImplicitResource() {}
 
     @Autowired
-    public OpenIdImplicitResource(AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdImplicitTokenAndIdentity requestOpenIdImplicitTokenAndIdentity) {
+    public OpenIdImplicitResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdImplicitTokenAndIdentity requestOpenIdImplicitTokenAndIdentity) {
+        this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.requestOpenIdImplicitTokenAndIdentity = requestOpenIdImplicitTokenAndIdentity;
     }
 
     @Override
-    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         try {
             validateOpenIdIdImplicitGrant.run(request.getQueryParams());
         } catch (InformResourceOwnerException e) {
-            authorizationHelper.prepareNotFoundResponse(response);
+            authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
-            authorizationHelper.prepareServerErrorResponse(response);
+            authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
             return response;
         }
 
-        AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(BLANK, request.getCsrfChallenge().get());
+        AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }
 
     @Override
-    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         String userName = authorizationHelper.getFormValue(request.getFormData().get(EMAIL));
         String password = authorizationHelper.getFormValue(request.getFormData().get(PASSWORD));
 
@@ -75,18 +79,18 @@ public class OpenIdImplicitResource extends Resource<TokenSession, WebSiteUser> 
         try {
             accessToken = requestOpenIdImplicitTokenAndIdentity.request(userName, password, request.getQueryParams());
         } catch (UnauthorizedException e) {
-            AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(userName, request.getCsrfChallenge().get());
+            AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, userName, request.getCsrfChallenge().get());
             authorizationHelper.prepareResponse(response, StatusCode.FORBIDDEN, presenter, JSP_PATH);
             return response;
         } catch (InformResourceOwnerException e) {
-            authorizationHelper.prepareNotFoundResponse(response);
+            authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
-            authorizationHelper.prepareServerErrorResponse(response);
+            authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
             return response;
         }
 
@@ -94,6 +98,12 @@ public class OpenIdImplicitResource extends Resource<TokenSession, WebSiteUser> 
         String location = authorizationHelper.makeRedirectURIForOpenIdImplicit(accessToken);
         response.getHeaders().put(Header.LOCATION.getValue(), location);
         response.setStatusCode(StatusCode.MOVED_TEMPORARILY);
+
+        WebSiteSession session = new WebSiteSession(
+                accessToken.getSessionToken(),
+                accessToken.getSessionTokenIssuedAt()
+        );
+        response.setSession(Optional.of(session));
 
         return response;
     }

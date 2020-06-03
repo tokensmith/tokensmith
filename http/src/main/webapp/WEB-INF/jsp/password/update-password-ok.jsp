@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <title>Password Updated</title>
+<link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
 

@@ -1,7 +1,10 @@
 package net.tokensmith.authorization.openId.grant.redirect.code.authorization.response;
 
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -32,14 +35,16 @@ public class RequestOpenIdAuthCode {
     protected LoginResourceOwner loginResourceOwner;
     protected IssueAuthCode issueAuthCode;
     protected AuthResponseFactory authResponseFactory;
+    protected CreateLocalToken createLocalToken;
 
     public RequestOpenIdAuthCode() {}
 
     @Autowired
-    public RequestOpenIdAuthCode(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory) {
+    public RequestOpenIdAuthCode(ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, CreateLocalToken createLocalToken, AuthResponseFactory authResponseFactory) {
         this.validateOpenIdCodeResponseType = validateOpenIdCodeResponseType;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
+        this.createLocalToken = createLocalToken;
         this.authResponseFactory = authResponseFactory;
     }
 
@@ -53,7 +58,7 @@ public class RequestOpenIdAuthCode {
                     password,
                     authRequest
             );
-        } catch (AuthCodeInsertException e) {
+        } catch (AuthCodeInsertException | LocalSessionException e) {
             throw new InformClientException(
                     ERROR_MSG, ERROR, ERROR_DESC, authRequest.getRedirectURI(), authRequest.getState(), e
             );
@@ -61,7 +66,7 @@ public class RequestOpenIdAuthCode {
         return authResponse;
     }
 
-    protected AuthResponse makeAuthResponse(String userName, String password, OpenIdAuthRequest authRequest) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException {
+    protected AuthResponse makeAuthResponse(String userName, String password, OpenIdAuthRequest authRequest) throws UnauthorizedException, AuthCodeInsertException, InformResourceOwnerException, LocalSessionException {
 
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
@@ -73,11 +78,15 @@ public class RequestOpenIdAuthCode {
                 authRequest.getNonce()
         );
 
+        Session localSession = createLocalToken.makeAndRevokeSession(resourceOwner.getId(), 1);
+
         return authResponseFactory.makeAuthResponse(
                 authRequest.getClientId(),
                 authorizationCode,
                 authRequest.getState(),
-                Optional.of(authRequest.getRedirectURI())
+                Optional.of(authRequest.getRedirectURI()),
+                localSession.getToken(),
+                localSession.getIssuedAt()
         );
     }
 

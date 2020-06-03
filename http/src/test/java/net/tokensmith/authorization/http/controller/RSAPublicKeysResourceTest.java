@@ -7,10 +7,11 @@ import helpers.category.ServletContainerTest;
 import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.otter.controller.entity.Cause;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.http.controller.resource.api.RSAPublicKeysResource;
+import net.tokensmith.authorization.http.controller.resource.api.publik.RSAPublicKeysResource;
 import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.repository.entity.KeyUse;
 import net.tokensmith.repository.entity.RSAPrivateKey;
@@ -42,13 +43,13 @@ public class RSAPublicKeysResourceTest {
         );
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
         baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
-        servletURI = baseURI + "api/v1/jwk/rsa";
+        servletURI = baseURI + "api/public/v1/jwk/rsa";
     }
 
     @Test
     public void urlShouldNotMatch() {
         Pattern pattern = Pattern.compile(RSAPublicKeysResource.URL);
-        String url = "/api/v1/jwk/rsa/foo";
+        String url = "/api/public/v1/jwk/rsa/foo";
         Matcher m = pattern.matcher(url);
 
         assertThat(m.matches(), is(false));
@@ -57,7 +58,7 @@ public class RSAPublicKeysResourceTest {
     @Test
     public void urlShouldMatch() {
         Pattern pattern = Pattern.compile(RSAPublicKeysResource.URL);
-        String url = "/api/v1/jwk/rsa";
+        String url = "/api/public/v1/jwk/rsa";
         Matcher m = pattern.matcher(url);
 
         assertThat(m.matches(), is(true));
@@ -145,11 +146,12 @@ public class RSAPublicKeysResourceTest {
         ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
 
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.getKey(), is("page"));
-        assertThat(actual.getActual(), is("foo"));
-        assertThat(actual.getSource(), is(ClientError.Source.URL));
-        assertThat(actual.getExpected(), is(notNullValue()));
-        assertThat(actual.getExpected().size(), is(0));
-        assertThat(actual.getReason(), is("page value is not a integer"));
+        assertThat(actual.getCauses().size(), is(1));
+        assertThat(actual.getCauses().get(0).getKey(), is("page"));
+        assertThat(actual.getCauses().get(0).getActual(), is("foo"));
+        assertThat(actual.getCauses().get(0).getSource(), is(Cause.Source.URL));
+        assertThat(actual.getCauses().get(0).getExpected(), is(notNullValue()));
+        assertThat(actual.getCauses().get(0).getExpected().size(), is(0));
+        assertThat(actual.getCauses().get(0).getReason(), is("page value is not a integer"));
     }
 }

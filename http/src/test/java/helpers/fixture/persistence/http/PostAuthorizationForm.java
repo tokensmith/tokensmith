@@ -4,6 +4,7 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Param;
 import com.ning.http.client.Response;
+import com.ning.http.client.cookie.Cookie;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
 import helpers.fixture.persistence.http.input.AuthEndpointProps;
@@ -35,7 +36,29 @@ public class PostAuthorizationForm {
     }
 
     public String run(AuthEndpointProps props) throws IOException, ExecutionException, InterruptedException, URISyntaxException, GetCsrfException {
+        Response response = postLogin(props);
 
+        URI location = new URI(response.getHeader("location"));
+        QueryStringToMap queryStringToMap = new QueryStringToMap();
+        Map<String, List<String>> params = queryStringToMap.run(
+                Optional.of(location.getQuery())
+        );
+
+        return params.get("code").get(0);
+    }
+
+    public Session getSession(AuthEndpointProps props) throws InterruptedException, ExecutionException, IOException, GetCsrfException {
+        Response response = postLogin(props);
+        Session session = new Session();
+        for(Cookie cookie: response.getCookies()) {
+            if (cookie.getName().equals("session")) {
+                session.setSession(cookie);
+            }
+        }
+        return session;
+    }
+
+    protected Response postLogin(AuthEndpointProps props) throws IOException, ExecutionException, InterruptedException, GetCsrfException {
         String authEndpoint = authEndpoint(props);
 
         Session session = getSessionAndCsrfToken.run(authEndpoint);
@@ -47,15 +70,7 @@ public class PostAuthorizationForm {
                 .setCookies(Arrays.asList(session.getSession()))
                 .execute();
 
-        Response response = f.get();
-
-        URI location = new URI(response.getHeader("location"));
-        QueryStringToMap queryStringToMap = new QueryStringToMap();
-        Map<String, List<String>> params = queryStringToMap.run(
-                Optional.of(location.getQuery())
-        );
-
-        return params.get("code").get(0);
+        return f.get();
     }
 
     public String authEndpoint(AuthEndpointProps props) throws IOException {

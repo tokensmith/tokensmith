@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.tokensmith.authorization.persistence.mapper.GivenNameMapper">
 
-    <resultMap id="givenName" type="net.tokensmith.repository.entity.GivenName">
+    <resultMap id="givenName" type="net.tokensmith.repository.entity.Name">
         <id column="id" property="id" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="resource_owner_profile_id" property="resourceOwnerProfileId" javaType="java.util.UUID" jdbcType="OTHER" typeHandler="net.tokensmith.authorization.persistence.mapper.typehandler.UUIDTypeHandler"/>
         <result column="given_name" property="name" />
@@ -29,5 +29,31 @@
         from resource_owner_profile_given_name
         where id = #{id}
     </select>
+
+    <update id="update">
+        update resource_owner_profile_given_name
+        set
+            given_name = #{givenName.name},
+            updated_at = now()
+        from resource_owner as ro, resource_owner_profile as rop
+        where
+
+        resource_owner_profile_given_name.resource_owner_profile_id = rop.id and
+        rop.resource_owner_id = ro.id and
+
+        resource_owner_profile_given_name.id = #{givenName.id}
+        and ro.id = #{resourceOwnerId}
+    </update>
+
+    <delete id="delete">
+        delete from resource_owner_profile_given_name
+        using resource_owner as ro, resource_owner_profile as rop
+        where
+            resource_owner_profile_given_name.resource_owner_profile_id = rop.id and
+            rop.resource_owner_id = ro.id and
+
+            resource_owner_profile_given_name.id = #{givenName.id}
+            and ro.id = #{resourceOwnerId}
+    </delete>
 
 </mapper>

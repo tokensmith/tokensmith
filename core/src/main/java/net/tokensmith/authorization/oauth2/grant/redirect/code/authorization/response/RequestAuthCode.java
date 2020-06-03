@@ -1,5 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -36,6 +39,7 @@ public class RequestAuthCode {
     private ValidateCodeGrant validateCodeGrant;
     protected LoginResourceOwner loginResourceOwner;
     protected IssueAuthCode issueAuthCode;
+    protected CreateLocalToken createLocalToken;
     protected AuthResponseFactory authResponseFactory;
     protected GetConfidentialClientRedirectUri getConfidentialClientRedirectUri;
 
@@ -45,10 +49,11 @@ public class RequestAuthCode {
     public RequestAuthCode() {}
 
     @Autowired
-    public RequestAuthCode(ValidateCodeGrant validateCodeGrant, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, AuthResponseFactory authResponseFactory, GetConfidentialClientRedirectUri getConfidentialClientRedirectUri) {
+    public RequestAuthCode(ValidateCodeGrant validateCodeGrant, LoginResourceOwner loginResourceOwner, IssueAuthCode issueAuthCode, CreateLocalToken createLocalToken, AuthResponseFactory authResponseFactory, GetConfidentialClientRedirectUri getConfidentialClientRedirectUri) {
         this.validateCodeGrant = validateCodeGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.issueAuthCode = issueAuthCode;
+        this.createLocalToken = createLocalToken;
         this.authResponseFactory = authResponseFactory;
         this.getConfidentialClientRedirectUri = getConfidentialClientRedirectUri;
     }
@@ -69,6 +74,7 @@ public class RequestAuthCode {
         ResourceOwner resourceOwner = loginResourceOwner.run(userName, password);
 
         String authorizationCode;
+        Session localSession;
         try {
             authorizationCode = issueAuthCode.run(
                     resourceOwner.getId(),
@@ -77,7 +83,9 @@ public class RequestAuthCode {
                     authRequest.getScopes(),
                     Optional.empty()
             );
-        } catch (AuthCodeInsertException e) {
+
+            localSession = createLocalToken.makeAndRevokeSession(resourceOwner.getId(), 1);
+        } catch (AuthCodeInsertException|LocalSessionException e) {
             logger.error(e.getMessage(), e);
 
             URI redirectURI = getConfidentialClientRedirectUri.run(authRequest.getClientId(), authRequest.getRedirectURI(), e);
@@ -97,7 +105,9 @@ public class RequestAuthCode {
                 authRequest.getClientId(),
                 authorizationCode,
                 authRequest.getState(),
-                authRequest.getRedirectURI()
+                authRequest.getRedirectURI(),
+                localSession.getToken(),
+                localSession.getIssuedAt()
         );
     }
 }

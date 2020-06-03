@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
@@ -23,9 +23,11 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 
 @Component
-public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
+public class OAuth2CodeResource extends Resource<WebSiteSession, WebSiteUser> {
     private static final Logger logger = LoggerFactory.getLogger(OAuth2CodeResource.class);
 
     private static String JSP_PATH = "/WEB-INF/jsp/authorization.jsp";
@@ -33,6 +35,7 @@ public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
     protected static String PASSWORD = "password";
     protected static String BLANK = "";
 
+    private String globalCssPath;
     private AuthorizationHelper authorizationHelper;
     private ValidateCodeGrant validateCodeGrant;
     private RequestAuthCode requestAuthCode;
@@ -40,35 +43,36 @@ public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
     public OAuth2CodeResource() {}
 
     @Autowired
-    public OAuth2CodeResource(AuthorizationHelper authorizationHelper, ValidateCodeGrant validateCodeGrant, RequestAuthCode requestAuthCode) {
+    public OAuth2CodeResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateCodeGrant validateCodeGrant, RequestAuthCode requestAuthCode) {
+        this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateCodeGrant = validateCodeGrant;
         this.requestAuthCode = requestAuthCode;
     }
 
     @Override
-    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         try {
             validateCodeGrant.run(request.getQueryParams());
         } catch (InformResourceOwnerException e) {
-            authorizationHelper.prepareNotFoundResponse(response);
+            authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
-            authorizationHelper.prepareServerErrorResponse(response);
+            authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
             return response;
         }
 
-        AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(BLANK, request.getCsrfChallenge().get());
+        AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }
 
     @Override
-    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         String userName = authorizationHelper.getFormValue(request.getFormData().get(EMAIL));
         String password = authorizationHelper.getFormValue(request.getFormData().get(PASSWORD));
 
@@ -76,18 +80,18 @@ public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
         try {
             authResponse = requestAuthCode.run(userName, password, request.getQueryParams());
         } catch (UnauthorizedException e) {
-            AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(userName, request.getCsrfChallenge().get());
+            AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, userName, request.getCsrfChallenge().get());
             authorizationHelper.prepareResponse(response, StatusCode.FORBIDDEN, presenter, JSP_PATH);
             return response;
         } catch (InformResourceOwnerException e) {
-            authorizationHelper.prepareNotFoundResponse(response);
+            authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
-            authorizationHelper.prepareServerErrorResponse(response);
+            authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
             return response;
         }
 
@@ -95,6 +99,12 @@ public class OAuth2CodeResource extends Resource<TokenSession, WebSiteUser> {
         String location = authorizationHelper.makeRedirectURIForCodeGrant(authResponse);
         response.getHeaders().put(Header.LOCATION.getValue(), location);
         response.setStatusCode(StatusCode.MOVED_TEMPORARILY);
+
+        WebSiteSession session = new WebSiteSession(
+                authResponse.getSessionToken(),
+                authResponse.getSessionTokenIssuedAt()
+        );
+        response.setSession(Optional.of(session));
 
         return response;
     }
