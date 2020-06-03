@@ -39,7 +39,7 @@ public class ResourceOwnerRepoTest {
 
 
     @Test(expected=RecordNotFoundException.class)
-    public void getByUUIDNoRecordFound() throws RecordNotFoundException{
+    public void getByIdNoRecordFound() throws RecordNotFoundException{
         UUID uuid = UUID.randomUUID();
         when(mockMapper.getById(uuid)).thenReturn(null);
         subject.getById(uuid);
@@ -52,6 +52,40 @@ public class ResourceOwnerRepoTest {
 
         when(mockMapper.getById(expectedAuthUser.getId())).thenReturn(expectedAuthUser);
         ResourceOwner actualAuthUser = subject.getById(expectedAuthUser.getId());
+        assertThat(actualAuthUser, is(expectedAuthUser));
+    }
+
+    @Test(expected=RecordNotFoundException.class)
+    public void getByIdWithProfileNoRecordFound() throws RecordNotFoundException{
+        UUID uuid = UUID.randomUUID();
+        when(mockMapper.getByIdWithProfile(uuid)).thenReturn(null);
+        subject.getByIdWithProfile(uuid);
+    }
+
+    @Test
+    public void getByIdWithProfile() throws RecordNotFoundException{
+
+        ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
+
+        when(mockMapper.getByIdWithProfile(expectedAuthUser.getId())).thenReturn(expectedAuthUser);
+        ResourceOwner actualAuthUser = subject.getByIdWithProfile(expectedAuthUser.getId());
+        assertThat(actualAuthUser, is(expectedAuthUser));
+    }
+
+    @Test(expected=RecordNotFoundException.class)
+    public void getByLocalTokenNoRecordFound() throws RecordNotFoundException{
+        String token = "local-token";
+        when(mockMapper.getByLocalToken(eq(token))).thenReturn(null);
+        subject.getByLocalToken(token);
+    }
+
+    @Test
+    public void getByLocalToken() throws RecordNotFoundException{
+        String token = "local-token";
+        ResourceOwner expectedAuthUser = FixtureFactory.makeResourceOwner();
+
+        when(mockMapper.getByLocalToken(eq(token))).thenReturn(expectedAuthUser);
+        ResourceOwner actualAuthUser = subject.getByLocalToken(token);
         assertThat(actualAuthUser, is(expectedAuthUser));
     }
 
@@ -133,15 +167,15 @@ public class ResourceOwnerRepoTest {
 
         String msg =
             "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists.\n" +
             "### The error may involve defaultParameterMap\n" +
             "### The error occurred while setting parameters\n" +
             "### SQL: insert into resource_owner (id, email, password)         values (             ?,             ?,             ?         )\n" +
             "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists.\n" +
             "; SQL []; ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists\n";
+            "Detail: Key (email)=(test@tokensmith.net) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists\n";
 
         DuplicateKeyException dke = new DuplicateKeyException(msg);
         doThrow(dke).when(mockMapper).insert(user);
@@ -174,5 +208,15 @@ public class ResourceOwnerRepoTest {
         subject.updatePassword(id, password);
 
         verify(mockMapper).updatePassword(id, password);
+    }
+
+    @Test
+    public void updateEmailShouldBeOk(){
+        UUID id = UUID.randomUUID();
+        String email = "obi-wan@tokensmith.net";
+
+        subject.updateEmail(id, email);
+
+        verify(mockMapper).updateEmail(id, email);
     }
 }

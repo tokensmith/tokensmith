@@ -57,8 +57,8 @@ public class UserInfoResourceOpenIdPasswordTest {
     @BeforeClass
     public static void beforeClass() {
         getServletURI = new GetServletURI();
-        servletURI = baseURI + "api/v1/userinfo";
-        tokenServletURI = baseURI + "api/v1/token";
+        servletURI = baseURI + "api/public/v1/userinfo";
+        tokenServletURI = baseURI + "api/public/v1/token";
 
         FactoryForPersistence factoryForPersistence = new FactoryForPersistence(
                 IntegrationTestSuite.getContext()

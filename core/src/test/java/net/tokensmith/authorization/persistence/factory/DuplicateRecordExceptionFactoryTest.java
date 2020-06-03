@@ -70,15 +70,15 @@ public class DuplicateRecordExceptionFactoryTest {
     public void makeWhenResourceOwnerShouldHaveKeyPresent() {
         String msg =
             "### Error updating database.  Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists.\n" +
             "### The error may involve defaultParameterMap\n" +
             "### The error occurred while setting parameters\n" +
             "### SQL: insert into resource_owner (id, email, password)         values (             ?,             ?,             ?         )\n" +
             "### Cause: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists.\n" +
             "; SQL []; ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
-            "Detail: Key (email)=(test@rootservices.com) already exists\n";
+            "Detail: Key (email)=(test@tokensmith.net) already exists.; nested exception is org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"resource_owner_email_key\"\n" +
+            "Detail: Key (email)=(test@tokensmith.net) already exists\n";
 
         DuplicateKeyException dke = new DuplicateKeyException(msg);
 

@@ -9,7 +9,7 @@ import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
-import net.tokensmith.authorization.parse.exception.OptionalException;
+import net.tokensmith.parser.exception.OptionalException;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;

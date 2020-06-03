@@ -49,21 +49,38 @@ public class ResourceOwnerMapperTest {
     private FamilyNameMapper familyNameMapper;
     @Autowired
     private TokenAudienceMapper tokenAudienceMapper;
+    @Autowired
+    private LocalTokenMapper localTokenMapper;
 
-    public ResourceOwner insertResourceOwner() {
+    public ResourceOwner insertResourceOwner(boolean emailVerified) {
         UUID uuid = UUID.randomUUID();
         String password = "plainTextPassword";
-        ResourceOwner user = new ResourceOwner(uuid, UUID.randomUUID() + "@rootservices.com", password);
+        ResourceOwner user = new ResourceOwner(uuid, UUID.randomUUID() + "@tokensmith.net", password);
+        user.setEmailVerified(emailVerified);
 
         subject.insert(user);
         return user;
+    }
+
+    public LocalToken insertLocalToken(UUID resourceOwnerId, boolean revoked, OffsetDateTime expiresAt) {
+        LocalToken localToken = new LocalToken.Builder()
+                .id(UUID.randomUUID())
+                .token("local-access-token")
+                .resourceOwnerId(resourceOwnerId)
+                .revoked(revoked)
+                .expiresAt(expiresAt)
+                .createdAt(OffsetDateTime.now())
+                .build();
+        localTokenMapper.insert(localToken);
+
+        return localToken;
     }
 
     @Test
     public void insert() {
         UUID uuid = UUID.randomUUID();
         String password = "plainTextPassword";
-        ResourceOwner user = new ResourceOwner(uuid, "test@rootservices.com", password);
+        ResourceOwner user = new ResourceOwner(uuid, "test@tokensmith.net", password);
         subject.insert(user);
     }
 
@@ -71,11 +88,11 @@ public class ResourceOwnerMapperTest {
     public void insertShouldThrowDuplicateKeyException() {
         UUID id = UUID.randomUUID();
         String password = "plainTextPassword";
-        ResourceOwner user = new ResourceOwner(id, "test@rootservices.com", password);
+        ResourceOwner user = new ResourceOwner(id, "test@tokensmith.net", password);
         subject.insert(user);
 
         UUID id2 = UUID.randomUUID();
-        ResourceOwner user2 = new ResourceOwner(id2, "test@rootservices.com", password);
+        ResourceOwner user2 = new ResourceOwner(id2, "test@tokensmith.net", password);
 
         subject.insert(user2);
     }
@@ -83,7 +100,7 @@ public class ResourceOwnerMapperTest {
 
     @Test
     public void getById() {
-        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner expectedUser = insertResourceOwner(false);
         ResourceOwner actual = subject.getById(expectedUser.getId());
 
         assertThat(actual.getId(), is(expectedUser.getId()));
@@ -102,7 +119,7 @@ public class ResourceOwnerMapperTest {
 
     @Test
     public void getByEmail() {
-        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner expectedUser = insertResourceOwner(false);
         ResourceOwner actual = subject.getByEmail(expectedUser.getEmail());
 
         assertThat(actual.getId(), is(expectedUser.getId()));
@@ -110,6 +127,8 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getPassword(), is(expectedUser.getPassword()));
         assertThat(actual.isEmailVerified(), is(false));
         assertThat(actual.getCreatedAt(), is(notNullValue()));
+        assertThat(actual.getTokens().size(), is(0));
+        assertThat(actual.getLocalTokens().size(), is(0));
     }
 
     @Test
@@ -118,7 +137,7 @@ public class ResourceOwnerMapperTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         clientMapper.insert(client);
 
-        ResourceOwner expectedUser = insertResourceOwner();
+        ResourceOwner expectedUser = insertResourceOwner(false);
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
@@ -142,6 +161,7 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getProfile(), is(nullValue()));
         assertThat(actual.getTokens(), is(notNullValue()));
         assertThat(actual.getTokens().size(), is(0));
+        assertThat(actual.getLocalTokens().size(), is(0));
     }
 
     @Test
@@ -151,7 +171,7 @@ public class ResourceOwnerMapperTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         clientMapper.insert(client);
 
-        ResourceOwner ro = insertResourceOwner();
+        ResourceOwner ro = insertResourceOwner(false);
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
@@ -193,10 +213,10 @@ public class ResourceOwnerMapperTest {
         Profile profile = FixtureFactory.makeProfile(ro.getId());
         profileMapper.insert(profile);
 
-        GivenName givenName = FixtureFactory.makeGivenName(profile.getId());
+        Name givenName = FixtureFactory.makeGivenName(profile.getId());
         givenNameMapper.insert(givenName);
 
-        FamilyName familyName = FixtureFactory.makeFamilyName(profile.getId());
+        Name familyName = FixtureFactory.makeFamilyName(profile.getId());
         familyNameMapper.insert(familyName);
 
         Address address = FixtureFactory.makeAddress(profile.getId());
@@ -235,6 +255,8 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getTokenScopes(), is(notNullValue()));
         assertThat(actual.getTokens().get(0).getTokenScopes().size(), is(1));
         assertThat(actual.getTokens().get(0).getTokenScopes().get(0).getScope().getName(), is("address"));
+
+        assertThat(actual.getLocalTokens().size(), is(0));
 
         assertThat(actual.getProfile(), is(notNullValue()));
         assertThat(actual.getProfile().getName().isPresent(), is(true));
@@ -295,7 +317,7 @@ public class ResourceOwnerMapperTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         clientMapper.insert(client);
 
-        ResourceOwner ro = insertResourceOwner();
+        ResourceOwner ro = insertResourceOwner(false);
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
@@ -368,6 +390,8 @@ public class ResourceOwnerMapperTest {
         assertThat(actual.getTokens().get(0).getTokenScopes().size(), is(1));
         assertThat(actual.getTokens().get(0).getTokenScopes().get(0).getScope().getName(), is("address"));
 
+        assertThat(actual.getLocalTokens().size(), is(0));
+
         assertThat(actual.getProfile(), is(nullValue()));
     }
 
@@ -378,7 +402,7 @@ public class ResourceOwnerMapperTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         clientMapper.insert(client);
 
-        ResourceOwner ro = insertResourceOwner();
+        ResourceOwner ro = insertResourceOwner(false);
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
@@ -433,7 +457,7 @@ public class ResourceOwnerMapperTest {
         Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
         clientMapper.insert(client);
 
-        ResourceOwner ro = insertResourceOwner();
+        ResourceOwner ro = insertResourceOwner(false);
 
         String accessToken = "access-token";
         Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
@@ -482,8 +506,342 @@ public class ResourceOwnerMapperTest {
     }
 
     @Test
+    public void getByIdWithProfileShouldBeOk() throws Exception {
+
+        // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        ResourceOwner ro = insertResourceOwner(false);
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
+        token.setGrantType(GrantType.REFRESSH);
+        tokenMapper.insert(token);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
+        tokenMapper.insert(leadToken);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getId());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        profileMapper.insert(profile);
+
+        Name givenName = FixtureFactory.makeGivenName(profile.getId());
+        givenNameMapper.insert(givenName);
+
+        Name familyName = FixtureFactory.makeFamilyName(profile.getId());
+        familyNameMapper.insert(familyName);
+
+        Address address = FixtureFactory.makeAddress(profile.getId());
+        addressMapper.insert(address);
+        // end: prepare database for the test
+
+
+        ResourceOwner actual = subject.getByIdWithProfile(ro.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getEmail(), is(ro.getEmail()));
+        assertThat(actual.getPassword(), is(ro.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+
+
+        assertThat(actual.getTokens(), is(notNullValue()));
+        assertThat(actual.getTokens().size(), is(0));
+
+        assertThat(actual.getProfile(), is(notNullValue()));
+        assertThat(actual.getProfile().getName().isPresent(), is(true));
+        assertThat(actual.getProfile().getName().get(), is("Obi-Wan Kenobi"));
+        assertThat(actual.getProfile().getMiddleName().isPresent(), is(false));
+        assertThat(actual.getProfile().getNickName().isPresent(), is(true));
+        assertThat(actual.getProfile().getNickName().get(), is("Ben"));
+        assertThat(actual.getProfile().getPreferredUserName().isPresent(), is(true));
+        assertThat(actual.getProfile().getPreferredUserName().get(), is("Ben Kenobi"));
+        assertThat(actual.getProfile().getProfile().isPresent(), is(true));
+        assertThat(actual.getProfile().getProfile().get().toString(), is("http://starwars.wikia.com/wiki/Obi-Wan_Kenobi"));
+        assertThat(actual.getProfile().getPicture().isPresent(), is(true));
+        assertThat(actual.getProfile().getPicture().get().toString(), is("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039"));
+        assertThat(actual.getProfile().getWebsite().isPresent(), is(true));
+        assertThat(actual.getProfile().getWebsite().get().toString(), is("http://starwars.wikia.com"));
+        assertThat(actual.getProfile().getGender().isPresent(), is(true));
+        assertThat(actual.getProfile().getGender().get(), is(Gender.MALE));
+        assertThat(actual.getProfile().getBirthDate().isPresent(), is(false));
+        assertThat(actual.getProfile().getZoneInfo().isPresent(), is(false));
+        assertThat(actual.getProfile().getLocale().isPresent(), is(false));
+        assertThat(actual.getProfile().getPhoneNumber().isPresent(), is(false));
+        assertThat(actual.getProfile().isPhoneNumberVerified(), is(false));
+
+        assertThat(actual.getProfile().getAddresses(), is(notNullValue()));
+        assertThat(actual.getProfile().getAddresses().size(), is(1));
+        assertThat(actual.getProfile().getAddresses().get(0).getId(), is(address.getId()));
+        assertThat(actual.getProfile().getAddresses().get(0).getStreetAddress(), is(address.getStreetAddress()));
+        assertThat(actual.getProfile().getAddresses().get(0).getStreetAddress2(), is(address.getStreetAddress2()));
+        assertThat(actual.getProfile().getAddresses().get(0).getLocality(), is(address.getLocality()));
+        assertThat(actual.getProfile().getAddresses().get(0).getRegion(), is(address.getRegion()));
+        assertThat(actual.getProfile().getAddresses().get(0).getPostalCode(), is(address.getPostalCode()));
+        assertThat(actual.getProfile().getAddresses().get(0).getCountry(), is(address.getCountry()));
+        assertThat(actual.getProfile().getAddresses().get(0).getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getAddresses().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getProfile().getGivenNames(), is(notNullValue()));
+        assertThat(actual.getProfile().getGivenNames().size(), is(1));
+        assertThat(actual.getProfile().getGivenNames().get(0).getId(), is(givenName.getId()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getName(), is(givenName.getName()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getProfile().getFamilyNames(), is(notNullValue()));
+        assertThat(actual.getProfile().getFamilyNames().size(), is(1));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getId(), is(familyName.getId()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getName(), is(familyName.getName()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getProfile().getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByIdWithProfileWhenNoProfileShouldBeOk() throws Exception {
+
+        // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        ResourceOwner ro = insertResourceOwner(false);
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
+        token.setGrantType(GrantType.REFRESSH);
+        tokenMapper.insert(token);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
+        tokenMapper.insert(leadToken);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getId());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+        // end: prepare database for the test
+
+
+        ResourceOwner actual = subject.getByIdWithProfile(ro.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getEmail(), is(ro.getEmail()));
+        assertThat(actual.getPassword(), is(ro.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+
+
+        assertThat(actual.getTokens(), is(notNullValue()));
+        assertThat(actual.getTokens().size(), is(0));
+        assertThat(actual.getLocalTokens().size(), is(0));
+
+        assertThat(actual.getProfile(), is(nullValue()));
+    }
+
+    @Test
+    public void getByIdWithProfileWhenNoAddressShouldBeOk() throws Exception {
+
+        // prepare database for the test
+        Client client = FixtureFactory.makeCodeClientWithOpenIdScopes();
+        clientMapper.insert(client);
+
+        ResourceOwner ro = insertResourceOwner(false);
+
+        String accessToken = "access-token";
+        Token token = FixtureFactory.makeOpenIdToken(accessToken, client.getId(), new ArrayList<>());
+        token.setGrantType(GrantType.REFRESSH);
+        tokenMapper.insert(token);
+
+        TokenAudience tokenAudience = new TokenAudience();
+        tokenAudience.setId(UUID.randomUUID());
+        tokenAudience.setTokenId(token.getId());
+        tokenAudience.setClientId(client.getId());
+        tokenAudienceMapper.insert(tokenAudience);
+
+        String leadAccessToken = "lead-access-token";
+        Token leadToken = FixtureFactory.makeOpenIdToken(leadAccessToken, client.getId(), new ArrayList<>());
+        tokenMapper.insert(leadToken);
+
+        TokenLeadToken tlt = new TokenLeadToken();
+        tlt.setId(UUID.randomUUID());
+        tlt.setTokenId(token.getId());
+        tlt.setLeadTokenId(leadToken.getId());
+        tokenLeadTokenMapper.insert(tlt);
+
+        Scope scope = FixtureFactory.makeScope();
+        scope.setName("address");
+        scopeMapper.insert(scope);
+
+        TokenScope tokenScope = new TokenScope();
+        tokenScope.setId(UUID.randomUUID());
+        tokenScope.setTokenId(token.getId());
+        tokenScope.setScope(scope);
+        tokenScopeMapper.insert(tokenScope);
+
+        ResourceOwnerToken resourceOwnerToken = new ResourceOwnerToken();
+        resourceOwnerToken.setId(UUID.randomUUID());
+        resourceOwnerToken.setResourceOwner(ro);
+        resourceOwnerToken.setToken(token);
+        resourceOwnerTokenMapper.insert(resourceOwnerToken);
+
+        Profile profile = FixtureFactory.makeProfile(ro.getId());
+        profileMapper.insert(profile);
+
+        Name givenName = FixtureFactory.makeGivenName(profile.getId());
+        givenNameMapper.insert(givenName);
+
+        Name familyName = FixtureFactory.makeFamilyName(profile.getId());
+        familyNameMapper.insert(familyName);
+
+        // end: prepare database for the test
+
+        ResourceOwner actual = subject.getByIdWithProfile(ro.getId());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getEmail(), is(ro.getEmail()));
+        assertThat(actual.getPassword(), is(ro.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getTokens(), is(notNullValue()));
+        assertThat(actual.getTokens().size(), is(0));
+
+        assertThat(actual.getProfile(), is(notNullValue()));
+        assertThat(actual.getProfile().getName().isPresent(), is(true));
+        assertThat(actual.getProfile().getName().get(), is("Obi-Wan Kenobi"));
+        assertThat(actual.getProfile().getMiddleName().isPresent(), is(false));
+        assertThat(actual.getProfile().getNickName().isPresent(), is(true));
+        assertThat(actual.getProfile().getNickName().get(), is("Ben"));
+        assertThat(actual.getProfile().getPreferredUserName().isPresent(), is(true));
+        assertThat(actual.getProfile().getPreferredUserName().get(), is("Ben Kenobi"));
+        assertThat(actual.getProfile().getProfile().isPresent(), is(true));
+        assertThat(actual.getProfile().getProfile().get().toString(), is("http://starwars.wikia.com/wiki/Obi-Wan_Kenobi"));
+        assertThat(actual.getProfile().getPicture().isPresent(), is(true));
+        assertThat(actual.getProfile().getPicture().get().toString(), is("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039"));
+        assertThat(actual.getProfile().getWebsite().isPresent(), is(true));
+        assertThat(actual.getProfile().getWebsite().get().toString(), is("http://starwars.wikia.com"));
+        assertThat(actual.getProfile().getGender().isPresent(), is(true));
+        assertThat(actual.getProfile().getGender().get(), is(Gender.MALE));
+        assertThat(actual.getProfile().getBirthDate().isPresent(), is(false));
+        assertThat(actual.getProfile().getZoneInfo().isPresent(), is(false));
+        assertThat(actual.getProfile().getLocale().isPresent(), is(false));
+        assertThat(actual.getProfile().getPhoneNumber().isPresent(), is(false));
+        assertThat(actual.getProfile().isPhoneNumberVerified(), is(false));
+
+        assertThat(actual.getProfile().getAddresses(), is(notNullValue()));
+        assertThat(actual.getProfile().getAddresses().size(), is(0));
+
+        assertThat(actual.getProfile().getGivenNames(), is(notNullValue()));
+        assertThat(actual.getProfile().getGivenNames().size(), is(1));
+        assertThat(actual.getProfile().getGivenNames().get(0).getId(), is(givenName.getId()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getName(), is(givenName.getName()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getGivenNames().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getProfile().getFamilyNames(), is(notNullValue()));
+        assertThat(actual.getProfile().getFamilyNames().size(), is(1));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getId(), is(familyName.getId()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getName(), is(familyName.getName()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getFamilyNames().get(0).getCreatedAt(), is(notNullValue()));
+
+        assertThat(actual.getProfile().getUpdatedAt(), is(notNullValue()));
+        assertThat(actual.getProfile().getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByLocalTokenShouldBeOk() {
+        ResourceOwner expectedUser = insertResourceOwner(false);
+        LocalToken localToken = insertLocalToken(expectedUser.getId(), false, OffsetDateTime.now().plusDays(1));
+
+        ResourceOwner actual = subject.getByLocalToken(localToken.getToken());
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getId(), is(expectedUser.getId()));
+        assertThat(actual.getEmail(), is(expectedUser.getEmail()));
+        assertThat(actual.getPassword(), is(expectedUser.getPassword()));
+        assertThat(actual.isEmailVerified(), is(false));
+        assertThat(actual.getCreatedAt(), is(notNullValue()));
+    }
+
+    @Test
+    public void getByLocalTokenWhenRevokedShouldBeNull() {
+        ResourceOwner expectedUser = insertResourceOwner(false);
+        LocalToken localToken = insertLocalToken(expectedUser.getId(), true, OffsetDateTime.now().plusDays(1));
+
+        ResourceOwner actual = subject.getByLocalToken(localToken.getToken());
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
+    public void getByLocalTokenWhenExpiredShouldBeNull() {
+        ResourceOwner expectedUser = insertResourceOwner(false);
+        LocalToken localToken = insertLocalToken(expectedUser.getId(), false, OffsetDateTime.now().minusDays(1));
+
+        ResourceOwner actual = subject.getByLocalToken(localToken.getToken());
+
+        assertThat(actual, is(nullValue()));
+    }
+
+    @Test
     public void setEmailVerifiedShouldSetToTrue() {
-        ResourceOwner user = insertResourceOwner();
+        ResourceOwner user = insertResourceOwner(false);
 
         // should be false for email verified.
         ResourceOwner insertedUser = subject.getById(user.getId());
@@ -503,8 +861,8 @@ public class ResourceOwnerMapperTest {
 
     @Test
     public void updatePasswordShouldBeOk() {
-        ResourceOwner user = insertResourceOwner();
-        ResourceOwner userToUpdate = insertResourceOwner();
+        ResourceOwner user = insertResourceOwner(false);
+        ResourceOwner userToUpdate = insertResourceOwner(false);
         String password = "plainTextPassword123";
 
         subject.updatePassword(userToUpdate.getId(), password);
@@ -516,7 +874,24 @@ public class ResourceOwnerMapperTest {
         // should not have updated others passwords.
         ResourceOwner otherUser = subject.getById(user.getId());
         assertThat(otherUser.getPassword(), is(not(password.getBytes())));
+    }
 
 
+    @Test
+    public void updateEmailShouldBeOk() {
+        ResourceOwner user = insertResourceOwner(false);
+        ResourceOwner userToUpdate = insertResourceOwner(true);
+        String email = "obi-wan@tokensmith.net";
+
+        subject.updateEmail(userToUpdate.getId(), email);
+
+        // fetch it to make sure it was updated.
+        ResourceOwner actual = subject.getById(userToUpdate.getId());
+        assertThat(actual.getEmail(), is(email));
+        assertThat(actual.isEmailVerified(), is(false));
+
+        // should not have updated others emails.
+        ResourceOwner otherUser = subject.getById(user.getId());
+        assertThat(otherUser.getEmail(), is(not(email.getBytes())));
     }
 }

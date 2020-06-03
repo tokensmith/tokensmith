@@ -1,7 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity;
 
 
-import net.tokensmith.authorization.parse.Parameter;
+
+import net.tokensmith.parser.Parameter;
 
 import java.net.URI;
 import java.util.List;
@@ -21,10 +22,10 @@ public class AuthRequest {
     @Parameter(name = "state", required = false)
     private Optional<String> state = Optional.empty();
 
-    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"})
+    @Parameter(name = "response_type", expected = {"CODE", "TOKEN", "ID_TOKEN"}, parsable = true)
     private List<String> responseTypes;
 
-    @Parameter(name = "scope", required = false)
+    @Parameter(name = "scope", required = false, parsable = true)
     private List<String> scopes;
 
     public AuthRequest() {}

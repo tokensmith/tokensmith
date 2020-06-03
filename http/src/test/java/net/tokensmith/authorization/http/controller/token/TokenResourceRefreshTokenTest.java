@@ -98,7 +98,7 @@ public class TokenResourceRefreshTokenTest {
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
         testUtils = new TestUtils();
 
-        servletURI = baseURI + "api/v1/token";
+        servletURI = baseURI + "api/public/v1/token";
         authServletURI = baseURI + "authorization";
     }
 

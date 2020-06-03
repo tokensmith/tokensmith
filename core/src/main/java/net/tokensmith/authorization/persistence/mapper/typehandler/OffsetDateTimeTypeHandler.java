@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class OffsetDateTimeTypeHandler implements TypeHandler<OffsetDateTime> {
 
-    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSxxx");
+    private static DateTimeFormatter formatterForInsert = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s.SSSSSSxxx");
     private List<String> datePatterns = Arrays.asList(
             "yyyy-MM-dd H:m:s.SSSSSSX",
             "yyyy-MM-dd H:m:s.SSSSX",

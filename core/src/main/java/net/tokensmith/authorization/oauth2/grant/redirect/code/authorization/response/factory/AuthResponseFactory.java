@@ -28,10 +28,12 @@ public class AuthResponseFactory {
         this.clientRepository = clientRepository;
     }
 
-    public AuthResponse makeAuthResponse(UUID clientUUID, String authCode, Optional<String> state, Optional<URI> redirectUri) throws InformResourceOwnerException {
+    public AuthResponse makeAuthResponse(UUID clientUUID, String authCode, Optional<String> state, Optional<URI> redirectUri, String sessionToken, Long sessionIssuedAt) throws InformResourceOwnerException {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setCode(authCode);
         authResponse.setState(state);
+        authResponse.setSessionToken(sessionToken);
+        authResponse.setSessionTokenIssuedAt(sessionIssuedAt);
 
         if (redirectUri.isPresent()) {
             authResponse.setRedirectUri(redirectUri.get());

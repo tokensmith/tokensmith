@@ -38,7 +38,7 @@ public class KeyEndpointTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        String publicKeyURL = "http://localhost:8009/api/v1/jwk/rsa/%s";
+        String publicKeyURL = "http://localhost:8009/api/public/v1/jwk/rsa/%s";
 
         subject = new KeyEndpoint(
                 mockJwtRSAPublicKeyTranslator,
@@ -52,7 +52,7 @@ public class KeyEndpointTest {
     public void makeKeyEndpointShouldBeOk() throws Exception {
         URI actual = subject.makeKeyEndpoint("1234");
         assertThat(actual, is(notNullValue()));
-        assertThat(actual.toString(), is("http://localhost:8009/api/v1/jwk/rsa/1234"));
+        assertThat(actual.toString(), is("http://localhost:8009/api/public/v1/jwk/rsa/1234"));
     }
 
     @Test

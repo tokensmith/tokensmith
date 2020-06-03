@@ -7,7 +7,7 @@ import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.RegisterPresenter;
 import net.tokensmith.authorization.register.Register;
@@ -22,10 +22,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class RegisterResource extends Resource<TokenSession, WebSiteUser> {
+public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
     private static final Logger logger = LoggerFactory.getLogger(RegisterResource.class);
 
     public static String URL = "/register(.*)";
+
+    private String globalCssPath;
     private Register register;
     private static String JSP_PATH = "/WEB-INF/jsp/register.jsp";
     private static String EMAIL = "email";
@@ -34,12 +36,13 @@ public class RegisterResource extends Resource<TokenSession, WebSiteUser> {
     private static String BLANK = "";
 
     @Autowired
-    public RegisterResource(Register register) {
+    public RegisterResource(String globalCssPath, Register register) {
+        this.globalCssPath = globalCssPath;
         this.register = register;
     }
 
     @Override
-    public Response<TokenSession> get(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         RegisterPresenter presenter = makeRegisterPresenter(BLANK, request.getCsrfChallenge().get());
         response.setStatusCode(StatusCode.OK);
         response.setPresenter(Optional.of(presenter));
@@ -48,7 +51,7 @@ public class RegisterResource extends Resource<TokenSession, WebSiteUser> {
     }
 
     @Override
-    public Response<TokenSession> post(Request<TokenSession, WebSiteUser> request, Response<TokenSession> response) {
+    public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
         Map<String, List<String>> form = request.getFormData();
 
         String email = getFormValue(form.get(EMAIL));
@@ -106,12 +109,13 @@ public class RegisterResource extends Resource<TokenSession, WebSiteUser> {
 
     protected RegisterPresenter makeRegisterPresenter(String defaultEmail, String csrfToken) {
         RegisterPresenter presenter = new RegisterPresenter();
+        presenter.setGlobalCssPath(globalCssPath);
         presenter.setEmail(defaultEmail);
         presenter.setEncodedCsrfToken(csrfToken);
         return presenter;
     }
 
-    protected void prepareResponse(Response<TokenSession> response, StatusCode statusCode, RegisterPresenter presenter) {
+    protected void prepareResponse(Response<WebSiteSession> response, StatusCode statusCode, RegisterPresenter presenter) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
         response.setTemplate(Optional.of(JSP_PATH));

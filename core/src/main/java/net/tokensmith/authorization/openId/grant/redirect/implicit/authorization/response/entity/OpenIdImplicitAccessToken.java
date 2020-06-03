@@ -24,6 +24,10 @@ public class OpenIdImplicitAccessToken {
     private Long expirationTime;
     private Long authTime;
 
+    // used to let the user update their profile via local token
+    private String sessionToken;
+    private Long sessionTokenIssuedAt;
+
     public OpenIdImplicitAccessToken() {
     }
 
@@ -113,5 +117,21 @@ public class OpenIdImplicitAccessToken {
 
     public void setAuthTime(Long authTime) {
         this.authTime = authTime;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
+    public Long getSessionTokenIssuedAt() {
+        return sessionTokenIssuedAt;
+    }
+
+    public void setSessionTokenIssuedAt(Long sessionTokenIssuedAt) {
+        this.sessionTokenIssuedAt = sessionTokenIssuedAt;
     }
 }

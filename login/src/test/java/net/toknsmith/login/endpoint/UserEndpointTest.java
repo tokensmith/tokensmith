@@ -40,8 +40,8 @@ public class UserEndpointTest {
 
         EndpointProps ep = new EndpointProps();
         ep.setClientCredentials("clientCredentials");
-        ep.setTokenEndpoint(new URI("http://localhost:8009/api/v1/token"));
-        ep.setUserInfoEndpoint(new URI("http://localhost:8009/api/v1/userinfo"));
+        ep.setTokenEndpoint(new URI("http://localhost:8009/api/public/v1/token"));
+        ep.setUserInfoEndpoint(new URI("http://localhost:8009/api/public/v1/userinfo"));
 
         subject = new UserEndpoint(
                 mockHttpClient,

@@ -45,7 +45,7 @@ public class AccessRequestScopesMapperTest {
 
         // create resource owner to be used as fk constraint
         UUID resourceOwnerId = UUID.randomUUID();
-        String email = "test@rootservices.com";
+        String email = "test@tokensmith.net";
         String password = "plainTextPassword";
         ResourceOwner ro =  new ResourceOwner(resourceOwnerId, email, password);
         resourceOwnerRepository.insert(ro);

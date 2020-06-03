@@ -7,6 +7,8 @@ import helpers.category.ServletContainerTest;
 import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.otter.controller.entity.Cause;
+import net.tokensmith.otter.controller.entity.ClientError;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,7 +40,7 @@ public class RSAPublicKeyResourceTest {
                 IntegrationTestSuite.getContext()
         );
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
-        servletURI = baseURI + "api/v1/jwk/rsa/";
+        servletURI = baseURI + "api/public/v1/jwk/rsa/";
     }
 
     @Test
@@ -87,8 +89,13 @@ public class RSAPublicKeyResourceTest {
         assertThat(response.getHeader(Header.CACHE_CONTROL.getValue()), is(HeaderValue.NO_STORE.getValue()));
         assertThat(response.getHeader(Header.PRAGMA.getValue()), is(HeaderValue.NO_CACHE.getValue()));
 
-        assertThat(response.getResponseBody(), is(""));
-
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+        assertThat(actual.getCauses().size(), is(1));
+        assertThat(actual.getCauses().get(0).getSource(), is(Cause.Source.URL));
+        assertThat(actual.getCauses().get(0).getKey(), is("id"));
+        assertThat(actual.getCauses().get(0).getActual(), is(notNullValue()));
     }
 
     @Test
@@ -104,7 +111,13 @@ public class RSAPublicKeyResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(StatusCode.NOT_FOUND.getCode()));
-        assertThat(response.getResponseBody(), is(""));
+
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        ClientError actual = om.readValue(response.getResponseBody(), ClientError.class);
+        assertThat(actual.getCauses().size(), is(1));
+        assertThat(actual.getCauses().get(0).getSource(), is(Cause.Source.URL));
+        assertThat(actual.getCauses().get(0).getActual(), is(notNullValue()));
     }
 
 }

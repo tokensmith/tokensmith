@@ -56,7 +56,7 @@ Tokensmith publishes messages to kafka when:
  - A user [registers](core/src/main/java/net/tokensmith/authorization/register/Register.java#L97) through interacting with `/register` 
  - A user [registers](core/src/main/java/net/tokensmith/authorization/register/RegisterOpenIdUser.java#L74) through interacting with the API.
  - A user requests to [reset their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L68) through interacting with `/forgot-password`.
- - A user [resets their password](https://github.com/tokensmith/tokensmith/blob/c4dcc8a0af08600a5bf75b9faedf4629b7e97002/core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L107).
+ - A user [resets their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L107).
 
 To send emails to users, run the [mailer](https://github.com/tokensmith/mailer) application
 

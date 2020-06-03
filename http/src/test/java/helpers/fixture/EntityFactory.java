@@ -6,6 +6,10 @@ import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.entity.ResponseType;
 import net.tokensmith.repository.entity.Scope;
 import org.mockito.Mockito;
@@ -13,6 +17,7 @@ import org.mockito.Mockito;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +25,7 @@ import java.util.UUID;
 
 
 public class EntityFactory {
+    public static String PLAIN_TEXT_PASSWORD = "password";
     public static String SECURE_REDIRECT_URI = "https://tokensmith.net";
     public static String ISSUER = "https://sso.tokensmith.net";
 
@@ -205,6 +211,83 @@ public class EntityFactory {
         userInfo.setAddress(Optional.of(address));
 
         return userInfo;
+    }
+
+    public static String makeRandomEmail() {
+        return "test-" + UUID.randomUUID().toString() + "@tokensmith.net";
+    }
+
+    public static ResourceOwner makeResourceOwnerWithProfile() throws URISyntaxException {
+        ResourceOwner ro = new ResourceOwner();
+        ro.setId(UUID.randomUUID());
+
+        ro.setEmail(makeRandomEmail());
+        HashTextRandomSalt textHasher = new HashTextRandomSaltImpl();
+        String hashedPassword = textHasher.run(PLAIN_TEXT_PASSWORD);
+        ro.setPassword(hashedPassword);
+        ro.setEmailVerified(false);
+        ro.setProfile(makeProfile(ro.getId()));
+
+        return ro;
+    }
+
+    public static Profile makeProfile(UUID resourceOwnerId) throws URISyntaxException {
+        Profile profile = new Profile();
+
+        profile.setId(UUID.randomUUID());
+        profile.setResourceOwnerId(resourceOwnerId);
+        profile.setName(Optional.of("Obi-Wan Kenobi"));
+        profile.setMiddleName(Optional.empty());
+        profile.setNickName(Optional.of("Ben"));
+        profile.setPreferredUserName(Optional.of("Ben Kenobi"));
+        profile.setProfile(Optional.of(new URI("http://starwars.wikia.com/wiki/Obi-Wan_Kenobi")));
+        profile.setPicture(Optional.of(new URI("http://vignette1.wikia.nocookie.net/starwars/images/2/25/Kenobi_Maul_clash.png/revision/latest?cb=20130120033039")));
+        profile.setWebsite(Optional.of(new URI("http://starwars.wikia.com")));
+        profile.setGender(Optional.of(Gender.MALE));
+        profile.setBirthDate(Optional.empty());
+        profile.setZoneInfo(Optional.empty());
+        profile.setLocale(Optional.empty());
+        profile.setPhoneNumber(Optional.empty());
+        profile.setPhoneNumberVerified(false);
+
+        profile.setGivenNames(givenNames(profile.getId()));
+        profile.setFamilyNames(givenNames(profile.getId()));
+        return profile;
+    }
+
+
+    public static List<Name> givenNames(UUID profileId) {
+        List<Name> names = new ArrayList<>();
+        Name name = EntityFactory.givenName(profileId);
+        names.add(name);
+        return names;
+    }
+
+    public static Name givenName(UUID profileId) {
+        Name name = new Name();
+        name.setId(UUID.randomUUID());
+        name.setResourceOwnerProfileId(profileId);
+        name.setName("Obi-wan");
+        name.setUpdatedAt(OffsetDateTime.now());
+        name.setCreatedAt(OffsetDateTime.now());
+        return name;
+    }
+
+    public static List<Name> familyNames(UUID profileId) {
+        List<Name> names = new ArrayList<>();
+        Name name = EntityFactory.familyName(profileId);
+        names.add(name);
+        return names;
+    }
+
+    public static Name familyName(UUID profileId) {
+        Name name = new Name();
+        name.setId(UUID.randomUUID());
+        name.setResourceOwnerProfileId(profileId);
+        name.setName("Kenobi");
+        name.setUpdatedAt(OffsetDateTime.now());
+        name.setCreatedAt(OffsetDateTime.now());
+        return name;
     }
 
 }

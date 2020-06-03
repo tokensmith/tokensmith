@@ -3,10 +3,13 @@
 <html lang="en">
 <head>
 <title>Register</title>
+<link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
 
+<div class="main">
 <form id="register" method="POST">
+    <div class="form">
     <c:choose>
         <c:when test="${presenter.getErrorMessage().isPresent()}">
            <div id="error">
@@ -15,18 +18,15 @@
         </c:when>
     </c:choose>
 
-    <label for="email">Email:</label>
-    <input id="email" type="text" name="email" required="true" value="${presenter.getEmail()}" />
-
-    <label for="password">Password:</label>
-    <input id="password" type="password" name="password" required="true"/>
-
-    <label for="repeatPassword">Repeat Password:</label>
-    <input id="repeatPassword" type="password" name="repeatPassword" required="true"/>
+    <input id="email" type="text" name="email" required="true" placeholder="email" value="${presenter.getEmail()}" />
+    <input id="password" type="password" name="password" required="true" placeholder="password"/>
+    <input id="repeatPassword" type="password" name="repeatPassword" required="true" placeholder="repeat password"/>
 
     <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getEncodedCsrfToken()}" />
-    <input type="submit"/>
+    <button>register</button>
+    </div">
 </form>
+<div class="main">
 
 </body>
 </html>

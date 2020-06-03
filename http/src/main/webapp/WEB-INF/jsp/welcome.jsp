@@ -3,10 +3,17 @@
 <html lang="en">
 <head>
 <title>Welcome</title>
+<link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
 
-Your account has been verified. Thanks!
+<div class="main">
+    <div class="form">
+        <div id="message" data-status="ok">
+            Your account has been verified. Thanks!
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

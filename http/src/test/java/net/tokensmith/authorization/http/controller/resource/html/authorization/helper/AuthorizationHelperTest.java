@@ -2,10 +2,11 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 import helpers.category.UnitTests;
 import helpers.fixture.EntityFactory;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
@@ -18,6 +19,7 @@ import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.Header;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -37,7 +39,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareErrorResponseWhenNoState() throws Exception {
-        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
+        Response<WebSiteSession> response = new ResponseBuilder<WebSiteSession>().headers(new HashMap<>()).build();
         URI redirect = new URI("https://tokensmith.net");
         String error = "some-error";
         String desc = "some-description";
@@ -53,7 +55,7 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareErrorResponseWhenState() throws Exception {
-        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
+        Response<WebSiteSession> response = new ResponseBuilder<WebSiteSession>().headers(new HashMap<>()).build();
         URI redirect = new URI("https://tokensmith.net");
         String error = "some-error";
         String desc = "some-description";
@@ -69,9 +71,14 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareNotFoundResponse() {
-        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
+        String cssPath = "/assets/css/global.css";
+        Response<WebSiteSession> response = new ResponseBuilder<WebSiteSession>().headers(new HashMap<>()).build();
 
-        subject.prepareNotFoundResponse(response);
+        subject.prepareNotFoundResponse(cssPath, response);
+
+        assertTrue(response.getPresenter().isPresent());
+        AssetPresenter actualPresenter = (AssetPresenter) response.getPresenter().get();
+        assertThat(actualPresenter.getGlobalCssPath(), is(cssPath));
 
         assertThat(response.getStatusCode(), is(StatusCode.NOT_FOUND));
         assertThat(response.getTemplate().isPresent(), is(true));
@@ -80,9 +87,14 @@ public class AuthorizationHelperTest {
 
     @Test
     public void prepareServerErrorResponse() {
-        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
+        String cssPath = "/assets/css/global.css";
+        Response<WebSiteSession> response = new ResponseBuilder<WebSiteSession>().headers(new HashMap<>()).build();
 
-        subject.prepareServerErrorResponse(response);
+        subject.prepareServerErrorResponse(cssPath, response);
+
+        assertTrue(response.getPresenter().isPresent());
+        AssetPresenter actualPresenter = (AssetPresenter) response.getPresenter().get();
+        assertThat(actualPresenter.getGlobalCssPath(), is(cssPath));
 
         assertThat(response.getStatusCode(), is(StatusCode.SERVER_ERROR));
         assertThat(response.getTemplate().isPresent(), is(true));
@@ -91,19 +103,21 @@ public class AuthorizationHelperTest {
 
     @Test
     public void makeAuthorizationPresenter() {
+        String cssPath = "/assets/css/global.css";
         String email = "obi-wan@tokensmith.net";
         String csrf = "csrf-token";
 
-        AuthorizationPresenter actual = subject.makeAuthorizationPresenter(email, csrf);
+        AuthorizationPresenter actual = subject.makeAuthorizationPresenter(cssPath, email, csrf);
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getGlobalCssPath(), is(cssPath));
         assertThat(actual.getEmail(), is(email));
         assertThat(actual.getEncodedCsrfToken(), is(csrf));
     }
 
     @Test
     public void prepareResponse() {
-        Response<TokenSession> response = new ResponseBuilder<TokenSession>().headers(new HashMap<>()).build();
+        Response<WebSiteSession> response = new ResponseBuilder<WebSiteSession>().headers(new HashMap<>()).build();
         AuthorizationPresenter presenter = new AuthorizationPresenter();
         String template = "/path/to/template";
 
@@ -118,7 +132,13 @@ public class AuthorizationHelperTest {
 
     @Test
     public void makeRedirectURIForCodeGrantWhenNoState() throws Exception {
-        AuthResponse response = new AuthResponse(new URI("https://tokensmith.net"), "code", Optional.empty());
+        AuthResponse response = new AuthResponse(
+                new URI("https://tokensmith.net"),
+                "code",
+                Optional.empty(),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
+        );
 
         String actual = subject.makeRedirectURIForCodeGrant(response);
 
@@ -128,7 +148,13 @@ public class AuthorizationHelperTest {
 
     @Test
     public void makeRedirectURIForCodeGrantWhenState() throws Exception {
-        AuthResponse response = new AuthResponse(new URI("https://tokensmith.net"), "code", Optional.of("some-state"));
+        AuthResponse response = new AuthResponse(
+                new URI("https://tokensmith.net"),
+                "code",
+                Optional.of("some-state"),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
+        );
 
         String actual = subject.makeRedirectURIForCodeGrant(response);
 
@@ -139,7 +165,14 @@ public class AuthorizationHelperTest {
     @Test
     public void makeRedirectURIForImplicitWhenNoStateNoScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.empty()
+                new URI("https://tokensmith.net"),
+                "access-token",
+                TokenType.BEARER,
+                100L,
+                Optional.empty(),
+                Optional.empty(),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
@@ -151,7 +184,14 @@ public class AuthorizationHelperTest {
     @Test
     public void makeRedirectURIForImplicitWhenNoStateAndScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.empty()
+                new URI("https://tokensmith.net"),
+                "access-token",
+                TokenType.BEARER,
+                100L,
+                Optional.of("profile email"),
+                Optional.empty(),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
@@ -163,7 +203,14 @@ public class AuthorizationHelperTest {
     @Test
     public void makeRedirectURIForImplicitWhenState() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.empty(), Optional.of("some-state")
+                new URI("https://tokensmith.net"),
+                "access-token",
+                TokenType.BEARER,
+                100L,
+                Optional.empty(),
+                Optional.of("some-state"),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);
@@ -175,7 +222,14 @@ public class AuthorizationHelperTest {
     @Test
     public void makeRedirectURIForImplicitWhenStateAndScope() throws Exception {
         ImplicitAccessToken accessToken = new ImplicitAccessToken(
-                new URI("https://tokensmith.net"), "access-token", TokenType.BEARER, 100L, Optional.of("profile email"), Optional.of("some-state")
+                new URI("https://tokensmith.net"),
+                "access-token",
+                TokenType.BEARER,
+                100L,
+                Optional.of("profile email"),
+                Optional.of("some-state"),
+                "local-token",
+                OffsetDateTime.now().toEpochSecond()
         );
 
         String actual = subject.makeRedirectURIForImplicit(accessToken);

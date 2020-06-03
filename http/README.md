@@ -11,6 +11,3 @@ HTTP for Authorization
  - [user-info](docs/user-info.md)
  - [token](docs/token.md)
  - keys
-
-
-

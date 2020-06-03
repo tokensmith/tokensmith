@@ -50,7 +50,7 @@ public class NonceMapperTest {
         }
 
         String password = "plainTextPassword";
-        ResourceOwner user = new ResourceOwner(UUID.randomUUID(), UUID.randomUUID() + "@rootservices.com", password);
+        ResourceOwner user = new ResourceOwner(UUID.randomUUID(), UUID.randomUUID() + "@tokensmith.net", password);
 
         resourceOwnerMapper.insert(user);
 

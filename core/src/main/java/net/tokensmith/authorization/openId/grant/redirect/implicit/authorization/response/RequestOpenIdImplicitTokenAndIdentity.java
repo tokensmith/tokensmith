@@ -1,5 +1,8 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response;
 
+import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
@@ -42,6 +45,7 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private LoginResourceOwner loginResourceOwner;
     private IssueTokenImplicitGrant issueTokenImplicitGrant;
     private MakeImplicitIdentityToken makeImplicitIdentityToken;
+    private CreateLocalToken createLocalToken;
     private ClientRepository clientRepository;
 
     private String issuer;
@@ -50,12 +54,13 @@ public class RequestOpenIdImplicitTokenAndIdentity {
     private static String SERVER_ERROR = "server_error";
 
     @Autowired
-    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, ClientRepository clientRepository, String issuer) {
+    public RequestOpenIdImplicitTokenAndIdentity(ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, LoginResourceOwner loginResourceOwner, IssueTokenImplicitGrant issueTokenImplicitGrant, MakeImplicitIdentityToken makeImplicitIdentityToken, CreateLocalToken createLocalToken, ClientRepository clientRepository, String issuer) {
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.loginResourceOwner = loginResourceOwner;
         this.issueTokenImplicitGrant = issueTokenImplicitGrant;
         this.makeImplicitIdentityToken = makeImplicitIdentityToken;
         this.clientRepository = clientRepository;
+        this.createLocalToken = createLocalToken;
         this.issuer = issuer;
     }
 
@@ -121,6 +126,16 @@ public class RequestOpenIdImplicitTokenAndIdentity {
             throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
         }
 
+
+        Session localSession;
+        try {
+            localSession = createLocalToken.makeAndRevokeSession(resourceOwner.getId(), 1);
+        } catch (LocalSessionException e) {
+            logger.error(e.getMessage(), e);
+            ErrorCode ec = ErrorCode.SERVER_ERROR;
+            throw buildInformClientException(ec, request.getRedirectURI(), request.getState(), e);
+        }
+
         OpenIdImplicitAccessToken response = new OpenIdImplicitAccessTokenBuilder()
             .setAccessToken(tokenGraph.getPlainTextAccessToken())
             .setExpiresIn(tokenGraph.getToken().getSecondsToExpiration())
@@ -129,6 +144,8 @@ public class RequestOpenIdImplicitTokenAndIdentity {
             .setState(request.getState())
             .setScope(Optional.empty())
             .setTokenType(TokenType.BEARER)
+            .setSessionToken(localSession.getToken())
+            .setSessionTokenIssuedAt(localSession.getIssuedAt())
             .build();
 
         return response;

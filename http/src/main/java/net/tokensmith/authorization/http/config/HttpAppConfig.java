@@ -37,6 +37,9 @@ public class HttpAppConfig {
     @Value("${session.key.value}")
     private String sessionKeyValue;
 
+    @Value("${assets.css.global:/assets/css/global.css}")
+    private String globalCssPath;
+
     public String getCsrfKeyId() {
         return csrfKeyId;
     }
@@ -51,6 +54,11 @@ public class HttpAppConfig {
 
     public String getSessionKeyValue() {
         return sessionKeyValue;
+    }
+
+    @Bean
+    public String globalCssPath() {
+        return globalCssPath;
     }
 
     private TranslatorAppFactory translatorAppFactory() {
