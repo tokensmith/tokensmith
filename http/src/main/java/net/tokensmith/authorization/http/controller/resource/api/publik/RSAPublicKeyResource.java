@@ -1,7 +1,6 @@
 package net.tokensmith.authorization.http.controller.resource.api.publik;
 
 
-import net.tokensmith.authorization.http.controller.exception.BadRequestException;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
 import net.tokensmith.otter.controller.entity.Cause;

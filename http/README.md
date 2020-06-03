@@ -10,4 +10,4 @@ HTTP for Authorization
 ## API
  - [user-info](docs/user-info.md)
  - [token](docs/token.md)
- - keys
+ - [keys](docs/keys.md)
