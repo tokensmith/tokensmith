@@ -119,6 +119,7 @@ public class TokenSmithConfig implements Configure {
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
                 response.setStatusCode(StatusCode.UNAUTHORIZED);
+                response.getCookies().remove(Shape.SESSION_COOKIE_NAME);
                 return response;
             })
             .onHalt(Halt.CSRF, (Response<WebSiteSession> response, HaltException e) -> {
@@ -127,6 +128,7 @@ public class TokenSmithConfig implements Configure {
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
                 response.setStatusCode(StatusCode.FORBIDDEN);
+                response.getCookies().remove(Shape.CSRF_COOKIE_NAME);
                 return response;
             })
             .build();
