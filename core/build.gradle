@@ -24,6 +24,8 @@ repositories {
 ext {
     postgresDriverVersion = '42.2.8'
     dbcpVersion = '2.7.0'
+    commonsCodecVersion = '1.14'
+    commonsValidatorVersion = '1.6'
 }
 
 dependencies {
@@ -33,7 +35,7 @@ dependencies {
         exclude(module: 'commons-logging')
     }
 
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.13'
+    compile group: 'commons-codec', name: 'commons-codec', version: "${commonsCodecVersion}"
     compile group: 'org.apache.commons', name: 'commons-dbcp2', version: "${dbcpVersion}"
     compile group: 'org.mindrot', name: 'jbcrypt', version: "${bcryptVersion}"
 
@@ -50,8 +52,8 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: "${log4jVersion}"
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4jVersion}"
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4jVersion}"
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVerion}"
-    compile group: 'commons-validator', name: 'commons-validator', version:'1.6'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
+    compile group: 'commons-validator', name: 'commons-validator', version:"${commonsValidatorVersion}"
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jacksonVersion}"
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: "${jacksonVersion}"
