@@ -50,7 +50,7 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "${log4jVersion}"
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4jVersion}"
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4jVersion}"
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVerion}"
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
     compile group: 'net.tokensmith', name: 'jwt', version: "${jwtVersion}"
     compile 'commons-httpclient:commons-httpclient:3.1'
 
