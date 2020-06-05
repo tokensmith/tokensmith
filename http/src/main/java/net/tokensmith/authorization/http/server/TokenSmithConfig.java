@@ -11,6 +11,7 @@ import net.tokensmith.authorization.http.controller.resource.api.site.between.Re
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
 import net.tokensmith.authorization.http.controller.resource.html.ProfileResource;
+import net.tokensmith.authorization.http.controller.resource.html.between.CSPBetween;
 import net.tokensmith.authorization.http.controller.resource.html.between.WebSiteAuthRequired;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
@@ -104,6 +105,7 @@ public class TokenSmithConfig implements Configure {
                 .build();
 
         WebSiteAuthRequired authRequired = applicationContext().getBean(WebSiteAuthRequired.class);
+        CSPBetween cspBetween = new CSPBetween();
 
         HttpAppConfig httpAppConfig = httpAppConfig();
 
@@ -113,6 +115,7 @@ public class TokenSmithConfig implements Configure {
             .onError(StatusCode.SERVER_ERROR, serverErrorResource)
             .onDispatchError(StatusCode.UNSUPPORTED_MEDIA_TYPE, mediaType)
             .before(Label.AUTH_REQUIRED, authRequired)
+            .after(cspBetween)
             .onHalt(Halt.SESSION, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
                 presenter.setGlobalCssPath(httpAppConfig.globalCssPath());
