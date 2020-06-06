@@ -15,6 +15,7 @@ import net.tokensmith.authorization.http.controller.resource.html.between.CSPBet
 import net.tokensmith.authorization.http.controller.resource.html.between.WebSiteAuthRequired;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.DefaultSession;
@@ -61,6 +62,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Map.entry;
+
 
 public class TokenSmithConfig implements Configure {
     public static final String WEB_SITE_GROUP = "WebSite";
@@ -87,9 +90,30 @@ public class TokenSmithConfig implements Configure {
                 Use.ENCRYPTION
         );
 
+        var redirectCookieConfig = new CookieConfig(
+        "redirect", httpAppConfig.getCookiesSecure(), -1, true
+        );
+
+        var csrfCookieConfig = new CookieConfig.Builder()
+            .name(Shape.CSRF_COOKIE_NAME)
+            .secure(httpAppConfig.getCookiesSecure())
+            .age(-1)
+            .httpOnly(true)
+            .build();
+
+        var sessionCookieConfig = new CookieConfig.Builder()
+            .name(Shape.SESSION_COOKIE_NAME)
+            .secure(httpAppConfig.getCookiesSecure())
+            .age(-1)
+            .httpOnly(true)
+            .build();
+
         return new ShapeBuilder()
                 .encKey(encKey)
                 .signkey(csrfKey)
+                .cookieConfig(redirectCookieConfig)
+                .sessionCookieConfig(sessionCookieConfig)
+                .csrfCookieConfig(csrfCookieConfig)
                 .build();
     }
 

@@ -3,6 +3,7 @@ package net.tokensmith.authorization.http.controller.authorization;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Param;
 import com.ning.http.client.Response;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.persistence.*;
@@ -35,6 +36,7 @@ public class OAuth2ImplicitResourceTest {
     private static LoadPublicClientTokenResponseType loadPublicClientTokenResponseType;
     private static LoadResourceOwner loadResourceOwner;
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
+    private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
@@ -49,6 +51,7 @@ public class OAuth2ImplicitResourceTest {
         loadPublicClientTokenResponseType = IntegrationTestSuite.getContext().getBean(LoadPublicClientTokenResponseType.class);
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
+        authAssertion = new AuthAssertion();
 
         servletURI = baseURI + "authorization";
     }

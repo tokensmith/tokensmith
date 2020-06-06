@@ -2,6 +2,8 @@ package net.tokensmith.authorization.http.controller.authorization;
 
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Param;
+import com.ning.http.client.cookie.Cookie;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
@@ -16,6 +18,12 @@ import helpers.suite.IntegrationTestSuite;
 
 
 import com.ning.http.client.Response;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.exception.InvalidJWT;
+import net.tokensmith.jwt.serialization.JwtSerde;
+import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +36,8 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -38,10 +48,9 @@ import static org.junit.Assert.fail;
 public class AuthorizationResourceTest {
 
     private static LoadConfClientCodeResponseType loadConfidentialClientWithScopes;
-    private static LoadPublicClientTokenResponseType loadPublicClientTokenResponseType;
-    private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfidentialClientWithScopes;
     private static LoadResourceOwner loadResourceOwner;
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
+    private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
@@ -54,10 +63,9 @@ public class AuthorizationResourceTest {
         );
 
         loadConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadConfClientCodeResponseType.class);
-        loadPublicClientTokenResponseType = IntegrationTestSuite.getContext().getBean(LoadPublicClientTokenResponseType.class);
-        loadOpenIdConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadOpenIdConfClientCodeResponseType.class);
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
+        authAssertion = new AuthAssertion();
 
         servletURI = baseURI + "authorization";
     }
@@ -66,7 +74,9 @@ public class AuthorizationResourceTest {
     public void getNoParametersShouldReturn404() throws Exception {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
+
         assertThat(response.getStatusCode(), is(HttpStatus.SC_NOT_FOUND));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
 
@@ -89,6 +99,7 @@ public class AuthorizationResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -118,5 +129,9 @@ public class AuthorizationResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
+
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
+
+
 }

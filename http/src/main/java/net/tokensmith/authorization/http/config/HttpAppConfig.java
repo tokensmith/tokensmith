@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.config;
 
 
+import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.otter.QueryStringToMap;
 import net.tokensmith.otter.authentication.ParseBearer;
 import net.tokensmith.otter.authentication.ParseHttpBasic;
@@ -25,6 +26,9 @@ import org.springframework.context.annotation.*;
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class HttpAppConfig {
 
+    @Value("${cookies.secure}")
+    private Boolean cookiesSecure;
+
     @Value("${csrf.key.id}")
     private String csrfKeyId;
 
@@ -39,6 +43,10 @@ public class HttpAppConfig {
 
     @Value("${assets.css.global:/assets/css/global.css}")
     private String globalCssPath;
+
+    public Boolean getCookiesSecure() {
+        return cookiesSecure;
+    }
 
     public String getCsrfKeyId() {
         return csrfKeyId;
@@ -103,5 +111,10 @@ public class HttpAppConfig {
     @Bean
     public JsonTranslator<UserInfo> userTranslator() {
         return translatorAppFactory().jsonTranslator(UserInfo.class);
+    }
+
+    @Bean
+    public UnsecureCompactBuilder unsecureCompactBuilder() {
+        return new UnsecureCompactBuilder();
     }
 }

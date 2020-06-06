@@ -3,6 +3,7 @@ package net.tokensmith.authorization.http.controller.authorization;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Param;
 import com.ning.http.client.Response;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.FormFactory;
@@ -51,6 +52,7 @@ public class OpenIdImplicitResourceTest {
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
     private static MakeAccessTokenHash makeAccessTokenHash;
+    private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
     protected static String servletURI;
@@ -67,6 +69,7 @@ public class OpenIdImplicitResourceTest {
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
         makeAccessTokenHash = IntegrationTestSuite.getContext().getBean(MakeAccessTokenHash.class);
+        authAssertion = new AuthAssertion();
 
         servletURI = baseURI + "authorization";
     }
