@@ -3,6 +3,7 @@ package net.tokensmith.authorization.http.controller.authorization;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Param;
 import com.ning.http.client.Response;
+import com.ning.http.client.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
@@ -21,6 +22,7 @@ import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +47,6 @@ public class OAuth2CodeResourceTest {
     private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
-    protected static String servletURI;
     protected static String contextPath; // path to target endpoint
 
     @BeforeClass
@@ -61,8 +62,6 @@ public class OAuth2CodeResourceTest {
         authAssertion = new AuthAssertion();
 
         contextPath = "authorization";
-
-        servletURI = baseURI + "authorization";
     }
 
     @Test
@@ -83,7 +82,6 @@ public class OAuth2CodeResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
-                .addHeader("X-Correlation-Id", "getWhenResponseTypeCodeRedirectUriIsOkExpect200")
                 .execute();
         Response response = f.get();
 
@@ -158,7 +156,6 @@ public class OAuth2CodeResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
-                .addHeader("X-Correlation-Id", "getWhenClientResponseTypeCodeShouldReturn200")
                 .execute();
 
         Response response = f.get();
@@ -192,20 +189,23 @@ public class OAuth2CodeResourceTest {
 
         List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getSession());
+        cookies.add(session.getRedirect());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
         assertThat(response.getStatusCode(), is(403));
-
-        authAssertion.redirectCookie(response.getCookies(), false, null);
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
-    public void postResponseTypeCodeWhenRequestResponseTypeTokenExpect302() throws Exception {
+    public void postResponseTypeCodeWhenRequestResponseTypeTokenExpectErrorAnd302() throws Exception {
 
         // get a session and valid csrf.
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
@@ -227,16 +227,20 @@ public class OAuth2CodeResourceTest {
         ResourceOwner ro = loadResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
-        // 203: what to do here?
-
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&state=some-state" +
-                "&response_type=token";
+        Map<String, String> postParams = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", "token"),
+                entry("state", "some-state")
+        );
+        String postPathWithParams = authAssertion.contextWithParams(contextPath, postParams);
+        String postServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(postPathWithParams)
+                .toString();
 
         // make request with wrong response type.
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
+                .preparePost(postServletURI)
                 .setFormParams(postData)
                 .setCookies(Arrays.asList(session.getSession()))
                 .execute();

@@ -48,6 +48,9 @@ public class GetSessionAndCsrfToken {
             if (cookie.getName().equals("csrfToken")) {
                 session.setSession(cookie);
             }
+            if (cookie.getName().equals("redirect")) {
+                session.setRedirect(cookie);
+            }
         }
 
         if (session.getSession() == null) {

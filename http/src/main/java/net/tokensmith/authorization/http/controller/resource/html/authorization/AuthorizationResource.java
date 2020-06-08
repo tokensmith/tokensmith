@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -45,6 +46,8 @@ public class AuthorizationResource extends Resource<WebSiteSession, WebSiteUser>
         if (StatusCode.OK.equals(response.getStatusCode())) {
             Cookie redirectCookie = redirectCookie(request.getPathWithParams());
             response.getCookies().put(redirectCookie.getName(), redirectCookie);
+        } else {
+            response.getCookies().remove("redirect");
         }
 
         return response;
@@ -58,8 +61,10 @@ public class AuthorizationResource extends Resource<WebSiteSession, WebSiteUser>
 
         response = resource.post(request, response);
 
-        if(StatusCode.MOVED_TEMPORARILY.equals(response.getStatusCode()))
+        if(StatusCode.MOVED_TEMPORARILY.equals(response.getStatusCode()) ||
+           StatusCode.NOT_FOUND.equals(response.getStatusCode())) {
             response.getCookies().remove("redirect");
+        }
 
         return response;
     }

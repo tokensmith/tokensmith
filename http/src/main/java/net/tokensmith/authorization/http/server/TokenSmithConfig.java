@@ -90,9 +90,12 @@ public class TokenSmithConfig implements Configure {
                 Use.ENCRYPTION
         );
 
-        var redirectCookieConfig = new CookieConfig(
-        "redirect", httpAppConfig.getCookiesSecure(), -1, true
-        );
+        var redirectCookieConfig = new CookieConfig.Builder()
+            .name("redirect")
+            .secure(httpAppConfig.getCookiesSecure())
+            .age(-1)
+            .httpOnly(true)
+            .build();
 
         var csrfCookieConfig = new CookieConfig.Builder()
             .name(Shape.CSRF_COOKIE_NAME)
@@ -109,12 +112,12 @@ public class TokenSmithConfig implements Configure {
             .build();
 
         return new ShapeBuilder()
-                .encKey(encKey)
-                .signkey(csrfKey)
-                .cookieConfig(redirectCookieConfig)
-                .sessionCookieConfig(sessionCookieConfig)
-                .csrfCookieConfig(csrfCookieConfig)
-                .build();
+            .encKey(encKey)
+            .signkey(csrfKey)
+            .cookieConfig(redirectCookieConfig)
+            .sessionCookieConfig(sessionCookieConfig)
+            .csrfCookieConfig(csrfCookieConfig)
+            .build();
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.ning.http.client.cookie.Cookie;
 public class Session {
     private String csrfToken;
     private Cookie session;
+    private Cookie redirect;
 
     public String getCsrfToken() {
         return csrfToken;
@@ -23,5 +24,13 @@ public class Session {
 
     public void setSession(Cookie session) {
         this.session = session;
+    }
+
+    public Cookie getRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(Cookie redirect) {
+        this.redirect = redirect;
     }
 }

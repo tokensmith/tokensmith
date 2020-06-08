@@ -8,6 +8,10 @@ import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +57,9 @@ public class AuthAssertion {
 
             // ensure its the correct value
             RedirectClaim actualClaim = (RedirectClaim) actualRedirect.getClaims();
-            assertThat(actualClaim.getRedirect(), is(expected));
+            String decodedExpectedRedirect = URLDecoder.decode(expected, StandardCharsets.UTF_8);
+            String decodedRedirect = URLDecoder.decode(actualClaim.getRedirect(), StandardCharsets.UTF_8);
+            assertThat(decodedRedirect, is(decodedExpectedRedirect));
             assertThat(actualClaim.getIssuedAt(), is(notNullValue()));
         } else {
             // should not be there.
