@@ -111,7 +111,7 @@ public class UserEndpoint {
         return openIdToken;
     }
 
-    public JsonWebToken getUser(String accessToken) throws CommException, TranslateException, ErrorResponseException {
+    public JsonWebToken<User> getUser(String accessToken) throws CommException, TranslateException, ErrorResponseException {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(endpointProps.getUserInfoEndpoint())
@@ -141,7 +141,7 @@ public class UserEndpoint {
         String idToken = httpUtils.to(body);
 
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken jwt;
+        JsonWebToken<User> jwt;
         try {
             jwt = jwtSerializer.stringToJwt(idToken, User.class);
         } catch (JsonToJwtException | InvalidJWT e) {

@@ -49,7 +49,7 @@ public class TokenSmithLogin implements Login {
     public UserWithTokens withPassword(String username, String password, List<String> scopes) throws CommException, ErrorResponseException, TranslateException, IdTokenException {
         OpenIdToken openIdToken = userEndpoint.postTokenPasswordGrant(username, password, scopes);
 
-        JsonWebToken jwt = loginUtils.toJwt(openIdToken.getIdToken());
+        JsonWebToken<User> jwt = loginUtils.toJwt(openIdToken.getIdToken());
 
         UserWithTokens userWithTokens;
         try {
@@ -73,7 +73,7 @@ public class TokenSmithLogin implements Login {
      */
     public UserWithTokens withRefreshToken(String refreshToken) throws CommException, ErrorResponseException, TranslateException, IdTokenException {
         OpenIdToken openIdToken = userEndpoint.postTokenRefreshGrant(refreshToken);
-        JsonWebToken jwt = loginUtils.toJwt(openIdToken.getIdToken());
+        JsonWebToken<User> jwt = loginUtils.toJwt(openIdToken.getIdToken());
 
         UserWithTokens userWithTokens;
         try {
@@ -99,7 +99,7 @@ public class TokenSmithLogin implements Login {
     @Override
     public UserWithTokens withCode(String code, String nonce, String redirectUri) throws CommException, ErrorResponseException, TranslateException, IdTokenException {
         OpenIdToken openIdToken = userEndpoint.postTokenCodeGrant(code, redirectUri);
-        JsonWebToken jwt = loginUtils.toJwt(openIdToken.getIdToken());
+        JsonWebToken<User> jwt = loginUtils.toJwt(openIdToken.getIdToken());
 
         UserWithTokens userWithTokens;
         try {
@@ -142,7 +142,7 @@ public class TokenSmithLogin implements Login {
      */
     @Override
     public User userInfo(String accessToken) throws CommException, ErrorResponseException, TranslateException, IdTokenException {
-        JsonWebToken idToken = userEndpoint.getUser(accessToken);
+        JsonWebToken<User> idToken = userEndpoint.getUser(accessToken);
 
         User user;
         try {
@@ -154,20 +154,20 @@ public class TokenSmithLogin implements Login {
         return user;
     }
 
-    protected IdTokenException handleForTokenEndpoint(String msg, Throwable cause, OpenIdToken openIdToken, JsonWebToken idToken) {
+    protected IdTokenException handleForTokenEndpoint(String msg, Throwable cause, OpenIdToken openIdToken, JsonWebToken<User> idToken) {
         return new IdTokenExceptionBuilder()
                 .message(msg)
                 .cause(cause)
                 .fromTokenEndpoint(openIdToken)
-                .user((User) idToken.getClaims())
+                .user(idToken.getClaims())
                 .build();
     }
 
-    protected IdTokenException handleForUserInfoEndpoint(String msg, Throwable cause, JsonWebToken idToken) {
+    protected IdTokenException handleForUserInfoEndpoint(String msg, Throwable cause, JsonWebToken<User> idToken) {
         return new IdTokenExceptionBuilder()
                 .message(msg)
                 .cause(cause)
-                .user((User) idToken.getClaims())
+                .user(idToken.getClaims())
                 .build();
     }
 }

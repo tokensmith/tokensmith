@@ -102,11 +102,10 @@ public class UserInfoResourceOAuth2PasswordTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -117,7 +116,7 @@ public class UserInfoResourceOAuth2PasswordTest {
 
         assertThat(signatureVerified, is(true));
         // email claims
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims = jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

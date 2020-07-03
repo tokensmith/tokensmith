@@ -41,11 +41,11 @@ public class LoginUtilsTest {
     public void toJwtShouldBeOk() throws Exception {
         String compactJwt = Factory.okIdToken().getIdToken();
 
-        JsonWebToken actual = subject.toJwt(compactJwt);
+        JsonWebToken<User> actual = subject.toJwt(compactJwt);
 
         assertThat(actual, is(notNullValue()));
 
-        User actualUser = (User) actual.getClaims();
+        User actualUser = actual.getClaims();
         assertThat(actualUser.getEmail(), is(notNullValue()));
     }
 
@@ -65,7 +65,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWithTokensWhenKeyExceptionShouldThrowJwtException() throws Exception {
         String keyId = UUID.randomUUID().toString();
-        JsonWebToken idToken = Factory.idToken(keyId);
+        JsonWebToken<User> idToken = Factory.idToken(keyId);
         OpenIdToken payload = Factory.okIdToken();
 
         KeyException expected = new KeyException("", new RuntimeException());
@@ -85,7 +85,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWithTokensShouldThrowJwtException() throws Exception {
         String keyId = UUID.randomUUID().toString();
-        JsonWebToken idToken = Factory.idToken(keyId);
+        JsonWebToken<User> idToken = Factory.idToken(keyId);
         idToken.getHeader().setKeyId(Optional.empty());
         OpenIdToken payload = Factory.okIdToken();
 
@@ -103,7 +103,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWithTokensWhenNotVerifiedShouldThrowJwtException() throws Exception {
         OpenIdToken openIdToken = Factory.idTokenWithBadSignature();
-        JsonWebToken idToken = subject.toJwt(openIdToken.getIdToken());
+        JsonWebToken<User> idToken = subject.toJwt(openIdToken.getIdToken());
 
         RSAPublicKey key = Factory.rsaPublicKeyTranslated();
         when(
@@ -123,7 +123,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWhenKeyExceptionShouldThrowJwtException() throws Exception {
         String keyId = UUID.randomUUID().toString();
-        JsonWebToken idToken = Factory.idToken(keyId);
+        JsonWebToken<User> idToken = Factory.idToken(keyId);
 
         KeyException expected = new KeyException("", new RuntimeException());
         doThrow(expected).when(mockKeyCache).get(keyId);
@@ -142,7 +142,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWhenKeyIdEmptyShouldThrowJwtException() throws Exception {
         String keyId = UUID.randomUUID().toString();
-        JsonWebToken idToken = Factory.idToken(keyId);
+        JsonWebToken<User> idToken = Factory.idToken(keyId);
         idToken.getHeader().setKeyId(Optional.empty());
 
         JwtException actual = null;
@@ -158,7 +158,7 @@ public class LoginUtilsTest {
     @Test
     public void toUserWhenNotVerifiedShouldThrowJwtException() throws Exception {
         OpenIdToken openIdToken = Factory.idTokenWithBadSignature();
-        JsonWebToken idToken = subject.toJwt(openIdToken.getIdToken());
+        JsonWebToken<User> idToken = subject.toJwt(openIdToken.getIdToken());
 
         RSAPublicKey key = Factory.rsaPublicKeyTranslated();
         when(

@@ -171,7 +171,7 @@ public class TokenResourceResponseTypePasswordTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
 
         // helps with SDK tests
         String fileName = "build/token-open-id-from-password.txt";
@@ -179,7 +179,6 @@ public class TokenResourceResponseTypePasswordTest {
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -190,7 +189,7 @@ public class TokenResourceResponseTypePasswordTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims =  jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

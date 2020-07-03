@@ -274,11 +274,10 @@ public class OpenIdImplicitIdentityResourceTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -290,7 +289,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken idToken = (IdToken) jwt.getClaims();
+        IdToken idToken =  jwt.getClaims();
         assertThat(idToken.getNonce().isPresent(), is(true));
         assertThat(idToken.getNonce().get(), is("some-nonce"));
         assertThat(idToken.getAccessTokenHash().isPresent(), is(false));
@@ -355,11 +354,10 @@ public class OpenIdImplicitIdentityResourceTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -371,7 +369,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken idToken = (IdToken) jwt.getClaims();
+        IdToken idToken =  jwt.getClaims();
         assertThat(idToken.getAccessTokenHash().isPresent(), is(false));
         assertThat(idToken.getEmail().isPresent(), is(true));
         assertThat(idToken.getEmail().get(), is(ro.getEmail()));

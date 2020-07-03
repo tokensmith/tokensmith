@@ -1,9 +1,11 @@
 package net.tokensmith.authorization.http.config;
 
 
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
+import net.tokensmith.jwt.entity.jwk.Use;
 import net.tokensmith.otter.QueryStringToMap;
 import net.tokensmith.otter.authentication.ParseBearer;
 import net.tokensmith.otter.authentication.ParseHttpBasic;
@@ -17,17 +19,26 @@ import net.tokensmith.authorization.http.response.Error;
 import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.register.request.UserInfo;
 import net.tokensmith.config.AppConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.ConverterRegistry;
+import org.springframework.core.convert.support.ConversionServiceFactory;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.format.FormatterRegistry;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
  * Created by tommackenzie on 5/27/16.
  */
 @Configuration
-@ComponentScan("net.tokensmith.authorization.http")
+@ComponentScan({"net.tokensmith.authorization.http", "net.tokensmith.authorization.http.config.converter"})
 @Import({AppConfig.class, HttpPersistenceConfig.class})
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class HttpAppConfig {
@@ -48,12 +59,13 @@ public class HttpAppConfig {
     @Value("${session.key.value}")
     private String sessionKeyValue;
 
-    // keys for signing application cookies, redirect cookie, etc
-    @Value("${cookies.keys}")
-    private Map<String, SymmetricKey> keysForCookies;
+    // I couldn't figure out how to get a list or map of keys so
+    // here is this...
+    @Value("${cookies.keys.key-1.id}")
+    private String cookieSignKeyId;
 
-    @Value("${cookies.preferreds}")
-    private Map<String, String> preferredKeysForCookies;
+    @Value("${cookies.keys.key-1.value}")
+    private String cookieSignKeyValue;
 
     @Value("${assets.css.global:/assets/css/global.css}")
     private String globalCssPath;
@@ -78,12 +90,12 @@ public class HttpAppConfig {
         return sessionKeyValue;
     }
 
-    public Map<String, SymmetricKey> getKeysForCookies() {
-        return keysForCookies;
+    public String getCookieSignKeyId() {
+        return cookieSignKeyId;
     }
 
-    public Map<String, String> getPreferredKeysForCookies() {
-        return preferredKeysForCookies;
+    public String getCookieSignKeyValue() {
+        return cookieSignKeyValue;
     }
 
     @Bean
@@ -142,6 +154,19 @@ public class HttpAppConfig {
 
     @Bean
     public CookieSecurity cookieSigner() {
-        return new CookieSigner(new JwtAppFactory(), getKeysForCookies(), getPreferredKeysForCookies());
+        SymmetricKey key = new SymmetricKey.Builder()
+                .keyId(Optional.of(getCookieSignKeyId()))
+                .key(getCookieSignKeyValue())
+                .use(Use.SIGNATURE)
+                .build();
+
+        Map<String, SymmetricKey> keys = Map.ofEntries(
+                Map.entry(getCookieSignKeyId(), key)
+        );
+
+        Map<String, String> keyPreferences = Map.ofEntries(
+                Map.entry(CookieName.REDIRECT.toString(), key.getKeyId().get())
+        );
+        return new CookieSigner(new JwtAppFactory(), keys, keyPreferences);
     }
 }

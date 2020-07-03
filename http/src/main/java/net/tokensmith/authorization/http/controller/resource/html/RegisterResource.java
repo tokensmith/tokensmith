@@ -155,7 +155,7 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
      * @param redirectCookie the redirect cookie
      */
     protected void prepareRedirectResponse(Response<WebSiteSession> response, Cookie redirectCookie) {
-        ReadEither<RedirectClaim> signerEither = cookieSigner.read(redirectCookie.toString(), RedirectClaim.class);
+        ReadEither<RedirectClaim> signerEither = cookieSigner.read(redirectCookie.getValue(), RedirectClaim.class);
         if (signerEither.getRight().isPresent()) {
             RedirectClaim redirectClaim = signerEither.getRight().get();
             response.setStatusCode(StatusCode.MOVED_TEMPORARILY);
@@ -164,6 +164,10 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
             // reset to done is true.
             redirectClaim.setDone(true);
             CookieConfig config = new CookieConfig.Builder()
+                    .name(CookieName.REDIRECT.toString())
+                    .httpOnly(true)
+                    .secure(false)
+                    .age(-1)
                     .build();
 
             try {

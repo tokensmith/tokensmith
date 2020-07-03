@@ -230,11 +230,13 @@ public class AuthorizationHelper {
     }
 
     public void addRedirectCookie(String path, Response<WebSiteSession> response) {
+        // 173: needs tests
         // 173: need to pull this out into a configuration.
         CookieConfig cookieConfig = new CookieConfig.Builder()
-                .name("redirect")
+                .name(CookieName.REDIRECT.toString())
                 .httpOnly(true)
                 .secure(false)
+                .age(-1)
                 .build();
 
         RedirectClaim redirectClaims = new RedirectClaim();
@@ -254,16 +256,17 @@ public class AuthorizationHelper {
 
 
     public void readRedirectCookie(Cookie redirectCookie, AuthorizationPresenter presenter, Response<WebSiteSession> response) {
-        // 173: read redirect cookie
+        // 173: needs tests.
         ReadEither<RedirectClaim> redirectEither = cookieSigner.read(redirectCookie.getValue(), RedirectClaim.class);
         if(redirectEither.getRight().isPresent() && redirectEither.getRight().get().getDone()) {
             presenter.setUserMessage(Optional.of("Thanks for registering. We have sent you and email to verify your email address. You can now login."));
+            // 173: should the cookie be removed here?
         } else if (redirectEither.getLeft().isPresent() && Objects.nonNull(redirectEither.getLeft().get().getCause())) {
             ReadError<RedirectClaim> left = redirectEither.getLeft().get();
             LOGGER.warn("Removing redirect cookie. Error verifying signature, {}", left.getCookieError());
             LOGGER.warn(left.getCause().getMessage(), left.getCause());
             response.getCookies().remove(CookieName.REDIRECT.toString());
-        } else {
+        } else if (redirectEither.getLeft().isPresent()){
             ReadError<RedirectClaim> left = redirectEither.getLeft().get();
             LOGGER.warn("Removing redirect cookie. Error verifying signature, {}. No cause was provided", left.getCookieError());
             response.getCookies().remove(CookieName.REDIRECT.toString());

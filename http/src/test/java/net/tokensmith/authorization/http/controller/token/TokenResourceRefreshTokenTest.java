@@ -231,7 +231,7 @@ public class TokenResourceRefreshTokenTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(actual.getIdToken(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(actual.getIdToken(), IdToken.class);
 
         // helps with SDK tests
         String fileName = "build/token-open-id-from-refresh.txt";
@@ -239,7 +239,6 @@ public class TokenResourceRefreshTokenTest {
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -250,7 +249,7 @@ public class TokenResourceRefreshTokenTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims =  jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

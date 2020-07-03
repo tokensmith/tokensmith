@@ -3,7 +3,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 import helpers.category.UnitTests;
 import helpers.fixture.EntityFactory;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
-import net.tokensmith.authorization.http.service.CookieService;
+import net.tokensmith.otter.security.cookie.CookieSecurity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,13 +34,14 @@ import static org.junit.Assert.*;
 @Category(UnitTests.class)
 public class AuthorizationHelperTest {
     @Mock
-    private CookieService mockCookieService;
     private AuthorizationHelper subject;
+    @Mock
+    private CookieSecurity mockCookieSigner;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new AuthorizationHelper(mockCookieService);
+        subject = new AuthorizationHelper(mockCookieSigner);
     }
 
     @Test

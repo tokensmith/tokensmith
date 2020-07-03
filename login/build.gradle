@@ -7,13 +7,11 @@ description = """Interface to interact with OIDC ID Servers"""
 sourceCompatibility = 12
 targetCompatibility = 12
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
 
 repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases" }
+    maven { url "https://repo.maven.apache.org/maven2" }
     mavenCentral()
     mavenLocal()
 }

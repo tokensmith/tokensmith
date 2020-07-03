@@ -43,7 +43,7 @@ public class LoginUtils {
      * @throws CommException when the id server could not be reached
      * @throws JwtException when there is something wrong with the id token (JWT).
      */
-    public UserWithTokens toUserWithTokens(JsonWebToken idToken, OpenIdToken openIdToken) throws JwtException {
+    public UserWithTokens toUserWithTokens(JsonWebToken<User> idToken, OpenIdToken openIdToken) throws JwtException {
         Boolean isVerified = verify(idToken);
 
         if (!isVerified) {
@@ -55,21 +55,21 @@ public class LoginUtils {
                 openIdToken.getRefreshToken(),
                 openIdToken.getExpiresIn(),
                 openIdToken.getTokenType(),
-                (User) idToken.getClaims()
+                idToken.getClaims()
         );
     }
 
-    public User toUser(JsonWebToken idToken) throws JwtException {
+    public User toUser(JsonWebToken<User> idToken) throws JwtException {
         Boolean isVerified = verify(idToken);
 
         if (!isVerified) {
             throw new JwtException("signature is invalid");
         }
 
-        return (User) idToken.getClaims();
+        return idToken.getClaims();
     }
 
-    protected Boolean verify(JsonWebToken idToken) throws JwtException {
+    protected Boolean verify(JsonWebToken<User> idToken) throws JwtException {
         var jwtKeyId = idToken.getHeader().getKeyId();
 
         Boolean isVerified;
@@ -96,9 +96,9 @@ public class LoginUtils {
         return isVerified;
     }
 
-    public JsonWebToken toJwt(String compactJwt) throws TranslateException {
+    public JsonWebToken<User> toJwt(String compactJwt) throws TranslateException {
         JwtSerde jwtSerializer = jwtAppFactory.jwtSerde();
-        JsonWebToken jwt;
+        JsonWebToken<User> jwt;
         try {
             jwt = jwtSerializer.stringToJwt(compactJwt, User.class);
         } catch (JsonToJwtException | InvalidJWT e) {
@@ -124,7 +124,7 @@ public class LoginUtils {
      * @return true/false
      * @throws JwtException if there is not sign algorithm on the JWT's header or if the public key is invalid.
      */
-    protected Boolean isSignatureVerified(JsonWebToken jwt, RSAPublicKey publicKey) throws JwtException {
+    protected Boolean isSignatureVerified(JsonWebToken<User> jwt, RSAPublicKey publicKey) throws JwtException {
         Algorithm sigAlg = jwt.getHeader().getAlgorithm();
 
         if (sigAlg != Algorithm.RS256 && sigAlg != Algorithm.HS256) {
