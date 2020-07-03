@@ -75,7 +75,9 @@ public class ForgotPasswordResource extends Resource<WebSiteSession, WebSiteUser
     }
 
     protected ForgotPasswordPresenter makePresenter(String email, String encodedCsrfToken) {
-        return new ForgotPasswordPresenter(globalCssPath, email, encodedCsrfToken);
+        var presenter = new ForgotPasswordPresenter(globalCssPath, email, encodedCsrfToken);
+        presenter.setErrorMessage(Optional.empty());
+        return presenter;
     }
 
     protected ForgotPasswordPresenter makePresenterOnError(String email, String encodedCsrfToken, String errorMessage) {

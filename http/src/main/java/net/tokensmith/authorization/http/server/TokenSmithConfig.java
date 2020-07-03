@@ -10,6 +10,7 @@ import net.tokensmith.authorization.http.controller.resource.api.site.RestProfil
 import net.tokensmith.authorization.http.controller.resource.api.site.between.RestSessionAuth;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.ProfileResource;
 import net.tokensmith.authorization.http.controller.resource.html.between.CSPBetween;
 import net.tokensmith.authorization.http.controller.resource.html.between.WebSiteAuthRequired;
@@ -90,8 +91,9 @@ public class TokenSmithConfig implements Configure {
                 Use.ENCRYPTION
         );
 
+        // 173: need to pull this out into a configuration.
         var redirectCookieConfig = new CookieConfig.Builder()
-            .name("redirect")
+            .name(CookieName.REDIRECT.toString())
             .secure(httpAppConfig.getCookiesSecure())
             .age(-1)
             .httpOnly(true)

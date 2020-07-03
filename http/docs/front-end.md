@@ -11,6 +11,7 @@
 | OAuth2CodeResource | authorization.jsp |
 | OAuth2ImplicitResource | authorization.jsp |
 | RegisterResource | register.jsp |
+| RegisterResource | register-ok.jsp |
 | WelcomeResource | welcome.jsp |
 | WelcomeResource | welcome-error.jsp |
 | ForgotPasswordResource | forgot-password.jsp |

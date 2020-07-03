@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,15 @@
 <body>
 
 <div class="main">
+
+    <c:choose>
+        <c:when test="${presenter.getUserMessage().isPresent()}">
+           <div id="message" data-status="ok">
+                ${presenter.getUserMessage().get()}
+           </div>
+        </c:when>
+    </c:choose>
+
     <form id="authorization" method="POST">
     <div class="form">
         <input id="email" type="text" name="email" required="true" placeholder="username" value="${presenter.getEmail()}" />

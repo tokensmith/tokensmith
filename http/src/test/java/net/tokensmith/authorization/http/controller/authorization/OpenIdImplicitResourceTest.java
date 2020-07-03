@@ -79,7 +79,6 @@ public class OpenIdImplicitResourceTest {
 
     }
 
-    // 203 left off here.
     @Test
     public void getWhenOpenIdClientResponseTypeIsTokenRedirectUriIsWrongShouldReturn404() throws Exception {
         Client client = loadOpenIdPublicClientWithScopes.run();

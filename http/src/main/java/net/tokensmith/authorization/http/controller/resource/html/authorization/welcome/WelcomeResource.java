@@ -19,8 +19,8 @@ import java.util.Optional;
 
 @Component
 public class WelcomeResource extends Resource<WebSiteSession, WebSiteUser> {
-    private static String JSP_PATH_OK = "/WEB-INF/jsp/welcome.jsp";
-    private static String JSP_PATH_ERROR = "/WEB-INF/jsp/welcome-error.jsp";
+    private static String JSP_PATH_OK = "/WEB-INF/jsp/welcome/welcome.jsp";
+    private static String JSP_PATH_ERROR = "/WEB-INF/jsp/welcome/welcome-error.jsp";
     public static String URL = "/welcome\\?nonce=(.*)";
     private static String NONCE_URL_PARAM = "nonce";
 

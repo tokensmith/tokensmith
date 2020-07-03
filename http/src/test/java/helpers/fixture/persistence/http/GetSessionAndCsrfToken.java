@@ -5,6 +5,7 @@ import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Response;
 import com.ning.http.client.cookie.Cookie;
 import helpers.fixture.exception.GetCsrfException;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class GetSessionAndCsrfToken {
             if (cookie.getName().equals("csrfToken")) {
                 session.setSession(cookie);
             }
-            if (cookie.getName().equals("redirect")) {
+            if (CookieName.REDIRECT.toString().equals(cookie.getName())) {
                 session.setRedirect(cookie);
             }
         }

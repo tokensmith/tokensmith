@@ -1,6 +1,7 @@
 package helpers.assertion;
 
 import com.ning.http.client.cookie.Cookie;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
@@ -36,7 +37,7 @@ public class AuthAssertion {
     public void redirectCookie(List<Cookie> cookies, Boolean exists, String expected) {
 
         Cookie actual = cookies.stream()
-                .filter(c -> "redirect".equals(c.getName()))
+                .filter(c -> CookieName.REDIRECT.toString().equals(c.getName()))
                 .findAny()
                 .orElse(null);
 
@@ -57,6 +58,7 @@ public class AuthAssertion {
 
             // ensure its the correct value
             RedirectClaim actualClaim = (RedirectClaim) actualRedirect.getClaims();
+
             String decodedExpectedRedirect = URLDecoder.decode(expected, StandardCharsets.UTF_8);
             String decodedRedirect = URLDecoder.decode(actualClaim.getRedirect(), StandardCharsets.UTF_8);
             assertThat(decodedRedirect, is(decodedExpectedRedirect));

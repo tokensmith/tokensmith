@@ -3,6 +3,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 import helpers.category.UnitTests;
 import helpers.fixture.EntityFactory;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
+import net.tokensmith.authorization.http.service.CookieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -17,6 +18,8 @@ import net.tokensmith.otter.controller.builder.ResponseBuilder;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.Header;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -30,11 +33,14 @@ import static org.junit.Assert.*;
 
 @Category(UnitTests.class)
 public class AuthorizationHelperTest {
+    @Mock
+    private CookieService mockCookieService;
     private AuthorizationHelper subject;
 
     @Before
     public void setUp() {
-        subject = new AuthorizationHelper();
+        MockitoAnnotations.initMocks(this);
+        subject = new AuthorizationHelper(mockCookieService);
     }
 
     @Test

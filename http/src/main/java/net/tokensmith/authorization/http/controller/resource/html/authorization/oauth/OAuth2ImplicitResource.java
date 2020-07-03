@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.oauth;
 
 
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -65,7 +66,9 @@ public class OAuth2ImplicitResource extends Resource<WebSiteSession, WebSiteUser
             return response;
         }
 
+
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
+        authorizationHelper.manageRedirectCookie(presenter, request, response);
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }
@@ -105,6 +108,7 @@ public class OAuth2ImplicitResource extends Resource<WebSiteSession, WebSiteUser
             accessToken.getSessionTokenIssuedAt()
         );
         response.setSession(Optional.of(session));
+        response.getCookies().remove(CookieName.REDIRECT.toString());
 
         return response;
     }
