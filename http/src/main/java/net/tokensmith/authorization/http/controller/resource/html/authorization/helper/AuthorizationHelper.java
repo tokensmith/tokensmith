@@ -1,27 +1,18 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.helper;
 
 
-import net.tokensmith.authorization.http.controller.resource.html.CookieName;
-import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
-import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
-import net.tokensmith.otter.config.CookieConfig;
-import net.tokensmith.otter.controller.entity.Cookie;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.controller.entity.request.Request;
-import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.header.ContentType;
-import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
-import net.tokensmith.otter.security.cookie.CookieJwtException;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.security.cookie.CookieSecurity;
-import net.tokensmith.otter.security.cookie.either.ReadEither;
-import net.tokensmith.otter.security.cookie.either.ReadError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +23,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -54,13 +44,6 @@ public class AuthorizationHelper {
     private static String SCOPE = "scope=%s";
     private static String BEGIN = "?";
     private static String AND = "&";
-
-    private CookieSecurity cookieSigner;
-
-    @Autowired
-    public AuthorizationHelper(CookieSecurity cookieSigner) {
-        this.cookieSigner = cookieSigner;
-    }
 
     public String getFormValue(List<String> formValue) {
         String value = null;
@@ -211,65 +194,5 @@ public class AuthorizationHelper {
         }
 
         return location.toString();
-    }
-
-    /**
-     *
-     * @param presenter
-     * @param request
-     * @param response
-     */
-    public void manageRedirectCookie(AuthorizationPresenter presenter, Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
-        var redirectCookie = request.getCookies().get(CookieName.REDIRECT.toString());
-
-        if (Objects.isNull(redirectCookie)) {
-            addRedirectCookie(request.getPathWithParams(), response);
-        } else {
-            readRedirectCookie(redirectCookie, presenter, response);
-        }
-    }
-
-    public void addRedirectCookie(String path, Response<WebSiteSession> response) {
-        // 173: needs tests
-        // 173: need to pull this out into a configuration.
-        CookieConfig cookieConfig = new CookieConfig.Builder()
-                .name(CookieName.REDIRECT.toString())
-                .httpOnly(true)
-                .secure(false)
-                .age(-1)
-                .build();
-
-        RedirectClaim redirectClaims = new RedirectClaim();
-        redirectClaims.setRedirect(path);
-        redirectClaims.setDone(false);
-
-        Cookie redirectCookie = null;
-        try {
-            redirectCookie = cookieSigner.make(cookieConfig, redirectClaims);
-        } catch (CookieJwtException e) {
-            LOGGER.error(e.getMessage(), e);
-            return;
-        }
-
-        response.getCookies().put(redirectCookie.getName(), redirectCookie);
-    }
-
-
-    public void readRedirectCookie(Cookie redirectCookie, AuthorizationPresenter presenter, Response<WebSiteSession> response) {
-        // 173: needs tests.
-        ReadEither<RedirectClaim> redirectEither = cookieSigner.read(redirectCookie.getValue(), RedirectClaim.class);
-        if(redirectEither.getRight().isPresent() && redirectEither.getRight().get().getDone()) {
-            presenter.setUserMessage(Optional.of("Thanks for registering. We have sent you and email to verify your email address. You can now login."));
-            // 173: should the cookie be removed here?
-        } else if (redirectEither.getLeft().isPresent() && Objects.nonNull(redirectEither.getLeft().get().getCause())) {
-            ReadError<RedirectClaim> left = redirectEither.getLeft().get();
-            LOGGER.warn("Removing redirect cookie. Error verifying signature, {}", left.getCookieError());
-            LOGGER.warn(left.getCause().getMessage(), left.getCause());
-            response.getCookies().remove(CookieName.REDIRECT.toString());
-        } else if (redirectEither.getLeft().isPresent()){
-            ReadError<RedirectClaim> left = redirectEither.getLeft().get();
-            LOGGER.warn("Removing redirect cookie. Error verifying signature, {}. No cause was provided", left.getCookieError());
-            response.getCookies().remove(CookieName.REDIRECT.toString());
-        }
     }
 }

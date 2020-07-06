@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -40,15 +41,17 @@ public class OpenIdCodeResource extends Resource<WebSiteSession, WebSiteUser> {
     private AuthorizationHelper authorizationHelper;
     private ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType;
     private RequestOpenIdAuthCode requestOpenIdAuthCode;
+    private CookieService cookieService;
 
     public OpenIdCodeResource() {}
 
     @Autowired
-    public OpenIdCodeResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, RequestOpenIdAuthCode requestOpenIdAuthCode) {
+    public OpenIdCodeResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdCodeResponseType validateOpenIdCodeResponseType, RequestOpenIdAuthCode requestOpenIdAuthCode, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateOpenIdCodeResponseType = validateOpenIdCodeResponseType;
         this.requestOpenIdAuthCode = requestOpenIdAuthCode;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class OpenIdCodeResource extends Resource<WebSiteSession, WebSiteUser> {
         }
 
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
-        authorizationHelper.manageRedirectCookie(presenter, request, response);
+        cookieService.manageRedirectForAuth(presenter, request, response);
 
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;

@@ -1,5 +1,6 @@
 package net.tokensmith.authorization.http.server;
 
+import net.tokensmith.authorization.http.config.props.HttpProperties;
 import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
 import net.tokensmith.authorization.http.controller.resource.api.publik.RSAPublicKeyResource;
 import net.tokensmith.authorization.http.controller.resource.api.publik.RSAPublicKeysResource;
@@ -63,8 +64,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.Map.entry;
-
 
 public class TokenSmithConfig implements Configure {
     public static final String WEB_SITE_GROUP = "WebSite";
@@ -72,43 +71,42 @@ public class TokenSmithConfig implements Configure {
     public static final String API_SITE_V1_GROUP = "API_SITE_V1";
     public static MimeType JSON = new MimeTypeBuilder().json().build();
     private ApplicationContext appContext;
-    private HttpAppConfig httpAppConfig;
+    private HttpProperties httpProperties;
 
     @Override
     public Shape shape() {
-        ApplicationContext appContext = applicationContext();
-        HttpAppConfig httpAppConfig = appContext.getBean(HttpAppConfig.class);
+        HttpProperties httpProperties = httpProperties();
 
         SymmetricKey csrfKey = new SymmetricKey(
-                Optional.of(httpAppConfig.getCsrfKeyId()),
-                httpAppConfig.getCsrfKeyValue(),
+                Optional.of(httpProperties.getCsrfKeyId()),
+                httpProperties.getCsrfKeyValue(),
                 Use.SIGNATURE
         );
 
         SymmetricKey encKey = new SymmetricKey(
-                Optional.of(httpAppConfig.getSessionKeyId()),
-                httpAppConfig.getSessionKeyValue(),
+                Optional.of(httpProperties.getSessionKeyId()),
+                httpProperties.getSessionKeyValue(),
                 Use.ENCRYPTION
         );
 
         // 173: need to pull this out into a configuration.
         var redirectCookieConfig = new CookieConfig.Builder()
             .name(CookieName.REDIRECT.toString())
-            .secure(httpAppConfig.getCookiesSecure())
+            .secure(httpProperties.getCookiesSecure())
             .age(-1)
             .httpOnly(true)
             .build();
 
         var csrfCookieConfig = new CookieConfig.Builder()
             .name(Shape.CSRF_COOKIE_NAME)
-            .secure(httpAppConfig.getCookiesSecure())
+            .secure(httpProperties.getCookiesSecure())
             .age(-1)
             .httpOnly(true)
             .build();
 
         var sessionCookieConfig = new CookieConfig.Builder()
             .name(Shape.SESSION_COOKIE_NAME)
-            .secure(httpAppConfig.getCookiesSecure())
+            .secure(httpProperties.getCookiesSecure())
             .age(-1)
             .httpOnly(true)
             .build();
@@ -136,7 +134,7 @@ public class TokenSmithConfig implements Configure {
         WebSiteAuthRequired authRequired = applicationContext().getBean(WebSiteAuthRequired.class);
         CSPBetween cspBetween = new CSPBetween();
 
-        HttpAppConfig httpAppConfig = httpAppConfig();
+        HttpProperties httpProperties = httpProperties();
 
         Group<WebSiteSession, WebSiteUser> webSiteGroup = new GroupBuilder<WebSiteSession, WebSiteUser>()
             .name(WEB_SITE_GROUP)
@@ -147,7 +145,7 @@ public class TokenSmithConfig implements Configure {
             .after(cspBetween)
             .onHalt(Halt.SESSION, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpAppConfig.globalCssPath());
+                presenter.setGlobalCssPath(httpProperties.getGlobalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
                 response.setStatusCode(StatusCode.UNAUTHORIZED);
@@ -156,7 +154,7 @@ public class TokenSmithConfig implements Configure {
             })
             .onHalt(Halt.CSRF, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpAppConfig.globalCssPath());
+                presenter.setGlobalCssPath(httpProperties.getGlobalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
                 response.setStatusCode(StatusCode.FORBIDDEN);
@@ -210,11 +208,11 @@ public class TokenSmithConfig implements Configure {
         return this.appContext;
     }
 
-    protected HttpAppConfig httpAppConfig()  {
-        if (Objects.isNull(this.httpAppConfig)) {
-            this.httpAppConfig = appContext.getBean(HttpAppConfig.class);
+    protected HttpProperties httpProperties()  {
+        if (Objects.isNull(this.httpProperties)) {
+            this.httpProperties = applicationContext().getBean(HttpProperties.class);
         }
-        return this.httpAppConfig;
+        return this.httpProperties;
     }
 
 

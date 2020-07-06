@@ -9,8 +9,6 @@ import net.tokensmith.authorization.openId.grant.redirect.code.authorization.req
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
-import net.tokensmith.jwt.jwk.KeyAlgorithm;
-import net.tokensmith.jwt.jwk.exception.SecretKeyException;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
@@ -21,7 +19,7 @@ import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
 import org.mockito.Mockito;
 
-import javax.crypto.SecretKey;
+
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;

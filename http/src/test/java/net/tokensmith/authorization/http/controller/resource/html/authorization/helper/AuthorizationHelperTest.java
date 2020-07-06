@@ -35,13 +35,11 @@ import static org.junit.Assert.*;
 public class AuthorizationHelperTest {
     @Mock
     private AuthorizationHelper subject;
-    @Mock
-    private CookieSecurity mockCookieSigner;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new AuthorizationHelper(mockCookieSigner);
+        subject = new AuthorizationHelper();
     }
 
     @Test

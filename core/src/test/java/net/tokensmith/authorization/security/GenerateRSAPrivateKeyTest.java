@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by tommackenzie on 2/15/16.
  */
-public class GenerateRSAPrivateKeyImplTest {
+public class GenerateRSAPrivateKeyTest {
     @Mock
     private RSAPrivateKeyFactory mockRSAPrivateKeyFactory;
     private GenerateRSAPrivateKey subject;

@@ -1,27 +1,22 @@
 package net.tokensmith.authorization.http.controller.resource.html;
 
 
-import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
-import net.tokensmith.otter.config.CookieConfig;
+import net.tokensmith.authorization.http.presenter.RegisterPresenter;
+import net.tokensmith.authorization.http.service.CookieService;
+import net.tokensmith.authorization.register.Register;
+import net.tokensmith.authorization.register.RegisterError;
+import net.tokensmith.authorization.register.exception.NonceException;
+import net.tokensmith.authorization.register.exception.RegisterException;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.Cookie;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.otter.security.cookie.CookieJwtException;
-import net.tokensmith.otter.security.cookie.CookieSecurity;
-import net.tokensmith.otter.security.cookie.either.ReadEither;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.security.WebSiteSession;
-import net.tokensmith.authorization.http.controller.security.WebSiteUser;
-import net.tokensmith.authorization.http.presenter.RegisterPresenter;
-import net.tokensmith.authorization.register.Register;
-import net.tokensmith.authorization.register.RegisterError;
-import net.tokensmith.authorization.register.exception.NonceException;
-import net.tokensmith.authorization.register.exception.RegisterException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,8 +32,8 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
     public static String URL = "/register(.*)";
 
     private String globalCssPath;
-    private CookieSecurity cookieSigner;
     private Register register;
+    private CookieService cookieService;
 
     private static String JSP_PATH_FORM = "/WEB-INF/jsp/register/register.jsp";
     private static String JSP_PATH_OK = "/WEB-INF/jsp/register/register-ok.jsp";
@@ -48,10 +43,10 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
     private static String BLANK = "";
 
     @Autowired
-    public RegisterResource(String globalCssPath, CookieSecurity cookieSigner, Register register) {
+    public RegisterResource(String globalCssPath, Register register, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
-        this.cookieSigner = cookieSigner;
         this.register = register;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -85,8 +80,9 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
             LOGGER.error(e.getMessage(), e);
         }
 
-        if (Objects.nonNull(request.getCookies().get(CookieName.REDIRECT.toString()))) {
-            prepareRedirectResponse(response, request.getCookies().get(CookieName.REDIRECT.toString()));
+        Cookie redirectCookie = request.getCookies().get(CookieName.REDIRECT.toString());
+        if (Objects.nonNull(redirectCookie)) {
+            redirectCookie(redirectCookie, response);
         } else {
             AssetPresenter presenter = new AssetPresenter(globalCssPath);
             prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_OK);
@@ -139,49 +135,12 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
         response.setTemplate(Optional.of(template));
     }
 
-    /**
-     * Will attempt to redirect the user the value of the redirect cookie.
-     *
-     * When there is an issue reading the cookie
-     * Then it will not redirect the user and show the OK template
-     * And it will remove the cookie
-     *
-     * When it can read the cookie
-     * Then it will use it to set the location header
-     * and set status code to 302
-     * and set the cookie with done is true
-     *
-     * @param response the response
-     * @param redirectCookie the redirect cookie
-     */
-    protected void prepareRedirectResponse(Response<WebSiteSession> response, Cookie redirectCookie) {
-        ReadEither<RedirectClaim> signerEither = cookieSigner.read(redirectCookie.getValue(), RedirectClaim.class);
-        if (signerEither.getRight().isPresent()) {
-            RedirectClaim redirectClaim = signerEither.getRight().get();
-            response.setStatusCode(StatusCode.MOVED_TEMPORARILY);
-            response.getHeaders().put(Header.LOCATION.toString(), redirectClaim.getRedirect());
-
-            // reset to done is true.
-            redirectClaim.setDone(true);
-            CookieConfig config = new CookieConfig.Builder()
-                    .name(CookieName.REDIRECT.toString())
-                    .httpOnly(true)
-                    .secure(false)
-                    .age(-1)
-                    .build();
-
-            try {
-                Cookie redirectCookieDone = cookieSigner.make(config, redirectClaim);
-                response.getCookies().put(CookieName.REDIRECT.toString(), redirectCookieDone);
-            } catch (CookieJwtException e) {
-                LOGGER.error("Could not make signed cookie");
-                LOGGER.error(e.getMessage(), e);
-                // 173 should it be removed?
-            }
-
-        } else {
-            LOGGER.warn("Could not read redirect cookie");
-            // 173: log the error from sign either left.
+    protected void redirectCookie(Cookie redirectCookie, Response<WebSiteSession> response) {
+        boolean worked = cookieService.readRedirectForRegister(response, redirectCookie);
+        // 173: review keeping this logic here instead of cookie service
+        // this is here instead of cookie service b/c I didn't want to pull in prepare response to
+        // cookie service. maybe I should have so it could be unit tested better.
+        if (Boolean.FALSE.equals(worked)) {
             response.getCookies().remove(CookieName.REDIRECT.toString());
             AssetPresenter presenter = new AssetPresenter(globalCssPath);
             prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_OK);

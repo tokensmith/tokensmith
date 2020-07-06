@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -39,15 +40,17 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
     private AuthorizationHelper authorizationHelper;
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private RequestOpenIdIdentity requestOpenIdIdentity;
+    private CookieService cookieService;
 
     public OpenIdImplicitIdentityResource() {}
 
     @Autowired
-    public OpenIdImplicitIdentityResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdIdentity requestOpenIdIdentity) {
+    public OpenIdImplicitIdentityResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdIdentity requestOpenIdIdentity, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.requestOpenIdIdentity = requestOpenIdIdentity;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -67,7 +70,7 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
         }
 
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
-        authorizationHelper.manageRedirectCookie(presenter, request, response);
+        cookieService.manageRedirectForAuth(presenter, request, response);
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }

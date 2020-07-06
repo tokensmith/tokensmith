@@ -2,6 +2,7 @@ package helpers.suite;
 
 import helpers.category.ServletContainerTest;
 import helpers.category.UnitTests;
+import net.tokensmith.authorization.http.service.CookieServiceTest;
 import net.tokensmith.authorization.http.service.ProfileServiceTest;
 import net.tokensmith.authorization.http.service.translator.AddressTranslatorTest;
 import net.tokensmith.authorization.http.service.translator.ProfileTranslatorTest;
@@ -31,7 +32,8 @@ import net.tokensmith.authorization.http.factory.MakeTokenFactoryTest;
         WelcomeResourceRegexTest.class,
         AddressTranslatorTest.class,
         ProfileTranslatorTest.class,
-        ProfileServiceTest.class
+        ProfileServiceTest.class,
+        CookieServiceTest.class
 })
 public class UnitTestSuite {
 }

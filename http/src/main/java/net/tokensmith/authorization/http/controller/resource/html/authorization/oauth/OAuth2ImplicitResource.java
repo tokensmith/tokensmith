@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -39,15 +40,17 @@ public class OAuth2ImplicitResource extends Resource<WebSiteSession, WebSiteUser
     private AuthorizationHelper authorizationHelper;
     private ValidateImplicitGrant validateImplicitGrant;
     private RequestAccessToken requestAccessToken;
+    private CookieService cookieService;
 
     public OAuth2ImplicitResource() {}
 
     @Autowired
-    public OAuth2ImplicitResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateImplicitGrant validateImplicitGrant, RequestAccessToken requestAccessToken) {
+    public OAuth2ImplicitResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateImplicitGrant validateImplicitGrant, RequestAccessToken requestAccessToken, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateImplicitGrant = validateImplicitGrant;
         this.requestAccessToken = requestAccessToken;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class OAuth2ImplicitResource extends Resource<WebSiteSession, WebSiteUser
 
 
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
-        authorizationHelper.manageRedirectCookie(presenter, request, response);
+        cookieService.manageRedirectForAuth(presenter, request, response);
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }

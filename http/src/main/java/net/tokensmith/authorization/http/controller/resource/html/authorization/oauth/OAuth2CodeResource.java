@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -40,15 +41,17 @@ public class OAuth2CodeResource extends Resource<WebSiteSession, WebSiteUser> {
     private AuthorizationHelper authorizationHelper;
     private ValidateCodeGrant validateCodeGrant;
     private RequestAuthCode requestAuthCode;
+    private CookieService cookieService;
 
     public OAuth2CodeResource() {}
 
     @Autowired
-    public OAuth2CodeResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateCodeGrant validateCodeGrant, RequestAuthCode requestAuthCode) {
+    public OAuth2CodeResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateCodeGrant validateCodeGrant, RequestAuthCode requestAuthCode, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateCodeGrant = validateCodeGrant;
         this.requestAuthCode = requestAuthCode;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class OAuth2CodeResource extends Resource<WebSiteSession, WebSiteUser> {
         }
 
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
-        authorizationHelper.manageRedirectCookie(presenter, request, response);
+        cookieService.manageRedirectForAuth(presenter, request, response);
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }
