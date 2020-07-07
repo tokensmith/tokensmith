@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.config.props;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +64,8 @@ public class HttpProperties {
         return cookieSignKeyValue;
     }
 
-    public String getGlobalCssPath() {
+    @Bean
+    public String globalCssPath() {
         return globalCssPath;
     }
 }

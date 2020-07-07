@@ -75,38 +75,33 @@ public class TokenSmithConfig implements Configure {
 
     @Override
     public Shape shape() {
-        HttpProperties httpProperties = httpProperties();
+        HttpProperties props = httpProperties();
 
         SymmetricKey csrfKey = new SymmetricKey(
-                Optional.of(httpProperties.getCsrfKeyId()),
-                httpProperties.getCsrfKeyValue(),
+                Optional.of(props.getCsrfKeyId()),
+                props.getCsrfKeyValue(),
                 Use.SIGNATURE
         );
 
         SymmetricKey encKey = new SymmetricKey(
-                Optional.of(httpProperties.getSessionKeyId()),
-                httpProperties.getSessionKeyValue(),
+                Optional.of(props.getSessionKeyId()),
+                props.getSessionKeyValue(),
                 Use.ENCRYPTION
         );
 
-        // 173: need to pull this out into a configuration.
-        var redirectCookieConfig = new CookieConfig.Builder()
-            .name(CookieName.REDIRECT.toString())
-            .secure(httpProperties.getCookiesSecure())
-            .age(-1)
-            .httpOnly(true)
-            .build();
+        CookieConfig redirectCookieConfig = applicationContext()
+                .getBean("redirectConfig", CookieConfig.class);
 
         var csrfCookieConfig = new CookieConfig.Builder()
             .name(Shape.CSRF_COOKIE_NAME)
-            .secure(httpProperties.getCookiesSecure())
+            .secure(props.getCookiesSecure())
             .age(-1)
             .httpOnly(true)
             .build();
 
         var sessionCookieConfig = new CookieConfig.Builder()
             .name(Shape.SESSION_COOKIE_NAME)
-            .secure(httpProperties.getCookiesSecure())
+            .secure(props.getCookiesSecure())
             .age(-1)
             .httpOnly(true)
             .build();
@@ -134,7 +129,7 @@ public class TokenSmithConfig implements Configure {
         WebSiteAuthRequired authRequired = applicationContext().getBean(WebSiteAuthRequired.class);
         CSPBetween cspBetween = new CSPBetween();
 
-        HttpProperties httpProperties = httpProperties();
+        HttpProperties props = httpProperties();
 
         Group<WebSiteSession, WebSiteUser> webSiteGroup = new GroupBuilder<WebSiteSession, WebSiteUser>()
             .name(WEB_SITE_GROUP)
@@ -145,7 +140,7 @@ public class TokenSmithConfig implements Configure {
             .after(cspBetween)
             .onHalt(Halt.SESSION, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpProperties.getGlobalCssPath());
+                presenter.setGlobalCssPath(props.globalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
                 response.setStatusCode(StatusCode.UNAUTHORIZED);
@@ -154,7 +149,7 @@ public class TokenSmithConfig implements Configure {
             })
             .onHalt(Halt.CSRF, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpProperties.getGlobalCssPath());
+                presenter.setGlobalCssPath(props.globalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
                 response.setStatusCode(StatusCode.FORBIDDEN);

@@ -11,8 +11,8 @@
 
     <c:choose>
         <c:when test="${presenter.getUserMessage().isPresent()}">
-           <div id="message" data-status="ok">
-                ${presenter.getUserMessage().get()}
+           <div id="message" class="notification" data-status="ok">
+                <p>${presenter.getUserMessage().get()}</p>
            </div>
         </c:when>
     </c:choose>
@@ -24,8 +24,8 @@
         <input id="csrfToken" type="hidden" name="csrfToken" value="${presenter.getEncodedCsrfToken()}" />
         <button>login</button>
 
-        <p class="message">Not registered? <a href="/register">register</a></p>
-        <p class="message">Forgot password? <a href="/forgot-password">reset it</a></p>
+        <p class="follow-link">Not registered? <a href="/register">register</a></p>
+        <p class="follow-link">Forgot password? <a href="/forgot-password">reset it</a></p>
     </div>
     </form>
 </div

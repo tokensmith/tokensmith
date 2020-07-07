@@ -6,9 +6,11 @@
 </head>
 <body>
 <div class="main">
-    <div class="message-container">
-        <div id="message">Opps, we could process the request. It was an UnSupported Media Type.</div>
+
+    <div id="message" class="message">
+        <p>Opps, we could process the request. It was an UnSupported Media Type.</p>
     </div>
+
 </div>
 </body>
 </html>

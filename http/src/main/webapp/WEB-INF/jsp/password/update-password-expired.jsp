@@ -6,10 +6,10 @@
 <link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
-
-<div id="message" data-status="link-expired">
-<p>Oops, looks like this link has expired. Please request another password reset email.</p>
+<div class="main">
+    <div id="message" class="message" data-status="link-expired">
+        <p>Oops, looks like this link has expired. Please request another password reset email.</p>
+    </div>
 </div>
-
 </body>
 </html>

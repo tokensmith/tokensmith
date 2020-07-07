@@ -77,10 +77,9 @@ public class CookieService {
 
 
     public void readRedirectForAuth(Cookie redirectCookie, AuthorizationPresenter presenter, Response<WebSiteSession> response) {
-        // 173: needs tests.
         ReadEither<RedirectClaim> redirectEither = cookieSigner.read(redirectCookie.getValue(), RedirectClaim.class);
         if(redirectEither.getRight().isPresent() && redirectEither.getRight().get().getDone()) {
-            presenter.setUserMessage(Optional.of("Thanks for registering. We have sent you and email to verify your email address. You can now login."));
+            presenter.setUserMessage(Optional.of("Thanks for registering. We have sent you an email to verify your email address. You can now login."));
         } else if (redirectEither.getLeft().isPresent() && Objects.nonNull(redirectEither.getLeft().get().getCause())) {
             ReadError<RedirectClaim> left = redirectEither.getLeft().get();
             LOGGER.warn("Removing redirect cookie. Error verifying signature, {}", left.getCookieError());

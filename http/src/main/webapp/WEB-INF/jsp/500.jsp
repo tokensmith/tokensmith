@@ -6,8 +6,8 @@
 <body>
 
 <div class="main">
-    <div class="message-container">
-        <div id="message">Ooops, something went wrong.</div>
+    <div id="message" class="message">
+        <p>Ooops, something went wrong.</p>
     </div>
 </div>
 

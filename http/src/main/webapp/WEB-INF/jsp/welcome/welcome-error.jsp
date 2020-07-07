@@ -7,10 +7,8 @@
 </head>
 <body>
 <div class="main">
-    <div class="message-container">
-        <div id="message" data-status="error">
-        Oops, something went wrong. The link may have expired, please login and resend the email verification email.
-        </div>
+    <div id="message" class="message" data-status="error">
+        <p>Oops, something went wrong. The link may have expired, please login and resend the email verification email.</p>
     </div>
 </div>
 </body>

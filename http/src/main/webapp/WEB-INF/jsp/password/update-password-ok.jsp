@@ -7,8 +7,8 @@
 </head>
 <body>
 
-<div id="message" data-status="ok">
-<p>Your password has been reset. All your existing sessions have been revoked.</p>
+<div id="message" class="message" data-status="ok">
+    <p>Your password has been reset. All your existing sessions have been revoked.</p>
 </div>
 
 </body>

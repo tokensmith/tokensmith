@@ -5,9 +5,11 @@
 </head>
 <body>
 <div class="main">
-    <div class="message-container">
-        <div id="message">Ooops, something went wrong. You either do not have permission to view this content or you should try again.</div>
+
+    <div id="message" class="message">
+        Ooops, something went wrong. You either do not have permission to view this content or you should try again.
     </div>
+
 </div>
 
 </body>

@@ -8,8 +8,8 @@
 <body>
 
 <div class="main">
-    <div id="message" data-status="ok">
-        <p>Thanks for registering. We have sent you and email to verify your email address.</p>
+    <div id="message" class="message" data-status="ok">
+        <p>Thanks for registering. We have sent you an email to verify your email address.</p>
     </div>
 </div>
 
