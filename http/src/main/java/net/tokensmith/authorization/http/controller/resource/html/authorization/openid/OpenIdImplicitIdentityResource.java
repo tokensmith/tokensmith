@@ -1,6 +1,8 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.openid;
 
 
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -38,15 +40,17 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
     private AuthorizationHelper authorizationHelper;
     private ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant;
     private RequestOpenIdIdentity requestOpenIdIdentity;
+    private CookieService cookieService;
 
     public OpenIdImplicitIdentityResource() {}
 
     @Autowired
-    public OpenIdImplicitIdentityResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdIdentity requestOpenIdIdentity) {
+    public OpenIdImplicitIdentityResource(String globalCssPath, AuthorizationHelper authorizationHelper, ValidateOpenIdIdImplicitGrant validateOpenIdIdImplicitGrant, RequestOpenIdIdentity requestOpenIdIdentity, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.authorizationHelper = authorizationHelper;
         this.validateOpenIdIdImplicitGrant = validateOpenIdIdImplicitGrant;
         this.requestOpenIdIdentity = requestOpenIdIdentity;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
         }
 
         AuthorizationPresenter presenter = authorizationHelper.makeAuthorizationPresenter(globalCssPath, BLANK, request.getCsrfChallenge().get());
-
+        cookieService.manageRedirectForAuth(presenter, request, response);
         authorizationHelper.prepareResponse(response, StatusCode.OK, presenter, JSP_PATH);
         return response;
     }
@@ -85,16 +89,20 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
             return response;
         } catch (InformResourceOwnerException e) {
             authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
             authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         }
 
+        response.getCookies().remove(CookieName.REDIRECT.toString());
 
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue());
         String location = authorizationHelper.makeRedirectURIForOpenIdIdentity(identity);;
@@ -106,6 +114,7 @@ public class OpenIdImplicitIdentityResource extends Resource<WebSiteSession, Web
                 identity.getSessionTokenIssuedAt()
         );
         response.setSession(Optional.of(session));
+        response.getCookies().remove(CookieName.REDIRECT.toString());
         
         return response;
     }

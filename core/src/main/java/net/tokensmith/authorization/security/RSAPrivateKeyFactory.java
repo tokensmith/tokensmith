@@ -14,7 +14,6 @@ import java.security.spec.RSAPrivateCrtKeySpec;
  */
 @Component
 public class RSAPrivateKeyFactory {
-
     private KeyPairGenerator keyPairGenerator;
     private KeyFactory keyFactory;
 

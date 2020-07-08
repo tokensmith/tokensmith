@@ -1,5 +1,6 @@
 package net.tokensmith.authorization.http.server;
 
+import net.tokensmith.authorization.http.config.props.HttpProperties;
 import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
 import net.tokensmith.authorization.http.controller.resource.api.publik.RSAPublicKeyResource;
 import net.tokensmith.authorization.http.controller.resource.api.publik.RSAPublicKeysResource;
@@ -10,11 +11,13 @@ import net.tokensmith.authorization.http.controller.resource.api.site.RestProfil
 import net.tokensmith.authorization.http.controller.resource.api.site.between.RestSessionAuth;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.ProfileResource;
 import net.tokensmith.authorization.http.controller.resource.html.between.CSPBetween;
 import net.tokensmith.authorization.http.controller.resource.html.between.WebSiteAuthRequired;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
+import net.tokensmith.otter.config.CookieConfig;
 import net.tokensmith.otter.controller.builder.MimeTypeBuilder;
 import net.tokensmith.otter.controller.entity.ClientError;
 import net.tokensmith.otter.controller.entity.DefaultSession;
@@ -68,29 +71,48 @@ public class TokenSmithConfig implements Configure {
     public static final String API_SITE_V1_GROUP = "API_SITE_V1";
     public static MimeType JSON = new MimeTypeBuilder().json().build();
     private ApplicationContext appContext;
-    private HttpAppConfig httpAppConfig;
+    private HttpProperties httpProperties;
 
     @Override
     public Shape shape() {
-        ApplicationContext appContext = applicationContext();
-        HttpAppConfig httpAppConfig = appContext.getBean(HttpAppConfig.class);
+        HttpProperties props = httpProperties();
 
         SymmetricKey csrfKey = new SymmetricKey(
-                Optional.of(httpAppConfig.getCsrfKeyId()),
-                httpAppConfig.getCsrfKeyValue(),
+                Optional.of(props.getCsrfKeyId()),
+                props.getCsrfKeyValue(),
                 Use.SIGNATURE
         );
 
         SymmetricKey encKey = new SymmetricKey(
-                Optional.of(httpAppConfig.getSessionKeyId()),
-                httpAppConfig.getSessionKeyValue(),
+                Optional.of(props.getSessionKeyId()),
+                props.getSessionKeyValue(),
                 Use.ENCRYPTION
         );
 
+        CookieConfig redirectCookieConfig = applicationContext()
+                .getBean("redirectConfig", CookieConfig.class);
+
+        var csrfCookieConfig = new CookieConfig.Builder()
+            .name(Shape.CSRF_COOKIE_NAME)
+            .secure(props.getCookiesSecure())
+            .age(-1)
+            .httpOnly(true)
+            .build();
+
+        var sessionCookieConfig = new CookieConfig.Builder()
+            .name(Shape.SESSION_COOKIE_NAME)
+            .secure(props.getCookiesSecure())
+            .age(-1)
+            .httpOnly(true)
+            .build();
+
         return new ShapeBuilder()
-                .encKey(encKey)
-                .signkey(csrfKey)
-                .build();
+            .encKey(encKey)
+            .signkey(csrfKey)
+            .cookieConfig(redirectCookieConfig)
+            .sessionCookieConfig(sessionCookieConfig)
+            .csrfCookieConfig(csrfCookieConfig)
+            .build();
     }
 
     @Override
@@ -107,7 +129,7 @@ public class TokenSmithConfig implements Configure {
         WebSiteAuthRequired authRequired = applicationContext().getBean(WebSiteAuthRequired.class);
         CSPBetween cspBetween = new CSPBetween();
 
-        HttpAppConfig httpAppConfig = httpAppConfig();
+        HttpProperties props = httpProperties();
 
         Group<WebSiteSession, WebSiteUser> webSiteGroup = new GroupBuilder<WebSiteSession, WebSiteUser>()
             .name(WEB_SITE_GROUP)
@@ -118,7 +140,7 @@ public class TokenSmithConfig implements Configure {
             .after(cspBetween)
             .onHalt(Halt.SESSION, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpAppConfig.globalCssPath());
+                presenter.setGlobalCssPath(props.globalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/401.jsp"));
                 response.setStatusCode(StatusCode.UNAUTHORIZED);
@@ -127,7 +149,7 @@ public class TokenSmithConfig implements Configure {
             })
             .onHalt(Halt.CSRF, (Response<WebSiteSession> response, HaltException e) -> {
                 AssetPresenter presenter = new AssetPresenter();
-                presenter.setGlobalCssPath(httpAppConfig.globalCssPath());
+                presenter.setGlobalCssPath(props.globalCssPath());
                 response.setPresenter(Optional.of(presenter));
                 response.setTemplate(Optional.of("/WEB-INF/jsp/403.jsp"));
                 response.setStatusCode(StatusCode.FORBIDDEN);
@@ -181,11 +203,11 @@ public class TokenSmithConfig implements Configure {
         return this.appContext;
     }
 
-    protected HttpAppConfig httpAppConfig()  {
-        if (Objects.isNull(this.httpAppConfig)) {
-            this.httpAppConfig = appContext.getBean(HttpAppConfig.class);
+    protected HttpProperties httpProperties()  {
+        if (Objects.isNull(this.httpProperties)) {
+            this.httpProperties = applicationContext().getBean(HttpProperties.class);
         }
-        return this.httpAppConfig;
+        return this.httpProperties;
     }
 
 

@@ -1,6 +1,6 @@
 package helpers.fixture;
 
-import com.ning.http.client.Param;
+import org.asynchttpclient.Param;
 
 import java.util.ArrayList;
 import java.util.List;

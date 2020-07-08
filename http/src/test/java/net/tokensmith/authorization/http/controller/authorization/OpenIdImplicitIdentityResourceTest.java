@@ -1,8 +1,10 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.FormFactory;
@@ -30,8 +32,10 @@ import net.tokensmith.otter.QueryStringToMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import static java.util.Map.entry;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -46,10 +50,11 @@ public class OpenIdImplicitIdentityResourceTest {
     private static LoadOpenIdResourceOwner loadOpenIdResourceOwner;
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
     private static GetOrCreateRSAPrivateKey getOrCreateRSAPrivateKey;
+    private static AuthAssertion authAssertion;
 
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
-    protected static String servletURI;
+    protected static String contextPath; // path to target endpoint
 
     @BeforeClass
     public static void beforeClass() {
@@ -62,16 +67,29 @@ public class OpenIdImplicitIdentityResourceTest {
         loadOpenIdResourceOwner = IntegrationTestSuite.getContext().getBean(LoadOpenIdResourceOwner.class);
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
         getOrCreateRSAPrivateKey = factoryForPersistence.getOrCreateRSAPrivateKey();
+        authAssertion = new AuthAssertion();
 
-        servletURI = baseURI + "authorization";
+        contextPath = "authorization";
+
     }
 
-    private String servletURI(UUID clientId, URI redirectUri, String scope) throws UnsupportedEncodingException {
-        return this.servletURI +
-                "?client_id=" + clientId.toString() +
-                "&response_type=id_token" +
-                "&redirect_uri=" + URLEncoder.encode(redirectUri.toString(), "UTF-8") +
-                "&scope=" + scope;
+    private String pathWithParams(UUID clientId, URI redirectURI, String scope) {
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", clientId.toString()),
+                entry("response_type", "id_token"),
+                entry("redirect_uri", URLEncoder.encode(redirectURI.toString(), StandardCharsets.UTF_8)),
+                entry("scope", scope)
+        );
+        return authAssertion.contextWithParams(contextPath, params);
+    }
+
+    private String servletURI(UUID clientId, URI redirectURI, String scope) throws UnsupportedEncodingException {
+        String pathWithParams = pathWithParams(clientId, redirectURI, scope);
+
+        return new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
     }
 
     @Test
@@ -83,7 +101,9 @@ public class OpenIdImplicitIdentityResourceTest {
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
+
         assertThat(response.getStatusCode(), is(404));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -102,14 +122,17 @@ public class OpenIdImplicitIdentityResourceTest {
                 "&error_description=nonce is null" +
                 "&state=some-state";
         assertThat(response.getHeader("location"), is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
     public void getWhenOpenIdClientResponseTypeIsIdTokenShouldReturn200() throws Exception {
         Client client = loadOpenIdPublicClientIdTokenWithScopes.run();
 
+        String pathWithParams = pathWithParams(client.getId(), client.getRedirectURI(), "openid")
+                + "&nonce=some-nonce";
         String servletURI = servletURI(client.getId(), client.getRedirectURI(), "openid")
-                + "&nonce=some-nonce";;
+                + "&nonce=some-nonce";
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
@@ -117,26 +140,36 @@ public class OpenIdImplicitIdentityResourceTest {
 
         Optional<String> csrfToken = getSessionAndCsrfToken.extractCsrfToken(response.getResponseBody());
         assertThat(csrfToken.isPresent(), is(true));
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
     public void postWhenFailsAuthenticationShouldReturn403() throws Exception {
         // get a session and valid csrf.
         Client client = loadOpenIdPublicClientIdTokenWithScopes.run();
+
+        String pathWithParams = pathWithParams(client.getId(), client.getRedirectURI(), "openid")
+                + "&nonce=some-nonce";
         String validServletURI = servletURI(client.getId(), client.getRedirectURI(), "openid")
-                + "&nonce=some-nonce";;
+                + "&nonce=some-nonce";
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
         List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
         assertThat(response.getStatusCode(), is(403));
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
@@ -155,11 +188,12 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
         assertThat(response.getStatusCode(), is(404));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -173,6 +207,10 @@ public class OpenIdImplicitIdentityResourceTest {
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
@@ -183,7 +221,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -196,6 +234,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
         assertThat(response.getHeader("location"), is(notNullValue()));
         assertThat(response.getHeader("location"), is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -207,6 +246,10 @@ public class OpenIdImplicitIdentityResourceTest {
 
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
@@ -214,7 +257,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -239,11 +282,10 @@ public class OpenIdImplicitIdentityResourceTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -255,7 +297,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken idToken = (IdToken) jwt.getClaims();
+        IdToken idToken =  jwt.getClaims();
         assertThat(idToken.getNonce().isPresent(), is(true));
         assertThat(idToken.getNonce().get(), is("some-nonce"));
         assertThat(idToken.getAccessTokenHash().isPresent(), is(false));
@@ -272,6 +314,7 @@ public class OpenIdImplicitIdentityResourceTest {
         assertThat(idToken.getIssuedAt().isPresent(), is(true));
         assertThat(idToken.getExpirationTime().isPresent(), is(true));
         assertThat(idToken.getAuthenticationTime(), is(notNullValue()));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
 
@@ -284,6 +327,10 @@ public class OpenIdImplicitIdentityResourceTest {
                 + "&state=" + state + "&nonce=some-nonce";
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
@@ -291,7 +338,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -319,11 +366,10 @@ public class OpenIdImplicitIdentityResourceTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(params.get("id_token").get(0), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -335,7 +381,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken idToken = (IdToken) jwt.getClaims();
+        IdToken idToken =  jwt.getClaims();
         assertThat(idToken.getAccessTokenHash().isPresent(), is(false));
         assertThat(idToken.getEmail().isPresent(), is(true));
         assertThat(idToken.getEmail().get(), is(ro.getEmail()));
@@ -349,5 +395,6 @@ public class OpenIdImplicitIdentityResourceTest {
         assertThat(idToken.getExpirationTime().isPresent(), is(true));
         assertThat(idToken.getIssuedAt().isPresent(), is(true));
         assertThat(idToken.getAuthenticationTime(), is(notNullValue()));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 }

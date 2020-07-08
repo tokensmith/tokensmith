@@ -17,7 +17,7 @@ services:
     image: rs/kafka
     build:
       context: docker/kafka
-      dockerfile: docker/kafka/Dockerfile
+      dockerfile: Dockerfile
 
   zookeeper:
     container_name: gizmo-zookeeper

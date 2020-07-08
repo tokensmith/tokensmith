@@ -1,44 +1,52 @@
 package net.tokensmith.authorization.http.controller.resource.html;
 
 
-import net.tokensmith.otter.controller.Resource;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.controller.entity.request.Request;
-import net.tokensmith.otter.controller.entity.response.Response;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.authorization.http.presenter.RegisterPresenter;
+import net.tokensmith.authorization.http.service.CookieService;
 import net.tokensmith.authorization.register.Register;
 import net.tokensmith.authorization.register.RegisterError;
 import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.authorization.register.exception.RegisterException;
+import net.tokensmith.otter.controller.Resource;
+import net.tokensmith.otter.controller.entity.Cookie;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.request.Request;
+import net.tokensmith.otter.controller.entity.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
 public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
-    private static final Logger logger = LoggerFactory.getLogger(RegisterResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterResource.class);
 
     public static String URL = "/register(.*)";
 
     private String globalCssPath;
     private Register register;
-    private static String JSP_PATH = "/WEB-INF/jsp/register.jsp";
+    private CookieService cookieService;
+
+    private static String JSP_PATH_FORM = "/WEB-INF/jsp/register/register.jsp";
+    private static String JSP_PATH_OK = "/WEB-INF/jsp/register/register-ok.jsp";
     private static String EMAIL = "email";
     private static String PASSWORD = "password";
     private static String REPEAT_PASSWORD = "repeatPassword";
     private static String BLANK = "";
 
     @Autowired
-    public RegisterResource(String globalCssPath, Register register) {
+    public RegisterResource(String globalCssPath, Register register, CookieService cookieService) {
         this.globalCssPath = globalCssPath;
         this.register = register;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
         RegisterPresenter presenter = makeRegisterPresenter(BLANK, request.getCsrfChallenge().get());
         response.setStatusCode(StatusCode.OK);
         response.setPresenter(Optional.of(presenter));
-        response.setTemplate(Optional.of(JSP_PATH));
+        response.setTemplate(Optional.of(JSP_PATH_FORM));
         return response;
     }
 
@@ -65,15 +73,20 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
         } catch (RegisterException e) {
             String errorMessage = errorMessage(e.getRegisterError());
             RegisterPresenter presenter = makeRegisterPresenterOnError(email, request.getCsrfChallenge().get(), errorMessage);
-            prepareResponse(response, StatusCode.OK, presenter);
+            prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_FORM);
             return response;
         } catch (NonceException e) {
             // fail silently, could not insert nonce into database.
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
-        RegisterPresenter presenter = makeRegisterPresenter(BLANK, request.getCsrfChallenge().get());
-        prepareResponse(response, StatusCode.OK, presenter);
+        Cookie redirectCookie = request.getCookies().get(CookieName.REDIRECT.toString());
+        if (Objects.nonNull(redirectCookie)) {
+            redirectCookie(redirectCookie, response);
+        } else {
+            AssetPresenter presenter = new AssetPresenter(globalCssPath);
+            prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_OK);
+        }
         return response;
     }
 
@@ -112,12 +125,25 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
         presenter.setGlobalCssPath(globalCssPath);
         presenter.setEmail(defaultEmail);
         presenter.setEncodedCsrfToken(csrfToken);
+        presenter.setErrorMessage(Optional.empty());
         return presenter;
     }
 
-    protected void prepareResponse(Response<WebSiteSession> response, StatusCode statusCode, RegisterPresenter presenter) {
+    protected void prepareResponse(Response<WebSiteSession> response, StatusCode statusCode, AssetPresenter presenter, String template) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
-        response.setTemplate(Optional.of(JSP_PATH));
+        response.setTemplate(Optional.of(template));
+    }
+
+    protected void redirectCookie(Cookie redirectCookie, Response<WebSiteSession> response) {
+        boolean worked = cookieService.readRedirectForRegister(response, redirectCookie);
+        // 173: review keeping this logic here instead of cookie service
+        // this is here instead of cookie service b/c I didn't want to pull in prepare response to
+        // cookie service. maybe I should have so it could be unit tested better.
+        if (Boolean.FALSE.equals(worked)) {
+            response.getCookies().remove(CookieName.REDIRECT.toString());
+            AssetPresenter presenter = new AssetPresenter(globalCssPath);
+            prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_OK);
+        }
     }
 }

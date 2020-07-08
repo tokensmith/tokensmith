@@ -1,8 +1,9 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
@@ -121,7 +122,7 @@ public class UserInfoResourceOpenIdRefreshTest {
         scopes.add("email");
         String token = makeToken(cc, ro, scopes);
 
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
+        BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
                 .setHeader("Accept", "application/jwt")
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.JSON_UTF_8.getValue())
@@ -140,14 +141,13 @@ public class UserInfoResourceOpenIdRefreshTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
 
         String fileName = "build/user-info-open-id-from-refresh.txt";
         testUtils.logRequestResponse(fileName, requestBuilder.build(), response, key);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -158,7 +158,7 @@ public class UserInfoResourceOpenIdRefreshTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims = jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

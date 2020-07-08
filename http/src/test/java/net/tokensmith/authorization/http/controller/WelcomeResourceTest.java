@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.http.controller;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.persistence.db.LoadNonce;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;

@@ -1,8 +1,10 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
@@ -22,11 +24,14 @@ import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Map.entry;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -42,9 +47,10 @@ public class OpenIdCodeResourceTest {
     private static LoadOpenIdConfClientCodeResponseType loadOpenIdConfidentialClientWithScopes;
     private static LoadResourceOwner loadResourceOwner;
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
+    private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
-    protected static String servletURI;
+    protected static String contextPath; // path to target endpoint
 
     @BeforeClass
     public static void beforeClass() {
@@ -56,19 +62,27 @@ public class OpenIdCodeResourceTest {
         loadOpenIdConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadOpenIdConfClientCodeResponseType.class);
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
+        authAssertion = new AuthAssertion();
 
-        servletURI = baseURI + "authorization";
+        contextPath = "authorization";
     }
 
     @Test
     public void getWhenOpenIdClientResponseTypeIsCodeShouldReturn200() throws Exception {
         ConfidentialClient confidentialClient = loadOpenIdConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
@@ -76,6 +90,7 @@ public class OpenIdCodeResourceTest {
 
         Optional<String> csrfToken = getSessionAndCsrfToken.extractCsrfToken(response.getResponseBody());
         assertTrue(csrfToken.isPresent());
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
@@ -84,37 +99,57 @@ public class OpenIdCodeResourceTest {
         // get a session and valid csrf.
         ConfidentialClient confidentialClient = loadOpenIdConfidentialClientWithScopes.run();
 
-        String validServletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid";;
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String validServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
         List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
+
         assertThat(response.getStatusCode(), is(403));
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
     public void getWhenOpenIdClientResponseTypeDuplicateStatesShouldReturn302() throws Exception {
         ConfidentialClient confidentialClient = loadOpenIdConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&state=some-state" +
-                "&state=some-state" +
-                "&scope=openid";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("state", "some-state"),
+                entry("scope", "openid")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params)
+                + "&state=some-state"; // <-- extra state param
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletURI)
@@ -129,19 +164,27 @@ public class OpenIdCodeResourceTest {
                 "&error_description=state has more than one value";
 
         assertThat(response.getHeader("location"), is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
     public void getWhenScopesMismatchShouldReturnErrorResponse302() throws Exception {
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
-        ResourceOwner ro = loadResourceOwner.run();
 
-        String servletUriWithWrongScopes = this.servletURI +
-                "?client_id=" + cc.getClient().getId().toString() +
-                "&response_type=" + cc.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid fo0" +
-                "&state=some-state";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", cc.getClient().getId().toString()),
+                entry("response_type", cc.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid fo0"),
+                entry("state", "some-state")
+
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletUriWithWrongScopes = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .prepareGet(servletUriWithWrongScopes)
@@ -157,21 +200,31 @@ public class OpenIdCodeResourceTest {
 
         assertThat(response.getHeader("location"), Is.is(notNullValue()));
         assertThat(response.getHeader("location"), Is.is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
     public void getWhenOpenIdClientResponseTypeIsCodeRedirectUriIsWrongShouldReturn404() throws Exception {
         ConfidentialClient confidentialClient = loadOpenIdConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=http://tokensmith.net/wrong" +
-                "&scope=openid";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", "http://tokensmith.net/wrong"),
+                entry("scope", "openid")
+
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
         assertThat(response.getStatusCode(), is(404));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -180,28 +233,48 @@ public class OpenIdCodeResourceTest {
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadResourceOwner.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + cc.getClient().getId().toString() +
-                "&response_type=" + cc.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid" +
-                "&state=some-state";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", cc.getClient().getId().toString()),
+                entry("response_type", cc.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid"),
+                entry("state", "some-state")
+
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
-        String servletUriWithWrongScopes = this.servletURI +
-                "?client_id=" + cc.getClient().getId().toString() +
-                "&response_type=" + cc.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid foo" +
-                "&state=some-state";
+        Map<String, String> postParams = Map.ofEntries(
+                entry("client_id", cc.getClient().getId().toString()),
+                entry("response_type", cc.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(cc.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid foo"),
+                entry("state", "some-state")
+
+        );
+        String postPathWithParams = authAssertion.contextWithParams(contextPath, postParams);
+
+        String postServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(postPathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletUriWithWrongScopes)
+                .preparePost(postServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -214,19 +287,29 @@ public class OpenIdCodeResourceTest {
 
         assertThat(response.getHeader("location"), Is.is(notNullValue()));
         assertThat(response.getHeader("location"), Is.is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
-    public void postWhenOpenIdExpect200() throws Exception {
+    public void postWhenOpenIdExpectCodeAnd302() throws Exception {
         ConfidentialClient confidentialClient = loadOpenIdConfidentialClientWithScopes.run();
 
         ResourceOwner ro = loadResourceOwner.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8") +
-                "&scope=openid";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("redirect_uri", URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8")),
+                entry("scope", "openid")
+
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
+
 
         Session session = new Session();
         try {
@@ -236,10 +319,14 @@ public class OpenIdCodeResourceTest {
         }
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -254,12 +341,13 @@ public class OpenIdCodeResourceTest {
 
         //authorization code.
         QueryStringToMap queryStringToMap = new QueryStringToMap();
-        Map<String, List<String>> params = queryStringToMap.run(
+        Map<String, List<String>> actualParams = queryStringToMap.run(
                 Optional.of(location.getQuery())
         );
 
-        assertThat(params.size(), is(1));
-        assertThat(params.get("code").size(), is(1));
-        assertThat(params.get("code").get(0), is(notNullValue()));
+        assertThat(actualParams.size(), is(1));
+        assertThat(actualParams.get("code").size(), is(1));
+        assertThat(actualParams.get("code").get(0), is(notNullValue()));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 }

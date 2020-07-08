@@ -7,8 +7,8 @@
 <body>
 
 <div class="main">
-    <div class="message-container">
-        <div id="message">Not Found</div>
+    <div id="message" class="message">
+        <p>Not Found</p>
     </div>
 </div>
 

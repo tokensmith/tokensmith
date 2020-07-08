@@ -19,6 +19,7 @@ public class AuthorizationResource extends Resource<WebSiteSession, WebSiteUser>
 
     private AuthorizationFactory authorizationFactory;
 
+
     @Autowired
     public AuthorizationResource(AuthorizationFactory authorizationFactory) {
         this.authorizationFactory = authorizationFactory;
@@ -29,7 +30,10 @@ public class AuthorizationResource extends Resource<WebSiteSession, WebSiteUser>
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)
         );
-        return resource.get(request, response);
+
+        response = resource.get(request, response);
+
+        return response;
     }
 
     public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
@@ -37,6 +41,9 @@ public class AuthorizationResource extends Resource<WebSiteSession, WebSiteUser>
                 request.getQueryParams().get(SCOPE),
                 request.getQueryParams().get(RESPONSE_TYPE)
         );
-        return resource.post(request, response);
+
+        response = resource.post(request, response);
+
+        return response;
     }
 }

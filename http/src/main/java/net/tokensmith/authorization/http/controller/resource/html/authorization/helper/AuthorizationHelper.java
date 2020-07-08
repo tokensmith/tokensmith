@@ -3,16 +3,19 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
-import net.tokensmith.otter.controller.entity.StatusCode;
-import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.otter.controller.header.ContentType;
-import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.authorization.http.controller.security.TokenSession;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitIdentity;
+import net.tokensmith.otter.controller.entity.StatusCode;
+import net.tokensmith.otter.controller.entity.response.Response;
+import net.tokensmith.otter.controller.header.ContentType;
+import net.tokensmith.otter.controller.header.Header;
+import net.tokensmith.otter.security.cookie.CookieSecurity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +28,7 @@ import java.util.Optional;
 
 @Component
 public class AuthorizationHelper {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationHelper.class);
     private static String NOT_FOUND_JSP_PATH = "/WEB-INF/jsp/404.jsp";
     private static String SERVER_ERROR_JSP_PATH = "/WEB-INF/jsp/500.jsp";
 
@@ -40,9 +44,6 @@ public class AuthorizationHelper {
     private static String SCOPE = "scope=%s";
     private static String BEGIN = "?";
     private static String AND = "&";
-
-    public AuthorizationHelper() {
-    }
 
     public String getFormValue(List<String> formValue) {
         String value = null;
@@ -79,7 +80,7 @@ public class AuthorizationHelper {
     }
 
     public void prepareServerErrorResponse(String globalCssPath, Response<WebSiteSession> response) {
-        AuthorizationPresenter presenter = new AuthorizationPresenter();
+        AssetPresenter presenter = new AssetPresenter();
         presenter.setGlobalCssPath(globalCssPath);
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -91,6 +92,7 @@ public class AuthorizationHelper {
         presenter.setGlobalCssPath(globalCssPath);
         presenter.setEmail(defaultEmail);
         presenter.setEncodedCsrfToken(csrfToken);
+        presenter.setUserMessage(Optional.empty());
         return presenter;
     }
 

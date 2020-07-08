@@ -2,16 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Welcome</title>
+<title>Register</title>
 <link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
+
 <div class="main">
-    <div class="message-container">
-        <div id="message" data-status="error">
-        Oops, something went wrong. The link may have expired, please login and resend the email verification email.
-        </div>
+    <div id="message" class="message" data-status="ok">
+        <p>Thanks for registering. We have sent you an email to verify your email address.</p>
     </div>
 </div>
+
 </body>
 </html>

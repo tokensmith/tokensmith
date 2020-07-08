@@ -1,9 +1,9 @@
 package helpers.fixture.persistence.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import net.tokensmith.authorization.http.response.OpenIdToken;
 
 import java.nio.charset.StandardCharsets;

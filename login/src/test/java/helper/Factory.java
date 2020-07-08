@@ -11,6 +11,7 @@ import net.toknsmith.login.endpoint.entity.response.api.key.RSAPublicKey;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
 import net.toknsmith.login.http.StatusCode;
 import net.toknsmith.login.endpoint.entity.response.api.key.KeyUse;
 
@@ -35,7 +36,6 @@ public class Factory {
     public static RSAKeyPair makeRSAKeyPair() {
         return new RSAKeyPair(
                 Optional.empty(),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 toBigInt("ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ"),
                 toBigInt("AQAB"),
@@ -235,7 +235,6 @@ public class Factory {
     public static net.tokensmith.jwt.entity.jwk.RSAPublicKey rsaPublicKeyTranslated() {
         return new net.tokensmith.jwt.entity.jwk.RSAPublicKey(
                 Optional.of(UUID.fromString("1b469919-5605-4874-8dd2-44f9a3afc490").toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 new BigInteger("25460493613279424441611949918389782566632053794560283854781116188091469278199435629088914951946592605013194012578766411350155252425813300678928516421246948087642866742961902379972059935922399442372168504558597434070750118159850289265459003868309378010135522239311592583331397279437991288408885447682375320372624669096837891670516082441310689922711113053871205711196784897697206334704065342469867244707792552601440201949082540409347520555821428265262800979456493790020869023122219993847650425369096972769084082194543500824938836959901147903007980583137254619526913512066068570207992804528579668787876657494219488902713"),
                 new BigInteger("65537")
@@ -277,8 +276,8 @@ public class Factory {
         return headers;
     }
 
-    public static JsonWebToken idToken(String keyId) {
-        JsonWebToken idToken = new JsonWebToken();
+    public static JsonWebToken<User> idToken(String keyId) {
+        JsonWebToken<User> idToken = new JsonWebToken<>();
         Header jwtHeader = new Header();
         jwtHeader.setKeyId(Optional.of(keyId));
         idToken.setHeader(jwtHeader);

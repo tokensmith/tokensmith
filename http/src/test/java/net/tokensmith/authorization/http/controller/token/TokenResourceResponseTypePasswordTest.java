@@ -1,9 +1,10 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.*;
@@ -145,7 +146,7 @@ public class TokenResourceResponseTypePasswordTest {
                 "UTF-8"
         );
 
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
+        BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue())
                 .setHeader("Authorization", "Basic " + encodedCredentials)
@@ -171,7 +172,7 @@ public class TokenResourceResponseTypePasswordTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(token.getIdToken(), IdToken.class);
 
         // helps with SDK tests
         String fileName = "build/token-open-id-from-password.txt";
@@ -179,7 +180,6 @@ public class TokenResourceResponseTypePasswordTest {
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -190,7 +190,7 @@ public class TokenResourceResponseTypePasswordTest {
 
         assertThat(signatureVerified, is(true));
 
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims =  jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

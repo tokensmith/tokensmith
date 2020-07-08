@@ -35,7 +35,7 @@ public class SpendNonce {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jsonWebToken;
+        JsonWebToken<NonceClaim> jsonWebToken;
         try {
             jsonWebToken = jwtSerde.stringToJwt(jwt, NonceClaim.class);
         } catch (JsonToJwtException e) {
@@ -44,7 +44,7 @@ public class SpendNonce {
             throw new BadRequestException(NOT_JWT_MSG, e);
         }
 
-        NonceClaim nonceClaim = (NonceClaim) jsonWebToken.getClaims();
+        NonceClaim nonceClaim = jsonWebToken.getClaims();
 
         String hashedNonce = hashToken.run(nonceClaim.getNonce());
 

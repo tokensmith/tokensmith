@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.FormFactory;
@@ -91,7 +91,7 @@ public class UserInfoResourceOAuth2TokenTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(authServletUriWithParams)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -134,11 +134,10 @@ public class UserInfoResourceOAuth2TokenTest {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
 
-        JsonWebToken jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
+        JsonWebToken<IdToken> jwt = jwtSerde.stringToJwt(response.getResponseBody(), IdToken.class);
 
         RSAPublicKey publicKey = new RSAPublicKey(
                 Optional.of(key.getId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getModulus(),
                 key.getPublicExponent()
@@ -149,7 +148,7 @@ public class UserInfoResourceOAuth2TokenTest {
 
         assertThat(signatureVerified, is(true));
         // email claims
-        IdToken claims = (IdToken) jwt.getClaims();
+        IdToken claims = jwt.getClaims();
         assertThat(claims.getEmail().isPresent(), is(true));
         assertThat(claims.getEmail().get(), is(ro.getEmail()));
         assertThat(claims.getEmailVerified().isPresent(), is(true));

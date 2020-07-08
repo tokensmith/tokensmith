@@ -5,8 +5,8 @@
 </head>
 <body>
 <div class="main">
-    <div class="message-container">
-        <div id="message">please login see this content.</div>
+    <div id="message" class="message">
+        <p>Please login see to this content.<p>
     </div>
 </div>
 </body>

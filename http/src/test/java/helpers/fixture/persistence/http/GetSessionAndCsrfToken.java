@@ -1,14 +1,16 @@
 package helpers.fixture.persistence.http;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.fixture.exception.GetCsrfException;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -45,12 +47,18 @@ public class GetSessionAndCsrfToken {
 
         Session session = new Session();
         for(Cookie cookie: response.getCookies()) {
-            if (cookie.getName().equals("csrfToken")) {
+            if (cookie.name().equals("csrfToken")) {
+                session.setCsrf(cookie);
+            }
+            if (cookie.name().equals("session")) {
                 session.setSession(cookie);
+            }
+            if (CookieName.REDIRECT.toString().equals(cookie.name())) {
+                session.setRedirect(cookie);
             }
         }
 
-        if (session.getSession() == null) {
+        if (Objects.isNull(session.getCsrf())) {
             throw new GetCsrfException(
                     "could not find the CSRF cookie",
                     response.getStatusCode(),

@@ -7,21 +7,19 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import net.tokensmith.jwt.jwk.KeyAlgorithm;
-import net.tokensmith.jwt.jwk.SecretKeyFactory;
-import net.tokensmith.jwt.jwk.exception.SecretKeyException;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.ciphers.HashTokenImpl;
 import net.tokensmith.config.AppConfig;
-import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
 import org.mockito.Mockito;
 
-import javax.crypto.SecretKey;
+
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,18 +41,10 @@ public class FixtureFactory {
      *
      * @return a base64 encoded AES encryption key
      */
-    public static String key() {
-        SecretKeyFactory secretKeyFactory = new SecretKeyFactory();
-        SecretKey cek = null;
-        try {
-            cek = secretKeyFactory.makeKey(KeyAlgorithm.AES);
-        } catch (SecretKeyException e) {
-            e.printStackTrace();
-        }
-
-        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
-        String key = encoder.encodeToString(cek.getEncoded());
-        return key;
+    public static String key() throws Exception {
+        JwtAppFactory jwtAppFactory = new JwtAppFactory();
+        SymmetricKey key = jwtAppFactory.keyGenerator().symmetricKey(Optional.empty(), Use.ENCRYPTION);
+        return key.getKey();
     }
 
     // used to eliminate mockito warnings.
@@ -494,7 +484,6 @@ public class FixtureFactory {
     public static RSAKeyPair makeRSAKeyPair() {
         return new RSAKeyPair(
                 Optional.of("test-key-id"),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 new BigInteger("20446702916744654562596343388758805860065209639960173505037453331270270518732245089773723012043203236097095623402044690115755377345254696448759605707788965848889501746836211206270643833663949992536246985362693736387185145424787922241585721992924045675229348655595626434390043002821512765630397723028023792577935108185822753692574221566930937805031155820097146819964920270008811327036286786392793593121762425048860211859763441770446703722015857250621107855398693133264081150697423188751482418465308470313958250757758547155699749157985955379381294962058862159085915015369381046959790476428631998204940879604226680285601"),
                 new BigInteger("65537"),

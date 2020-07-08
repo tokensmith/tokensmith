@@ -26,7 +26,6 @@
     <button>register</button>
     </div">
 </form>
-<div class="main">
 
 </body>
 </html>

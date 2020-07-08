@@ -1,8 +1,10 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
+import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.persistence.*;
@@ -20,11 +22,14 @@ import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Map.entry;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -39,9 +44,10 @@ public class OAuth2CodeResourceTest {
     private static LoadConfClientCodeResponseType loadConfidentialClientWithScopes;
     private static LoadResourceOwner loadResourceOwner;
     private static GetSessionAndCsrfToken getSessionAndCsrfToken;
+    private static AuthAssertion authAssertion;
 
     protected static String baseURI = String.valueOf(IntegrationTestSuite.getServer().getURI());
-    protected static String servletURI;
+    protected static String contextPath; // path to target endpoint
 
     @BeforeClass
     public static void beforeClass() {
@@ -53,46 +59,74 @@ public class OAuth2CodeResourceTest {
         loadConfidentialClientWithScopes = IntegrationTestSuite.getContext().getBean(LoadConfClientCodeResponseType.class);
         loadResourceOwner = IntegrationTestSuite.getContext().getBean(LoadResourceOwner.class);
         getSessionAndCsrfToken = factoryForPersistence.makeGetSessionAndCsrfToken();
+        authAssertion = new AuthAssertion();
 
-        servletURI = baseURI + "authorization";
+        contextPath = "authorization";
     }
 
     @Test
     public void getWhenResponseTypeCodeRedirectUriIsOkExpect200() throws Exception {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&redirect_uri=" + URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8");
+        Map<String, String> params = Map.ofEntries(
+            entry("client_id", confidentialClient.getClient().getId().toString()),
+            entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+            entry("redirect_uri", URLEncoder.encode(confidentialClient.getClient().getRedirectURI().toString(), "UTF-8"))
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(servletURI)
+                .execute();
         Response response = f.get();
+
         assertThat(response.getStatusCode(), is(200));
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
     public void getWhenResponseTypeCodeRedirectUriIsWrongShouldReturn404() throws Exception {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=code" +
-                "&redirect_uri=http://tokensmith.net/wrong";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", "code"),
+                entry("redirect_uri", "http://tokensmith.net/wrong")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
         assertThat(response.getStatusCode(), is(404));
+
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
     public void getWhenClientResponseTypeIsCodeRequestResponseTypeTokenShouldReturn302() throws Exception {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=token" +
-                "&state=some-state";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", "token"),
+                entry("state", "some-state")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
         Response response = f.get();
@@ -102,22 +136,36 @@ public class OAuth2CodeResourceTest {
                 "&error_description=response_type provided does not match client response type" +
                 "&state=some-state";
         assertThat(response.getHeader("location"), is(expectedLocation));
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
     public void getWhenClientResponseTypeCodeShouldReturn200() throws Exception {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName();
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName())
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
 
-        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient().prepareGet(servletURI).execute();
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(servletURI)
+                .execute();
+
         Response response = f.get();
+
         assertThat(response.getStatusCode(), is(200));
 
         Optional<String> csrfToken = getSessionAndCsrfToken.extractCsrfToken(response.getResponseBody());
         assertTrue(csrfToken.isPresent());
+
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
@@ -126,49 +174,79 @@ public class OAuth2CodeResourceTest {
         // get a session and valid csrf.
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String validServletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName();
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName())
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String validServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
         List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
         assertThat(response.getStatusCode(), is(403));
+        authAssertion.redirectCookie(response.getCookies(), true, "/" + pathWithParams);
     }
 
     @Test
-    public void postResponseTypeCodeWhenRequestResponseTypeTokenExpect302() throws Exception {
+    public void postResponseTypeCodeWhenRequestResponseTypeTokenExpectErrorAnd302() throws Exception {
 
         // get a session and valid csrf.
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
 
-        String validServletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&state=some-state";
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("state", "some-state")
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String validServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
+
         Session session = getSessionAndCsrfToken.run(validServletURI);
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
 
         ResourceOwner ro = loadResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&state=some-state" +
-                "&response_type=token";
+        Map<String, String> postParams = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", "token"),
+                entry("state", "some-state")
+        );
+        String postPathWithParams = authAssertion.contextWithParams(contextPath, postParams);
+        String postServletURI = new StringBuilder()
+                .append(baseURI)
+                .append(postPathWithParams)
+                .toString();
 
         // make request with wrong response type.
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
-                .preparePost(servletURI)
+                .preparePost(postServletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         String expectedLocation = confidentialClient.getClient().getRedirectURI() +
@@ -179,6 +257,8 @@ public class OAuth2CodeResourceTest {
         Response response = f.get();
         assertThat(response.getStatusCode(), is(302));
         assertThat(response.getHeader("location"), is(expectedLocation));
+
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -188,17 +268,29 @@ public class OAuth2CodeResourceTest {
 
         ResourceOwner ro = loadResourceOwner.run();
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName();
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName())
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         Session session = getSessionAndCsrfToken.run(servletURI);
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -213,13 +305,15 @@ public class OAuth2CodeResourceTest {
 
         //authorization code.
         QueryStringToMap queryStringToMap = new QueryStringToMap();
-        Map<String, List<String>> params = queryStringToMap.run(
+        Map<String, List<String>> actualParams = queryStringToMap.run(
                 Optional.of(location.getQuery())
         );
 
-        assertThat(params.size(), is(1));
-        assertThat(params.get("code").size(), is(1));
-        assertThat(params.get("code").get(0), is(notNullValue()));
+        assertThat(actualParams.size(), is(1));
+        assertThat(actualParams.get("code").size(), is(1));
+        assertThat(actualParams.get("code").get(0), is(notNullValue()));
+
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 
     @Test
@@ -228,19 +322,31 @@ public class OAuth2CodeResourceTest {
         ConfidentialClient confidentialClient = loadConfidentialClientWithScopes.run();
         String state = "test-state";
 
-        String servletURI = this.servletURI +
-                "?client_id=" + confidentialClient.getClient().getId().toString() +
-                "&response_type=" + confidentialClient.getClient().getResponseTypes().get(0).getName() +
-                "&state=" + state;
+        Map<String, String> params = Map.ofEntries(
+                entry("client_id", confidentialClient.getClient().getId().toString()),
+                entry("response_type", confidentialClient.getClient().getResponseTypes().get(0).getName()),
+                entry("state", state)
+        );
+        String pathWithParams = authAssertion.contextWithParams(contextPath, params);
+
+        String servletURI = new StringBuilder()
+                .append(baseURI)
+                .append(pathWithParams)
+                .toString();
 
         Session session = getSessionAndCsrfToken.run(servletURI);
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         ResourceOwner ro = loadResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -255,14 +361,16 @@ public class OAuth2CodeResourceTest {
 
         //authorization code.
         QueryStringToMap queryStringToMap = new QueryStringToMap();
-        Map<String, List<String>> params = queryStringToMap.run(
+        Map<String, List<String>> actualParams = queryStringToMap.run(
                 Optional.of(location.getQuery())
         );
 
-        assertThat(params.size(), is(2));
-        assertThat(params.get("code").size(), is(1));
-        assertThat(params.get("code").get(0), is(notNullValue()));
-        assertThat(params.get("state").size(), is(1));
-        assertThat(params.get("state").get(0), is(state));
+        assertThat(actualParams.size(), is(2));
+        assertThat(actualParams.get("code").size(), is(1));
+        assertThat(actualParams.get("code").get(0), is(notNullValue()));
+        assertThat(actualParams.get("state").size(), is(1));
+        assertThat(actualParams.get("state").get(0), is(state));
+
+        authAssertion.redirectCookie(response.getCookies(), false, null);
     }
 }

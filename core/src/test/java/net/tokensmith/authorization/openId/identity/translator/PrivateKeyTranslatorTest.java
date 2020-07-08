@@ -32,7 +32,6 @@ public class PrivateKeyTranslatorTest {
     public void toShouldTranslate() throws Exception {
         RSAKeyPair keyPair = new RSAKeyPair(
                 Optional.empty(),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 new BigInteger("1"),
                 new BigInteger("2"),

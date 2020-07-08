@@ -31,7 +31,6 @@ public class JwtRSAPublicKeyTranslator {
 
         return new RSAPublicKey(
                 Optional.of(key.getKeyId().toString()),
-                KeyType.RSA,
                 Use.SIGNATURE,
                 key.getN(),
                 key.getE()
