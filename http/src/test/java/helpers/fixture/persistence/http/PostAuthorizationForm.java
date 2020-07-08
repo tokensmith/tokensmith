@@ -1,10 +1,10 @@
 package helpers.fixture.persistence.http;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
 import helpers.fixture.persistence.http.input.AuthEndpointProps;
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class PostAuthorizationForm {
         Response response = postLogin(props);
         Session session = new Session();
         for(Cookie cookie: response.getCookies()) {
-            if (cookie.getName().equals("session")) {
+            if (cookie.name().equals("session")) {
                 session.setSession(cookie);
             }
         }
@@ -62,12 +63,17 @@ public class PostAuthorizationForm {
         String authEndpoint = authEndpoint(props);
 
         Session session = getSessionAndCsrfToken.run(authEndpoint);
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         List<Param> postData = FormFactory.makeLoginForm(props.getEmail(), session.getCsrfToken());
 
         ListenableFuture<Response> f = httpDriver
                 .preparePost(authEndpoint)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         return f.get();

@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
@@ -158,7 +158,7 @@ public class OpenIdImplicitIdentityResourceTest {
 
 
         List<Cookie> cookies = new ArrayList<>();
-        cookies.add(session.getSession());
+        cookies.add(session.getCsrf());
         cookies.add(session.getRedirect());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
@@ -188,7 +188,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -207,6 +207,10 @@ public class OpenIdImplicitIdentityResourceTest {
 
         Session session = getSessionAndCsrfToken.run(validServletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
@@ -217,7 +221,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -242,6 +246,10 @@ public class OpenIdImplicitIdentityResourceTest {
 
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
@@ -249,7 +257,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -319,6 +327,10 @@ public class OpenIdImplicitIdentityResourceTest {
                 + "&state=" + state + "&nonce=some-nonce";
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getRedirect());
+
         RSAPrivateKey key = getOrCreateRSAPrivateKey.run(2048);
         ResourceOwner ro = loadOpenIdResourceOwner.run();
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
@@ -326,7 +338,7 @@ public class OpenIdImplicitIdentityResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();

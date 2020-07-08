@@ -8,7 +8,7 @@
 | -------------------- | ------------- |-------|
 | ProfileResource | profile.jsp | login first, follow this [link](http://localhost:8080/profile) |
 | ProfileResource | 401.jsp | with out logging in, follow this [link](http://localhost:8080/profile) |
-| OpenIdImplicitResource | authorization.jsp | follow this [link](http://localhost:8080/authorization?client_id=3ea070d8-c687-4ebc-be2f-32dfb1acd372&response_type=TOKEN&scope=openid+profile&redirect_uri=https://tokensmith.net) |
+| OpenIdImplicitResource | authorization.jsp | need to seed data for this to work. |
 | OpenIdImplicitIdentityResource | authorization.jsp | need to seed data for this to work. |
 | OpenIdCodeResource | authorization.jsp | follow this [link](http://localhost:8080/authorization?client_id=48d4f828-69bc-4e34-81e3-28288fa4de7a&response_type=CODE&scope=openid+profile&redirect_uri=https://tokensmith.net)|
 | OAuth2CodeResource | authorization.jsp | need to seed data for this to work. |

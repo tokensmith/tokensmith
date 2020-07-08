@@ -1,6 +1,6 @@
 package helpers.assertion;
 
-import com.ning.http.client.cookie.Cookie;
+
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -9,16 +9,16 @@ import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 
+
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import io.netty.handler.codec.http.cookie.Cookie;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -37,7 +37,7 @@ public class AuthAssertion {
     public void redirectCookie(List<Cookie> cookies, Boolean exists, String expected) {
 
         Cookie actual = cookies.stream()
-                .filter(c -> CookieName.REDIRECT.toString().equals(c.getName()))
+                .filter(c -> CookieName.REDIRECT.toString().equals(c.name()))
                 .findAny()
                 .orElse(null);
 
@@ -51,7 +51,7 @@ public class AuthAssertion {
 
             JsonWebToken actualRedirect = null;
             try {
-                actualRedirect = jwtSerde.stringToJwt(actual.getValue(), RedirectClaim.class);
+                actualRedirect = jwtSerde.stringToJwt(actual.value(), RedirectClaim.class);
             } catch (JsonToJwtException | InvalidJWT e) {
                 fail("Unable to parse redirect cookie value to a jwt");
             }
@@ -64,9 +64,11 @@ public class AuthAssertion {
             assertThat(decodedRedirect, is(decodedExpectedRedirect));
             assertThat(actualClaim.getIssuedAt(), is(notNullValue()));
         } else {
-            // should not be there.
-            assertThat(actual, is(nullValue()));
+            if (Objects.nonNull(actual)) {
+                assertThat("expecting age to be 0", actual.maxAge(), is(0L));
+            }
         }
+
     }
 
     public String contextWithParams(String context, Map<String, String> params) {

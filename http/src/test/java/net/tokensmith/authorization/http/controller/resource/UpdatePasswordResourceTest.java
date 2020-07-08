@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.http.controller.resource;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
@@ -115,7 +115,7 @@ public class UpdatePasswordResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI + "?nonce=" + jwt)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -154,7 +154,7 @@ public class UpdatePasswordResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI + "?nonce=" + jwt)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -184,7 +184,7 @@ public class UpdatePasswordResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI + "?nonce=" + jwt)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();

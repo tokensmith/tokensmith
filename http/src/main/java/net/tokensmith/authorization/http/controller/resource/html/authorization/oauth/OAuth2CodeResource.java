@@ -90,13 +90,16 @@ public class OAuth2CodeResource extends Resource<WebSiteSession, WebSiteUser> {
             return response;
         } catch (InformResourceOwnerException e) {
             authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
             authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         }
 

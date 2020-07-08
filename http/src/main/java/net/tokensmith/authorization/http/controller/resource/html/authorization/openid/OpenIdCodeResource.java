@@ -92,16 +92,20 @@ public class OpenIdCodeResource extends Resource<WebSiteSession, WebSiteUser> {
             return response;
         } catch (InformResourceOwnerException e) {
             authorizationHelper.prepareNotFoundResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (InformClientException e) {
             authorizationHelper.prepareErrorResponse(response, e.getRedirectURI(), e.getError(), e.getDescription(), e.getState());
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         } catch (ServerException e) {
             logger.error(e.getMessage(), e);
             authorizationHelper.prepareServerErrorResponse(globalCssPath, response);
+            response.getCookies().remove(CookieName.REDIRECT.toString());
             return response;
         }
 
+        response.getCookies().remove(CookieName.REDIRECT.toString());
 
         response.getHeaders().put(Header.CONTENT_TYPE.getValue(), ContentType.FORM_URL_ENCODED.getValue());
         String location = authorizationHelper.makeRedirectURIForCodeGrant(authResponse);

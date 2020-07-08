@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.http.controller.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ning.http.client.*;
+import org.asynchttpclient.*;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
@@ -205,7 +205,7 @@ public class TokenResourceRefreshTokenTest {
         );
 
 
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
+        BoundRequestBuilder requestBuilder = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setHeader("Content-Type", "application/x-www-form-urlencoded")
                 .setHeader("Authorization", "Basic " + encodedCredentials)

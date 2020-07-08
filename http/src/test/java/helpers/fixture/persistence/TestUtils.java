@@ -1,8 +1,8 @@
 package helpers.fixture.persistence;
 
-import com.ning.http.client.Param;
-import com.ning.http.client.Request;
-import com.ning.http.client.Response;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Request;
+import org.asynchttpclient.Response;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 
 import java.io.BufferedWriter;
@@ -19,7 +19,7 @@ public class TestUtils {
                 .append(request.getMethod()).append(" ")
                 .append(request.getUri()).append("\n");
 
-        for(Map.Entry<String, List<String>> header: request.getHeaders()) {
+        for(Map.Entry<String, String> header: request.getHeaders().entries()) {
             log.append(String.format("%s: %s\n", header.getKey(), header.getValue()));
         }
 
@@ -38,7 +38,8 @@ public class TestUtils {
         // response
         log.append(String.format("\n%s\n", response.getStatusCode()));
 
-        for(Map.Entry<String, List<String>> header: response.getHeaders()) {
+
+        for(Map.Entry<String, String> header: response.getHeaders().entries()) {
             log.append(String.format("%s: %s\n", header.getKey(), header.getValue()));
         }
 

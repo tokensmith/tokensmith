@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Response;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.EntityFactory;
 import helpers.suite.IntegrationTestSuite;

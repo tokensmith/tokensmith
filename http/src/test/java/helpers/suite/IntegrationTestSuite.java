@@ -1,12 +1,14 @@
 package helpers.suite;
 
-import com.ning.http.client.AsyncHttpClient;
+
 import config.TestHttpAppConfig;
 import helpers.category.UnitTests;
 import helpers.category.ServletContainerTest;
 import net.tokensmith.authorization.http.controller.resource.api.site.RestAddressResourceTest;
 import net.tokensmith.authorization.http.controller.resource.api.site.RestProfileResourceTest;
 import net.tokensmith.otter.server.HttpServerConfig;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Categories;
@@ -29,9 +31,11 @@ import net.tokensmith.otter.server.container.ServletContainer;
 import net.tokensmith.otter.server.container.ServletContainerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 
 @RunWith(Categories.class)
@@ -100,7 +104,7 @@ public class IntegrationTestSuite {
 
         server.start();
 
-        httpClient = new AsyncHttpClient();
+        httpClient = asyncHttpClient(new DefaultAsyncHttpClientConfig.Builder().setCookieStore(null).build());
     }
 
     /**

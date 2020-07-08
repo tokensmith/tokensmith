@@ -1,6 +1,6 @@
 package helpers.fixture.persistence.http;
 
-import com.ning.http.client.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.Cookie;
 
 /**
  * Created by tommackenzie on 8/4/15.
@@ -9,6 +9,7 @@ public class Session {
     private String csrfToken;
     private Cookie session;
     private Cookie redirect;
+    private Cookie csrf;
 
     public String getCsrfToken() {
         return csrfToken;
@@ -24,6 +25,14 @@ public class Session {
 
     public void setSession(Cookie session) {
         this.session = session;
+    }
+
+    public Cookie getCsrf() {
+        return csrf;
+    }
+
+    public void setCsrf(Cookie csrf) {
+        this.csrf = csrf;
     }
 
     public Cookie getRedirect() {

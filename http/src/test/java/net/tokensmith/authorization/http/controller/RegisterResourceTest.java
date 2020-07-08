@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.http.controller;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
@@ -79,7 +79,7 @@ public class RegisterResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -131,7 +131,7 @@ public class RegisterResourceTest {
         // set up cookies so it redirects.
         List<Cookie> cookies = new ArrayList<>();
         cookies.add(authSession.getRedirect());
-        cookies.add(registerSession.getSession());
+        cookies.add(registerSession.getCsrf());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
@@ -164,7 +164,7 @@ public class RegisterResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -186,7 +186,7 @@ public class RegisterResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Arrays.asList(session.getSession()))
+                .setCookies(Arrays.asList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();

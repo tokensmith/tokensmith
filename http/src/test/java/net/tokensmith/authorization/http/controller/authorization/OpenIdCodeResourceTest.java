@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import com.ning.http.client.ListenableFuture;
-import com.ning.http.client.Param;
-import com.ning.http.client.Response;
-import com.ning.http.client.cookie.Cookie;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
@@ -117,8 +117,8 @@ public class OpenIdCodeResourceTest {
         List<Param> postData = FormFactory.makeLoginForm("invalid-user@tokensmith.net", session.getCsrfToken());
 
         List<Cookie> cookies = new ArrayList<>();
-        cookies.add(session.getSession());
         cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
 
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(validServletURI)
@@ -250,6 +250,10 @@ public class OpenIdCodeResourceTest {
 
         Session session = getSessionAndCsrfToken.run(servletURI);
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
         Map<String, String> postParams = Map.ofEntries(
@@ -270,7 +274,7 @@ public class OpenIdCodeResourceTest {
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(postServletURI)
                 .setFormParams(postData)
-                .setCookies(Collections.singletonList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -315,10 +319,14 @@ public class OpenIdCodeResourceTest {
         }
         List<Param> postData = FormFactory.makeLoginForm(ro.getEmail(), session.getCsrfToken());
 
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getRedirect());
+        cookies.add(session.getCsrf());
+
         ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
                 .preparePost(servletURI)
                 .setFormParams(postData)
-                .setCookies(Collections.singletonList(session.getSession()))
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
