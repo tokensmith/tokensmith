@@ -16,6 +16,12 @@ public class BadRequestException extends BaseInformException {
         this.description = description;
     }
 
+    public BadRequestException(String message, String field, String description, Throwable cause) {
+        super(message, cause);
+        this.field = field;
+        this.description = description;
+    }
+
     public BadRequestException(String message, String error, String description, Throwable domainCause, int code) {
         super(message, domainCause, code);
         this.error = error;

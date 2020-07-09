@@ -29,7 +29,7 @@ public class Welcome {
         this.nonceRepository = nonceRepository;
         this.resourceOwnerRepository = resourceOwnerRepository;
     }
-
+    
     public void markEmailVerified(String jwt) throws BadRequestException, NotFoundException {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();

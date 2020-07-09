@@ -1,6 +1,10 @@
 package net.tokensmith.authorization.nonce.reset;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.nonce.exception.JwtException;
+import net.tokensmith.authorization.security.entity.NonceClaim;
+import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -247,7 +251,7 @@ public class ForgotPasswordTest {
         String password = "plainTextPassword";
         String repeatPassword = "plainTextPassword";
 
-        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(BadRequestException.class);
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(JwtException.class);
 
         BadRequestException actual = null;
         try {
@@ -257,6 +261,7 @@ public class ForgotPasswordTest {
         }
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("nonce"));
 
         verify(mockHashTextRandomSalt, never()).run(password);
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
@@ -450,6 +455,61 @@ public class ForgotPasswordTest {
     }
 
     @Test
+    public void toJwtShouldBeOk() throws Exception {
+        String plainTextNonce = "1234";
+        NonceClaim nonceClaim = new NonceClaim();
+        nonceClaim.setNonce(plainTextNonce);
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
+        String jwt = compactBuilder.claims(nonceClaim).build().toString();
+
+        JsonWebToken<NonceClaim> actual = subject.toJwt(jwt);
+
+        assertThat(actual, is(notNullValue()));
+        assertThat(actual.getClaims().getNonce(), is(plainTextNonce));
+    }
+
+    @Test
+    public void toJwtShouldThrowJwtException() throws Exception {
+        String jwt = "not-a-jwt";
+
+        JwtException actual = null;
+        try {
+            subject.toJwt(jwt);
+        } catch (JwtException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
+    public void verifyNonceShouldBeOk() throws Exception {
+        String plainTextNonce = "1234";
+        NonceClaim nonceClaim = new NonceClaim();
+        nonceClaim.setNonce(plainTextNonce);
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
+        String jwt = compactBuilder.claims(nonceClaim).build().toString();
+
+        boolean actual = subject.verifyNonce(jwt);
+
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    public void verifyNonceShouldThrowNonceException() throws Exception {
+        String jwt = "not-a-jwt";
+
+        NonceException actual = null;
+        try {
+            subject.verifyNonce(jwt);
+        } catch (NonceException e) {
+            actual = e;
+        }
+
+        assertThat(actual, is(notNullValue()));
+    }
+
+    @Test
     public void hasValueShouldBeTrue() {
         Boolean actual = subject.hasValue("some-value");
         assertThat(actual, is(true));
@@ -472,6 +532,7 @@ public class ForgotPasswordTest {
         Boolean actual = subject.hasValue(" ");
         assertThat(actual, is(false));
     }
+
 
 
 }

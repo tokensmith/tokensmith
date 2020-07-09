@@ -7,8 +7,8 @@
 </head>
 <body>
 <div class="main">
-    <div id="message" class="message" data-status="link-expired">
-        <p>Oops, looks like this link has expired. Please restart the <a href="${presenter.getForgotPasswordLink()}">forgot password</a> process.</p>
+    <div id="message" class="message" data-status="error">
+        <p>Oops, something went wrong. The link may have expired, please restart the <a href="${presenter.getForgotPasswordLink()}">forgot password</a> process.</p>
     </div>
 </div>
 </body>
