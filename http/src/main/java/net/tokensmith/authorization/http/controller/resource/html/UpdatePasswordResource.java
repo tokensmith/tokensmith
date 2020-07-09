@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html;
 
 import net.tokensmith.authorization.http.controller.resource.html.authorization.exception.InvalidParamException;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
+import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -50,10 +51,7 @@ public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser
     @Override
     public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
 
-        UpdatePasswordPresenter presenter = new UpdatePasswordPresenter(
-            globalCssPath,
-            request.getCsrfChallenge().get()
-        );
+        UpdatePasswordPresenter presenter = presenter(request.getCsrfChallenge().get());
 
         // basic verification that the nonce key is there.
         String nonce;
@@ -67,7 +65,7 @@ public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser
         // makes sure nonce is a jwt.
         try {
             forgotPassword.verifyNonce(nonce);
-        } catch (BadRequestException e) {
+        } catch (NonceException e) {
             prepareResponse(response, presenter, StatusCode.BAD_REQUEST, JSP_PATH_ERROR);
             return response;
         }
@@ -91,14 +89,14 @@ public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser
         try {
             forgotPassword.reset(nonce, password, repeatPassword);
         } catch (BadRequestException e) {
-            // 178: send them to the error jsp.
+            String template = NONCE_URL_PARAM.equals(e.getField()) ? JSP_PATH_ERROR : JSP_FORM_PATH;
             UpdatePasswordPresenter presenter = makePresenterOnError(request.getCsrfChallenge().get(), e.getDescription());
             response.setPresenter(Optional.of(presenter));
-            response.setTemplate(Optional.of(JSP_FORM_PATH));
+            response.setTemplate(Optional.of(template));
             response.setStatusCode(StatusCode.BAD_REQUEST);
             return response;
         } catch (NotFoundException e) {
-            AssetPresenter presenter = new AssetPresenter(globalCssPath);
+            UpdatePasswordPresenter presenter = presenter(request.getCsrfChallenge().get());
             response.setPresenter(Optional.of(presenter));
             response.setStatusCode(StatusCode.NOT_FOUND);
             response.setTemplate(Optional.of(JSP_EXPIRED_PATH));
@@ -112,6 +110,12 @@ public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser
         return response;
     }
 
+    protected UpdatePasswordPresenter presenter(String csrfToken) {
+        return new UpdatePasswordPresenter(
+            globalCssPath, csrfToken, "/forgot-password"
+        );
+    }
+
     protected void prepareResponse(Response<WebSiteSession> response, UpdatePasswordPresenter presenter, StatusCode statusCode, String template) {
         response.setStatusCode(statusCode);
         response.setPresenter(Optional.of(presenter));
@@ -119,7 +123,7 @@ public class UpdatePasswordResource extends Resource<WebSiteSession, WebSiteUser
     }
 
     protected UpdatePasswordPresenter makePresenterOnError(String encodedCsrfToken, String errorMessage) {
-        UpdatePasswordPresenter p = new UpdatePasswordPresenter(globalCssPath, encodedCsrfToken);
+        UpdatePasswordPresenter p = presenter(encodedCsrfToken);
         p.setErrorMessage(Optional.of(errorMessage));
         return p;
     }

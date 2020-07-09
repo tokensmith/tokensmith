@@ -94,6 +94,7 @@ public class UpdatePasswordResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_BAD_REQUEST));
+        assertThat(response.getResponseBody().contains("data-status=\"error\""), is(true));
     }
 
     @Test
@@ -107,6 +108,7 @@ public class UpdatePasswordResourceTest {
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_BAD_REQUEST));
+        assertThat(response.getResponseBody().contains("data-status=\"error\""), is(true));
     }
 
     @Test
@@ -216,5 +218,45 @@ public class UpdatePasswordResourceTest {
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_NOT_FOUND));
         assertThat(response.getResponseBody().contains("data-status=\"link-expired\""), is(true));
+    }
+
+    @Test
+    public void postWhenNonceInvalidShouldReturn400() throws Exception {
+        String plainTextNonce = randomString.run();
+
+        UnsecureCompactBuilder compactBuilder = new UnsecureCompactBuilder();
+        NonceClaim nonceClaim = new NonceClaim();
+        nonceClaim.setNonce(plainTextNonce);
+        String jwt = compactBuilder.claims(nonceClaim).build().toString();
+
+        String hashedNonce = hashToken.run(plainTextNonce);
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+        loadNonce.resetPassword(ro, hashedNonce);
+
+        Session session = new Session();
+        try {
+            session = getSessionAndCsrfToken.run(servletURI + "?nonce=" + jwt);
+        } catch (GetCsrfException e) {
+            fail("CSRF error - status code: " + e.getStatusCode() + ", redirect location: " + e.getRedirectUri() + ", response body: " + e.getResponseBody());
+        }
+
+        String password = "password123";
+
+        // before the test runs. make sure the new password does not equal the existing.
+        Boolean passwordsMatch = isTextEqualToHash.run(password, ro.getPassword());
+        assertFalse(passwordsMatch);
+
+        List<Param> postData = FormFactory.makeUpdatePasswordForm(password, password, session.getCsrfToken());
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(servletURI + "?nonce=not-a-jwt")
+                .setFormParams(postData)
+                .setCookies(Arrays.asList(session.getCsrf()))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_BAD_REQUEST));
+        assertThat(response.getResponseBody().contains("data-status=\"error\""), is(true));
     }
 }

@@ -251,7 +251,7 @@ public class ForgotPasswordTest {
         String password = "plainTextPassword";
         String repeatPassword = "plainTextPassword";
 
-        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(BadRequestException.class);
+        when(mockSpendNonce.spend(jwt, NonceName.RESET_PASSWORD)).thenThrow(JwtException.class);
 
         BadRequestException actual = null;
         try {
@@ -261,6 +261,7 @@ public class ForgotPasswordTest {
         }
 
         assertThat(actual, is(notNullValue()));
+        assertThat(actual.getField(), is("nonce"));
 
         verify(mockHashTextRandomSalt, never()).run(password);
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
@@ -495,13 +496,13 @@ public class ForgotPasswordTest {
     }
 
     @Test
-    public void verifyNonceShouldThrowBadRequestException() throws Exception {
+    public void verifyNonceShouldThrowNonceException() throws Exception {
         String jwt = "not-a-jwt";
 
-        BadRequestException actual = null;
+        NonceException actual = null;
         try {
             subject.verifyNonce(jwt);
-        } catch (BadRequestException e) {
+        } catch (NonceException e) {
             actual = e;
         }
 

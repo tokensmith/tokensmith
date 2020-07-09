@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.nonce;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.nonce.exception.JwtException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -73,12 +74,12 @@ public class SpendNonceTest {
     }
 
     @Test
-    public void spendShouldThrowBadRequestExceptionException() throws Exception {
+    public void spendShouldThrowJwtExceptionException() throws Exception {
 
-        BadRequestException actual = null;
+        JwtException actual = null;
         try {
             subject.spend("notAJwt", NonceName.WELCOME);
-        } catch(BadRequestException e) {
+        } catch(JwtException e) {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));

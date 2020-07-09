@@ -89,14 +89,13 @@ public class ForgotPassword {
     }
 
     public void reset(String jwt, String password, String repeatPassword) throws NotFoundException, BadRequestException {
-        // basic checking.
         validate(jwt, password, repeatPassword);
 
         Nonce nonce;
         try {
             nonce = spendNonce.spend(jwt, NonceName.RESET_PASSWORD);
-        } catch (BadRequestException e) {
-            throw e;
+        } catch (JwtException e ) {
+            throw new BadRequestException("jwt is invalid", "nonce", "Nonce was invalid", e);
         } catch (NotFoundException e) {
             throw e;
         }
@@ -115,11 +114,11 @@ public class ForgotPassword {
         publish.send(Topic.MAILER.toString(), msg);
     }
 
-    public boolean verifyNonce(String nonce) throws BadRequestException {
+    public boolean verifyNonce(String nonce) throws NonceException {
         try {
             toJwt(nonce);
         } catch (JwtException e) {
-            throw new BadRequestException("nonce is not a jwt.", e);
+            throw new NonceException("Nonce was not a JWT", e);
         }
         return true;
     }

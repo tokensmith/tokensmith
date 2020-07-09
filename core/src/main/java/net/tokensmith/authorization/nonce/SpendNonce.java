@@ -2,6 +2,8 @@ package net.tokensmith.authorization.nonce;
 
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.exception.NotFoundException;
+import net.tokensmith.authorization.nonce.exception.JwtException;
+import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
@@ -30,7 +32,7 @@ public class SpendNonce {
         this.nonceRepository = nonceRepository;
     }
 
-    public Nonce spend(String jwt, NonceName nonceName) throws BadRequestException, NotFoundException {
+    public Nonce spend(String jwt, NonceName nonceName) throws JwtException, NotFoundException {
 
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();
@@ -39,9 +41,9 @@ public class SpendNonce {
         try {
             jsonWebToken = jwtSerde.stringToJwt(jwt, NonceClaim.class);
         } catch (JsonToJwtException e) {
-            throw new BadRequestException(MARSHAL_MSG, e);
+            throw new JwtException(MARSHAL_MSG, e);
         } catch (InvalidJWT e) {
-            throw new BadRequestException(NOT_JWT_MSG, e);
+            throw new JwtException(NOT_JWT_MSG, e);
         }
 
         NonceClaim nonceClaim = jsonWebToken.getClaims();
