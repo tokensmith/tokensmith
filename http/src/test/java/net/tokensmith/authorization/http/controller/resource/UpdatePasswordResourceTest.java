@@ -85,6 +85,31 @@ public class UpdatePasswordResourceTest {
     }
 
     @Test
+    public void getWhenNonceIsEmptyShouldReturn400() throws Exception {
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(servletURI + "?nonce=")
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_BAD_REQUEST));
+    }
+
+    @Test
+    public void getWhenNonceIsNotAJwtShouldReturn400() throws Exception {
+        String notAJwt= "not-a-jwt";
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareGet(servletURI + "?nonce=" + notAJwt)
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_BAD_REQUEST));
+    }
+
+    @Test
     public void postShouldReturn200() throws Exception {
         String plainTextNonce = randomString.run();
 

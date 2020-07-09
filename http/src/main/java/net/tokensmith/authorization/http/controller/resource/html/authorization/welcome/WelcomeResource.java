@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.welcome;
 
 
+import net.tokensmith.authorization.http.controller.resource.html.authorization.exception.InvalidParamException;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
@@ -50,6 +51,7 @@ public class WelcomeResource extends Resource<WebSiteSession, WebSiteUser> {
         try {
             welcome.markEmailVerified(nonce);
         } catch (BadRequestException e) {
+            // nonce was invalid.
             prepareResponse(response, StatusCode.BAD_REQUEST, JSP_PATH_ERROR);
             return response;
         } catch(NotFoundException e) {

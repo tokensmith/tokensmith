@@ -30,6 +30,7 @@ public class Welcome {
         this.resourceOwnerRepository = resourceOwnerRepository;
     }
 
+    // 173: how is this different than SpendNonce?
     public void markEmailVerified(String jwt) throws BadRequestException, NotFoundException {
         JwtAppFactory appFactory = new JwtAppFactory();
         JwtSerde jwtSerde = appFactory.jwtSerde();

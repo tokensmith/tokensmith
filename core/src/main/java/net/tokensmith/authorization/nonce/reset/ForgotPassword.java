@@ -1,5 +1,12 @@
 package net.tokensmith.authorization.nonce.reset;
 
+import net.tokensmith.authorization.nonce.exception.JwtException;
+import net.tokensmith.authorization.security.entity.NonceClaim;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.exception.InvalidJWT;
+import net.tokensmith.jwt.serialization.JwtSerde;
+import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.BadRequestException;
@@ -82,6 +89,7 @@ public class ForgotPassword {
     }
 
     public void reset(String jwt, String password, String repeatPassword) throws NotFoundException, BadRequestException {
+        // basic checking.
         validate(jwt, password, repeatPassword);
 
         Nonce nonce;
@@ -105,6 +113,31 @@ public class ForgotPassword {
         msg.put(MessageKey.RECIPIENT.toString(), nonce.getResourceOwner().getEmail());
 
         publish.send(Topic.MAILER.toString(), msg);
+    }
+
+    public boolean verifyNonce(String nonce) throws BadRequestException {
+        try {
+            toJwt(nonce);
+        } catch (JwtException e) {
+            throw new BadRequestException("nonce is not a jwt.", e);
+        }
+        return true;
+    }
+
+    protected JsonWebToken<NonceClaim> toJwt(String from) throws JwtException {
+        JwtAppFactory appFactory = new JwtAppFactory();
+        JwtSerde jwtSerde = appFactory.jwtSerde();
+
+        JsonWebToken<NonceClaim> to;
+        try {
+            to = jwtSerde.stringToJwt(from, NonceClaim.class);
+        } catch (JsonToJwtException e) {
+            throw new JwtException("Could not marshal to JsonWebToken<NonceClaim> from compact jwt", e);
+        } catch (InvalidJWT e) {
+            throw new JwtException("Input was not a JWT", e);
+        }
+
+        return to;
     }
 
     protected void validate(String jwt, String password, String repeatPassword) throws BadRequestException {
