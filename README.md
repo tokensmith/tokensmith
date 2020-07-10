@@ -23,13 +23,11 @@ The server is configured in a [properties file](http/src/main/resources/applicat
  - Environment variables can be set as, `export allowLocalUrls=false`
 
 #### Start Postgres and Kafka 
-Start database and kafka.
 ```bash
 make run
 ```
 
 #### Stop Postgres and Kafka 
-Stop database and kafka.
 ```bash
 make stop
 ```
