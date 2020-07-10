@@ -146,7 +146,7 @@ public class CookieServiceTest {
 
         assertThat(presenter.getUserMessage(), is(notNullValue()));
         assertTrue(presenter.getUserMessage().isPresent());
-        assertThat(presenter.getUserMessage().get(), is("Thanks for registering. We have sent you an email to verify your email address. You can now login."));
+        assertThat(presenter.getUserMessage().get(), is("Thanks for registering. We have sent you an email to verify your account. You can now login."));
 
         // should not remove redirect cookie.
         assertThat(response.getCookies().size(), is(1));

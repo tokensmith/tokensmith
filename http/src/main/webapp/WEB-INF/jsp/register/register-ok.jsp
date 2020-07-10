@@ -9,7 +9,7 @@
 
 <div class="main">
     <div id="message" class="message" data-status="ok">
-        <p>Thanks for registering. We have sent you an email to verify your email address.</p>
+        <p>Thanks for registering. We have sent you an email to verify your account.</p>
     </div>
 </div>
 

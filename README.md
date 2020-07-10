@@ -1,7 +1,7 @@
 # Tokensmith
 Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html/rfc6749) and [OIDC](https://openid.net/) Identity server.
 
-This documentation is intended for a developer audience. More detailed documentaion is [in progress](https://github.com/tokensmith/website).
+This documentation is intended for a developer audience. More detailed documentation is [in progress](https://github.com/tokensmith/website).
 
 - [Run the server](#run-the-server)
 - [Seed the database](#seed-the-database)
@@ -25,14 +25,13 @@ The server is configured in a [properties file](http/src/main/resources/applicat
 #### Start Postgres and Kafka 
 Start database and kafka.
 ```bash
-docker-compose build
-docker-compose up -d
+make run
 ```
 
-#### Run database migrations.
+#### Stop Postgres and Kafka 
+Stop database and kafka.
 ```bash
-./gradlew -x test clean build
-./gradlew core:flywayMigrate -Dflyway.user=postgres -Dflyway.password="" -Dflyway.url="jdbc:postgresql://127.0.0.1:5432/auth"
+make stop
 ```
 
 #### Compile the application
@@ -70,7 +69,7 @@ See the [HTTP](http/README.md) readme for documents on interacting with Tokensmi
  - Include links to the RFCs that relate to the feature or bug.
 
 ## Project layout
-This repo has four sub projects.
+This repo has multiple gradle projects.
 
 ### [http](http)
 Everything related to accepting and responding to HTTP requests
@@ -79,4 +78,4 @@ Use cases for supporting OAuth2 and OIDC.
 ### [repository](repository)
 Entities and Repository interfaces
 ### [login](login)
-A SDK to interact with Tokensmith (OIDC ID Server).
+An SDK to interact with Tokensmith (OIDC ID Server).
