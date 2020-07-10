@@ -2,7 +2,7 @@ version: '3.8'
 services:
 
   db:
-    container_name: postgres
+    container_name: tokensmith_postgres
     image: postgres:11.5
     restart: always
     ports:
@@ -13,15 +13,15 @@ services:
         POSTGRES_DB: auth
 
   kafka:
-    container_name: gizmo-kafka
-    image: rs/kafka
+    container_name: tokensmith_kafka
+    image: ts/kafka
     build:
       context: docker/kafka
       dockerfile: Dockerfile
 
   zookeeper:
-    container_name: gizmo-zookeeper
-    image: rs/zookeeper
+    container_name: tokensmith_zookeeper
+    image: ts/zookeeper
     build:
       context: docker/zookeeper
       dockerfile: Dockerfile
@@ -29,8 +29,8 @@ services:
       - 2181:2181
 
   kafka-broker:
-    container_name: gizmo-kafka-broker
-    image: rs/kafka-broker
+    container_name: tokensmith_kafka_broker
+    image: ts/kafka-broker
     depends_on:
       - zookeeper
     build:

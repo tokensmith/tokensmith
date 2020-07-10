@@ -1,4 +1,4 @@
-FROM rs/kafka
+FROM ts/kafka
 
 RUN \
     mkdir -p /data/scripts/ && \
