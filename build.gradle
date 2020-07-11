@@ -7,7 +7,7 @@ ext {
     // tokensmith versions.
     jwtVersion = "1.3.3-SNAPSHOT"
     otterVersion = "1.5.5-SNAPSHOT"
-    pelicanVersion = "1.1"
+    pelicanVersion = "1.2-SNAPSHOT"
     parserVersion = "0.0.2"
     bcryptVersion = "0.4"
 
