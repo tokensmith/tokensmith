@@ -82,7 +82,7 @@ User user = login.userInfo("some-access-token");
 ```
 
 ### authorization endpoint
-Generate the URI to the id server's authorization endpoint with the response type, code.
+Generate the URI to the ID Server's authorization endpoint with the response type, code.
 
 ```java
 LoginFactory loginFactory = new LoginFactory();

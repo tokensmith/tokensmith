@@ -1,8 +1,5 @@
 # Front End 
 
-
- - [authorization endpoint] with token response typ
-
 ## Template usage
 | Location  | Template | Link |
 | -------------------- | ------------- |-------|

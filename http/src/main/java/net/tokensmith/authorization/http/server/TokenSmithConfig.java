@@ -11,7 +11,6 @@ import net.tokensmith.authorization.http.controller.resource.api.site.RestProfil
 import net.tokensmith.authorization.http.controller.resource.api.site.between.RestSessionAuth;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
-import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.ProfileResource;
 import net.tokensmith.authorization.http.controller.resource.html.between.CSPBetween;
 import net.tokensmith.authorization.http.controller.resource.html.between.WebSiteAuthRequired;
