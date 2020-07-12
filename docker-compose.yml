@@ -12,30 +12,17 @@ services:
         POSTGRES_PASSWORD: ""
         POSTGRES_DB: auth
 
-  kafka:
-    container_name: tokensmith_kafka
-    image: ts/kafka
-    build:
-      context: docker/kafka
-      dockerfile: Dockerfile
-
   zookeeper:
     container_name: tokensmith_zookeeper
-    image: ts/zookeeper
-    build:
-      context: docker/zookeeper
-      dockerfile: Dockerfile
+    image: tokensmith/zookeeper:v1.2
     ports:
       - 2181:2181
 
   kafka-broker:
     container_name: tokensmith_kafka_broker
-    image: ts/kafka-broker
+    image: tokensmith/kafka-broker:v1.2
     depends_on:
       - zookeeper
-    build:
-      context: docker/kafka-broker
-      dockerfile: Dockerfile
     ports:
       - 9092:9092
       - 29092:29092

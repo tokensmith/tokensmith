@@ -6,10 +6,10 @@
 <link rel="stylesheet" type="text/css" href="${presenter.getGlobalCssPath()}">
 </head>
 <body>
-
-<div id="message" class="message" data-status="ok">
-    <p>Your password has been reset. All your existing sessions have been revoked.</p>
+<div class="main">
+    <div id="message" class="message" data-status="ok">
+        <p>Your password has been reset. All your existing sessions have been revoked.</p>
+    </div>
 </div>
-
 </body>
 </html>
