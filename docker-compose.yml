@@ -14,13 +14,13 @@ services:
 
   zookeeper:
     container_name: tokensmith_zookeeper
-    image: tokensmith/zookeeper
+    image: tokensmith/zookeeper:v1.2
     ports:
       - 2181:2181
 
   kafka-broker:
     container_name: tokensmith_kafka_broker
-    image: tokensmith/kafka-broker
+    image: tokensmith/kafka-broker:v1.2
     depends_on:
       - zookeeper
     ports:
