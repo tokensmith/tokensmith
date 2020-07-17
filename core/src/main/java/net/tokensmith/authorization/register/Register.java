@@ -2,7 +2,6 @@ package net.tokensmith.authorization.register;
 
 import net.tokensmith.authorization.nonce.message.MessageKey;
 import net.tokensmith.authorization.nonce.message.MessageType;
-import net.tokensmith.authorization.nonce.message.Topic;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
@@ -94,7 +93,7 @@ public class Register {
         msg.put(MessageKey.BASE_LINK.toString(), issuer + "/welcome?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
-        publish.send(Topic.MAILER.toString(), msg);
+        publish.send("message-user", msg);
 
         return ro;
     }

@@ -104,7 +104,7 @@ public class RegisterTest {
         assertThat(nonceCaptor.getValue().getNonce(), is("hashedNonce"));
         assertThat(nonceCaptor.getValue().getExpiresAt(), is(notNullValue()));
 
-        verify(mockPublish).send(eq("mailer"), anyMap());
+        verify(mockPublish).send(eq("message-user"), anyMap());
     }
 
     @Test

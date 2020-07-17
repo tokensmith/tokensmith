@@ -78,7 +78,7 @@ public class ForgotPasswordTest {
         subject.sendMessage(email);
 
         ArgumentCaptor<Map<String, String>> messageCaptor = captorForHashMap();
-        verify(mockPublish).send(eq("mailer"), messageCaptor.capture());
+        verify(mockPublish).send(eq("message-user"), messageCaptor.capture());
 
         assertThat(messageCaptor.getValue().size(), is(4));
         assertThat(messageCaptor.getValue().get("type"), is("forgot_password"));
@@ -100,7 +100,7 @@ public class ForgotPasswordTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getField(), is("email"));
         assertThat(actual.getDescription(), is("Email is required"));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ForgotPasswordTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getField(), is("email"));
         assertThat(actual.getDescription(), is("Email is required"));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ForgotPasswordTest {
         assertThat(actual, is(notNullValue()));
         assertThat(actual.getField(), is("email"));
         assertThat(actual.getDescription(), is("Email is required"));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -148,7 +148,7 @@ public class ForgotPasswordTest {
             actual = e;
         }
         assertThat(actual, is(notNullValue()));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -172,7 +172,7 @@ public class ForgotPasswordTest {
         verify(mockRefreshTokenRepository).revokeActive(nonce.getResourceOwner().getId());
 
         ArgumentCaptor<Map<String, String>> messageCaptor = captorForHashMap();
-        verify(mockPublish).send(eq("mailer"), messageCaptor.capture());
+        verify(mockPublish).send(eq("message-user"), messageCaptor.capture());
 
         assertThat(messageCaptor.getValue().size(), is(2));
         assertThat(messageCaptor.getValue().get("type"), is("password_was_reset"));
@@ -207,7 +207,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -238,7 +238,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -267,7 +267,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -298,7 +298,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -329,7 +329,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -360,7 +360,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -391,7 +391,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test
@@ -422,7 +422,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
 
@@ -451,7 +451,7 @@ public class ForgotPasswordTest {
         verify(mockResourceOwnerRepository, never()).updatePassword(any(UUID.class), anyString());
         verify(mockTokenRepository, never()).revokeActive(any(UUID.class));
         verify(mockRefreshTokenRepository, never()).revokeActive(any(UUID.class));
-        verify(mockPublish, never()).send(eq("mailer"), anyMap());
+        verify(mockPublish, never()).send(eq("message-user"), anyMap());
     }
 
     @Test

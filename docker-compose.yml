@@ -26,3 +26,16 @@ services:
     ports:
       - 9092:9092
       - 29092:29092
+
+  message-user:
+    container_name: tokensmith_message_user
+    image: tokensmith/message-user:v0.1
+    depends_on:
+      - kafka-broker
+    environment:
+        SMTP_HOST: ${SMTP_HOST}
+        SMTP_USER: ${SMTP_USER}
+        SMTP_PASSWORD: ${SMTP_PASSWORD}
+        SMTP_FROM: ${SMTP_FROM}
+        MESSAGE_QUEUE_HOST: kafka-broker:29092
+        TOPICS: 'message-user'

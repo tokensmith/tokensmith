@@ -15,7 +15,6 @@ import net.tokensmith.authorization.nonce.SpendNonce;
 import net.tokensmith.authorization.nonce.InsertNonce;
 import net.tokensmith.authorization.nonce.message.MessageKey;
 import net.tokensmith.authorization.nonce.message.MessageType;
-import net.tokensmith.authorization.nonce.message.Topic;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.repo.RefreshTokenRepository;
@@ -72,7 +71,7 @@ public class ForgotPassword {
         msg.put(MessageKey.BASE_LINK.toString(), issuer + "/update-password?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
-        publish.send(Topic.MAILER.toString(), msg);
+        publish.send("message-user", msg);
     }
 
     protected void validate(String email) throws BadRequestException {
@@ -111,7 +110,7 @@ public class ForgotPassword {
         msg.put(MessageKey.TYPE.toString(), MessageType.PASSWORD_WAS_RESET.toString());
         msg.put(MessageKey.RECIPIENT.toString(), nonce.getResourceOwner().getEmail());
 
-        publish.send(Topic.MAILER.toString(), msg);
+        publish.send("message-user", msg);
     }
 
     public boolean verifyNonce(String nonce) throws NonceException {
