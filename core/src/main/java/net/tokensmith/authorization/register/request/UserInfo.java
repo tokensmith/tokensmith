@@ -4,7 +4,6 @@ package net.tokensmith.authorization.register.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.tokensmith.otter.translatable.Translatable;
 
-
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Optional;

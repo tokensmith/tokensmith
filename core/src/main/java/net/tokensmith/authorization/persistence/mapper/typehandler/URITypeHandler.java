@@ -5,7 +5,11 @@ import org.apache.ibatis.type.TypeHandler;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 
 /**
  * Created by tommackenzie on 11/15/14.

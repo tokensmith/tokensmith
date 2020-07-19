@@ -6,11 +6,13 @@ import net.toknsmith.login.model.Redirect;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class MakeRedirectTest {
     private static String BASE_URL = "http://localhost:%s/%s";

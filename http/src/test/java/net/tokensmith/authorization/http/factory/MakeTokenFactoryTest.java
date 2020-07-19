@@ -1,17 +1,16 @@
 package net.tokensmith.authorization.http.factory;
 
 import helpers.category.UnitTests;
+import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
+import net.tokensmith.authorization.openId.identity.MakeCodeGrantIdentityToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
-import net.tokensmith.authorization.openId.identity.MakeCodeGrantIdentityToken;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 2/20/16.

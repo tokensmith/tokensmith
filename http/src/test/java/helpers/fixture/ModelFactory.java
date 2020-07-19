@@ -4,7 +4,6 @@ import net.tokensmith.authorization.http.controller.resource.api.site.model.Addr
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Name;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
 
-
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;

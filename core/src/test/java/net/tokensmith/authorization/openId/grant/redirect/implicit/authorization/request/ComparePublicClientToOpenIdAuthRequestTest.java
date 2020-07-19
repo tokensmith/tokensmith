@@ -1,10 +1,6 @@
 package net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -14,6 +10,10 @@ import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.entity.ResponseType;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,7 +23,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 /**

@@ -2,12 +2,11 @@ package integration.authorization.oauth2.grant.token.request.ValidateParams.vali
 
 
 import integration.authorization.oauth2.grant.token.request.ValidateParams.BaseTest;
-import org.junit.Test;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.parser.exception.OptionalException;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ResponseType;
-
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;

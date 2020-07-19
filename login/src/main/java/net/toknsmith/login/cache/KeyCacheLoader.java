@@ -4,7 +4,6 @@ package net.toknsmith.login.cache;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.toknsmith.login.endpoint.KeyEndpoint;
-
 import net.toknsmith.login.exception.CommException;
 import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.exception.URLException;

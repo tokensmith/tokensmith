@@ -2,21 +2,21 @@ package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.re
 
 import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.authenticate.model.Session;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.authenticate.LoginResourceOwner;
-import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
-import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import net.tokensmith.repository.entity.ResourceOwner;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;

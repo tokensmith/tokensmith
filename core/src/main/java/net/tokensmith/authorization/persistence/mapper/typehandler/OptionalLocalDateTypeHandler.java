@@ -3,7 +3,6 @@ package net.tokensmith.authorization.persistence.mapper.typehandler;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**

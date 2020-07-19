@@ -2,6 +2,12 @@ package helpers.suite;
 
 import helpers.category.ServletContainerTest;
 import helpers.category.UnitTests;
+import net.tokensmith.authorization.http.controller.regex.WelcomeResourceRegexTest;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationFactoryTest;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelperTest;
+import net.tokensmith.authorization.http.factory.MakeOAuthTokenTest;
+import net.tokensmith.authorization.http.factory.MakeOpenIdTokenTest;
+import net.tokensmith.authorization.http.factory.MakeTokenFactoryTest;
 import net.tokensmith.authorization.http.service.CookieServiceTest;
 import net.tokensmith.authorization.http.service.ProfileServiceTest;
 import net.tokensmith.authorization.http.service.translator.AddressTranslatorTest;
@@ -9,12 +15,6 @@ import net.tokensmith.authorization.http.service.translator.ProfileTranslatorTes
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import net.tokensmith.authorization.http.controller.regex.WelcomeResourceRegexTest;
-import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationFactoryTest;
-import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelperTest;
-import net.tokensmith.authorization.http.factory.MakeOAuthTokenTest;
-import net.tokensmith.authorization.http.factory.MakeOpenIdTokenTest;
-import net.tokensmith.authorization.http.factory.MakeTokenFactoryTest;
 
 
 /**

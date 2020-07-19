@@ -1,28 +1,31 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Param;
-import org.asynchttpclient.Response;
-import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
-import helpers.fixture.persistence.*;
+import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.client.publik.LoadPublicClientTokenResponseType;
+import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.fixture.persistence.http.GetSessionAndCsrfToken;
 import helpers.fixture.persistence.http.Session;
-import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.suite.IntegrationTestSuite;
+import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.otter.QueryStringToMap;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.repository.entity.Client;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.otter.QueryStringToMap;
 
 import java.net.URI;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Map.entry;
 import static org.hamcrest.CoreMatchers.is;

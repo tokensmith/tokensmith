@@ -2,23 +2,17 @@ package net.tokensmith.authorization.openId.grant.redirect.implicit.authorizatio
 
 import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
-import net.tokensmith.authorization.authenticate.model.Session;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.IssueTokenImplicitGrant;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.ValidateOpenIdIdImplicitGrant;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.builder.OpenIdImplicitAccessTokenBuilder;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
 import net.tokensmith.authorization.openId.identity.MakeImplicitIdentityToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
@@ -27,15 +21,23 @@ import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundExc
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.repo.ClientRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 

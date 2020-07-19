@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 11/5/16.

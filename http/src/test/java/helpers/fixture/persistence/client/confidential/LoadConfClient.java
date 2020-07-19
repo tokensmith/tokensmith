@@ -1,8 +1,18 @@
 package helpers.fixture.persistence.client.confidential;
 
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ClientResponseType;
+import net.tokensmith.repository.entity.ClientScope;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.ResponseType;
+import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.repository.repo.*;
+import net.tokensmith.repository.repo.ClientRepository;
+import net.tokensmith.repository.repo.ClientResponseTypeRepository;
+import net.tokensmith.repository.repo.ClientScopesRepository;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
+import net.tokensmith.repository.repo.ResponseTypeRepository;
+import net.tokensmith.repository.repo.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

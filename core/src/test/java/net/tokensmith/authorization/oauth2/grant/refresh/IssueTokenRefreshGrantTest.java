@@ -1,20 +1,25 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
+import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwnerToken;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenChain;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.ResourceOwnerTokenRepository;
+import net.tokensmith.repository.repo.TokenChainRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
-import net.tokensmith.authorization.oauth2.grant.token.builder.TokenResponseBuilder;
-import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.repository.repo.*;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -23,8 +28,12 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 10/8/16.

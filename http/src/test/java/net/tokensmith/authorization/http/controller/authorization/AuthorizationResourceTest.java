@@ -1,33 +1,31 @@
 package net.tokensmith.authorization.http.controller.authorization;
 
 
-import io.netty.handler.codec.http.cookie.Cookie;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Param;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
-import helpers.fixture.persistence.*;
+import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.client.confidential.LoadConfClientCodeResponseType;
+import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.fixture.persistence.http.GetSessionAndCsrfToken;
 import helpers.fixture.persistence.http.Session;
-import helpers.fixture.persistence.db.LoadResourceOwner;
 import helpers.suite.IntegrationTestSuite;
-
-
-import org.asynchttpclient.Response;
+import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.apache.commons.httpclient.HttpStatus;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.repository.entity.*;
 
-
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 
 import static java.util.Map.entry;
 import static org.hamcrest.CoreMatchers.is;

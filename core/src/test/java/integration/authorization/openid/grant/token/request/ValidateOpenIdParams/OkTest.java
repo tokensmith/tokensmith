@@ -1,8 +1,8 @@
 package integration.authorization.openid.grant.token.request.ValidateOpenIdParams;
 
-import org.junit.Test;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
 import net.tokensmith.repository.entity.Client;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;

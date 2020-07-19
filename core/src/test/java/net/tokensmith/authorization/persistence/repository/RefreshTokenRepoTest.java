@@ -1,17 +1,17 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
+import net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.RefreshTokenRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.RefreshToken;
-import net.tokensmith.repository.entity.Token;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
-import net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.ArrayList;
@@ -19,8 +19,12 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class RefreshTokenRepoTest {

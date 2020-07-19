@@ -2,6 +2,12 @@ package net.tokensmith.authorization.register;
 
 import net.tokensmith.authorization.nonce.message.MessageKey;
 import net.tokensmith.authorization.nonce.message.MessageType;
+import net.tokensmith.authorization.register.exception.NonceException;
+import net.tokensmith.authorization.register.exception.RegisterException;
+import net.tokensmith.authorization.security.RandomString;
+import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.pelican.Publish;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
@@ -13,12 +19,6 @@ import net.tokensmith.repository.repo.NonceRepository;
 import net.tokensmith.repository.repo.NonceTypeRepository;
 import net.tokensmith.repository.repo.ProfileRepository;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;
-import net.tokensmith.authorization.register.exception.NonceException;
-import net.tokensmith.authorization.register.exception.RegisterException;
-import net.tokensmith.authorization.security.RandomString;
-import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
-import net.tokensmith.authorization.security.ciphers.HashToken;
-import net.tokensmith.pelican.Publish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

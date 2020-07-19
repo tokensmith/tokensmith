@@ -3,7 +3,6 @@ package net.toknsmith.login.endpoint;
 import helper.Factory;
 import net.toknsmith.login.HttpUtils;
 import net.toknsmith.login.config.LoginFactory;
-import net.toknsmith.login.config.props.EndpointProps;
 import net.toknsmith.login.exception.URLException;
 import net.toknsmith.login.exception.http.api.ClientException;
 import net.toknsmith.login.exception.http.api.ServerException;
@@ -21,7 +20,7 @@ import java.net.http.HttpResponse;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class KeyEndpointTest {
     private KeyEndpoint subject;

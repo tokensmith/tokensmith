@@ -2,12 +2,8 @@ package net.tokensmith.authorization.openId.grant.code.response;
 
 import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
-import net.tokensmith.authorization.authenticate.model.Session;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.IssueAuthCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
@@ -18,14 +14,21 @@ import net.tokensmith.authorization.openId.grant.redirect.code.authorization.req
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 

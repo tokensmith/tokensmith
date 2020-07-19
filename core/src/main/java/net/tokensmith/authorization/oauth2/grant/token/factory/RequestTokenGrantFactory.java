@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.token.factory;
 
+import net.tokensmith.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
 import net.tokensmith.authorization.oauth2.grant.refresh.RequestTokenRefreshGrant;
 import net.tokensmith.authorization.oauth2.grant.token.RequestTokenGrant;
-import net.tokensmith.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

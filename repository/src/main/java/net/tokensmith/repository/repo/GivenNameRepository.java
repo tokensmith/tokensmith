@@ -3,7 +3,6 @@ package net.tokensmith.repository.repo;
 
 import net.tokensmith.repository.entity.Name;
 
-
 import java.util.UUID;
 
 public interface GivenNameRepository {

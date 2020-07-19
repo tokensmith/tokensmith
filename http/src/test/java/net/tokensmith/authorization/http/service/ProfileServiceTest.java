@@ -4,7 +4,6 @@ import helpers.fixture.EntityFactory;
 import helpers.fixture.ModelFactory;
 import net.tokensmith.authorization.http.service.translator.AddressTranslator;
 import net.tokensmith.authorization.http.service.translator.ProfileTranslator;
-
 import net.tokensmith.repository.entity.Address;
 import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.entity.Profile;
@@ -26,7 +25,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;

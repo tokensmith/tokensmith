@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.openId.jwk.entity;
 
-import net.tokensmith.repository.entity.KeyUse;
 import net.tokensmith.otter.translatable.Translatable;
+import net.tokensmith.repository.entity.KeyUse;
 
 import java.math.BigInteger;
 import java.util.UUID;

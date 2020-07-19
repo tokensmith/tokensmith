@@ -2,12 +2,8 @@ package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorizatio
 
 import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
-import net.tokensmith.authorization.authenticate.model.Session;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
@@ -17,19 +13,31 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 6/23/16.

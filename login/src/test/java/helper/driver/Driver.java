@@ -1,10 +1,10 @@
 package helper.driver;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.toknsmith.login.Login;
 import net.toknsmith.login.config.LoginFactory;
 import net.toknsmith.login.model.UserWithTokens;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Driver {
     private static final Logger LOGGER = LoggerFactory.getLogger(Driver.class);

@@ -1,14 +1,14 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Token;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
-import net.tokensmith.repository.entity.RefreshToken;
-import net.tokensmith.repository.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

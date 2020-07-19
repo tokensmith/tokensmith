@@ -1,15 +1,13 @@
 package net.tokensmith.authorization.openId.jwk.translator;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
+import net.tokensmith.repository.entity.RSAPrivateKey;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
-import net.tokensmith.repository.entity.RSAPrivateKey;
-
-
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 1/1/17.

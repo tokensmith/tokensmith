@@ -3,7 +3,6 @@ package net.tokensmith.authorization.http.controller.security;
 
 import net.tokensmith.otter.controller.entity.DefaultUser;
 
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

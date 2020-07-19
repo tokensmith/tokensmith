@@ -1,7 +1,9 @@
 package net.tokensmith.authorization.openId.identity.translator;
 
-import net.tokensmith.authorization.openId.identity.entity.*;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.authorization.openId.identity.entity.IdToken;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

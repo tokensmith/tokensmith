@@ -1,12 +1,11 @@
 package net.tokensmith.authorization.openId.identity.translator;
 
-import org.junit.Before;
-import org.junit.Test;
-import net.tokensmith.repository.entity.RSAPrivateKey;
-import net.tokensmith.repository.entity.KeyUse;
-import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 2/12/16.

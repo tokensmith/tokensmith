@@ -1,15 +1,15 @@
 package net.tokensmith.authorization.openId.identity.translator;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.repository.entity.Address;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.repository.entity.Address;
 
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 3/19/16.

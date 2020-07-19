@@ -1,11 +1,10 @@
 package net.tokensmith.authorization.openId.grant.redirect.code.authorization.request;
 
-import net.tokensmith.parser.Parser;
-import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.context.GetOpenIdConfidentialClientRedirectUri;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.ValidateOpenIdRequest;
-
+import net.tokensmith.parser.Parser;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

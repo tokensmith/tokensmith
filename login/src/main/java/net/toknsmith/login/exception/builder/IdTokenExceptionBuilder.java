@@ -1,9 +1,9 @@
 package net.toknsmith.login.exception.builder;
 
-import net.toknsmith.login.exception.IdTokenException;
 import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
 import net.toknsmith.login.endpoint.entity.response.openid.TokenType;
 import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
+import net.toknsmith.login.exception.IdTokenException;
 
 import java.util.Optional;
 

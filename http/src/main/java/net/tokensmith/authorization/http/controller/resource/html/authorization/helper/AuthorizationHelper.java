@@ -12,10 +12,8 @@ import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
-import net.tokensmith.otter.security.cookie.CookieSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;

@@ -1,9 +1,5 @@
 package net.tokensmith.authorization.http.controller;
 
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Param;
-import org.asynchttpclient.Response;
-import io.netty.handler.codec.http.cookie.Cookie;
 import helpers.assertion.AuthAssertion;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
@@ -13,8 +9,12 @@ import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeR
 import helpers.fixture.persistence.http.GetSessionAndCsrfToken;
 import helpers.fixture.persistence.http.Session;
 import helpers.suite.IntegrationTestSuite;
+import io.netty.handler.codec.http.cookie.Cookie;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

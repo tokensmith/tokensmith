@@ -1,13 +1,17 @@
 package helpers.fixture.persistence.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.tokensmith.authorization.http.response.OpenIdToken;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
-import net.tokensmith.authorization.http.response.OpenIdToken;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tommackenzie on 10/18/16.

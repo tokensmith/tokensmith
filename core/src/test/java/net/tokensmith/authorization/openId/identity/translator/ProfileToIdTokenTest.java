@@ -1,10 +1,13 @@
 package net.tokensmith.authorization.openId.identity.translator;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.openId.identity.entity.IdToken;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.authorization.openId.identity.entity.IdToken;
-import net.tokensmith.repository.entity.*;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -13,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 3/17/16.

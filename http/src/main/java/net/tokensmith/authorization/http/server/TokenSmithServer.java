@@ -1,13 +1,11 @@
 package net.tokensmith.authorization.http.server;
 
+import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
 import net.tokensmith.otter.server.HttpServer;
 import net.tokensmith.otter.server.HttpServerConfig;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResource;
+import org.slf4j.LoggerFactory;
 
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

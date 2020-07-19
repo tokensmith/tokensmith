@@ -1,27 +1,27 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.openid;
 
 
+import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteUser;
+import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.http.service.CookieService;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
+import net.tokensmith.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
-import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.http.controller.resource.html.authorization.helper.AuthorizationHelper;
-import net.tokensmith.authorization.http.controller.security.WebSiteSession;
-import net.tokensmith.authorization.http.controller.security.WebSiteUser;
-import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
-import net.tokensmith.authorization.openId.grant.redirect.code.authorization.response.RequestOpenIdAuthCode;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

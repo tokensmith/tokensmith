@@ -1,6 +1,10 @@
 package net.tokensmith.authorization.http.controller.resource.api.publik;
 
 
+import net.tokensmith.authorization.exception.NotFoundException;
+import net.tokensmith.authorization.http.controller.security.APIUser;
+import net.tokensmith.authorization.openId.jwk.GetKeys;
+import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
 import net.tokensmith.otter.controller.entity.Cause;
@@ -14,15 +18,10 @@ import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.router.entity.Regex;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.security.APIUser;
-import net.tokensmith.authorization.openId.jwk.GetKeys;
-import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
-import net.tokensmith.authorization.exception.NotFoundException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 import java.util.HashMap;
 import java.util.Map;

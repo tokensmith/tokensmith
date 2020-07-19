@@ -5,7 +5,6 @@ import net.tokensmith.jwt.entity.jwt.Claims;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
 /**

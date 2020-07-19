@@ -1,15 +1,15 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.AccessRequestMapper;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.repository.entity.AccessRequest;
 import net.tokensmith.repository.repo.AccessRequestRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.AccessRequest;
-import net.tokensmith.authorization.persistence.mapper.AccessRequestMapper;
 
 import java.util.Optional;
 

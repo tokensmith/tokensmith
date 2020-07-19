@@ -2,10 +2,10 @@ package net.toknsmith.login.factory;
 
 import net.toknsmith.login.config.props.EndpointProps;
 import net.toknsmith.login.constant.ResponseType;
-import net.toknsmith.login.model.Redirect;
 import net.toknsmith.login.exception.URLException;
 import net.toknsmith.login.http.Param;
 import net.toknsmith.login.http.URLBuilder;
+import net.toknsmith.login.model.Redirect;
 import net.toknsmith.login.security.RandomString;
 
 import java.net.URL;

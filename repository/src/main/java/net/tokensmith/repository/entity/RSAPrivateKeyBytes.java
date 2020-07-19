@@ -1,6 +1,5 @@
 package net.tokensmith.repository.entity;
 
-import java.math.BigInteger;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

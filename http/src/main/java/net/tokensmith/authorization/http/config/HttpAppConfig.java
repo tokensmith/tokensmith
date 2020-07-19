@@ -3,6 +3,10 @@ package net.tokensmith.authorization.http.config;
 
 import net.tokensmith.authorization.http.config.props.HttpProperties;
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
+import net.tokensmith.authorization.http.response.Error;
+import net.tokensmith.authorization.http.response.Token;
+import net.tokensmith.authorization.register.request.UserInfo;
+import net.tokensmith.config.AppConfig;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
@@ -17,12 +21,12 @@ import net.tokensmith.otter.security.cookie.CookieSecurity;
 import net.tokensmith.otter.security.cookie.CookieSigner;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.config.TranslatorAppFactory;
-import net.tokensmith.authorization.http.response.Error;
-import net.tokensmith.authorization.http.response.Token;
-import net.tokensmith.authorization.register.request.UserInfo;
-import net.tokensmith.config.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.Map;
 import java.util.Optional;

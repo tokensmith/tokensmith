@@ -1,13 +1,13 @@
 package net.tokensmith.authorization.persistence.factory;
 
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import org.junit.Before;
 import org.junit.Test;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import org.springframework.dao.DuplicateKeyException;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 11/11/16.

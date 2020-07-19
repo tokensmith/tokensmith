@@ -1,25 +1,25 @@
 package net.tokensmith.authorization.http.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.persistence.FactoryForPersistence;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
+import net.tokensmith.config.AppConfig;
 import net.tokensmith.otter.controller.entity.Cause;
 import net.tokensmith.otter.controller.entity.ClientError;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
-import net.tokensmith.repository.entity.KeyUse;
-import net.tokensmith.repository.entity.RSAPrivateKey;
-import net.tokensmith.config.AppConfig;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.UUID;
 

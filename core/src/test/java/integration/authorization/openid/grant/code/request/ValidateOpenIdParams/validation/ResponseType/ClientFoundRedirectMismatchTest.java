@@ -2,12 +2,13 @@ package integration.authorization.openid.grant.code.request.ValidateOpenIdParams
 
 
 import integration.authorization.openid.grant.code.request.ValidateOpenIdParams.BaseTest;
-import org.junit.Test;
 import net.tokensmith.parser.exception.RequiredException;
 import net.tokensmith.repository.entity.Client;
+import org.junit.Test;
 
-
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ClientFoundRedirectMismatchTest extends BaseTest {

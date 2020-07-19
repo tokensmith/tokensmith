@@ -1,23 +1,26 @@
 package net.tokensmith.authorization.oauth2.grant.password;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
+import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.exception.BadRequestException;
+import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
+import net.tokensmith.authorization.oauth2.grant.password.factory.TokenInputPasswordGrantFactory;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
+import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
+import net.tokensmith.authorization.security.RandomString;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Scope;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
-import net.tokensmith.authorization.authenticate.LoginResourceOwner;
-import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
-import net.tokensmith.authorization.oauth2.grant.password.factory.TokenInputPasswordGrantFactory;
-import net.tokensmith.authorization.exception.BadRequestException;
-import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
-import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.authorization.security.RandomString;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**

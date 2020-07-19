@@ -11,7 +11,7 @@ import java.security.interfaces.RSAPrivateCrtKey;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 2/14/16.

@@ -1,13 +1,13 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.token;
 
+import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.repository.entity.Token;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.repository.entity.Token;
-import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -15,7 +15,6 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.when;
 
 /**

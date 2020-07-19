@@ -1,29 +1,22 @@
 package net.tokensmith.authorization.http.controller.userInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
-import helpers.fixture.EntityFactory;
 import helpers.suite.IntegrationTestSuite;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import net.tokensmith.authorization.register.request.UserInfo;
 import net.tokensmith.config.AppConfig;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.router.GetServletURI;
-
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.UUID;
-
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 

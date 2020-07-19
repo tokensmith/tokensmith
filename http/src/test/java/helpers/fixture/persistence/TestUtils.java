@@ -1,9 +1,9 @@
 package helpers.fixture.persistence;
 
+import net.tokensmith.repository.entity.RSAPrivateKey;
 import org.asynchttpclient.Param;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.Response;
-import net.tokensmith.repository.entity.RSAPrivateKey;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

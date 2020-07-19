@@ -1,19 +1,19 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.NonceMapper;
+import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.NonceName;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.NonceRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.Nonce;
-import net.tokensmith.repository.entity.NonceName;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.mapper.NonceMapper;
 
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

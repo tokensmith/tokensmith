@@ -1,15 +1,14 @@
 package net.tokensmith.authorization.http.controller.resource.html.error;
 
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import net.tokensmith.authorization.http.controller.security.WebSiteSession;
-import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 import java.util.Optional;
 

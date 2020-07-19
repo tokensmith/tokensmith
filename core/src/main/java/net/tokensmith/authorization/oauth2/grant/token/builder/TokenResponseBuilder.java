@@ -4,8 +4,6 @@ import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;

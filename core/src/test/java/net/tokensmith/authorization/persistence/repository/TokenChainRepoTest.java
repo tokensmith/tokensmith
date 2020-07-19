@@ -1,19 +1,19 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.TokenChainMapper;
+import net.tokensmith.repository.entity.TokenChain;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.TokenChainRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.TokenChain;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.authorization.persistence.mapper.TokenChainMapper;
 import org.springframework.dao.DuplicateKeyException;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

@@ -1,16 +1,16 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
+import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.repository.entity.AccessRequest;
 import net.tokensmith.repository.entity.AuthCode;
 import net.tokensmith.repository.entity.Configuration;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.AuthCodeRepository;
 import net.tokensmith.repository.repo.ConfigurationRepository;
-import net.tokensmith.authorization.security.RandomString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

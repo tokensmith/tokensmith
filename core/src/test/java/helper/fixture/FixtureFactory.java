@@ -2,29 +2,54 @@ package helper.fixture;
 
 
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.request.entity.OpenIdImplicitAuthRequest;
-import net.tokensmith.jwt.config.JwtAppFactory;
-import net.tokensmith.jwt.entity.jwk.SymmetricKey;
-import net.tokensmith.repository.entity.*;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.ciphers.HashTokenImpl;
 import net.tokensmith.config.AppConfig;
+import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
+import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequestScope;
+import net.tokensmith.repository.entity.Address;
+import net.tokensmith.repository.entity.AuthCode;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.Configuration;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.GrantType;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.RSAPrivateKeyBytes;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwnerToken;
+import net.tokensmith.repository.entity.ResponseType;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenScope;
 import org.mockito.Mockito;
-
 
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by tommackenzie on 3/1/15.

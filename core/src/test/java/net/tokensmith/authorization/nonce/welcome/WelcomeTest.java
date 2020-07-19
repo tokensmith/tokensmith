@@ -1,31 +1,30 @@
 package net.tokensmith.authorization.nonce.welcome;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.exception.NotFoundException;
-import net.tokensmith.repository.entity.NonceName;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.authorization.security.entity.NonceClaim;
+import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
+import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.NonceRepository;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;
-import net.tokensmith.authorization.security.ciphers.HashToken;
-import net.tokensmith.authorization.security.entity.NonceClaim;
-import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
-import net.tokensmith.jwt.exception.InvalidJWT;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;

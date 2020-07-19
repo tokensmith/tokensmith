@@ -1,14 +1,12 @@
 package net.tokensmith.authorization.http.controller.resource.api.site;
 
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
-import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.service.ProfileService;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
-import net.tokensmith.otter.router.entity.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

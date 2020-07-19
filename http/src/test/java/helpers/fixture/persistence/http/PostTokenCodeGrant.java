@@ -1,16 +1,20 @@
 package helpers.fixture.persistence.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.tokensmith.authorization.http.response.OpenIdToken;
+import net.tokensmith.repository.entity.ConfidentialClient;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
-import net.tokensmith.authorization.http.response.OpenIdToken;
-import net.tokensmith.repository.entity.ConfidentialClient;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**

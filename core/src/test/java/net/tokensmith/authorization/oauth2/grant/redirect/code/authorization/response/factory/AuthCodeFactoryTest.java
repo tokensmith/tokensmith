@@ -1,13 +1,13 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AuthCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.AccessRequest;
-import net.tokensmith.repository.entity.AuthCode;
-import net.tokensmith.authorization.security.ciphers.HashToken;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;

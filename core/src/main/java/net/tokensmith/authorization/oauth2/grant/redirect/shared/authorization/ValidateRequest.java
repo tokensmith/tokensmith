@@ -1,5 +1,11 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization;
 
+import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.parser.Parser;
 import net.tokensmith.parser.exception.OptionalException;
 import net.tokensmith.parser.exception.ParseException;
@@ -10,13 +16,6 @@ import net.tokensmith.parser.validator.exception.MoreThanOneItemError;
 import net.tokensmith.parser.validator.exception.NoItemsError;
 import net.tokensmith.parser.validator.exception.ParamIsNullError;
 import org.apache.commons.validator.routines.UrlValidator;
-import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.CompareClientToAuthRequest;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-
 
 import java.net.URI;
 import java.util.List;

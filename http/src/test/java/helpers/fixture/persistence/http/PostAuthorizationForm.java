@@ -1,23 +1,20 @@
 package helpers.fixture.persistence.http;
 
+import helpers.fixture.FormFactory;
+import helpers.fixture.exception.GetCsrfException;
+import helpers.fixture.persistence.http.input.AuthEndpointProps;
+import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.otter.QueryStringToMap;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Param;
 import org.asynchttpclient.Response;
-import io.netty.handler.codec.http.cookie.Cookie;
-import helpers.fixture.FormFactory;
-import helpers.fixture.exception.GetCsrfException;
-import helpers.fixture.persistence.http.input.AuthEndpointProps;
-import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
-import net.tokensmith.otter.QueryStringToMap;
-import net.tokensmith.repository.entity.ConfidentialClient;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

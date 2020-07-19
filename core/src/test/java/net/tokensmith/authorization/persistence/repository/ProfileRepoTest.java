@@ -1,21 +1,21 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.persistence.mapper.ProfileMapper;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ProfileRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.Profile;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.mapper.ProfileMapper;
 
 import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

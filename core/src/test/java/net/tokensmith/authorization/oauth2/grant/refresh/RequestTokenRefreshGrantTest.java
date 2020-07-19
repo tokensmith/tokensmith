@@ -1,20 +1,23 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
 import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
-import net.tokensmith.repository.entity.AccessRequestScope;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.BadRequestException;
 import net.tokensmith.authorization.oauth2.grant.refresh.exception.CompromisedRefreshTokenException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.authorization.oauth2.grant.token.exception.*;
+import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.NotFoundException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
+import net.tokensmith.repository.entity.AccessRequestScope;
 import net.tokensmith.repository.entity.AuthCode;
 import net.tokensmith.repository.entity.RefreshToken;
 import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,7 +34,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 10/10/16.

@@ -11,9 +11,9 @@ import net.tokensmith.jwt.jwe.serialization.JweDeserializer;
 import net.tokensmith.jwt.jwe.serialization.exception.KeyException;
 import net.tokensmith.jwt.serialization.exception.DecryptException;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
+import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
-import org.slf4j.Logger;
 
 
 public interface CipherRepository {

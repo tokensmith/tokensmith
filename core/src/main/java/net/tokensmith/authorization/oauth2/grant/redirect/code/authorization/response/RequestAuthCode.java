@@ -1,23 +1,23 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
+import net.tokensmith.authorization.authenticate.LoginResourceOwner;
 import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
+import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.authenticate.model.Session;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.context.GetConfidentialClientRedirectUri;
-import net.tokensmith.authorization.authenticate.LoginResourceOwner;
-import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.repository.entity.ResourceOwner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by tommackenzie on 4/16/15.

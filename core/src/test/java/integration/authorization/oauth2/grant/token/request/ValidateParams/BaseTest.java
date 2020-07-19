@@ -2,12 +2,12 @@ package integration.authorization.oauth2.grant.token.request.ValidateParams;
 
 
 import helper.fixture.persistence.LoadTokenClientWithScopes;
-import org.junit.runner.RunWith;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.repository.entity.Client;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

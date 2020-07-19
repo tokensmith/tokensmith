@@ -1,10 +1,6 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.helper;
 
 import helpers.category.UnitTests;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.oauth.OAuth2CodeResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.oauth.OAuth2ImplicitResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdCodeResource;
@@ -13,13 +9,17 @@ import net.tokensmith.authorization.http.controller.resource.html.authorization.
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.otter.controller.Resource;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 @Category(UnitTests.class)

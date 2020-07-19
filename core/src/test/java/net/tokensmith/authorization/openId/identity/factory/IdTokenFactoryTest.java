@@ -1,17 +1,17 @@
 package net.tokensmith.authorization.openId.identity.factory;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
 import net.tokensmith.authorization.openId.identity.translator.AddrToAddrClaims;
 import net.tokensmith.authorization.openId.identity.translator.ProfileToIdToken;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Address;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;

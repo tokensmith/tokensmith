@@ -1,17 +1,20 @@
 package net.tokensmith.authorization.oauth2.grant.token.validator;
 
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import org.junit.Before;
+import org.junit.Test;
 
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 9/21/16.

@@ -1,10 +1,9 @@
 package net.tokensmith.authorization.openId.identity.translator;
 
-import net.tokensmith.repository.entity.RSAPrivateKey;
-import net.tokensmith.repository.entity.KeyUse;
-import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.repository.entity.KeyUse;
+import net.tokensmith.repository.entity.RSAPrivateKey;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

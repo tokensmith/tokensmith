@@ -6,8 +6,6 @@ import net.tokensmith.authorization.security.ciphers.IsTextEqualToHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Created by tommackenzie on 5/25/15.
  */

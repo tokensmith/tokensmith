@@ -1,18 +1,21 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token.factory;
 
-import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
-import net.tokensmith.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by tommackenzie on 9/21/16.

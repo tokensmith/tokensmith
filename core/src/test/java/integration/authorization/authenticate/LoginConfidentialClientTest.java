@@ -2,8 +2,6 @@ package integration.authorization.authenticate;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -11,6 +9,8 @@ import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ConfidentialClientRepository;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

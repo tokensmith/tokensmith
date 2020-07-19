@@ -3,20 +3,22 @@ package net.toknsmith.login;
 
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.toknsmith.login.endpoint.UserEndpoint;
+import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
+import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
+import net.toknsmith.login.exception.CommException;
+import net.toknsmith.login.exception.IdTokenException;
 import net.toknsmith.login.exception.JwtException;
-import net.toknsmith.login.model.Redirect;
-import net.toknsmith.login.model.UserWithTokens;
-import net.toknsmith.login.exception.*;
+import net.toknsmith.login.exception.TranslateException;
+import net.toknsmith.login.exception.URLException;
 import net.toknsmith.login.exception.builder.IdTokenExceptionBuilder;
 import net.toknsmith.login.exception.http.openid.ErrorResponseException;
 import net.toknsmith.login.factory.MakeRedirect;
-import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
-import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
-import org.slf4j.LoggerFactory;
+import net.toknsmith.login.model.Redirect;
+import net.toknsmith.login.model.UserWithTokens;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-import java.util.*;
+import java.util.List;
 
 
 

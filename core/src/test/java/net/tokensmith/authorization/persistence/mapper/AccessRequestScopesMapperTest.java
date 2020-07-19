@@ -1,10 +1,18 @@
 package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.TestAppConfig;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequestScope;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.repo.AccessRequestRepository;
+import net.tokensmith.repository.repo.AuthCodeRepository;
+import net.tokensmith.repository.repo.ClientRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
+import net.tokensmith.repository.repo.ScopeRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

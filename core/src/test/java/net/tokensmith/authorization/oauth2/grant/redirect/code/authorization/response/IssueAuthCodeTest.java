@@ -1,14 +1,16 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequestScope;
+import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.repo.AccessRequestRepository;
+import net.tokensmith.repository.repo.AccessRequestScopesRepository;
+import net.tokensmith.repository.repo.ScopeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.repo.AccessRequestScopesRepository;
-import net.tokensmith.repository.repo.ScopeRepository;
 
 import java.net.URI;
 import java.util.ArrayList;

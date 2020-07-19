@@ -1,15 +1,22 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization;
 
 
-import org.slf4j.Logger;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.token.InsertTokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
 import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.repo.*;
 import net.tokensmith.authorization.security.RandomString;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.Configuration;
+import net.tokensmith.repository.entity.GrantType;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.repo.ConfigurationRepository;
+import net.tokensmith.repository.repo.RefreshTokenRepository;
+import net.tokensmith.repository.repo.TokenAudienceRepository;
+import net.tokensmith.repository.repo.TokenRepository;
+import net.tokensmith.repository.repo.TokenScopeRepository;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,6 @@
 package net.tokensmith.authorization.http.controller.resource.api.site;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.ModelFactory;
 import helpers.fixture.persistence.FactoryForPersistence;
@@ -18,9 +16,10 @@ import net.tokensmith.authorization.http.controller.resource.api.site.model.Name
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
 import net.tokensmith.config.AppConfig;
 import net.tokensmith.repository.entity.ConfidentialClient;
-import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.entity.ResourceOwner;
 import org.apache.commons.httpclient.HttpStatus;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,7 +31,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 
 @Category(ServletContainerTest.class)

@@ -1,17 +1,16 @@
 package net.tokensmith.authorization.http.factory;
 
 import helpers.category.UnitTests;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import net.tokensmith.authorization.http.factory.exception.TokenException;
 import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.http.response.TokenType;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 @Category(UnitTests.class)

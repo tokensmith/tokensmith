@@ -12,21 +12,22 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.toknsmith.login.HttpUtils;
-import net.toknsmith.login.cache.KeyCacheLoader;
+import net.toknsmith.login.Login;
 import net.toknsmith.login.LoginUtils;
+import net.toknsmith.login.TokenSmithLogin;
+import net.toknsmith.login.cache.KeyCacheLoader;
 import net.toknsmith.login.config.exception.StartUpException;
 import net.toknsmith.login.config.props.EndpointProps;
-import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
-import net.toknsmith.login.translator.*;
-import net.toknsmith.login.Login;
-import net.toknsmith.login.TokenSmithLogin;
 import net.toknsmith.login.endpoint.KeyEndpoint;
 import net.toknsmith.login.endpoint.UserEndpoint;
+import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
 import net.toknsmith.login.factory.MakeRedirect;
 import net.toknsmith.login.security.RandomString;
+import net.toknsmith.login.translator.ErrorResponseExceptionFactory;
+import net.toknsmith.login.translator.ErrorResponseTranslator;
+import net.toknsmith.login.translator.JwtRSAPublicKeyTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import java.net.URI;
 import java.net.URISyntaxException;

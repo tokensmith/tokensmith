@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.TokenAudience;
 import net.tokensmith.authorization.persistence.mapper.TokenAudienceMapper;
+import net.tokensmith.repository.entity.TokenAudience;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.TokenAudienceRepository;
 import org.springframework.beans.factory.annotation.Autowired;

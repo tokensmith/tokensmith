@@ -2,7 +2,20 @@ package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Address;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.GrantType;
+import net.tokensmith.repository.entity.LocalToken;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwnerToken;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenAudience;
+import net.tokensmith.repository.entity.TokenLeadToken;
+import net.tokensmith.repository.entity.TokenScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +25,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 

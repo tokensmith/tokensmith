@@ -1,7 +1,6 @@
 package net.tokensmith.authorization.http.controller.resource.html.authorization.helper;
 
 
-import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.oauth.OAuth2CodeResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.oauth.OAuth2ImplicitResource;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdCodeResource;
@@ -9,6 +8,7 @@ import net.tokensmith.authorization.http.controller.resource.html.authorization.
 import net.tokensmith.authorization.http.controller.resource.html.authorization.openid.OpenIdImplicitResource;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
+import net.tokensmith.otter.controller.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

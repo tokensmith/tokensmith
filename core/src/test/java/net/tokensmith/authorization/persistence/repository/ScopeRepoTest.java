@@ -1,13 +1,13 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.ScopeMapper;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ScopeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.Scope;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.mapper.ScopeMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,9 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 5/12/15.
