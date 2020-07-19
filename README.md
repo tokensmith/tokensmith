@@ -15,19 +15,12 @@ This documentation is intended for a developer audience. More detailed documenta
 
 ### Locally
 
-#### Configuration
-
-The server is configured in a [properties file](http/src/main/resources/application-default.properties). The values can be overidden with command line arguments or environemnt variables. More information for how to overide the default values is  available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
-
- - Arguments can passed in as, `-DallowLocalUrls=false`
- - Environment variables can be set as, `export allowLocalUrls=false`
-
-#### Start Postgres and Kafka 
+#### Start Postgres, Zookeeper, Kafka, and [Message-User](https://github.com/tokensmith/message-user) 
 ```bash
 make run
 ```
 
-#### Stop Postgres and Kafka 
+#### Stop Postgres, Zookeeper, Kafka, and [Message-User](https://github.com/tokensmith/message-user) 
 ```bash
 make stop
 ```
@@ -44,9 +37,18 @@ java -jar http/build/libs/http-0.0.1-SNAPSHOT.war
 
 Or, from an IDE the main method is in [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
 
+#### Configuration
+
+The server gets configured in a [properties file](http/src/main/resources/application-default.properties). 
+The values can be overidden with command line arguments or environment variables. More information for how to overide 
+the default values is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
+
+ - Arguments can passed in as, `-DallowLocalUrls=false`
+ - Environment variables can be set as, `export allowLocalUrls=false`
+
 ## Seed the database
 
-The database is initially seeded with a few [database migrations](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
+The database automatically gets seeded with a few [database migrations](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
 
 ## Published messages
 Tokensmith publishes messages to kafka when:
@@ -54,9 +56,7 @@ Tokensmith publishes messages to kafka when:
  - A user requests to [reset their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L68) through interacting with `/forgot-password`.
  - A user [resets their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L107).
 
-To send emails to users, run the [mailer](https://github.com/tokensmith/mailer) application
-
-Or, subscribe to the topic, `mailer` and write a mailer worker.
+The [Message-User](https://github.com/tokensmith/message-user) worker will then template the messages and send the emails.
 
 ## Interaction
 

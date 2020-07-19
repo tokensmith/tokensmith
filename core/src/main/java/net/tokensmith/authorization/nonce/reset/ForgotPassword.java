@@ -15,7 +15,6 @@ import net.tokensmith.authorization.nonce.SpendNonce;
 import net.tokensmith.authorization.nonce.InsertNonce;
 import net.tokensmith.authorization.nonce.message.MessageKey;
 import net.tokensmith.authorization.nonce.message.MessageType;
-import net.tokensmith.authorization.nonce.message.Topic;
 import net.tokensmith.repository.entity.Nonce;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.repo.RefreshTokenRepository;
@@ -35,7 +34,6 @@ public class ForgotPassword {
     private static final Logger LOGGER = LoggerFactory.getLogger(ForgotPassword.class);
     private InsertNonce insertNonce;
     private Publish publish;
-    private String issuer;
     private SpendNonce spendNonce;
     private HashTextRandomSalt hashTextRandomSalt;
     private ResourceOwnerRepository resourceOwnerRepository;
@@ -44,10 +42,9 @@ public class ForgotPassword {
 
     private static String EMPTY = "";
 
-    public ForgotPassword(InsertNonce insertNonce, Publish publish, String issuer, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
+    public ForgotPassword(InsertNonce insertNonce, Publish publish, SpendNonce spendNonce, HashTextRandomSalt hashTextRandomSalt, ResourceOwnerRepository resourceOwnerRepository, TokenRepository tokenRepository, RefreshTokenRepository refreshTokenRepository) {
         this.insertNonce = insertNonce;
         this.publish = publish;
-        this.issuer = issuer;
         this.spendNonce = spendNonce;
         this.hashTextRandomSalt = hashTextRandomSalt;
         this.resourceOwnerRepository = resourceOwnerRepository;
@@ -55,7 +52,7 @@ public class ForgotPassword {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public void sendMessage(String email) throws NonceException, BadRequestException {
+    public void sendMessage(String email, String baseURI) throws NonceException, BadRequestException {
 
         validate(email);
 
@@ -69,10 +66,10 @@ public class ForgotPassword {
         Map<String, String> msg = new HashMap<>();
         msg.put(MessageKey.TYPE.toString(), MessageType.FORGOT_PASSWORD.toString());
         msg.put(MessageKey.RECIPIENT.toString(), email);
-        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/update-password?nonce=");
+        msg.put(MessageKey.BASE_LINK.toString(), baseURI + "/update-password?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
-        publish.send(Topic.MAILER.toString(), msg);
+        publish.send("message-user", msg);
     }
 
     protected void validate(String email) throws BadRequestException {
@@ -111,7 +108,7 @@ public class ForgotPassword {
         msg.put(MessageKey.TYPE.toString(), MessageType.PASSWORD_WAS_RESET.toString());
         msg.put(MessageKey.RECIPIENT.toString(), nonce.getResourceOwner().getEmail());
 
-        publish.send(Topic.MAILER.toString(), msg);
+        publish.send("message-user", msg);
     }
 
     public boolean verifyNonce(String nonce) throws NonceException {

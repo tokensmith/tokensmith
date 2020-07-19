@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -55,7 +56,7 @@ public class ForgotPasswordResource extends Resource<WebSiteSession, WebSiteUser
         String email = getFormValue(form.get(EMAIL));
 
         try {
-            forgotPassword.sendMessage(email);
+            forgotPassword.sendMessage(email, baseURI(request));
         } catch (BadRequestException e) {
             ForgotPasswordPresenter presenter = makePresenterOnError(email, request.getCsrfChallenge().get(), e.getDescription());
             response.setPresenter(Optional.of(presenter));
@@ -72,6 +73,18 @@ public class ForgotPasswordResource extends Resource<WebSiteSession, WebSiteUser
         response.setStatusCode(StatusCode.OK);
         response.setTemplate(Optional.of(JSP_OK_PATH));
         return response;
+    }
+
+    protected String baseURI(Request<WebSiteSession, WebSiteUser> request) {
+        StringBuilder baseURI = new StringBuilder()
+                .append(request.getScheme())
+                .append("://")
+                .append(request.getAuthority());
+
+        if (Objects.nonNull(request.getPort()))
+            baseURI = baseURI.append(":").append(request.getPort().toString());
+
+        return baseURI.toString();
     }
 
     protected ForgotPasswordPresenter makePresenter(String email, String encodedCsrfToken) {

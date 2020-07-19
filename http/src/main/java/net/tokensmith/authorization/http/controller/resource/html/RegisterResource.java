@@ -68,7 +68,8 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
             register.run(
                 email,
                 getFormValue(form.get(PASSWORD)),
-                getFormValue(form.get(REPEAT_PASSWORD))
+                getFormValue(form.get(REPEAT_PASSWORD)),
+                baseURI(request)
             );
         } catch (RegisterException e) {
             String errorMessage = errorMessage(e.getRegisterError());
@@ -88,6 +89,18 @@ public class RegisterResource extends Resource<WebSiteSession, WebSiteUser> {
             prepareResponse(response, StatusCode.OK, presenter, JSP_PATH_OK);
         }
         return response;
+    }
+
+    protected String baseURI(Request<WebSiteSession, WebSiteUser> request) {
+        StringBuilder baseURI = new StringBuilder()
+                .append(request.getScheme())
+                .append("://")
+                .append(request.getAuthority());
+
+        if (Objects.nonNull(request.getPort()))
+            baseURI = baseURI.append(":").append(request.getPort().toString());
+
+        return baseURI.toString();
     }
 
     protected String getFormValue(List<String> formValue) {
