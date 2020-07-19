@@ -38,11 +38,12 @@ import static org.mockito.Mockito.when;
 
 
 public class ForgotPasswordTest {
+    private static String BASE_URI = "sso.tokensmith.net";
+
     @Mock
     private InsertNonce mockInsertNonce;
     @Mock
     private Publish mockPublish;
-    private String issuer;
     @Mock
     private SpendNonce mockSpendNonce;
     @Mock
@@ -59,8 +60,7 @@ public class ForgotPasswordTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.issuer = "sso.tokensmith.net";
-        subject = new ForgotPassword(mockInsertNonce, mockPublish, issuer, mockSpendNonce, mockHashTextRandomSalt, mockResourceOwnerRepository, mockTokenRepository, mockRefreshTokenRepository);
+        subject = new ForgotPassword(mockInsertNonce, mockPublish, mockSpendNonce, mockHashTextRandomSalt, mockResourceOwnerRepository, mockTokenRepository, mockRefreshTokenRepository);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ public class ForgotPasswordTest {
 
         when(mockInsertNonce.insert(email, NonceName.RESET_PASSWORD)).thenReturn(plainTextNonce);
 
-        subject.sendMessage(email);
+        subject.sendMessage(email, BASE_URI);
 
         ArgumentCaptor<Map<String, String>> messageCaptor = captorForHashMap();
         verify(mockPublish).send(eq("message-user"), messageCaptor.capture());
@@ -83,7 +83,7 @@ public class ForgotPasswordTest {
         assertThat(messageCaptor.getValue().size(), is(4));
         assertThat(messageCaptor.getValue().get("type"), is("forgot_password"));
         assertThat(messageCaptor.getValue().get("recipient"), is(email));
-        assertThat(messageCaptor.getValue().get("base_link"), is(issuer + "/update-password?nonce="));
+        assertThat(messageCaptor.getValue().get("base_link"), is(BASE_URI + "/update-password?nonce="));
         assertThat(messageCaptor.getValue().get("nonce"), is(plainTextNonce));
     }
 
@@ -93,7 +93,7 @@ public class ForgotPasswordTest {
 
         BadRequestException actual = null;
         try {
-            subject.sendMessage(email);
+            subject.sendMessage(email, BASE_URI);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -109,7 +109,7 @@ public class ForgotPasswordTest {
 
         BadRequestException actual = null;
         try {
-            subject.sendMessage(email);
+            subject.sendMessage(email, BASE_URI);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -125,7 +125,7 @@ public class ForgotPasswordTest {
 
         BadRequestException actual = null;
         try {
-            subject.sendMessage(email);
+            subject.sendMessage(email, BASE_URI);
         } catch (BadRequestException e) {
             actual = e;
         }
@@ -143,7 +143,7 @@ public class ForgotPasswordTest {
 
         NonceException actual = null;
         try {
-            subject.sendMessage(email);
+            subject.sendMessage(email, BASE_URI);
         } catch (NonceException e) {
             actual = e;
         }

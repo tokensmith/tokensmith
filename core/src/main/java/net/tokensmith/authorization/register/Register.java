@@ -37,7 +37,6 @@ public class Register {
     private NonceTypeRepository nonceTypeRepository;
     private NonceRepository nonceRepository;
     private Publish publish;
-    private String issuer;
 
     private static String REGISTER_ERROR = "Could not insert resource_owner";
     private static String EMAIL_REQUIRED = "Email is empty or null";
@@ -46,10 +45,9 @@ public class Register {
     private static String PASSWORD_MISMATCH = "Passwords do not match";
     private static String EMAIL_FIELD = "email";
     private static String EMPTY = "";
-    private static String NONCE_TYPE = "welcome";
 
     @Autowired
-    public Register(ResourceOwnerRepository resourceOwnerRepository, ProfileRepository profileRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashToken hashToken, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish, String issuer) {
+    public Register(ResourceOwnerRepository resourceOwnerRepository, ProfileRepository profileRepository, HashTextRandomSalt hashTextRandomSalt, RandomString randomString, HashToken hashToken, NonceTypeRepository nonceTypeRepository, NonceRepository nonceRepository, Publish publish) {
         this.resourceOwnerRepository = resourceOwnerRepository;
         this.profileRepository = profileRepository;
         this.hashTextRandomSalt = hashTextRandomSalt;
@@ -58,10 +56,9 @@ public class Register {
         this.nonceTypeRepository = nonceTypeRepository;
         this.nonceRepository = nonceRepository;
         this.publish = publish;
-        this.issuer = issuer;
     }
 
-    public ResourceOwner run(String email, String password, String repeatPassword) throws RegisterException, NonceException {
+    public ResourceOwner run(String email, String password, String repeatPassword, String baseURI) throws RegisterException, NonceException {
 
         validate(email, password, repeatPassword);
 
@@ -90,7 +87,7 @@ public class Register {
         Map<String, String> msg = new HashMap<>();
         msg.put(MessageKey.TYPE.toString(), MessageType.WELCOME.toString());
         msg.put(MessageKey.RECIPIENT.toString(), ro.getEmail());
-        msg.put(MessageKey.BASE_LINK.toString(), issuer + "/welcome?nonce=");
+        msg.put(MessageKey.BASE_LINK.toString(), baseURI + "/welcome?nonce=");
         msg.put(MessageKey.NONCE.toString(), plainTextNonce);
 
         publish.send("message-user", msg);

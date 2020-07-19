@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 
 public class RegisterTest {
-    private static String ISSUER = "https://sso.tokensmith.net";
+    private static String BASE_URI = "https://sso.tokensmith.net";
 
     @Mock
     private ResourceOwnerRepository mockResourceOwnerRepository;
@@ -61,7 +61,7 @@ public class RegisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        subject = new Register(mockResourceOwnerRepository, mockProfileRepository, mockHashTextRandomSalt, mockRandomString, mockHashToken, mockNonceTypeRepository, mockNonceRepository, mockPublish, ISSUER);
+        subject = new Register(mockResourceOwnerRepository, mockProfileRepository, mockHashTextRandomSalt, mockRandomString, mockHashToken, mockNonceTypeRepository, mockNonceRepository, mockPublish);
     }
 
     @Test
@@ -70,6 +70,7 @@ public class RegisterTest {
         String password = "password";
         String repeatPassword = "password";
         String hashedPassword = "hashedPassword";
+
         when(mockHashTextRandomSalt.run(password)).thenReturn(hashedPassword);
 
         when(mockRandomString.run()).thenReturn("nonce");
@@ -78,7 +79,7 @@ public class RegisterTest {
         NonceType nonceType = new NonceType(UUID.randomUUID(), "welcome", 120, OffsetDateTime.now());
         when(mockNonceTypeRepository.getByName(NonceName.WELCOME)).thenReturn(nonceType);
 
-        ResourceOwner actual = subject.run(email, password, repeatPassword);
+        ResourceOwner actual = subject.run(email, password, repeatPassword, BASE_URI);
 
         ArgumentCaptor<ResourceOwner> roCaptor = ArgumentCaptor.forClass(ResourceOwner.class);
         verify(mockResourceOwnerRepository).insert(roCaptor.capture());
@@ -115,7 +116,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -132,7 +133,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -149,7 +150,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -166,7 +167,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -183,7 +184,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -200,7 +201,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -215,6 +216,7 @@ public class RegisterTest {
         String password = "password";
         String repeatPassword = "password";
         String hashedPassword = "hashedPassword";
+        String baseURI = "https://tokensmith.net";
         when(mockHashTextRandomSalt.run(password)).thenReturn(hashedPassword);
 
         DuplicateKeyException dke = new DuplicateKeyException("error message");
@@ -225,7 +227,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, baseURI);
         } catch (RegisterException e) {
             actual = e;
         }
@@ -242,7 +244,7 @@ public class RegisterTest {
 
         RegisterException actual = null;
         try {
-            subject.run(email, password, repeatPassword);
+            subject.run(email, password, repeatPassword, BASE_URI);
         } catch (RegisterException e) {
             actual = e;
         }
