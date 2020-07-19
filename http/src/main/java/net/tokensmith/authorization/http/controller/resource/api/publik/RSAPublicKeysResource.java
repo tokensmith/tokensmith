@@ -1,5 +1,9 @@
 package net.tokensmith.authorization.http.controller.resource.api.publik;
 
+import net.tokensmith.authorization.http.controller.exception.BadRequestException;
+import net.tokensmith.authorization.http.controller.security.APIUser;
+import net.tokensmith.authorization.openId.jwk.GetKeys;
+import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.builder.ClientErrorBuilder;
 import net.tokensmith.otter.controller.entity.Cause;
@@ -10,16 +14,10 @@ import net.tokensmith.otter.controller.entity.response.RestResponse;
 import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
-import net.tokensmith.otter.dispatch.json.validator.ValidateError;
-import net.tokensmith.otter.dispatch.json.validator.exception.ValidateException;
 import net.tokensmith.otter.translator.JsonTranslator;
 import net.tokensmith.otter.translator.exception.ToJsonException;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.exception.BadRequestException;
-import net.tokensmith.authorization.http.controller.security.APIUser;
-import net.tokensmith.authorization.openId.jwk.GetKeys;
-import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

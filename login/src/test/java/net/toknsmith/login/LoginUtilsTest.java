@@ -6,10 +6,10 @@ import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.tokensmith.jwt.entity.jwt.JsonWebToken;
 import net.toknsmith.login.cache.KeyException;
-import net.toknsmith.login.exception.JwtException;
-import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
 import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
+import net.toknsmith.login.exception.JwtException;
+import net.toknsmith.login.exception.TranslateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +20,9 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 

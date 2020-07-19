@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.ClientResponseType;
 import net.tokensmith.authorization.persistence.mapper.ClientResponseTypeMapper;
+import net.tokensmith.repository.entity.ClientResponseType;
 import net.tokensmith.repository.repo.ClientResponseTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package net.toknsmith.login.translator;
 
-import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.endpoint.entity.response.openid.TokenErrorResponse;
+import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.exception.http.openid.BadRequestException;
 import net.toknsmith.login.exception.http.openid.ErrorResponseException;
 import net.toknsmith.login.exception.http.openid.NotFoundException;

@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request;
 
-import net.tokensmith.parser.Parser;
-import org.apache.commons.validator.routines.UrlValidator;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.ValidateRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
+import net.tokensmith.parser.Parser;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

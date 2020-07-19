@@ -1,18 +1,17 @@
 package net.tokensmith.authorization.openId.jwk;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.authorization.exception.NotFoundException;
+import net.tokensmith.authorization.openId.jwk.entity.RSAPublicKey;
 import net.tokensmith.authorization.openId.jwk.translator.RSAPublicKeyTranslator;
 import net.tokensmith.repository.entity.KeyUse;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

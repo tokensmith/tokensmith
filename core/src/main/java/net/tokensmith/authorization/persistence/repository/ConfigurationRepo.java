@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.Configuration;
 import net.tokensmith.authorization.persistence.mapper.ConfigurationMapper;
+import net.tokensmith.repository.entity.Configuration;
 import net.tokensmith.repository.repo.ConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -6,23 +6,21 @@ import net.tokensmith.authorization.authenticate.exception.LocalSessionException
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.IssueAuthCode;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthResponseFactory;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.ValidateOpenIdCodeResponseType;
 import net.tokensmith.authorization.openId.grant.redirect.code.authorization.request.entity.OpenIdAuthRequest;
 import net.tokensmith.repository.entity.ResourceOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Component

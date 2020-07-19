@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.persistence.repository;
 
 
+import net.tokensmith.authorization.persistence.mapper.NonceTypeMapper;
 import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
-import net.tokensmith.authorization.persistence.mapper.NonceTypeMapper;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.NonceTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

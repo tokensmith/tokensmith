@@ -1,26 +1,28 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
+import net.tokensmith.authorization.persistence.mapper.TokenMapper;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.TokenRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.repository.entity.Token;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
-import net.tokensmith.authorization.persistence.mapper.TokenMapper;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class TokenRepoTest {

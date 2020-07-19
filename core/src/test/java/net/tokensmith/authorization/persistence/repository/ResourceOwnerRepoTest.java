@@ -1,23 +1,27 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import helper.fixture.FixtureFactory;
-import org.hamcrest.core.Is;
-import org.mockito.MockitoAnnotations;
+import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
+import net.tokensmith.authorization.persistence.mapper.ResourceOwnerMapper;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
-import net.tokensmith.authorization.persistence.mapper.ResourceOwnerMapper;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 10/11/14.

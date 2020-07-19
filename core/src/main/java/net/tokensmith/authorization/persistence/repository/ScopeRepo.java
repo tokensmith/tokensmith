@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.authorization.persistence.mapper.ScopeMapper;
+import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

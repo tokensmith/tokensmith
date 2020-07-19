@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.TokenChain;
 import net.tokensmith.authorization.persistence.mapper.TokenChainMapper;
+import net.tokensmith.repository.entity.TokenChain;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.TokenChainRepository;
 import org.springframework.beans.factory.annotation.Autowired;

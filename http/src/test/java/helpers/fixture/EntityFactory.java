@@ -1,13 +1,13 @@
 package helpers.fixture;
 
 
-import net.tokensmith.authorization.register.request.*;
+import net.tokensmith.authorization.register.request.UserInfo;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSalt;
 import net.tokensmith.authorization.security.ciphers.HashTextRandomSaltImpl;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
-import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.entity.Profile;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.entity.ResponseType;

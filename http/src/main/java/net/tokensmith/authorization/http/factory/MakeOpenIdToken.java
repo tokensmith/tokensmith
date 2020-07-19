@@ -1,13 +1,16 @@
 package net.tokensmith.authorization.http.factory;
 
 
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.openId.identity.MakeCodeGrantIdentityToken;
-import net.tokensmith.authorization.openId.identity.exception.*;
 import net.tokensmith.authorization.http.factory.exception.TokenException;
 import net.tokensmith.authorization.http.response.OpenIdToken;
 import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.http.response.TokenType;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
+import net.tokensmith.authorization.openId.identity.MakeCodeGrantIdentityToken;
+import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
+import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
+import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
+import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
 
 /**
  * Created by tommackenzie on 2/20/16.

@@ -1,12 +1,11 @@
 package net.tokensmith.authorization.http.controller.resource.api.publik;
 
+import net.tokensmith.authorization.http.controller.resource.api.publik.model.Health;
+import net.tokensmith.authorization.http.controller.security.APIUser;
 import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
-import net.tokensmith.authorization.http.controller.resource.api.publik.model.Health;
-import net.tokensmith.authorization.http.controller.security.APIUser;
-
 
 import java.util.Optional;
 

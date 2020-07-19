@@ -2,25 +2,20 @@ package net.toknsmith.login.translator;
 
 
 import helper.Factory;
-import net.toknsmith.login.config.LoginFactory;
-import net.toknsmith.login.exception.TranslateException;
-import net.toknsmith.login.http.StatusCode;
-import org.junit.Before;
-import org.junit.Test;
 import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
-
+import net.toknsmith.login.config.LoginFactory;
+import net.toknsmith.login.exception.TranslateException;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertThat;
 
 public class JwtRSAPublicKeyTranslatorTest {
     private JwtRSAPublicKeyTranslator subject;

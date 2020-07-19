@@ -1,17 +1,15 @@
 package net.tokensmith.authorization.openId.identity;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
 import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
 import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
 import net.tokensmith.authorization.openId.identity.factory.IdTokenFactory;
 import net.tokensmith.authorization.openId.identity.translator.PrivateKeyTranslator;
+import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.jwt.config.JwtAppFactory;
+import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.repository.entity.Profile;
 import net.tokensmith.repository.entity.RSAPrivateKey;
 import net.tokensmith.repository.entity.ResourceOwner;
@@ -19,10 +17,11 @@ import net.tokensmith.repository.entity.Token;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
-import net.tokensmith.authorization.security.ciphers.HashToken;
-import net.tokensmith.jwt.config.JwtAppFactory;
-import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
@@ -35,9 +34,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNotNull;
-import static org.mockito.ArgumentMatchers.notNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**

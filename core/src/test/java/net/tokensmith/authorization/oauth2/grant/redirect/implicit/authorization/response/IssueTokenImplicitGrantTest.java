@@ -1,17 +1,20 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.InsertTokenGraphImplicitGrant;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwnerToken;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.repo.ResourceOwnerTokenRepository;
+import net.tokensmith.repository.repo.ScopeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.InsertTokenGraphImplicitGrant;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.repo.*;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +22,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

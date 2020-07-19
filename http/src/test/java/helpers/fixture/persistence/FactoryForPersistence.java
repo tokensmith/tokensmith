@@ -1,11 +1,15 @@
 package helpers.fixture.persistence;
 
-import helpers.fixture.persistence.http.*;
 import helpers.fixture.persistence.db.GetOrCreateRSAPrivateKey;
+import helpers.fixture.persistence.http.GetSessionAndCsrfToken;
+import helpers.fixture.persistence.http.PostAuthorizationForm;
+import helpers.fixture.persistence.http.PostTokenCodeGrant;
+import helpers.fixture.persistence.http.PostTokenPasswordGrant;
+import helpers.fixture.persistence.http.PostTokenRefreshGrant;
 import helpers.suite.IntegrationTestSuite;
 import net.tokensmith.authorization.security.GenerateRSAPrivateKey;
-import net.tokensmith.repository.repo.*;
 import net.tokensmith.config.AppConfig;
+import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Base64;

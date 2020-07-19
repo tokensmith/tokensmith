@@ -1,5 +1,11 @@
 package net.tokensmith.authorization.http.controller.resource.api.publik;
 
+import net.tokensmith.authorization.http.controller.security.APIUser;
+import net.tokensmith.authorization.openId.identity.MakeUserInfoIdentityToken;
+import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
+import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
+import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
+import net.tokensmith.authorization.register.request.UserInfo;
 import net.tokensmith.otter.authentication.ParseBearer;
 import net.tokensmith.otter.authentication.exception.BearerException;
 import net.tokensmith.otter.controller.RestResource;
@@ -12,19 +18,17 @@ import net.tokensmith.otter.controller.header.ContentType;
 import net.tokensmith.otter.controller.header.Header;
 import net.tokensmith.otter.controller.header.HeaderValue;
 import net.tokensmith.otter.translator.JsonTranslator;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.http.controller.security.APIUser;
-import net.tokensmith.authorization.openId.identity.MakeUserInfoIdentityToken;
-import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
-import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
-import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
-import net.tokensmith.authorization.register.request.UserInfo;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 
 @Component

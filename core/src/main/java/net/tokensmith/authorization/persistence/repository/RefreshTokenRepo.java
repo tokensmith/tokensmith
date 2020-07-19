@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.RefreshToken;
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import net.tokensmith.authorization.persistence.mapper.RefreshTokenMapper;
+import net.tokensmith.repository.entity.RefreshToken;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.RefreshTokenRepository;

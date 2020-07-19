@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.persistence.repository;
 
 
-import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
 import net.tokensmith.authorization.persistence.mapper.ResourceOwnerMapper;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;

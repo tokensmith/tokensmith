@@ -1,11 +1,5 @@
 package net.tokensmith.authorization.oauth2.grant.refresh;
 
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.repository.repo.RefreshTokenRepository;
-import net.tokensmith.repository.repo.ResourceOwnerRepository;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginConfidentialClient;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
 import net.tokensmith.authorization.constant.ErrorCode;
@@ -16,12 +10,30 @@ import net.tokensmith.authorization.oauth2.grant.refresh.exception.CompromisedRe
 import net.tokensmith.authorization.oauth2.grant.refresh.factory.TokenInputRefreshGrantFactory;
 import net.tokensmith.authorization.oauth2.grant.token.RequestTokenGrant;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.oauth2.grant.token.exception.*;
+import net.tokensmith.authorization.oauth2.grant.token.exception.BadRequestExceptionBuilder;
+import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.NotFoundException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import net.tokensmith.authorization.security.ciphers.HashToken;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.GrantType;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenScope;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.RefreshTokenRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**

@@ -1,8 +1,5 @@
 package net.tokensmith.authorization.http.controller.resource;
 
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Param;
-import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
@@ -11,17 +8,21 @@ import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.fixture.persistence.http.GetSessionAndCsrfToken;
 import helpers.fixture.persistence.http.Session;
 import helpers.suite.IntegrationTestSuite;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.apache.commons.httpclient.HttpStatus;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Param;
+import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import net.tokensmith.repository.entity.ResourceOwner;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @Category(ServletContainerTest.class)
 public class ForgotPasswordResourceTest {

@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory;
 
+import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.repository.entity.AccessRequest;
 import net.tokensmith.repository.entity.AuthCode;
-import net.tokensmith.authorization.security.ciphers.HashToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

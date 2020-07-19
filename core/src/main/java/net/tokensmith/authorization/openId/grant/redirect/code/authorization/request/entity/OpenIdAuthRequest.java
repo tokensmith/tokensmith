@@ -3,7 +3,6 @@ package net.tokensmith.authorization.openId.grant.redirect.code.authorization.re
 import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
 import net.tokensmith.parser.Parameter;
 
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;

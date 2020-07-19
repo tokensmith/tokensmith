@@ -1,18 +1,18 @@
 package net.tokensmith.authorization.oauth2.grant.token;
 
+import net.tokensmith.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
+import net.tokensmith.authorization.oauth2.grant.refresh.RequestTokenRefreshGrant;
+import net.tokensmith.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.token.RequestTokenCodeGrant;
-import net.tokensmith.authorization.oauth2.grant.refresh.RequestTokenRefreshGrant;
-import net.tokensmith.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
-import net.tokensmith.authorization.oauth2.grant.password.RequestTokenPasswordGrant;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 9/21/16.

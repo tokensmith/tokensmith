@@ -1,14 +1,14 @@
 package helper.driver;
 
-import net.toknsmith.login.exception.IdTokenException;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.toknsmith.login.Login;
-import net.toknsmith.login.model.UserWithTokens;
+import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
 import net.toknsmith.login.exception.CommException;
+import net.toknsmith.login.exception.IdTokenException;
 import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.exception.http.openid.ErrorResponseException;
-import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
+import net.toknsmith.login.model.UserWithTokens;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,13 +2,8 @@ package net.tokensmith.authorization.openId.grant.redirect.implicit.authorizatio
 
 import helper.fixture.FixtureFactory;
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
-import net.tokensmith.authorization.authenticate.model.Session;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
@@ -20,6 +15,11 @@ import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
 import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
 import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
 import net.tokensmith.repository.entity.ResourceOwner;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 

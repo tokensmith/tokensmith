@@ -1,7 +1,7 @@
 package helpers.fixture.persistence.db;
 
-import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.NonceName;
 import net.tokensmith.repository.entity.NonceType;
 import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;

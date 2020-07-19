@@ -1,5 +1,10 @@
 package net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request;
 
+import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.context.GetOpenIdClientRedirectUri;
+import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
 import net.tokensmith.parser.Parser;
 import net.tokensmith.parser.exception.OptionalException;
 import net.tokensmith.parser.exception.ParseException;
@@ -10,13 +15,7 @@ import net.tokensmith.parser.validator.exception.MoreThanOneItemError;
 import net.tokensmith.parser.validator.exception.NoItemsError;
 import net.tokensmith.parser.validator.exception.ParamIsNullError;
 import org.apache.commons.validator.routines.UrlValidator;
-import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.context.GetOpenIdClientRedirectUri;
-import net.tokensmith.authorization.openId.grant.redirect.shared.authorization.request.entity.BaseOpenIdAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 import java.util.List;
 import java.util.Map;

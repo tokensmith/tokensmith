@@ -4,13 +4,13 @@ package net.toknsmith.login.endpoint;
 import net.toknsmith.login.HttpUtils;
 import net.toknsmith.login.config.LoginFactory;
 import net.toknsmith.login.config.props.EndpointProps;
+import net.toknsmith.login.endpoint.entity.request.FormFields;
+import net.toknsmith.login.endpoint.entity.request.GrantType;
 import net.toknsmith.login.translator.ErrorResponseExceptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.toknsmith.login.endpoint.entity.request.FormFields;
-import net.toknsmith.login.endpoint.entity.request.GrantType;
 
 import java.net.URI;
 import java.net.http.HttpClient;

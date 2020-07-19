@@ -1,12 +1,12 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.GivenNameMapper;
 import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.repo.GivenNameRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.persistence.mapper.GivenNameMapper;
 
 import java.util.UUID;
 

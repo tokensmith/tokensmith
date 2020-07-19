@@ -2,12 +2,8 @@ package net.tokensmith.authorization.http.controller.resource.html.authorization
 
 import helpers.category.UnitTests;
 import helpers.fixture.EntityFactory;
-import net.tokensmith.authorization.http.presenter.AssetPresenter;
-import net.tokensmith.otter.security.cookie.CookieSecurity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.authorization.http.presenter.AuthorizationPresenter;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response.entity.ImplicitAccessToken;
@@ -18,6 +14,9 @@ import net.tokensmith.otter.controller.builder.ResponseBuilder;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.response.Response;
 import net.tokensmith.otter.controller.header.Header;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,7 +27,8 @@ import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 
 @Category(UnitTests.class)

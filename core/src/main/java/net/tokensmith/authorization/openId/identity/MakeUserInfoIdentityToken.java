@@ -1,7 +1,5 @@
 package net.tokensmith.authorization.openId.identity;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.openId.identity.entity.IdToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
@@ -9,18 +7,20 @@ import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundExcepti
 import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
 import net.tokensmith.authorization.openId.identity.factory.IdTokenFactory;
 import net.tokensmith.authorization.openId.identity.translator.PrivateKeyTranslator;
-import net.tokensmith.repository.entity.RSAPrivateKey;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.repository.entity.Token;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.repository.repo.ResourceOwnerRepository;
-import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.jwt.builder.compact.SecureCompactBuilder;
 import net.tokensmith.jwt.builder.exception.CompactException;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwt.header.Algorithm;
+import net.tokensmith.repository.entity.RSAPrivateKey;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
+import net.tokensmith.repository.repo.RsaPrivateKeyRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

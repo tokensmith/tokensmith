@@ -1,12 +1,9 @@
 package net.tokensmith.authorization.http.factory;
 
 import helpers.category.UnitTests;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import net.tokensmith.authorization.http.factory.exception.TokenException;
+import net.tokensmith.authorization.http.response.OpenIdToken;
+import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenClaims;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
@@ -14,13 +11,15 @@ import net.tokensmith.authorization.openId.identity.MakeCodeGrantIdentityToken;
 import net.tokensmith.authorization.openId.identity.exception.IdTokenException;
 import net.tokensmith.authorization.openId.identity.exception.KeyNotFoundException;
 import net.tokensmith.authorization.openId.identity.exception.ProfileNotFoundException;
-import net.tokensmith.authorization.http.factory.exception.TokenException;
-import net.tokensmith.authorization.http.response.OpenIdToken;
-import net.tokensmith.authorization.http.response.Token;
 import net.tokensmith.authorization.openId.identity.exception.ResourceOwnerNotFoundException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 

@@ -2,8 +2,6 @@ package net.tokensmith.authorization.openId.grant.redirect.implicit.authorizatio
 
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
 import net.tokensmith.authorization.openId.grant.redirect.implicit.authorization.response.entity.OpenIdImplicitAccessToken;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.Optional;

@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.token;
 
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
-import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.exception.BadRequestException;
+import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.exception.NotFoundException;
 

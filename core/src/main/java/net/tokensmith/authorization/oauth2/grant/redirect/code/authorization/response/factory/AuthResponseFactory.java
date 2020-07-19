@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory;
 
 import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;

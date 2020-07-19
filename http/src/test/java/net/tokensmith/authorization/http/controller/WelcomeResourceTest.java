@@ -1,24 +1,23 @@
 package net.tokensmith.authorization.http.controller;
 
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
 import helpers.category.ServletContainerTest;
 import helpers.fixture.persistence.db.LoadNonce;
 import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.suite.IntegrationTestSuite;
-import org.apache.commons.httpclient.HttpStatus;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import net.tokensmith.repository.entity.Nonce;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.repository.repo.NonceRepository;
-import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.authorization.security.entity.NonceClaim;
 import net.tokensmith.jwt.builder.compact.UnsecureCompactBuilder;
-
+import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.repo.NonceRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
+import org.apache.commons.httpclient.HttpStatus;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;

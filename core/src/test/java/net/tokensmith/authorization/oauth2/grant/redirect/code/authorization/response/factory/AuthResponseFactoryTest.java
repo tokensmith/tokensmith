@@ -1,14 +1,14 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory;
 
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
+import net.tokensmith.repository.exceptions.RecordNotFoundException;
+import net.tokensmith.repository.repo.ClientRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.AuthResponse;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
-import net.tokensmith.repository.repo.ClientRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;

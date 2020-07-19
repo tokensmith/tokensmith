@@ -1,15 +1,19 @@
 package net.tokensmith.authorization.oauth2.grant.password.factory;
 
 import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
 import net.tokensmith.authorization.oauth2.grant.password.entity.TokenInputPasswordGrant;
-import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.MissingKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
+import net.tokensmith.authorization.oauth2.grant.token.validator.TokenPayloadValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**

@@ -1,15 +1,14 @@
 package net.tokensmith.authorization.oauth2.grant.token;
 
+import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.exception.BadRequestException;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
+import net.tokensmith.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
-import net.tokensmith.authorization.constant.ErrorCode;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
-import net.tokensmith.authorization.exception.BadRequestException;
-import net.tokensmith.authorization.oauth2.grant.token.factory.RequestTokenGrantFactory;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

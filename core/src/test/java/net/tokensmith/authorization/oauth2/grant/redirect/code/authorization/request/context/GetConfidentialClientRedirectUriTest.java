@@ -1,10 +1,6 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.context;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.context.GetClientRedirectUri;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
@@ -13,6 +9,10 @@ import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ConfidentialClientRepository;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.net.URI;
 import java.net.URISyntaxException;

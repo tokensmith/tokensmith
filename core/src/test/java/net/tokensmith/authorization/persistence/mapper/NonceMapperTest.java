@@ -1,14 +1,14 @@
 package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.TestAppConfig;
+import net.tokensmith.authorization.security.RandomString;
+import net.tokensmith.repository.entity.Nonce;
+import net.tokensmith.repository.entity.NonceType;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.repository.entity.Nonce;
-import net.tokensmith.repository.entity.NonceType;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.authorization.security.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

@@ -2,9 +2,13 @@ package net.tokensmith.authorization.persistence.mapper;
 
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
+import net.tokensmith.repository.entity.Address;
+import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Name;
+import net.tokensmith.repository.entity.Profile;
+import net.tokensmith.repository.entity.ResourceOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.repository.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,7 +20,7 @@ import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 2/27/16.

@@ -3,10 +3,14 @@ package net.tokensmith.authorization.persistence.mapper;
 import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
 import helper.fixture.persistence.openid.LoadOpenIdConfClientAll;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.repo.AccessRequestRepository;
+import net.tokensmith.repository.repo.ClientRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -14,10 +18,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 4/15/15.

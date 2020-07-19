@@ -1,11 +1,11 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token.factory;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.token.entity.TokenInputCodeGrant;
 import net.tokensmith.authorization.oauth2.grant.token.exception.InvalidValueException;
 import net.tokensmith.authorization.oauth2.grant.token.exception.UnknownKeyException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tommackenzie on 9/27/16.

@@ -1,12 +1,11 @@
 package helpers.fixture.persistence.http;
 
+import helpers.fixture.exception.GetCsrfException;
+import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
-import io.netty.handler.codec.http.cookie.Cookie;
-import helpers.fixture.exception.GetCsrfException;
-import net.tokensmith.authorization.http.controller.resource.html.CookieName;
-
 
 import java.io.IOException;
 import java.net.URI;

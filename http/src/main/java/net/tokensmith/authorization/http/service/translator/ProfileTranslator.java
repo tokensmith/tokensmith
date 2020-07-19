@@ -1,8 +1,8 @@
 package net.tokensmith.authorization.http.service.translator;
 
 
-import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.entity.Gender;
+import net.tokensmith.repository.entity.Name;
 import net.tokensmith.repository.entity.Profile;
 import net.tokensmith.repository.entity.ResourceOwner;
 import org.slf4j.Logger;

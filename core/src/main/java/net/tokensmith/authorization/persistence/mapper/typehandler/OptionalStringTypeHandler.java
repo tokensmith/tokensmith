@@ -1,6 +1,7 @@
 package net.tokensmith.authorization.persistence.mapper.typehandler;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Optional;
 
 /**

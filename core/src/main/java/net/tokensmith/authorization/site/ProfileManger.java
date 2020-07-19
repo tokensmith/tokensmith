@@ -1,8 +1,6 @@
 package net.tokensmith.authorization.site;
 
 import net.tokensmith.repository.entity.Address;
-import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.AddressRepository;
 import net.tokensmith.repository.repo.ProfileRepository;
 import net.tokensmith.repository.repo.ResourceOwnerRepository;

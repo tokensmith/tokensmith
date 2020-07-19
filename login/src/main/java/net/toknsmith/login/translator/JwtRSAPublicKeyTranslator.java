@@ -1,16 +1,12 @@
 package net.toknsmith.login.translator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.toknsmith.login.exception.TranslateException;
-import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.toknsmith.login.exception.TranslateException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class JwtRSAPublicKeyTranslator {

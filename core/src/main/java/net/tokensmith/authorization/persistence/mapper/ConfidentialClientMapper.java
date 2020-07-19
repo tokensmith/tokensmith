@@ -3,7 +3,6 @@ package net.tokensmith.authorization.persistence.mapper;
 import net.tokensmith.repository.entity.ConfidentialClient;
 import org.apache.ibatis.annotations.Param;
 
-
 import java.util.UUID;
 
 /**

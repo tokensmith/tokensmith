@@ -3,7 +3,11 @@ package helper.fixture.persistence.openid;
 import helper.fixture.FixtureFactory;
 import helper.fixture.persistence.LoadCodeClientWithScopes;
 import net.tokensmith.repository.entity.Client;
-import net.tokensmith.repository.repo.*;
+import net.tokensmith.repository.repo.ClientRepository;
+import net.tokensmith.repository.repo.ClientResponseTypeRepository;
+import net.tokensmith.repository.repo.ClientScopesRepository;
+import net.tokensmith.repository.repo.ResponseTypeRepository;
+import net.tokensmith.repository.repo.ScopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

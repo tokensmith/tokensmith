@@ -1,12 +1,12 @@
 package net.toknsmith.login.endpoint;
 
 
+import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.toknsmith.login.HttpUtils;
 import net.toknsmith.login.endpoint.entity.response.api.ClientError;
 import net.toknsmith.login.endpoint.entity.response.api.ServerError;
-import net.toknsmith.login.exception.TranslateException;
-import net.tokensmith.jwt.entity.jwk.RSAPublicKey;
 import net.toknsmith.login.exception.CommException;
+import net.toknsmith.login.exception.TranslateException;
 import net.toknsmith.login.exception.URLException;
 import net.toknsmith.login.exception.http.api.ClientException;
 import net.toknsmith.login.exception.http.api.ServerException;
@@ -15,7 +15,6 @@ import net.toknsmith.login.http.Header;
 import net.toknsmith.login.http.HeaderValue;
 import net.toknsmith.login.http.StatusCode;
 import net.toknsmith.login.translator.JwtRSAPublicKeyTranslator;
-
 
 import java.io.IOException;
 import java.io.InputStream;

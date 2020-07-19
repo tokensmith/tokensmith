@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
 import net.tokensmith.authorization.persistence.factory.DuplicateRecordExceptionFactory;
-import net.tokensmith.authorization.persistence.mapper.LocalTokenMapper;;
+import net.tokensmith.authorization.persistence.mapper.LocalTokenMapper;
 import net.tokensmith.repository.entity.LocalToken;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
@@ -11,6 +11,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+
+;
 
 @Component
 public class LocalTokenRepo implements LocalTokenRepository {

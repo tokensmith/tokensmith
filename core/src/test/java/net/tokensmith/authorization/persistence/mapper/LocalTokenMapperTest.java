@@ -4,9 +4,7 @@ import helper.fixture.FixtureFactory;
 import helper.fixture.TestAppConfig;
 import net.tokensmith.repository.entity.LocalToken;
 import net.tokensmith.repository.entity.ResourceOwner;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import org.hamcrest.core.Is;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,11 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

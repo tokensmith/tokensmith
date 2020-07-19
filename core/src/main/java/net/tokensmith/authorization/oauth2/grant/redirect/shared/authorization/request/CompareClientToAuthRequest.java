@@ -1,9 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request;
 
 import net.tokensmith.authorization.constant.ErrorCode;
+import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
-import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.entity.AuthRequest;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ResponseType;
 import net.tokensmith.repository.entity.Scope;

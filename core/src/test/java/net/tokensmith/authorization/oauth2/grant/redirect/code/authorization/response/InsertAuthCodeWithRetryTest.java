@@ -1,26 +1,29 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
 import helper.fixture.FixtureFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
+import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.factory.AuthCodeFactory;
+import net.tokensmith.authorization.security.RandomString;
 import net.tokensmith.repository.entity.AccessRequest;
 import net.tokensmith.repository.entity.AuthCode;
 import net.tokensmith.repository.entity.Configuration;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.AuthCodeRepository;
 import net.tokensmith.repository.repo.ConfigurationRepository;
-import net.tokensmith.authorization.security.RandomString;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class InsertAuthCodeWithRetryTest {

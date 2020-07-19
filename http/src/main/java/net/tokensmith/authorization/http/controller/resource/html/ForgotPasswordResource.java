@@ -1,18 +1,18 @@
 package net.tokensmith.authorization.http.controller.resource.html;
 
+import net.tokensmith.authorization.exception.BadRequestException;
+import net.tokensmith.authorization.http.controller.security.WebSiteSession;
+import net.tokensmith.authorization.http.controller.security.WebSiteUser;
 import net.tokensmith.authorization.http.presenter.AssetPresenter;
+import net.tokensmith.authorization.http.presenter.ForgotPasswordPresenter;
+import net.tokensmith.authorization.nonce.reset.ForgotPassword;
+import net.tokensmith.authorization.register.exception.NonceException;
 import net.tokensmith.otter.controller.Resource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
 import net.tokensmith.otter.controller.entity.response.Response;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import net.tokensmith.authorization.exception.BadRequestException;
-import net.tokensmith.authorization.http.controller.security.WebSiteSession;
-import net.tokensmith.authorization.http.controller.security.WebSiteUser;
-import net.tokensmith.authorization.http.presenter.ForgotPasswordPresenter;
-import net.tokensmith.authorization.nonce.reset.ForgotPassword;
-import net.tokensmith.authorization.register.exception.NonceException;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

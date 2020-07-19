@@ -1,20 +1,31 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.token;
 
 import helper.fixture.FixtureFactory;
+import net.tokensmith.authorization.exception.ServerException;
+import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
+import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
+import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
+import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
+import net.tokensmith.authorization.security.RandomString;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.Configuration;
+import net.tokensmith.repository.entity.GrantType;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenAudience;
+import net.tokensmith.repository.entity.TokenScope;
+import net.tokensmith.repository.exceptions.DuplicateRecordException;
+import net.tokensmith.repository.repo.ConfigurationRepository;
+import net.tokensmith.repository.repo.RefreshTokenRepository;
+import net.tokensmith.repository.repo.TokenAudienceRepository;
+import net.tokensmith.repository.repo.TokenRepository;
+import net.tokensmith.repository.repo.TokenScopeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import net.tokensmith.authorization.exception.ServerException;
-import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
-import net.tokensmith.authorization.oauth2.grant.token.MakeBearerToken;
-import net.tokensmith.authorization.oauth2.grant.token.MakeRefreshToken;
-import net.tokensmith.authorization.oauth2.grant.token.entity.Extension;
-import net.tokensmith.repository.entity.*;
-import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.repository.repo.*;
-import net.tokensmith.authorization.security.RandomString;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
@@ -25,8 +36,12 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by tommackenzie on 11/13/16.

@@ -1,7 +1,7 @@
 package net.tokensmith.authorization.persistence.repository;
 
-import net.tokensmith.repository.entity.ClientScope;
 import net.tokensmith.authorization.persistence.mapper.ClientScopesMapper;
+import net.tokensmith.repository.entity.ClientScope;
 import net.tokensmith.repository.repo.ClientScopesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

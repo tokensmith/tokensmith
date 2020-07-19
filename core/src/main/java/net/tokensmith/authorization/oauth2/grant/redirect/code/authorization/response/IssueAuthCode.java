@@ -1,7 +1,9 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response;
 
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.response.exception.AuthCodeInsertException;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequestScope;
+import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.repo.AccessRequestRepository;
 import net.tokensmith.repository.repo.AccessRequestScopesRepository;
 import net.tokensmith.repository.repo.ScopeRepository;

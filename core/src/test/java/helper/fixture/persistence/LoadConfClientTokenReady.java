@@ -1,12 +1,21 @@
 package helper.fixture.persistence;
 
 import helper.fixture.FixtureFactory;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.AccessRequest;
+import net.tokensmith.repository.entity.AccessRequestScope;
+import net.tokensmith.repository.entity.AuthCode;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ConfidentialClient;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.Scope;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
-import net.tokensmith.repository.repo.*;
-import org.slf4j.LoggerFactory;
-
+import net.tokensmith.repository.repo.AccessRequestRepository;
+import net.tokensmith.repository.repo.AccessRequestScopesRepository;
+import net.tokensmith.repository.repo.AuthCodeRepository;
+import net.tokensmith.repository.repo.ConfidentialClientRepository;
+import net.tokensmith.repository.repo.ResourceOwnerRepository;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

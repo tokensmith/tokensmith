@@ -1,10 +1,10 @@
 package net.tokensmith.authorization.persistence.repository;
 
+import net.tokensmith.authorization.persistence.mapper.AccessRequestMapper;
 import net.tokensmith.jwt.config.JwtAppFactory;
 import net.tokensmith.jwt.entity.jwk.SymmetricKey;
 import net.tokensmith.jwt.jwe.serialization.JweDeserializer;
 import net.tokensmith.repository.entity.AccessRequest;
-import net.tokensmith.authorization.persistence.mapper.AccessRequestMapper;
 import net.tokensmith.repository.repo.AccessRequestRepository;
 import net.tokensmith.repository.repo.CipherRepository;
 import org.slf4j.Logger;

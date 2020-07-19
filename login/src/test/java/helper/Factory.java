@@ -3,19 +3,16 @@ package helper;
 
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import helper.fake.FakeHttpResponse;
-import net.tokensmith.jwt.entity.jwt.JsonWebToken;
-import net.tokensmith.jwt.entity.jwt.header.Header;
-import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
-import net.toknsmith.login.endpoint.entity.response.openid.TokenType;
-import net.toknsmith.login.endpoint.entity.response.api.key.RSAPublicKey;
-import net.tokensmith.jwt.entity.jwk.KeyType;
 import net.tokensmith.jwt.entity.jwk.RSAKeyPair;
 import net.tokensmith.jwt.entity.jwk.Use;
+import net.tokensmith.jwt.entity.jwt.JsonWebToken;
+import net.tokensmith.jwt.entity.jwt.header.Header;
+import net.toknsmith.login.endpoint.entity.response.api.key.KeyUse;
+import net.toknsmith.login.endpoint.entity.response.api.key.RSAPublicKey;
+import net.toknsmith.login.endpoint.entity.response.openid.OpenIdToken;
+import net.toknsmith.login.endpoint.entity.response.openid.TokenType;
 import net.toknsmith.login.endpoint.entity.response.openid.claim.User;
 import net.toknsmith.login.http.StatusCode;
-import net.toknsmith.login.endpoint.entity.response.api.key.KeyUse;
-
-
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -24,10 +21,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiPredicate;
-
-import static org.mockito.Mockito.mock;
 
 public class Factory {
     /*

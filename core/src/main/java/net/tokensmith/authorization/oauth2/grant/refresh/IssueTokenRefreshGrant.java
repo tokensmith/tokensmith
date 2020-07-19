@@ -6,7 +6,13 @@ import net.tokensmith.authorization.oauth2.grant.token.builder.TokenResponseBuil
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenResponse;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.RefreshToken;
+import net.tokensmith.repository.entity.ResourceOwner;
+import net.tokensmith.repository.entity.ResourceOwnerToken;
+import net.tokensmith.repository.entity.Scope;
+import net.tokensmith.repository.entity.Token;
+import net.tokensmith.repository.entity.TokenChain;
 import net.tokensmith.repository.exceptions.DuplicateRecordException;
 import net.tokensmith.repository.repo.ResourceOwnerTokenRepository;
 import net.tokensmith.repository.repo.TokenChainRepository;

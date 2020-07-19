@@ -1,12 +1,10 @@
 package net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.response;
 
 import net.tokensmith.authorization.authenticate.CreateLocalToken;
-import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
-import net.tokensmith.authorization.authenticate.model.Session;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import net.tokensmith.authorization.authenticate.LoginResourceOwner;
+import net.tokensmith.authorization.authenticate.exception.LocalSessionException;
 import net.tokensmith.authorization.authenticate.exception.UnauthorizedException;
+import net.tokensmith.authorization.authenticate.model.Session;
 import net.tokensmith.authorization.constant.ErrorCode;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.implicit.authorization.request.ValidateImplicitGrant;
@@ -17,14 +15,21 @@ import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.r
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.builder.InformClientExceptionBuilder;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenGraph;
 import net.tokensmith.authorization.oauth2.grant.token.entity.TokenType;
-import net.tokensmith.repository.entity.*;
+import net.tokensmith.repository.entity.Client;
+import net.tokensmith.repository.entity.ResourceOwner;
 import net.tokensmith.repository.exceptions.RecordNotFoundException;
 import net.tokensmith.repository.repo.ClientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**

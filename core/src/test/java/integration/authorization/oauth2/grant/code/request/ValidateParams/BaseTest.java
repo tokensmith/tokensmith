@@ -2,14 +2,14 @@ package integration.authorization.oauth2.grant.code.request.ValidateParams;
 
 
 import helper.fixture.persistence.LoadCodeConfidentialClientWithScopes;
-import org.hamcrest.MatcherAssert;
-import org.junit.runner.RunWith;
 import net.tokensmith.authorization.exception.ServerException;
 import net.tokensmith.authorization.oauth2.grant.redirect.code.authorization.request.ValidateCodeGrant;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformClientException;
 import net.tokensmith.authorization.oauth2.grant.redirect.shared.authorization.request.exception.InformResourceOwnerException;
 import net.tokensmith.repository.entity.Client;
 import net.tokensmith.repository.entity.ConfidentialClient;
+import org.hamcrest.MatcherAssert;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;

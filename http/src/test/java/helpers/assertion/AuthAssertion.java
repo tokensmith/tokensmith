@@ -1,6 +1,7 @@
 package helpers.assertion;
 
 
+import io.netty.handler.codec.http.cookie.Cookie;
 import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.claim.RedirectClaim;
 import net.tokensmith.jwt.config.JwtAppFactory;
@@ -9,13 +10,11 @@ import net.tokensmith.jwt.exception.InvalidJWT;
 import net.tokensmith.jwt.serialization.JwtSerde;
 import net.tokensmith.jwt.serialization.exception.JsonToJwtException;
 
-
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import io.netty.handler.codec.http.cookie.Cookie;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
