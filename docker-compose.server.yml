@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+
+  server:
+    container_name: tokensmith_server
+    image: tokensmith/server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl localhost:8080/api/public/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      AUTH_DB_URL: "jdbc:postgresql://db:5432/auth"
+      AUTH_DB_USER: "postgres"
+      AUTH_DB_PASSWORD: ""
+      ISSUER: "https://sso.tokensmith.net"
+      ALLOW_LOCAL_URLS: "true"
+      ALLOW_HTTP_URLS: "true"
+      MESSAGE_QUEUE_HOST: "kafka-broker:9092"
+
+  db_migration:
+    container_name: tokensmith_migrator
+    image: tokensmith/db_migrator
+    build:
+      context: ${PWD}
+      dockerfile: docker/migrator/Dockerfile
+    environment:
+      AUTH_DB_HOST: "db"
+      AUTH_DB_NAME: "auth"
+      AUTH_DB_USER: "postgres"
+      DB_MAX_ATTEMPTS: 10
