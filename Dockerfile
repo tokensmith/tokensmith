@@ -1,11 +1,11 @@
 FROM adoptopenjdk/openjdk12:alpine-slim AS builder
-LABEL stage=builder
+LABEL stage=tokensmith_builder
 
 RUN  \
     apk update && \
-    apk upgrade
+    apk upgrade && \
+    mkdir -p /application
 
-RUN mkdir -p /application
 COPY . /application/
 
 RUN cd /application && \
@@ -16,9 +16,8 @@ FROM adoptopenjdk/openjdk12:alpine-slim
 RUN  \
     apk update && \
     apk upgrade && \
-    apk add --no-cache curl
-
-RUN mkdir -p /application && \
+    apk add --no-cache curl && \
+    mkdir -p /application && \
     mkdir -p /var/log/application
 
 COPY --from=builder /application/http/build/libs/id-server-0.0.1-SNAPSHOT.war /application/id-server-0.0.1-SNAPSHOT.war

@@ -4,9 +4,9 @@ RUN  \
     apk update && \
     apk upgrade && \
     apk add --no-cache postgresql-client && \
-    apk add --no-cache bash
+    apk add --no-cache bash && \
+    mkdir -p /application
 
-RUN mkdir -p /application
 COPY . /application/
 WORKDIR /application
 

@@ -4,7 +4,7 @@ build:
 	docker-compose -f docker-compose.yml -f docker-compose.server.yml build
 
 run: build
-	docker-compose -f docker-compose.yml -f docker-compose.server.yml up -d;
+	docker-compose -f docker-compose.yml -f docker-compose.server.yml up -d
 
 stop:
 	docker-compose -f docker-compose.yml -f docker-compose.server.yml stop
@@ -13,7 +13,7 @@ ps:
 	docker-compose -f docker-compose.yml -f docker-compose.server.yml ps
 
 build-dev:
-	docker-compose -f docker-compose.yml
+	docker-compose -f docker-compose.yml build
 
 migrate: build-dev
 	docker-compose -f docker-compose.yml up -d;

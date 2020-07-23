@@ -13,40 +13,45 @@ This documentation is intended for a developer audience. More detailed documenta
 
 ## Run the server
 
-### Locally
-
-#### Start Postgres, Zookeeper, Kafka, and [Message-User](https://github.com/tokensmith/message-user) 
+### With Docker
+This will run Tokensmith and the dependencies with Docker.
 ```bash
 make run
 ```
+Stop it.
+```bash
+make stop
+```
+Check it's health.
+```bash
+make ps
+```
 
-#### Stop Postgres, Zookeeper, Kafka, and [Message-User](https://github.com/tokensmith/message-user) 
+### On a host
+This approach is good if you want to write a feature or debug the application with breakpoints.
+
+Start the dependencies with docker. 
+```bash
+make run-dev
+```
+
+Stop dependencies. 
 ```bash
 make stop
 ```
 
-#### Compile the application
-```bash
-./gradlew clean install
-```
-
-#### Start the application
-```bash
-java -jar http/build/libs/http-0.0.1-SNAPSHOT.war
-```
-
-Or, from an IDE the main method is in [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
+In an IDE start the [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
 
 #### Configuration
 
 The server gets configured in a [properties file](http/src/main/resources/application-default.properties). 
-The values can be overidden with command line arguments or environment variables. More information for how to overide 
+The values can be overridden with command line arguments or environment variables. More information for how to override 
 the default values is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
 
  - Arguments can passed in as, `-DallowLocalUrls=false`
  - Environment variables can be set as, `export allowLocalUrls=false`
 
-## Seed the database
+## Database
 
 The database automatically gets seeded with a few [database migrations](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
 
