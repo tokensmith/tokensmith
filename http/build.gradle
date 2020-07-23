@@ -70,6 +70,7 @@ configurations {
 }
 
 war {
+    archiveBaseName = "id-server"
     from "${pathToJavaMain}"
     from {
         configurations.compile.collect {
@@ -87,5 +88,4 @@ war {
     // having trouble exploding the war file.
     exclude "license/LICENSE*.txt"
     exclude "license/README*.txt"
-
 }
