@@ -8,7 +8,8 @@ This documentation is intended for a developer audience. More detailed documenta
 - [Published messages](#published-messages)
 - [Interaction](#interaction)
 - [Request features and report bugs](#request-features-and-report-bugs)
-- [Project layout](#project-layout)
+- [Repo layout](#repo-layout)
+- [About the project](/About.md)
 
 
 ## Run the server
@@ -76,7 +77,7 @@ See the [HTTP](http/README.md) readme for documents on interacting with Tokensmi
  - Use the [project's github issues](https://github.com/tokensmith/tokensmith/issues).
  - Include links to the RFCs that relate to the feature or bug.
 
-## Project layout
+## Repo layout
 This repo has multiple gradle projects.
 
 ### [http](http)

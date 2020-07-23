@@ -12,6 +12,7 @@ import helpers.fixture.persistence.http.Session;
 import helpers.fixture.persistence.http.input.AuthEndpointProps;
 import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
 import helpers.suite.IntegrationTestSuite;
+import io.netty.handler.codec.http.cookie.Cookie;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Name;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Profile;
 import net.tokensmith.config.AppConfig;
@@ -23,10 +24,11 @@ import org.asynchttpclient.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.springframework.aop.aspectj.SingletonAspectInstanceFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -62,9 +64,28 @@ public class RestProfileResourceTest {
         authServletURI = baseURI + "authorization";
     }
 
+    public Session getSession(ConfidentialClient cc, ResourceOwner ro) throws Exception {
+        List<String> scopes = new ArrayList<>();
+        scopes.add("openid");
+        scopes.add("email");
+
+        AuthEndpointProps props = new AuthEndpointPropsBuilder()
+                .confidentialClient(cc)
+                .baseURI(authServletURI)
+                .scopes(scopes)
+                .email(ro.getEmail())
+                .build();
+
+        String nextUri = baseURI + "profile";
+        return postAuthorizationForm.getSessionForProfile(props, nextUri);
+    }
+
     @Test
     public void putWhenNoSessionShouldBeUnauthorized() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
 
         Profile profile = ModelFactory.makeProfile(ro.getId());
         AppConfig config = new AppConfig();
@@ -77,6 +98,8 @@ public class RestProfileResourceTest {
 
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(Collections.singletonList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -87,22 +110,42 @@ public class RestProfileResourceTest {
     }
 
     @Test
+    public void putWhenNoCsrfShouldBeForbidden() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
+
+        Profile profile = ModelFactory.makeProfile(ro.getId());
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        byte[] payload = om.writerFor(Profile.class).writeValueAsBytes(profile);
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePut(servletURI)
+                .setBody(payload)
+                .setHeader("Content-Type", "application/json; charset=utf-8;")
+                .setHeader("Accept", "application/json; charset=utf-8;")
+                .setCookies(Collections.singletonList(session.getSession()))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
+
+        assertThat(response.getResponseBody(), is(""));
+    }
+
+    @Test
     public void putShouldBeOk() throws Exception {
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
 
-        List<String> scopes = new ArrayList<>();
-        scopes.add("openid");
-        scopes.add("email");
+        Session session = getSession(cc, ro);
 
-        AuthEndpointProps props = new AuthEndpointPropsBuilder()
-                .confidentialClient(cc)
-                .baseURI(authServletURI)
-                .scopes(scopes)
-                .email(ro.getEmail())
-                .build();
-
-        Session session = postAuthorizationForm.getSession(props);
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getSession());
 
         Profile profile = ModelFactory.makeProfile(ro.getId(), ro.getProfile().getId());
 
@@ -127,7 +170,8 @@ public class RestProfileResourceTest {
                 .setBody(payload)
                 .setHeader("Content-Type", "application/json;charset=UTF-8")
                 .setHeader("Accept", "application/json;charset=UTF-8")
-                .setCookies(Arrays.asList(session.getSession()))
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();

@@ -12,6 +12,7 @@ public class AuthEndpointProps {
     private String email;
     private Map<String, List<String>> params;
 
+
     public AuthEndpointProps(ConfidentialClient confidentialClient, String baseURI, List<String> scopes, String email, Map<String, List<String>> params) {
         this.confidentialClient = confidentialClient;
         this.baseURI = baseURI;

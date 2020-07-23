@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class CookieServiceTest {
         ArgumentCaptor<RedirectClaim> redirectCapture = ArgumentCaptor.forClass(RedirectClaim.class);
 
         CookieJwtException actual = new CookieJwtException("", new NullPointerException());
-        doThrow(actual).when(mockCookieSigner).make(
+        Mockito.doThrow(actual).when(mockCookieSigner).make(
                 cookieConfig.capture(),
                 redirectCapture.capture());
 
@@ -397,7 +398,7 @@ public class CookieServiceTest {
         ArgumentCaptor<RedirectClaim> redirectCapture = ArgumentCaptor.forClass(RedirectClaim.class);
 
         CookieJwtException ex = new CookieJwtException("", new NullPointerException());
-        doThrow(ex).when(mockCookieSigner).make(
+        Mockito.doThrow(ex).when(mockCookieSigner).make(
                 cookieConfig.capture(),
                 redirectCapture.capture());
 

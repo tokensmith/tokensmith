@@ -76,8 +76,8 @@
     </div>
 
     <button id="profile-form-bttn" data-rest="true" data-verb="put" data-resource="profile">submit</button>
-    <p class="message"><a id="profile-extra-more" href="#">more</a></p>
-    <p class="message"><a id="profile-extra-less" class="hide" href="#">less</a></p>
+    <p class="follow-link"><a id="profile-extra-more" href="#">more</a></p>
+    <p class="follow-link"><a id="profile-extra-less" class="hide" href="#">less</a></p>
 </form>
 
     <c:forEach items="${presenter.getAddresses()}" var="addr">
