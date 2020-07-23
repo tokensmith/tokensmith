@@ -4,7 +4,7 @@ Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html
 This documentation is intended for a developer audience. More detailed documentation is [in progress](https://github.com/tokensmith/website).
 
 - [Run the server](#run-the-server)
-- [Seed the database](#seed-the-database)
+- [Database](#Database)
 - [Published messages](#published-messages)
 - [Interaction](#interaction)
 - [Request features and report bugs](#request-features-and-report-bugs)
@@ -22,7 +22,7 @@ Stop it.
 ```bash
 make stop
 ```
-Check it's health.
+Check the health.
 ```bash
 make ps
 ```
@@ -40,7 +40,12 @@ Stop dependencies.
 make stop
 ```
 
-In an IDE start the [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
+Check the health.
+```bash
+make ps
+```
+
+Then in an IDE start the [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
 
 #### Configuration
 
@@ -48,7 +53,7 @@ The server gets configured in a [properties file](http/src/main/resources/applic
 The values can be overridden with command line arguments or environment variables. More information for how to override 
 the default values is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
 
- - Arguments can passed in as, `-DallowLocalUrls=false`
+ - Arguments can be passed in as, `-DallowLocalUrls=false`
  - Environment variables can be set as, `export allowLocalUrls=false`
 
 ## Database
