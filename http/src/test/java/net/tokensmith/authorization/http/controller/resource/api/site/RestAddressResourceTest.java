@@ -12,6 +12,7 @@ import helpers.fixture.persistence.http.Session;
 import helpers.fixture.persistence.http.input.AuthEndpointProps;
 import helpers.fixture.persistence.http.input.AuthEndpointPropsBuilder;
 import helpers.suite.IntegrationTestSuite;
+import io.netty.handler.codec.http.cookie.Cookie;
 import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.config.AppConfig;
 import net.tokensmith.repository.entity.ConfidentialClient;
@@ -25,7 +26,7 @@ import org.junit.experimental.categories.Category;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,11 +74,7 @@ public class RestAddressResourceTest {
         }
     }
 
-    @Test
-    public void postShouldBeCreated() throws Exception {
-        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
-        ResourceOwner ro = loadOpenIdResourceOwner.run();
-
+    public Session getSession(ConfidentialClient cc, ResourceOwner ro) throws Exception {
         List<String> scopes = new ArrayList<>();
         scopes.add("openid");
         scopes.add("email");
@@ -89,7 +86,20 @@ public class RestAddressResourceTest {
                 .email(ro.getEmail())
                 .build();
 
-        Session session = postAuthorizationForm.getSession(props);
+        String nextUri = baseURI + "profile";
+        return postAuthorizationForm.getSessionForProfile(props, nextUri);
+    }
+
+    @Test
+    public void postShouldBeCreated() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
+
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getSession());
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         AppConfig config = new AppConfig();
@@ -103,7 +113,8 @@ public class RestAddressResourceTest {
                 .setBody(payload)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
-                .setCookies(Arrays.asList(session.getSession()))
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -125,7 +136,10 @@ public class RestAddressResourceTest {
 
     @Test
     public void postWhenNoSessionShouldBeUnauthorized() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         AppConfig config = new AppConfig();
@@ -139,6 +153,8 @@ public class RestAddressResourceTest {
                 .setBody(payload)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(Collections.singletonList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -149,22 +165,44 @@ public class RestAddressResourceTest {
     }
 
     @Test
+    public void postWhenNoCsrfShouldBeForbidden() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
+
+        Address address = ModelFactory.makeAddress(ro.getProfile().getId());
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        byte[] payload = om.writerFor(Address.class).writeValueAsBytes(address);
+
+        String targetURI = targetURI(ro.getProfile().getId(), Optional.empty());
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePost(targetURI)
+                .setBody(payload)
+                .setHeader("Content-Type", "application/json; charset=utf-8;")
+                .setHeader("Accept", "application/json; charset=utf-8;")
+                .setCookies(Collections.singletonList(session.getSession()))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
+
+        assertThat(response.getResponseBody(), is(""));
+    }
+
+    @Test
     public void putShouldBeOk() throws Exception {
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
 
-        List<String> scopes = new ArrayList<>();
-        scopes.add("openid");
-        scopes.add("email");
+        Session session = getSession(cc, ro);
 
-        AuthEndpointProps props = new AuthEndpointPropsBuilder()
-                .confidentialClient(cc)
-                .baseURI(authServletURI)
-                .scopes(scopes)
-                .email(ro.getEmail())
-                .build();
-
-        Session session = postAuthorizationForm.getSession(props);
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getSession());
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         AppConfig config = new AppConfig();
@@ -178,7 +216,8 @@ public class RestAddressResourceTest {
                 .setBody(payload)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
-                .setCookies(Arrays.asList(session.getSession()))
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -200,7 +239,10 @@ public class RestAddressResourceTest {
 
     @Test
     public void putWhenNoSessionShouldBeUnauthorized() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         AppConfig config = new AppConfig();
@@ -214,6 +256,8 @@ public class RestAddressResourceTest {
                 .setBody(payload)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(Collections.singletonList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
@@ -224,22 +268,44 @@ public class RestAddressResourceTest {
     }
 
     @Test
+    public void putWhenNoCsrfShouldBeForbidden() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
+
+        Address address = ModelFactory.makeAddress(ro.getProfile().getId());
+        AppConfig config = new AppConfig();
+        ObjectMapper om = config.objectMapper();
+        byte[] payload = om.writerFor(Address.class).writeValueAsBytes(address);
+
+        String targetURI = targetURI(ro.getProfile().getId(), Optional.empty());
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .preparePut(targetURI)
+                .setBody(payload)
+                .setHeader("Content-Type", "application/json; charset=utf-8;")
+                .setHeader("Accept", "application/json; charset=utf-8;")
+                .setCookies(Collections.singletonList(session.getSession()))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
+
+        assertThat(response.getResponseBody(), is(""));
+    }
+
+    @Test
     public void deleteShouldBeOk() throws Exception {
         ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
 
-        List<String> scopes = new ArrayList<>();
-        scopes.add("openid");
-        scopes.add("email");
+        Session session = getSession(cc, ro);
 
-        AuthEndpointProps props = new AuthEndpointPropsBuilder()
-                .confidentialClient(cc)
-                .baseURI(authServletURI)
-                .scopes(scopes)
-                .email(ro.getEmail())
-                .build();
-
-        Session session = postAuthorizationForm.getSession(props);
+        List<Cookie> cookies = new ArrayList<>();
+        cookies.add(session.getCsrf());
+        cookies.add(session.getSession());
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         String targetURI = targetURI(ro.getProfile().getId(), Optional.of(address.getId()));
@@ -248,7 +314,8 @@ public class RestAddressResourceTest {
                 .prepareDelete(targetURI)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
-                .setCookies(Arrays.asList(session.getSession()))
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -258,7 +325,10 @@ public class RestAddressResourceTest {
 
     @Test
     public void deleteWhenNoSessionShouldBeUnauthorized() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
         ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
 
         Address address = ModelFactory.makeAddress(ro.getProfile().getId());
         String targetURI = targetURI(ro.getProfile().getId(), Optional.of(address.getId()));
@@ -267,11 +337,37 @@ public class RestAddressResourceTest {
                 .prepareDelete(targetURI)
                 .setHeader("Content-Type", "application/json; charset=utf-8;")
                 .setHeader("Accept", "application/json; charset=utf-8;")
+                .setHeader("X-CSRF", session.getCsrfToken())
+                .setCookies(Collections.singletonList(session.getCsrf()))
                 .execute();
 
         Response response = f.get();
 
         assertThat(response.getStatusCode(), is(HttpStatus.SC_UNAUTHORIZED));
+
+        assertThat(response.getResponseBody(), is(""));
+    }
+
+    @Test
+    public void deleteWhenNoCsrfShouldBeForbidden() throws Exception {
+        ConfidentialClient cc = loadOpenIdConfidentialClientWithScopes.run();
+        ResourceOwner ro = loadOpenIdResourceOwner.run();
+
+        Session session = getSession(cc, ro);
+
+        Address address = ModelFactory.makeAddress(ro.getProfile().getId());
+        String targetURI = targetURI(ro.getProfile().getId(), Optional.of(address.getId()));
+
+        ListenableFuture<Response> f = IntegrationTestSuite.getHttpClient()
+                .prepareDelete(targetURI)
+                .setHeader("Content-Type", "application/json; charset=utf-8;")
+                .setHeader("Accept", "application/json; charset=utf-8;")
+                .setCookies(Collections.singletonList(session.getSession()))
+                .execute();
+
+        Response response = f.get();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.SC_FORBIDDEN));
 
         assertThat(response.getResponseBody(), is(""));
     }

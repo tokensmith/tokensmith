@@ -2,6 +2,7 @@ package net.tokensmith.authorization.http.controller.resource.html.between;
 
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -39,7 +41,7 @@ public class WebSiteAuthRequiredTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        subject = new WebSiteAuthRequired(mockHashToken, mockResourceOwnerRepository);
+        subject = new WebSiteAuthRequired(mockHashToken, mockResourceOwnerRepository, "/assets/css/global.css");
     }
 
     @Test
@@ -93,6 +95,9 @@ public class WebSiteAuthRequiredTest {
         assertThat(actual, is(notNullValue()));
         assertThat(res.getStatusCode(), is(StatusCode.UNAUTHORIZED));
         assertThat(res.getTemplate().isPresent(), is(true));
+        assertTrue(res.getPresenter().isPresent());
+        AssetPresenter presenter = (AssetPresenter) res.getPresenter().get();
+        assertThat(presenter.getGlobalCssPath(), is("/assets/css/global.css"));
     }
 
     @Test
@@ -113,5 +118,8 @@ public class WebSiteAuthRequiredTest {
         assertThat(actual, is(notNullValue()));
         assertThat(res.getStatusCode(), is(StatusCode.UNAUTHORIZED));
         assertThat(res.getTemplate().isPresent(), is(true));
+        assertTrue(res.getPresenter().isPresent());
+        AssetPresenter presenter = (AssetPresenter) res.getPresenter().get();
+        assertThat(presenter.getGlobalCssPath(), is("/assets/css/global.css"));
     }
 }

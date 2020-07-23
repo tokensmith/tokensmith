@@ -3,6 +3,7 @@ package net.tokensmith.authorization.http.controller.resource.html.between;
 
 import net.tokensmith.authorization.http.controller.security.WebSiteSession;
 import net.tokensmith.authorization.http.controller.security.WebSiteUser;
+import net.tokensmith.authorization.http.presenter.AssetPresenter;
 import net.tokensmith.authorization.security.ciphers.HashToken;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.Request;
@@ -26,11 +27,13 @@ public class WebSiteAuthRequired implements Between<WebSiteSession, WebSiteUser>
     private static String UNAUTHORIZED_JSP_PATH = "/WEB-INF/jsp/403.jsp";
     private HashToken hashToken;
     private ResourceOwnerRepository resourceOwnerRepo;
+    private String globalCssPath;
 
     @Autowired
-    public WebSiteAuthRequired(HashToken hashToken, ResourceOwnerRepository resourceOwnerRepo) {
+    public WebSiteAuthRequired(HashToken hashToken, ResourceOwnerRepository resourceOwnerRepo, String globalCssPath) {
         this.hashToken = hashToken;
         this.resourceOwnerRepo = resourceOwnerRepo;
+        this.globalCssPath = globalCssPath;
     }
 
     @Override
@@ -61,6 +64,9 @@ public class WebSiteAuthRequired implements Between<WebSiteSession, WebSiteUser>
 
     protected void fail(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) throws HaltException {
         LOGGER.debug("failed to authenticate user");
+        AssetPresenter presenter = new AssetPresenter();
+        presenter.setGlobalCssPath(globalCssPath);
+        response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.UNAUTHORIZED);
         response.setTemplate(Optional.of(UNAUTHORIZED_JSP_PATH));
         throw new HaltException("Must be authenticated.");

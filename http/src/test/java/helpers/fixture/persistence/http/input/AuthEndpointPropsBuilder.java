@@ -14,6 +14,7 @@ public class AuthEndpointPropsBuilder {
     private Map<String, List<String>> extraQueryParams = new HashMap<>();
     private String email;
 
+
     public AuthEndpointPropsBuilder confidentialClient(ConfidentialClient confidentialClient) {
         this.confidentialClient = confidentialClient;
         return this;

@@ -4,6 +4,7 @@ import helpers.fixture.FormFactory;
 import helpers.fixture.exception.GetCsrfException;
 import helpers.fixture.persistence.http.input.AuthEndpointProps;
 import io.netty.handler.codec.http.cookie.Cookie;
+import net.tokensmith.authorization.http.controller.resource.html.CookieName;
 import net.tokensmith.otter.QueryStringToMap;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
@@ -19,11 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by tommackenzie on 7/22/15.
  */
 public class PostAuthorizationForm {
+    private static Pattern PATTERN = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
     public static final String UTF_8 = "UTF-8";
     private AsyncHttpClient httpDriver;
     private GetSessionAndCsrfToken getSessionAndCsrfToken;
@@ -45,15 +49,26 @@ public class PostAuthorizationForm {
         return params.get("code").get(0);
     }
 
-    public Session getSession(AuthEndpointProps props) throws InterruptedException, ExecutionException, IOException, GetCsrfException {
+    public Session getSessionForProfile(AuthEndpointProps props, String nextURI) throws InterruptedException, ExecutionException, IOException, GetCsrfException {
         Response response = postLogin(props);
-        Session session = new Session();
+
+        // makes this call in order to get the csrf-token from /profile.
+        Session profileSession = getSessionAndCsrfToken.run(
+                nextURI, response.getCookies()
+        );
+
         for(Cookie cookie: response.getCookies()) {
-            if (cookie.name().equals("session")) {
-                session.setSession(cookie);
+            if ("csrfToken".equals(cookie.name())) {
+                profileSession.setCsrf(cookie);
+            }
+            if ("session".equals(cookie.name())) {
+                profileSession.setSession(cookie);
+            }
+            if (CookieName.REDIRECT.toString().equals(cookie.name())) {
+                profileSession.setRedirect(cookie);
             }
         }
-        return session;
+        return profileSession;
     }
 
     protected Response postLogin(AuthEndpointProps props) throws IOException, ExecutionException, InterruptedException, GetCsrfException {

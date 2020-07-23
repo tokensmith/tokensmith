@@ -9,6 +9,8 @@ import org.asynchttpclient.Response;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -18,15 +20,25 @@ import java.util.regex.Pattern;
 
 public class GetSessionAndCsrfToken {
     private AsyncHttpClient httpDriver;
-    private static Pattern PATTERN = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
+
+    // used for traditional forms.
+    public static Pattern FORM_PATTERN = Pattern.compile(".*\"csrfToken\" value=\"([^\"]*)\".*", Pattern.DOTALL);
+
+    // used on profile.jsp which api calls use.
+    public static Pattern META_PATTERN = Pattern.compile(".*\"csrf-token\" content=\"([^\"]*)\".*", Pattern.DOTALL);
 
     public GetSessionAndCsrfToken(AsyncHttpClient httpDriver) {
         this.httpDriver = httpDriver;
     }
 
-    public Session run(String uri) throws IOException, ExecutionException, InterruptedException, GetCsrfException {
+    public Session run(String uri) throws ExecutionException, InterruptedException, GetCsrfException {
+        return run(uri, new ArrayList<>());
+    }
+
+    public Session run(String uri, List<Cookie> cookies) throws ExecutionException, InterruptedException, GetCsrfException {
         ListenableFuture<Response> f = httpDriver
                 .prepareGet(uri)
+                .setCookies(cookies)
                 .execute();
 
         Response response = f.get();
@@ -46,10 +58,10 @@ public class GetSessionAndCsrfToken {
 
         Session session = new Session();
         for(Cookie cookie: response.getCookies()) {
-            if (cookie.name().equals("csrfToken")) {
+            if ("csrfToken".equals(cookie.name())) {
                 session.setCsrf(cookie);
             }
-            if (cookie.name().equals("session")) {
+            if ("session".equals(cookie.name())) {
                 session.setSession(cookie);
             }
             if (CookieName.REDIRECT.toString().equals(cookie.name())) {
@@ -70,13 +82,15 @@ public class GetSessionAndCsrfToken {
     }
 
     public Optional<String> extractCsrfToken(String responseBody) {
-        Optional<String> csrfToken = Optional.empty();
-        Matcher m = PATTERN.matcher(responseBody);
-        if (m.matches()) {
-            csrfToken = Optional.of(m.group(1));
+        Optional<String> csrfToken;
+        Matcher formMatcher = FORM_PATTERN.matcher(responseBody);
+        csrfToken = formMatcher.matches() ? Optional.of(formMatcher.group(1)) : Optional.empty();
+
+        if (csrfToken.isEmpty()) {
+            // could be as a meta tag.
+            Matcher metaMatcher = META_PATTERN.matcher(responseBody);
+            csrfToken = metaMatcher.matches() ? Optional.of(metaMatcher.group(1)) : Optional.empty();
         }
         return csrfToken;
-
-
     }
 }
