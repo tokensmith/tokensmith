@@ -9,9 +9,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "8080:8080"
+      - "8081:8080"
     healthcheck:
-      test: ["CMD-SHELL", "curl localhost:8080/api/public/v1/health"]
+      test: ["CMD-SHELL", "curl -H \"Content-Type: application/json; charset=utf-8\" localhost:8080/api/public/v1/health"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -299,10 +299,11 @@ public class TokenSmithConfig implements Configure {
 
     protected void apiPublicRoutes(Gateway gateway, ApplicationContext context) {
 
+        HealthResource healthResource = context.getBean(HealthResource.class);
         RestTarget<DefaultSession, APIUser, Health> healthTarget = new RestTargetBuilder<DefaultSession, APIUser, Health>()
                 .groupName(API_PUBLIC_V1_GROUP)
                 .method(Method.GET)
-                .restResource(new HealthResource())
+                .restResource(healthResource)
                 .regex(HealthResource.URL)
                 .contentType(JSON)
                 .payload(Health.class)

@@ -27,11 +27,11 @@ import javax.sql.DataSource;
 public class PersistenceConfig {
     protected static Logger LOGGER = LoggerFactory.getLogger(PersistenceConfig.class);
 
-    @Value("${db.user}")
+    @Value("${auth.db.user}")
     private String userName;
-    @Value("${db.password}")
+    @Value("${auth.db.password}")
     private String password;
-    @Value("${db.url}")
+    @Value("${auth.db.url}")
     private String connectionUrl;
 
     @Bean
