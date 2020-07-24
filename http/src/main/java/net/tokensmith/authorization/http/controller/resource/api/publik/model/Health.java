@@ -5,7 +5,7 @@ import net.tokensmith.otter.translatable.Translatable;
 
 public class Health implements Translatable {
     public enum Status {
-        UP
+        UP, DOWN
     }
 
     public Status status;

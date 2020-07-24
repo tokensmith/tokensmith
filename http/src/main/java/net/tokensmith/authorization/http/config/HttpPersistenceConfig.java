@@ -19,11 +19,11 @@ import javax.sql.DataSource;
 @PropertySource({"classpath:application-${spring.profiles.active:default}.properties"})
 public class HttpPersistenceConfig {
 
-    @Value("${db.user}")
+    @Value("${auth.db.user}")
     private String userName;
-    @Value("${db.password}")
+    @Value("${auth.db.password}")
     private String password;
-    @Value("${db.url}")
+    @Value("${auth.db.url}")
     private String connectionUrl;
 
     @Bean
