@@ -6,7 +6,7 @@ import net.tokensmith.otter.controller.RestResource;
 import net.tokensmith.otter.controller.entity.StatusCode;
 import net.tokensmith.otter.controller.entity.request.RestRequest;
 import net.tokensmith.otter.controller.entity.response.RestResponse;
-import net.tokensmith.repository.repo.ConfigurationRepository;
+import net.tokensmith.repository.repo.HealthRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +18,35 @@ import java.util.Optional;
 public class HealthResource extends RestResource<APIUser, Health> {
     public static String URL = "/api/public/v1/health";
     protected static Logger LOGGER = LoggerFactory.getLogger(HealthResource.class);
-    private ConfigurationRepository configurationRepository;
+    private HealthRepository healthRepository;
 
     @Autowired
-    public HealthResource(ConfigurationRepository configurationRepository) {
-        this.configurationRepository = configurationRepository;
+    public HealthResource(HealthRepository healthRepository) {
+        this.healthRepository = healthRepository;
     }
 
     @Override
     public RestResponse<Health> get(RestRequest<APIUser, Health> request, RestResponse<Health> response) {
-        Health health = new Health(Health.Status.UP);
-        response.setPayload(Optional.of(health));
-        response.setStatusCode(StatusCode.OK);
-
+        Boolean ok = false;
         try {
-            configurationRepository.get();
+            ok = healthRepository.isOk();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            health.setStatus(Health.Status.DOWN);
-            response.setStatusCode(StatusCode.SERVER_ERROR);
         }
 
+        if (Boolean.FALSE.equals(ok)) {
+            notOk(response);
+        } else {
+            Health health = new Health(Health.Status.UP);
+            response.setPayload(Optional.of(health));
+            response.setStatusCode(StatusCode.OK);
+        }
         return response;
+    }
+
+    public void notOk(RestResponse<Health> response) {
+        Health health = new Health(Health.Status.DOWN);
+        response.setPayload(Optional.of(health));
+        response.setStatusCode(StatusCode.SERVER_ERROR);
     }
 }

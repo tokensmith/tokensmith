@@ -57,7 +57,7 @@ public class AppConfig {
 
     @Value("${messaging.clientId}")
     private String clientId;
-    @Value("${messaging.host}")
+    @Value("${message.queue.host}")
     private String messageQueueHost;
 
     @Value("${session.expiration:2592000}")

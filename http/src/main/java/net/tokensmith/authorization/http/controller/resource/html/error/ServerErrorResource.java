@@ -27,6 +27,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> get(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -36,6 +37,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> post(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -45,6 +47,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> put(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -54,6 +57,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> delete(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -63,6 +67,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> connect(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -72,6 +77,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> options(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -81,6 +87,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> trace(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -90,6 +97,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> patch(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -99,6 +107,7 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     @Override
     public Response<WebSiteSession> head(Request<WebSiteSession, WebSiteUser> request, Response<WebSiteSession> response) {
+        log(request);
         AssetPresenter presenter = makeAssetPresenter();
         response.setPresenter(Optional.of(presenter));
         response.setStatusCode(StatusCode.SERVER_ERROR);
@@ -108,6 +117,13 @@ public class ServerErrorResource extends Resource<WebSiteSession, WebSiteUser> {
 
     protected AssetPresenter makeAssetPresenter() {
         return new AssetPresenter(globalCssPath);
+    }
+
+    protected void log(Request<WebSiteSession, WebSiteUser> request) {
+        request.getCause().ifPresentOrElse(c ->
+            LOGGER.error(c.getMessage(), c),
+            () -> LOGGER.error("Server Error without cause")
+        );
     }
 }
 
