@@ -8,7 +8,11 @@ public class Health implements Translatable {
         UP, DOWN
     }
 
-    public Status status;
+    private Status status;
+
+
+    public Health() {
+    }
 
     public Health(Status status) {
         this.status = status;

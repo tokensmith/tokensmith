@@ -11,7 +11,7 @@ COPY . /application/
 RUN cd /application && \
     ./gradlew clean build -x test
 
-FROM adoptopenjdk/openjdk12:alpine-slim
+FROM adoptopenjdk/openjdk12:alpine-jre
 
 RUN  \
     apk update && \

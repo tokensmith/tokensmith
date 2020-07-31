@@ -16,6 +16,7 @@ import net.tokensmith.authorization.http.controller.authorization.OpenIdImplicit
 import net.tokensmith.authorization.http.controller.authorization.OpenIdImplicitResourceTest;
 import net.tokensmith.authorization.http.controller.resource.ForgotPasswordResourceTest;
 import net.tokensmith.authorization.http.controller.resource.UpdatePasswordResourceTest;
+import net.tokensmith.authorization.http.controller.resource.api.publik.HealthResourceTest;
 import net.tokensmith.authorization.http.controller.resource.api.site.RestAddressResourceTest;
 import net.tokensmith.authorization.http.controller.resource.api.site.RestProfileResourceTest;
 import net.tokensmith.authorization.http.controller.resource.html.authorization.AuthorizationResource;
@@ -79,7 +80,8 @@ import static org.asynchttpclient.Dsl.asyncHttpClient;
         ForgotPasswordResourceTest.class,
         UpdatePasswordResourceTest.class,
         RestProfileResourceTest.class,
-        RestAddressResourceTest.class
+        RestAddressResourceTest.class,
+        HealthResourceTest.class
 })
 public class IntegrationTestSuite {
 
