@@ -2,12 +2,8 @@ package net.tokensmith.authorization.http.controller.resource.api.publik;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helpers.category.ServletContainerTest;
-import helpers.fixture.persistence.FactoryForPersistence;
-import helpers.fixture.persistence.client.confidential.LoadOpenIdConfClientCodeResponseType;
-import helpers.fixture.persistence.db.LoadOpenIdResourceOwner;
 import helpers.suite.IntegrationTestSuite;
 import net.tokensmith.authorization.http.controller.resource.api.publik.model.Health;
-import net.tokensmith.authorization.http.controller.resource.api.site.model.Address;
 import net.tokensmith.config.AppConfig;
 import org.apache.commons.httpclient.HttpStatus;
 import org.asynchttpclient.ListenableFuture;
