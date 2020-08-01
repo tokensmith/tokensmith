@@ -19,7 +19,7 @@ services:
 
   zookeeper:
     container_name: tokensmith_zookeeper
-    image: tokensmith/zookeeper:v1.2.1
+    image: tokensmith/zookeeper:v1.2.2
     ports:
       - 2181:2181
     healthcheck:
@@ -30,7 +30,7 @@ services:
 
   kafka-broker:
     container_name: tokensmith_kafka_broker
-    image: tokensmith/kafka-broker:v1.2.1
+    image: tokensmith/kafka-broker:v1.2.2
     restart: on-failure
     depends_on:
       - zookeeper
