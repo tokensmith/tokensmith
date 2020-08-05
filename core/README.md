@@ -28,7 +28,7 @@ Interact with postgres
 -----------------------
 
 ```bash
-$ docker exec -it postgres bash
+$ docker exec -it tokensmith_db bash
 
 root@8581e63f4474:/# psql -U postgres
 postgres=# \c auth;

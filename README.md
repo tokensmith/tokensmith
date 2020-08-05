@@ -1,35 +1,22 @@
 # Tokensmith
 Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html/rfc6749) and [OIDC](https://openid.net/) Identity server.
 
-This documentation is intended for a developer audience. More detailed documentation is [in progress](https://github.com/tokensmith/website).
+### To start using Tokensmith
+
+Have a look at the documentation on [tokensmith.net](tokensmith.net)
+
+### To write features
 
 - [Run the server](#run-the-server)
 - [Database](#Database)
 - [Published messages](#published-messages)
 - [Interaction](#interaction)
-- [Request features and report bugs](#request-features-and-report-bugs)
 - [Repo layout](#repo-layout)
-- [About the project](/About.md)
 
 
 ## Run the server
 
-### With Docker
-This will run Tokensmith and the dependencies with Docker.
-```bash
-make run
-```
-Stop it.
-```bash
-make stop
-```
-Check the health.
-```bash
-make ps
-```
-
 ### On a host
-This approach is good if you want to write a feature or debug the application with breakpoints.
 
 Start the dependencies with docker. 
 ```bash
@@ -72,10 +59,6 @@ The [Message-User](https://github.com/tokensmith/message-user) worker will then 
 ## Interaction
 
 See the [HTTP](http/README.md) readme for documents on interacting with Tokensmith.
-
-## Request features and report bugs
- - Use the [project's github issues](https://github.com/tokensmith/tokensmith/issues).
- - Include links to the RFCs that relate to the feature or bug.
 
 ## Repo layout
 This repo has multiple gradle projects.
