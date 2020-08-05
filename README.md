@@ -3,62 +3,12 @@ Tokensmith is a Java implementation of an [OAuth 2.0](http://tools.ietf.org/html
 
 ### To start using Tokensmith
 
-Have a look at the documentation on [tokensmith.net](tokensmith.net)
+Have a look at the documentation on [tokensmith.net](https://tokensmith.net)
 
 ### To write features
 
-- [Run the server](#run-the-server)
-- [Database](#Database)
-- [Published messages](#published-messages)
-- [Interaction](#interaction)
-- [Repo layout](#repo-layout)
-
-
-## Run the server
-
-### On a host
-
-Start the dependencies with docker. 
-```bash
-make run-dev
-```
-
-Stop dependencies. 
-```bash
-make stop
-```
-
-Check the health.
-```bash
-make ps
-```
-
-Then in an IDE start the [TokenSmithServer](http/src/main/java/net/tokensmith/authorization/http/server/TokenSmithServer.java)
-
-#### Configuration
-
-The server gets configured in a [properties file](http/src/main/resources/application-default.properties). 
-The values can be overridden with command line arguments or environment variables. More information for how to override 
-the default values is available in [spring's docs](https://docs.spring.io/spring-boot/docs/1.3.0.M4/reference/html/boot-features-external-config.html). 
-
- - Arguments can be passed in as, `-DallowLocalUrls=false`
- - Environment variables can be set as, `export allowLocalUrls=false`
-
-## Database
-
-The database automatically gets seeded with a few [database migrations](https://github.com/tokensmith/tokensmith/tree/development/core/src/main/resources/db/migration). 
-
-## Published messages
-Tokensmith publishes messages to kafka when:
- - A user [registers](core/src/main/java/net/tokensmith/authorization/register/Register.java#L97) through interacting with `/register` 
- - A user requests to [reset their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L68) through interacting with `/forgot-password`.
- - A user [resets their password](core/src/main/java/net/tokensmith/authorization/nonce/reset/ForgotPassword.java#L107).
-
-The [Message-User](https://github.com/tokensmith/message-user) worker will then template the messages and send the emails.
-
-## Interaction
-
-See the [HTTP](http/README.md) readme for documents on interacting with Tokensmith.
+[Contributing docs](https://tokensmith.net/docs/contribute) are available which hopefully will be sufficient to get started.
+If you find they are not, then submit an issue in the [website repo](https://github.com/tokensmith/website).
 
 ## Repo layout
 This repo has multiple gradle projects.
