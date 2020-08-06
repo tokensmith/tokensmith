@@ -7,7 +7,7 @@ Have a look at the documentation on [tokensmith.net](https://tokensmith.net)
 
 ### To write features
 
-[Contributing docs](https://tokensmith.net/docs/contribute) are available which hopefully will be sufficient to get started.
+[Contributing docs](https://tokensmith.net/docs/contribute/) are available which hopefully will be sufficient to get started.
 If you find they are not, then submit an issue in the [website repo](https://github.com/tokensmith/website).
 
 ## Repo layout
