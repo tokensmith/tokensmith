@@ -4,9 +4,6 @@ services:
   server:
     container_name: tokensmith_server
     image: tokensmith/server
-    build:
-      context: .
-      dockerfile: Dockerfile
     restart: always
     ports:
       - "8081:8080"
@@ -27,9 +24,6 @@ services:
   db_migration:
     container_name: tokensmith_migrator
     image: tokensmith/db_migrator
-    build:
-      context: ${PWD}
-      dockerfile: docker/migrator/Dockerfile
     environment:
       AUTH_DB_HOST: "db"
       AUTH_DB_NAME: "auth"

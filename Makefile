@@ -1,9 +1,9 @@
 SHELL := /bin/bash
 
 build:
-	docker-compose -f docker-compose.yml -f docker-compose.server.yml build
+	docker-compose -f docker-compose.yml -f docker-compose.server.yml -f docker-compose.build.yml build
 
-run: build
+run:
 	docker-compose -f docker-compose.yml -f docker-compose.server.yml up -d
 
 stop:
